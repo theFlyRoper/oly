@@ -1,0 +1,90 @@
+Using Automake With Inline Static Functions
+===========================================
+:description: Automake with inline static c functions; usage
+:keywords:    Notes, Automake, inline static, howto
+:title:       Automake Static Inline Notes
+:icons:
+
+:numbered:
+
+The Problem
+-----------
+I want to compile an inline static function with a 
+forward declaration, but keep the function itself in
+a separate file.  
+
+In http://www.gnu.org/software/hello/[GNU Hello], they 
+create static print_help and print_version functions.
+These functions would not be usable in a bigger project;
+even in GNU Hello they take up a lot of space.  I don't 
+want to comb through main every time I add a new feature to 
+paste a new line into the help.  Good luck finding instructions
+for building static functions in separate files, though.
+
+A Solution
+----------
+.The Directory Tree
+----
+./main.c
+./print_help.c
+./print_version.c
+./Makefile.am
+./configure.ac
+----
+
+.Automake File
+[source, Makefile]
+----
+olycppflags	=	-I$(top_srcdir) -I$(top_builddir)
+
+olycflags		= -O3 -mtune=native -march=native -Wall
+
+olylibdir		= $(top_builddir)/oly/
+
+DEFS 									= -DLOCALEDIR=\"$(localedir)\" \
+												@DEFS@ @DEV_DEF@
+
+AM_CPPFLAGS						= $(olycppflags)
+
+AM_CFLAGS 						= -fstack-protector-all
+
+bin_PROGRAMS					=	oly
+
+oly_SOURCES						= print_version.c \
+												print_help.c
+
+main.o: main.c
+	$(CC) $(CFLAGS) -w $(olycppflags) $(DEFS) -c -o $@ $<
+
+
+noinst_HEADERS				= oly_main.h
+
+
+oly_LDADD 						=	main.o 
+----
+
+Print_help.c and print_version.c contain static
+function.  They are not _defined_ as static, because they
+would then not be visible after linking.  Go try it:
+open up print_help.c and add "static" in front of void
+at the function declaration.  GCC will complain.  However,
+since these functions are only defined in main.c,
+presumably when libtool links the files it inlines them.
+
+
+/* interesting thing here.  Note that 
+ * these declarations can be static, as long
+ * as the functions themselves are not declared 
+ * static. That is, these functions exist in 
+ * separate files, which are glued together by
+ * the linker.  Unfortunately, gcc doesn't like
+ * inline static functions in separate files.  
+ * */
+
+warning* about undefined functions. main.c declares the 
+functions in cleanenv,
+close_stdout, print_version and print_help as static, but it 
+doesn't like that they live in other files.  The little -w 
+flag disables all warnings.  I want the warnings ON for
+the rest of the files, though.
+

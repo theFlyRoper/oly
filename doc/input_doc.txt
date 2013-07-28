@@ -1,0 +1,48 @@
+Oly Input Functions
+===================
+:description: Oly Input Functions Documentation
+:keywords:  Oly, Database Cleaning, Data cleaning, data transfer
+:title:     Input Functions
+:icons:
+
+:numbered:
+
+Oly Input C files
+-----------------
+. src/input/csvparse.c
+. src/input/f_type.c
+. src/input/in_file.c
+. src/input/olyInput.h
+. src/input/oly_opts.c
+
+structures to implement
+-----------------------
+oly_input:: struct two buffers; big valid input buffer and smaller 
+     error buffer.
+valid_input:: typedefpointer to UChar (icu character type) buffer.
+     allocated at runtime.
+error_input:: typedefpointer to UChar, also runtimeinput that
+     caused an error.
+
+functions to implement
+----------------------
+oly_initialize_input:: returns a pointer to an input structure.
+oly_close_input:: shuts down input stream.
+oly_analyze_file:: Figure out the character set for the input using 
+  the ICU charset figgerin' api.
+oly_input_type:: Get the type of input I hope this eventually
+  encompasses csvs, xml, json and databases.
+csv_smartparse:: try to figure out how a csv file ought to look.
+  calls a few subfunctionsWill later rely on configuration file
+  settings that tell it how long the line can be, dictate certain
+  behaviors, max number of rows to sample for counting, etc.
+csv_getline:: Get the next line of the CSV fileThrows an error
+  if it is bigger than the limit.
+csv_column_count:: figure out the most likely number of columns
+     based on a sample.
+csv_insert_escape:: add an escape character immediately before the 
+     current characterA way to help deal with misplaced quote characters.
+csv_row_to_columns:: find separator characters, dump the result into 
+     either the result cache or the error cache.
+csv_get_column_type:: based on sample; guess the database-ish type
+     according to simple heuristics and available ICU functions.

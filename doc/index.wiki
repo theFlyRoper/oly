@@ -1,0 +1,33 @@
+<title>CSV parser goals</title>
+<nowiki>
+<div id="asciidoc">
+<h1>CSV PARSER GOALS</h1>
+<p>
+<tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
+version ,
+
+</p>
+<hr>
+<h2><a name="_statement_of_purpose"></a>Statement of Purpose</h2>
+<p>When given a large, arbitrary separated input file, determine:</p>
+<ol type="1">
+<li>
+<p>
+Initial columns
+</p>
+</li>
+<li>
+<p>
+Appropriate database data types
+</p>
+</li>
+<li>
+<p>
+Quotation status
+</p>
+</li>
+</ol>
+<p>For all lines.</p>
+<p><a href="/doc/tip/doc/input_doc.wiki">Input Functions Documentation.</a></p>
+</div>
+</nowiki>

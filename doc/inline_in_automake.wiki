@@ -1,0 +1,86 @@
+<title>Automake Static Inline Notes</title>
+<nowiki>
+<div id="asciidoc">
+<h1>Using Automake With Inline Static Functions</h1>
+<p>
+<tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
+version ,
+
+</p>
+<hr>
+<h2><a name="_the_problem"></a>1. The Problem</h2>
+<p>I want to compile an inline static function with a
+forward declaration, but keep the function itself in
+a separate file.</p>
+<p>In <a href="http://www.gnu.org/software/hello/">GNU Hello</a>, they
+create static print_help and print_version functions.
+These functions would not be usable in a bigger project;
+even in GNU Hello they take up a lot of space.  I don&#8217;t
+want to comb through main every time I add a new feature to
+paste a new line into the help.  Good luck finding instructions
+for building static functions in separate files, though.</p>
+<hr>
+<h2><a name="_a_solution"></a>2. A Solution</h2>
+<p><b>The Directory Tree</b></p>
+<table border="0" bgcolor="#e8e8e8" width="100%" cellpadding="10"><tr><td>
+<pre><code>./main.c
+./print_help.c
+./print_version.c
+./Makefile.am
+./configure.ac</code></pre>
+</td></tr></table>
+<div class="listingblock">
+<div class="title">Automake File</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">olycppflags     =</span>       -I<span style="color: #009900">$(top_srcdir)</span> -I<span style="color: #009900">$(top_builddir)</span>
+
+<span style="color: #009900">olycflags               =</span> -O<span style="color: #993399">3</span> -mtune<span style="color: #990000">=</span>native -march<span style="color: #990000">=</span>native -Wall
+
+<span style="color: #009900">olylibdir               =</span> <span style="color: #009900">$(top_builddir)</span>/oly<span style="color: #990000">/</span>
+
+<span style="color: #009900">DEFS                                                                    =</span> -DLOCALEDIR<span style="color: #990000">=</span>\"<span style="color: #009900">$(localedir)</span>\" <span style="color: #990000">\</span>
+                                                                                                <span style="font-weight: bold"><span style="color: #000080">@DEFS@ @DEV_DEF@</span></span>
+
+<span style="color: #009900">AM_CPPFLAGS                                             =</span> <span style="color: #009900">$(olycppflags)</span>
+
+<span style="color: #009900">AM_CFLAGS                                               =</span> -fstack-protector-all
+
+<span style="color: #009900">bin_PROGRAMS                                    =</span>       oly
+
+<span style="color: #009900">oly_SOURCES                                             =</span> print_version.c <span style="color: #990000">\</span>
+                                                                                                print_help.c
+
+<span style="color: #990000">main.o:</span> main.c
+        <span style="color: #009900">$(CC)</span> <span style="color: #009900">$(CFLAGS)</span> -w <span style="color: #009900">$(olycppflags)</span> <span style="color: #009900">$(DEFS)</span> -c -o <span style="color: #009900">$@</span> <span style="color: #009900">$&lt;</span>
+
+
+<span style="color: #009900">noinst_HEADERS                          =</span> oly_main.h
+
+
+<span style="color: #009900">oly_LDADD                                               =</span>       main.o</tt></pre></div></div>
+<p>Print_help.c and print_version.c contain static
+function.  They are not <em>defined</em> as static, because they
+would then not be visible after linking.  Go try it:
+open up print_help.c and add "static" in front of void
+at the function declaration.  GCC will complain.  However,
+since these functions are only defined in main.c,
+presumably when libtool links the files it inlines them.</p>
+<p>/* interesting thing here.  Note that
+ * these declarations can be static, as long
+ * as the functions themselves are not declared
+ * static. That is, these functions exist in
+ * separate files, which are glued together by
+ * the linker.  Unfortunately, gcc doesn&#8217;t like
+ * inline static functions in separate files.
+ * */</p>
+<p>warning* about undefined functions. main.c declares the
+functions in cleanenv,
+close_stdout, print_version and print_help as static, but it
+doesn&#8217;t like that they live in other files.  The little -w
+flag disables all warnings.  I want the warnings ON for
+the rest of the files, though.</p>
+</div>
+</nowiki>

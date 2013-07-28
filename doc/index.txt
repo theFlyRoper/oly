@@ -1,0 +1,34 @@
+CSV PARSER GOALS
+================
+:description: CSV parser goal notes and structure.
+:keywords:    Oly, CSV parser, goals, import, text
+:title:       CSV parser goals
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:icons:
+:toc2:
+endif::is_standalone[]
+ifdef::is_fossil[]
+:iconsdir:  /doc/tip/doc/icons
+:imagesdir: /doc/tip/doc/images
+:icons:
+// link:/doc/tip/README_hrc_data_code.wiki[Back to Home.]
+endif::is_fossil[]
+
+Statement of Purpose
+--------------------
+When given a large, arbitrary separated input file, determine:
+
+. Initial columns
+. Appropriate database data types
+. Quotation status
+
+For all lines.
+
+link:/doc/tip/doc/input_doc.wiki[Input Functions Documentation.]
+
+
+// vim: set syntax=asciidoc:
+

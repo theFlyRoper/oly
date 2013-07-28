@@ -1,0 +1,165 @@
+<title>Input Functions</title>
+<nowiki>
+<div id="asciidoc">
+<h1>Oly Input Functions</h1>
+<p>
+<tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
+version ,
+
+</p>
+<hr>
+<h2><a name="_oly_input_c_files"></a>1. Oly Input C files</h2>
+<ol type="1">
+<li>
+<p>
+src/input/csvparse.c
+</p>
+</li>
+<li>
+<p>
+src/input/f_type.c
+</p>
+</li>
+<li>
+<p>
+src/input/in_file.c
+</p>
+</li>
+<li>
+<p>
+src/input/olyInput.h
+</p>
+</li>
+<li>
+<p>
+src/input/oly_opts.c
+</p>
+</li>
+</ol>
+<hr>
+<h2><a name="_structures_to_implement"></a>2. structures to implement</h2>
+<dl>
+<dt>
+oly_input
+</dt>
+<dd>
+<p>
+struct two buffers; big valid input buffer and smaller
+     error buffer.
+</p>
+</dd>
+<dt>
+valid_input
+</dt>
+<dd>
+<p>
+typedefpointer to UChar (icu character type) buffer.
+     allocated at runtime.
+</p>
+</dd>
+<dt>
+error_input
+</dt>
+<dd>
+<p>
+typedefpointer to UChar, also runtimeinput that
+     caused an error.
+</p>
+</dd>
+</dl>
+<hr>
+<h2><a name="_functions_to_implement"></a>3. functions to implement</h2>
+<dl>
+<dt>
+oly_initialize_input
+</dt>
+<dd>
+<p>
+returns a pointer to an input structure.
+</p>
+</dd>
+<dt>
+oly_close_input
+</dt>
+<dd>
+<p>
+shuts down input stream.
+</p>
+</dd>
+<dt>
+oly_analyze_file
+</dt>
+<dd>
+<p>
+Figure out the character set for the input using
+  the ICU charset figgerin' api.
+</p>
+</dd>
+<dt>
+oly_input_type
+</dt>
+<dd>
+<p>
+Get the type of input I hope this eventually
+  encompasses csvs, xml, json and databases.
+</p>
+</dd>
+<dt>
+csv_smartparse
+</dt>
+<dd>
+<p>
+try to figure out how a csv file ought to look.
+  calls a few subfunctionsWill later rely on configuration file
+  settings that tell it how long the line can be, dictate certain
+  behaviors, max number of rows to sample for counting, etc.
+</p>
+</dd>
+<dt>
+csv_getline
+</dt>
+<dd>
+<p>
+Get the next line of the CSV fileThrows an error
+  if it is bigger than the limit.
+</p>
+</dd>
+<dt>
+csv_column_count
+</dt>
+<dd>
+<p>
+figure out the most likely number of columns
+     based on a sample.
+</p>
+</dd>
+<dt>
+csv_insert_escape
+</dt>
+<dd>
+<p>
+add an escape character immediately before the
+     current characterA way to help deal with misplaced quote characters.
+</p>
+</dd>
+<dt>
+csv_row_to_columns
+</dt>
+<dd>
+<p>
+find separator characters, dump the result into
+     either the result cache or the error cache.
+</p>
+</dd>
+<dt>
+csv_get_column_type
+</dt>
+<dd>
+<p>
+based on sample; guess the database-ish type
+     according to simple heuristics and available ICU functions.
+</p>
+</dd>
+</dl>
+</div>
+</nowiki>

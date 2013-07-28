@@ -1,0 +1,20 @@
+<title>Bibliography</title>
+<nowiki>
+<div id="asciidoc">
+<h1>Bibliography</h1>
+<p>
+<tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
+version ,
+
+</p>
+<hr>
+<h2><a name="_style"></a>Style</h2>
+<ul>
+<li>
+<p>
+<a href="http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml?showone=Conditionals#Conditionals">Google Code: Conditionals</a>
+</p>
+</li>
+</ul>
+</div>
+</nowiki>
