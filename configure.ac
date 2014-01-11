@@ -226,7 +226,6 @@ OLY_CHECK_ICU([4.8],[],[])
 dnl }}}
 
 dnl checks for header files {{{
-
 dnl AC_STDC_HEADERS
 AC_HEADER_SYS_WAIT
 
@@ -239,11 +238,9 @@ AC_CHECK_HEADERS([locale.h \
                   unicode/ures.h \
                   unicode/ustring.h])
 
-
 dnl }}}
 
 dnl checks for typedefs and structures {{{
-
 AC_TYPE_PID_T
 
 dnl }}}
@@ -251,31 +248,31 @@ dnl }}}
 dnl checks for library functions {{{
 
 AC_FUNC_MALLOC
+AM_WITH_DMALLOC
 
-OLY_WITH_READLINE
+ACX_PTHREAD
 
-OLY_VAR_SYS_ERRLIST
-OLY_VAR_SYS_SIGLIST
+dnl OLY_WITH_READLINE
 
-AC_CHECK_FUNCS([bzero \
-                memset], \
-                [break])
-
-AC_CHECK_FUNCS([calloc \
-                strchr \
-                strrchr \
-                setlocale])
-
-AC_REPLACE_FUNCS([basename \
-                  strspn \
-                  strcspn \
-                  strerror \
-                  strlcpy \
-                  strlcat \
-                  wcswidth \
-                  wcwidth \
-                  strsignal \
-                  waitpid])
+dnl AC_CHECK_FUNCS([bzero \
+dnl                 memset], \
+dnl                 [break])
+dnl 
+dnl AC_CHECK_FUNCS([calloc \
+dnl                 strchr \
+dnl                 strrchr \
+dnl                 setlocale])
+dnl 
+dnl AC_REPLACE_FUNCS([basename \
+dnl                   strspn \
+dnl                   strcspn \
+dnl                   strerror \
+dnl                   strlcpy \
+dnl                   strlcat \
+dnl                   wcswidth \
+dnl                   wcwidth \
+dnl                   strsignal \
+dnl                   waitpid])
 
 dnl verify how big the system is.
 AC_CHECK_SIZEOF([size_t])
@@ -298,13 +295,10 @@ dnl http://www.gnu.org/software/autoconf/manual/autoconf.html#Generic-Compiler-C
 dnl (at the bottom)
 dnl AC_OPENMP
 
-
 dnl }}}
 
 dnl defines {{{
-
-dnl fireeyes talked me into this (on his blog)
-dnl I agree with him; majority of systems I care about are posix 99
+dnl I agree with fireeyes; majority of systems I care about are posix 99
 dnl compat these days, hence, save a buncha checks.
 AC_DEFINE([_POSIX_C_SOURCE],[200112L],
                      [Force full POSIX 1999 compliance])
@@ -334,21 +328,12 @@ AC_DEFINE([UNISTR_FROM_STRING_EXPLICIT],[explicit],
           [Recommended setting from ICU documentation; stipulates 
            all conversion from char * to UNISTR must be explicit])
 
-AC_FUNC_MALLOC
-
-ACX_PTHREAD
-
-dnl AM_GNU_GETTEXT_VERSION([0.17])
-dnl AM_GNU_GETTEXT([external])
-
-AM_WITH_DMALLOC
-
 dnl }}}
 
 dnl Substitutions and output {{{
 
 AC_DISABLE_FAST_INSTALL
-AC_DISABLE_STATIC
+dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
                  tests/Makefile \

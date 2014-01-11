@@ -59,6 +59,7 @@ ADOCFLAGS		 					= -a email=@FAQ_ADDR@ \
 												-a iconsdir=$(adoc_icons_dir) \
 												-a imagesdir=$(adoc_images_dir) \
 												-a revdate=$(ADOC_REVDATE) \
+												-a 'newline=\n' \
 												-a revision=$(ADOC_REVISION) \
 												--conf-file conf/fossil.conf
 

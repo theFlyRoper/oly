@@ -4,8 +4,8 @@
 <h1>CSV PARSER GOALS</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version ,
-
+version 5f64404ac8,
+2013-07-28
 </p>
 <hr>
 <h2><a name="_statement_of_purpose"></a>Statement of Purpose</h2>
