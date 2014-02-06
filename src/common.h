@@ -1,0 +1,232 @@
+/* common.h -- Common functions and header configuration. {{{
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+ 
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+ 
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+   MA 02110-1301, USA.
+   }}} */
+
+#ifndef HAVE_UNICODE_USTRING_H
+#define HAVE_UNICODE_USTRING_H 1
+#endif /* !HAVE_UNICODE_USTRING_H */
+
+#ifndef OLY_COMMON_H
+#define OLY_COMMON_H 1
+
+/** @start 1 HEADERS {{{ */
+
+#if HAVE_CONFIG_H
+#  include "liboly/olyconf.h"
+#endif
+
+#include <stdio.h>
+#include <sys/types.h>
+
+#if STDC_HEADERS
+#  include <stdlib.h>
+#  include <string.h>
+#  include <errno.h>
+#elif HAVE_STRINGS_H
+#  include <strings.h>
+#endif /*STDC_HEADERS*/
+
+#if HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
+
+#if HAVE_SYS_WAIT_H
+#  include <sys/wait.h>
+#endif
+#ifndef WIFEXITED
+#  define WIFEXITED(stat)       (((stat) & 0xff) == 0)
+#endif
+#ifndef WEXITSTATUS
+#  define WEXITSTATUS(stat)     ((unsigned)(stat) >> 8)
+#endif
+#ifndef WIFSTOPPED
+#  define WIFSTOPPED(stat)      (((stat) & 0xff) == 0x7f)
+#endif
+#ifndef WSTOPSIG
+#  define WSTOPSIG(stat)        WEXITSTATUS(stat)
+#endif
+#ifndef WIFSIGNALED
+#  define WIFSIGNALED(stat)     (!WIFEXITED(stat) && !WIFSTOPPED(stat))
+#endif
+#ifndef WTERMSIG
+#  define WTERMSIG(stat)        ((stat) & 0x7f)
+#endif
+
+#ifndef errno /* Some systems #define this! */
+extern int errno;
+#endif
+
+#ifndef BUFSIZ
+#define BUFSIZ 8192
+#endif
+
+/** @end 1 }}} */
+
+/** @start 2 FUNCTIONS AND SYSTEM MACROS {{{ */
+
+#ifndef EXIT_SUCCESS
+#  define EXIT_SUCCESS  0
+#  define EXIT_FAILURE  1
+#endif
+
+#if !HAVE_BZERO && HAVE_MEMSET
+# define bzero(buf, bytes)      ((void) memset (buf, 0, bytes))
+#endif
+
+#if !HAVE_STRCHR
+#  define strchr index
+#endif
+
+#if !HAVE_STRRCHR
+#  define strrchr rindex
+#endif
+
+/** @end 2 }}} */
+
+/** @start 3 GNUC, STDC AND CXX {{{ */
+
+#ifdef __cplusplus
+#  define BEGIN_C_DECLS         extern "C" {
+#  define END_C_DECLS           }
+#else
+#  define BEGIN_C_DECLS
+#  define END_C_DECLS
+#endif
+
+
+
+#ifdef __GNUC__
+#  ifndef const
+#    define const       __const
+#  endif
+#  ifndef signed
+#    define signed      __signed
+#  endif
+#  ifndef volatile
+#    define volatile    __volatile
+#  endif
+#else
+#  ifdef __STDC__
+#    undef  signed
+#    define signed
+#    undef  volatile
+#    define volatile
+#  endif
+#endif
+
+#ifdef __STDC__
+#define STR(x)          #x
+#define CONC(x, y)      x##y
+#else
+#define STR(x)          "x"
+#define CONC(x, y)      x/**/y
+#endif
+
+/** @end 4 }}} */
+
+/** @start 4 MALLOC MACROS {{{ */
+BEGIN_C_DECLS
+
+#define XCALLOC(type, num) \
+        ((type *) xcalloc ((num), sizeof(type)))
+
+#define XMALLOC(type, num) \
+        ((type *) xmalloc ((num) * sizeof(type)))
+#define XREALLOC(type, p, num) \
+        ((type *) xrealloc ((p), (num) * sizeof(type)))
+#define XFREE(stale) do { \
+        if (stale) { free (stale);  stale = 0; } \
+        } while (0)
+
+
+extern void *xcalloc    (size_t num, size_t size);
+extern void *xmalloc    (size_t num);
+extern void *xrealloc   (void *p, size_t num);
+extern char *xstrdup    (const char *string);
+extern char *xstrcat    (const char *string);
+extern char *xstrerror  (int errnum);
+
+#if !HAVE_BASENAME
+extern char *basename   (const char *path);
+#endif
+
+#if !HAVE_STRLCPY
+extern size_t strlcpy (char *dst, const char *src, size_t size);
+#endif
+
+#if !HAVE_WCWIDTH
+int wcwidth(char ucs);
+#endif
+
+#if !HAVE_WCSWIDTH
+int wcswidth(char ucs);
+#endif
+
+#if !HAVE_STRLCAT
+extern size_t strlcat   (char *dst, const char *src, size_t size);
+#endif
+
+/*
+#if !HAVE_STRCSPN
+extern size_t strcspn   (const char *string, const char *accept);
+#endif
+*/
+
+#if !HAVE_STRERROR
+extern char *strerror (int err);
+#endif
+
+/*
+#if !HAVE_STRSIGNAL
+extern char *strsignal  (int signo);
+#endif
+
+#if !HAVE_STRSPN
+extern size_t strspn    (const char *string, const char *reject);
+#endif
+
+#if !HAVE_WAITPID
+extern pid_t waitpid    (pid_t pid, int *pstatus, int options);
+#endif
+*/
+
+END_C_DECLS
+
+#if WITH_DMALLOC
+# include <dmalloc.h>
+#endif /* WITH_DMALLOC */
+
+/** @end 4 }}} */
+
+/** @start 6 Oly typedefs and macros {{{ */
+
+#if HAVE_UNICODE_USTRING_H
+#include <unicode/utypes.h>
+typedef UChar OChar;
+/* was thinking of defining an OFILE macro, but 
+ * really, we're not creating that many files.  For those 
+ * we are creating, UFILE will be fine.
+ */
+
+#else
+#error "Oly depends on ICU.  Please install ICU."
+#endif /*HAVE_UNICODE_USTRING_H*/
+
+/** @end 6 }}} **/
+
+#endif /* !OLY_COMMON_H */
+

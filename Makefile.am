@@ -18,21 +18,15 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ## MA 02110-1301, USA. }}}
 
-## MAKEFILE NOTES {{{
-
 ## you might want to check out doc/inline_in_automake.html.
 ## it's how I was doing this a little while ago.
-
-## }}}
-
-## CLEANING AND MAINTENANCE VARIABLES {{{
 
 MAINTAINERCLEANFILES 				=	aclocal.m4 \
 															configure \
 															Makefile.in \
 															ltmain.sh \
 															deps \
-															liboly/olyconf-h.in~
+															src/olyconf-h.in~
 
 DISTCLEANFILES 							=	*~
 
@@ -43,17 +37,12 @@ EXTRA_DIST									= ac-aux/config.rpath \
 
 SUBDIRS 										= tests \
 															doc 
-### }}}
 
-## AM VARIABLES AND FLAGS {{{
 DEFS 										= @DEFS@ @DEV_DEF@
 
 AM_CFLAGS 							= -fstack-protector-all \
 													@ICU_CFLAGS@
-## }}}
 
-## PROGRAMS {{{
-												
 bin_PROGRAMS					=	csvparse
 
 csvparse_SOURCES			= src/main.c 
@@ -63,6 +52,4 @@ noinst_HEADERS				=	src/csvparse_dev.h \
 
 csvparse_LDADD 				=	@ICUIO_LIBS@ \
 												@ICU_LIBS@ 
-
-## }}}
 
