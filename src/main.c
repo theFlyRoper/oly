@@ -19,7 +19,7 @@
  * }}} */
 
 #ifdef HAVE_CONFIG_H
-#  include "liboly/olyconf.h"
+#  include "olyconf.h"
 #endif
 
 #include <unicode/ustdio.h> 
@@ -38,10 +38,10 @@
 #include "error.h"
 #include "oly.h"
 
-#ifdef DEVMODE
+#ifdef OLYDEV
 #include <assert.h>
 #include "oly_dev.h"
-#endif /* DEVMODE */
+#endif /* OLYDEV */
 
 UFILE *u_stdout = NULL;   /* Unicode output file */
 UFILE *u_stdin  = NULL;   /* Unicode input file */
@@ -72,31 +72,29 @@ static int cleanenv();
 int
 main( int argc, char *argv[] ){
 
-  int32_t     len,optc  = 0;      /* current line length */
-  UErrorCode  u_status  = U_ZERO_ERROR; /* Unicode Status code */
+  int32_t         len,optc  = 0;      /* current line length */
+  UErrorCode      u_status  = U_ZERO_ERROR; /* Unicode u_status code */
   UBreakIterator  *boundary;
   char            c_string_to_examine[] = "\"Ada Bee\" \t,Clog,\"Lorem ipsum, dolor\",Aich";
   char            c_string_to_examine2[] = "9,\"Ada Bee\",Cee,\"Lorem ips\"";
-  char            rules_file_name[] = "./supabreak.txt";
+  char            rules_file_name[] = "./tests/supabreak.txt";
   UChar           string_to_examine[sizeof(c_string_to_examine)+1]; 
-  UErrorCode      status=U_ZERO_ERROR;
-  FILE            *u_rules=NULL;
   UChar           line[BUFSIZ];      /* main buffer */
 
   atexit (close_oly);
   
-  status = cleanenv();
+  u_status = cleanenv();
 
   program_name = argv[0];
 
 /* Initialize ICU */
-  u_init(&status);
-  if (U_FAILURE(status)) {
-      fprintf(stderr, "%s: can not initialize ICU.  status = %s\n",
-          argv[0], u_errorName(status));
+  u_init(&u_status);
+  if (U_FAILURE(u_status)) {
+      fprintf(stderr, "%s: can not initialize ICU.  u_status = %s\n",
+          argv[0], u_errorName(u_status));
       exit(1);
   }
-  status = U_ZERO_ERROR;
+  u_status = U_ZERO_ERROR;
 
   if ( u_stderr == NULL )
       u_stderr=u_finit(stderr, NULL /*locale*/,  NULL /*codepage */);
@@ -125,12 +123,12 @@ main( int argc, char *argv[] ){
   printf("Examining: %s\n", c_string_to_examine);
   u_uastrcpy(string_to_examine, c_string_to_examine);
 
-  boundary = get_rules(rules_file_name, status);
-  ubrk_setText(boundary, string_to_examine, u_strlen(string_to_examine), &status);
+  boundary = get_rules(rules_file_name, u_status);
+  ubrk_setText(boundary, string_to_examine, u_strlen(string_to_examine), &u_status);
 
   /*print each sentence in forward and reverse order*/
-  if (U_FAILURE(status)) {
-    printf("ubrk_open error: %s\n", u_errorName(status));
+  if (U_FAILURE(u_status)) {
+    printf("ubrk_open error: %s\n", u_errorName(u_status));
     exit(1);
   }
 
@@ -143,38 +141,34 @@ main( int argc, char *argv[] ){
   printf("\n\nExamining: %s\n", c_string_to_examine2);
   u_uastrcpy(string_to_examine, c_string_to_examine2);
 
-  boundary = get_rules(rules_file_name, status);
-  ubrk_setText(boundary, string_to_examine, u_strlen(string_to_examine), &status);
+  boundary = get_rules(rules_file_name, u_status);
+  ubrk_setText(boundary, string_to_examine, u_strlen(string_to_examine), &u_status);
 
   printf("\n----- test sequence 2 -----------\n"); 
   print_each_forward(boundary, string_to_examine);
     
-  //  /*print each word in order*/
-  //  boundary = ubrk_open(UBRK_WORD, "en_us", string_to_examine,
-  //		       u_strlen(string_to_examine), &status);
-  //  printf("\n----- Word Boundaries, forward: -----------\n"); 
-  //  print_each_forward(boundary, string_to_examine);
-  //  printf("\n----- Word Boundaries, backward: ----------\n");
-  //  print_each_backward(boundary, string_to_examine);
-  //  /*print first element*/
-  //  printf("\n----- first: -------------\n");
-  //  print_first(boundary, string_to_examine);
-  //  /*print last element*/
-  //  printf("\n----- last: --------------\n");
-  //  print_last(boundary, string_to_examine);
-  //  /*print word at charpos 10 */
-  //  printf("\n----- at pos 10: ---------\n");
-  //  print_at(boundary, 10 , string_to_examine);
+/*  boundary = ubrk_open(UBRK_WORD, "en_us", string_to_examine,
+		       u_strlen(string_to_examine), &u_status);
+  printf("\n----- Word Boundaries, forward: -----------\n"); 
+  print_each_forward(boundary, string_to_examine);
+  printf("\n----- Word Boundaries, backward: ----------\n");
+  print_each_backward(boundary, string_to_examine);
+  printf("\n----- first: -------------\n");
+  print_first(boundary, string_to_examine);
+  printf("\n----- last: --------------\n");
+  print_last(boundary, string_to_examine);
+  printf("\n----- at pos 10: ---------\n");
+  print_at(boundary, 10 , string_to_examine); */
   
   ubrk_close(boundary);
 
   printf("\nEnd of C boundary analysis\n");
   
-#ifdef DEVMODE
+#ifdef OLYDEV
 
-#endif /* DEVMODE */
+#endif /* OLYDEV */
   
-  return status;
+  return u_status;
 }
 
 

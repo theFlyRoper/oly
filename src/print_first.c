@@ -5,7 +5,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include "liboly/olyconf.h"
+#  include "olyconf.h"
 #endif
 
 #include <unicode/ustdio.h> 
@@ -18,10 +18,10 @@
 #include "common.h"
 #include "output.h"
 
-#ifdef DEVMODE
+#ifdef OLYDEV
 #include <assert.h>
 #include "oly_dev.h"
-#endif /* DEVMODE */
+#endif /* OLYDEV */
 
 /* Print first element */
 void print_first(UBreakIterator* boundary, UChar* str) {

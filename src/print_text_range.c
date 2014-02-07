@@ -5,7 +5,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include "liboly/olyconf.h"
+#  include "olyconf.h"
 #endif
 
 #include <unicode/ustdio.h> 
@@ -15,10 +15,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef DEVMODE
+#ifdef OLYDEV
 #include <assert.h>
 #include "oly_dev.h"
-#endif /* DEVMODE */
+#endif /* OLYDEV */
 
 void 
 print_text_range(UChar* str, int32_t start, int32_t end)

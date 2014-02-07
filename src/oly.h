@@ -23,7 +23,7 @@
 #define OLY_SRC_H 1
 
 #ifdef HAVE_CONFIG_H
-#  include "liboly/olyconf.h"
+#  include "olyconf.h"
 #else
 #  define PACKAGE "PLACEHOLDER"
 #  define VERSION "-1"

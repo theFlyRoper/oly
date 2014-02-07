@@ -1,11 +1,4 @@
-/* liboly/olyconf-h.in.  Generated from configure.ac by autoheader.  */
-
-/* Define to 1 if translation of program messages to the user's native
-   language is requested. */
-#undef ENABLE_NLS
-
-/* Define to 1 if you have the `basename' function. */
-#undef HAVE_BASENAME
+/* src/olyconf-h.in.  Generated from configure.ac by autoheader.  */
 
 /* Define to 1 if you have the `bzero' function. */
 #undef HAVE_BZERO
@@ -13,32 +6,11 @@
 /* Define to 1 if you have the `calloc' function. */
 #undef HAVE_CALLOC
 
-/* Define to 1 if you have the MacOS X function CFLocaleCopyCurrent in the
-   CoreFoundation framework. */
-#undef HAVE_CFLOCALECOPYCURRENT
-
-/* Define to 1 if you have the MacOS X function CFPreferencesCopyAppValue in
-   the CoreFoundation framework. */
-#undef HAVE_CFPREFERENCESCOPYAPPVALUE
-
-/* Define if the GNU dcgettext() function is already present or preinstalled.
-   */
-#undef HAVE_DCGETTEXT
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-/* Define if the GNU gettext() function is already present or preinstalled. */
-#undef HAVE_GETTEXT
-
-/* Define if you have the iconv() function and it works. */
-#undef HAVE_ICONV
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
-
-/* Define to 1 if you have the `readline' library (-lreadline). */
-#undef HAVE_LIBREADLINE
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
@@ -59,9 +31,6 @@
 /* Define if you have POSIX threads libraries and header files. */
 #undef HAVE_PTHREAD
 
-/* Have PTHREAD_PRIO_INHERIT. */
-#undef HAVE_PTHREAD_PRIO_INHERIT
-
 /* Define to 1 if you have the `setlocale' function. */
 #undef HAVE_SETLOCALE
 
@@ -77,38 +46,14 @@
 /* Define to 1 if you have the `strchr' function. */
 #undef HAVE_STRCHR
 
-/* Define to 1 if you have the `strcspn' function. */
-#undef HAVE_STRCSPN
-
-/* Define to 1 if you have the `strerror' function. */
-#undef HAVE_STRERROR
-
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
 
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Define to 1 if you have the `strlcat' function. */
-#undef HAVE_STRLCAT
-
-/* Define to 1 if you have the `strlcpy' function. */
-#undef HAVE_STRLCPY
-
 /* Define to 1 if you have the `strrchr' function. */
 #undef HAVE_STRRCHR
-
-/* Define to 1 if you have the `strsignal' function. */
-#undef HAVE_STRSIGNAL
-
-/* Define to 1 if you have the `strspn' function. */
-#undef HAVE_STRSPN
-
-/* Define if your system libraries have a sys_errlist variable. */
-#undef HAVE_SYS_ERRLIST
-
-/* Define if your system libraries have a sys_siglist variable. */
-#undef HAVE_SYS_SIGLIST
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -134,27 +79,12 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
-/* Define to 1 if you have the `waitpid' function. */
-#undef HAVE_WAITPID
-
-/* Define to 1 if you have the `wcswidth' function. */
-#undef HAVE_WCSWIDTH
-
-/* Define to 1 if you have the `wcwidth' function. */
-#undef HAVE_WCWIDTH
-
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #undef LT_OBJDIR
 
 /* Define to 1 if your C compiler doesn't accept -c and -o together. */
 #undef NO_MINUS_C_MINUS_O
-
-/* Define if this is Unixish platform */
-#undef OLY_ON_UNIX
-
-/* Define if this is Win32ish platform */
-#undef OLY_ON_WIN32
 
 /* Name of package */
 #undef PACKAGE

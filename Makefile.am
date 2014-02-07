@@ -45,10 +45,23 @@ AM_CFLAGS 							= -fstack-protector-all \
 
 bin_PROGRAMS					=	csvparse
 
-csvparse_SOURCES			= src/main.c 
+csvparse_SOURCES			= src/main.c \
+												src/print_text_range.c \
+												src/print_each_forward.c \
+												src/print_each_backward.c \
+												src/print_at.c \
+												src/print_first.c \
+												src/print_last.c \
+												src/get_rules.c \
+												src/xmalloc.c \
+												src/xstrdup.c \
+												src/error.c
 
-noinst_HEADERS				=	src/csvparse_dev.h \
-												src/csvparse_main.h
+
+noinst_HEADERS				=	src/error.h \
+												src/loader.h \
+												src/output.h \
+												src/common.h
 
 csvparse_LDADD 				=	@ICUIO_LIBS@ \
 												@ICU_LIBS@ 

@@ -19,7 +19,7 @@
 ## MA 02110-1301, USA.
 
 
-MAINTAINERCLEANFILES 	= Makefile.in maintainer-clean-local wiki
+MAINTAINERCLEANFILES 	= Makefile.in maintainer-clean-local wiki $(HTMLPAGES)
 
 SUFFIXES							= .wiki
 
@@ -34,7 +34,7 @@ htmlrebuild:
 html-local: htmlrebuild $(HTMLPAGES)
 
 
-maintainer-clean-local: wiki html-local
+maintainer-clean-local: wiki 
 
 TXTFILES							=	index.txt \
 												input_doc.txt \
@@ -75,7 +75,7 @@ HTMLFLAGS		 					= -a email=@FAQ_ADDR@ \
 AD1										=	a2x
 
 .txt.1:
-	$(AD1) --doctype manpage $(ADOCFLAGS) -o $@ $<
+	$(AD1) --doctype=manpage --format=manpage $<
 												
 
 .txt.wiki:

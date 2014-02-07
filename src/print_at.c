@@ -4,7 +4,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include "liboly/olyconf.h"
+#  include "olyconf.h"
 #endif
 
 #include <unicode/ustdio.h> 
@@ -17,10 +17,10 @@
 #include "common.h"
 #include "output.h"
 
-#ifdef DEVMODE
+#ifdef OLYDEV
 #include <assert.h>
 #include "oly_dev.h"
-#endif /* DEVMODE */
+#endif /* OLYDEV */
 
 /* Print the element at a specified position */
 void print_at(UBreakIterator* boundary, int32_t pos , UChar* str) {

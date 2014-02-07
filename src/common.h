@@ -23,10 +23,10 @@
 #ifndef OLY_COMMON_H
 #define OLY_COMMON_H 1
 
-/** @start 1 HEADERS {{{ */
+/** HEADERS */
 
 #if HAVE_CONFIG_H
-#  include "liboly/olyconf.h"
+#  include "olyconf.h"
 #endif
 
 #include <stdio.h>
@@ -74,9 +74,7 @@ extern int errno;
 #define BUFSIZ 8192
 #endif
 
-/** @end 1 }}} */
-
-/** @start 2 FUNCTIONS AND SYSTEM MACROS {{{ */
+/** FUNCTIONS AND SYSTEM MACROS  */
 
 #ifndef EXIT_SUCCESS
 #  define EXIT_SUCCESS  0
@@ -84,7 +82,7 @@ extern int errno;
 #endif
 
 #if !HAVE_BZERO && HAVE_MEMSET
-# define bzero(buf, bytes)      ((void) memset (buf, 0, bytes))
+#  define bzero(buf, bytes)      ((void) memset (buf, 0, bytes))
 #endif
 
 #if !HAVE_STRCHR
@@ -95,9 +93,8 @@ extern int errno;
 #  define strrchr rindex
 #endif
 
-/** @end 2 }}} */
 
-/** @start 3 GNUC, STDC AND CXX {{{ */
+/** GNUC, STDC AND CXX */
 
 #ifdef __cplusplus
 #  define BEGIN_C_DECLS         extern "C" {
@@ -135,8 +132,6 @@ extern int errno;
 #define STR(x)          "x"
 #define CONC(x, y)      x/**/y
 #endif
-
-/** @end 4 }}} */
 
 /** @start 4 MALLOC MACROS {{{ */
 BEGIN_C_DECLS

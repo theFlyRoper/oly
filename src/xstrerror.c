@@ -5,7 +5,7 @@
 
 /* HEADERS {{{ */
 #if HAVE_CONFIG_H
-# include "liboly/olyconf.h"
+# include "olyconf.h"
 #endif
 
 #include <stdio.h>

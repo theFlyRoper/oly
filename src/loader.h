@@ -10,4 +10,4 @@
 
 UBreakIterator *get_rules(const char *ruleFileName, UErrorCode status);
 
-#endif // LOADER_H
+#endif /* LOADER_H */

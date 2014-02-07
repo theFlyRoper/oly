@@ -20,9 +20,7 @@
 
 UBreakIterator* 
 get_rules(const char *ruleFileName, UErrorCode status) {
-    //
-    //  Read in the rule source file
-    //
+    /*  Read in the rule source file */
     long        result;
     long        ruleFileSize;
     FILE        *file;
@@ -46,14 +44,12 @@ get_rules(const char *ruleFileName, UErrorCode status) {
         exit (-1);
     }
     
-    //
-    // Look for a Unicode Signature (BOM) on the rule file
-    //
+    /* Look for a Unicode Signature (BOM) on the rule file */
     int32_t        signatureLength;
     const char *   ruleSourceC = ruleBufferC;
     const char*    encoding = ucnv_detectUnicodeSignature(
                            ruleSourceC, ruleFileSize, &signatureLength, &status);
-    // fprintf(stderr, "DetectUnicodeSig: \"%s\"\n", encoding);
+    /* fprintf(stderr, "DetectUnicodeSig: \"%s\"\n", encoding); */
     if (U_FAILURE(status)) {
         fprintf(stderr, "can not initialize ICU.  status = %s\n",
             u_errorName(status));
@@ -63,11 +59,9 @@ get_rules(const char *ruleFileName, UErrorCode status) {
         ruleSourceC  += signatureLength;
         ruleFileSize -= signatureLength;
     }
-    // fprintf(stderr, "encoding: \"%s\"\n", encoding);
+    /* fprintf(stderr, "encoding: \"%s\"\n", encoding); */
 
-    //
-    // Open a converter to take the rule file to UTF-16
-    //
+    /* Open a converter to take the rule file to UTF-16 */
     UConverter* conv;
     conv = ucnv_open(encoding, &status);
     if (U_FAILURE(status)) {
@@ -80,16 +74,14 @@ get_rules(const char *ruleFileName, UErrorCode status) {
     u_frewind(ufile);
     UChar *ruleSourceU = (UChar *) xmalloc ((ruleFileSize*sizeof(UChar))+1);
     long charsRead = u_file_read(ruleSourceU, ruleFileSize, ufile);
-    // u_fprintf(u_stderr, "Chars read: \"%i\", File size: \"%i\"\n", charsRead, ruleFileSize);
+    /* u_fprintf(u_stderr, "Chars read: \"%i\", File size: \"%i\"\n", charsRead, ruleFileSize); */
     ruleSourceU[charsRead] = 0;
-    // u_fprintf(u_stderr, "RulesourceU POST: \"%S\"\n", ruleSourceU);
+    /* u_fprintf(u_stderr, "RulesourceU POST: \"%S\"\n", ruleSourceU); */
     ucnv_close(conv);
     u_fclose(ufile);
 
-    //
-    //  Create the break iterator from the rules
-    //     This will compile the rules.
-    //
+    /*  Create the break iterator from the rules */
+    /*     This will compile the rules. */
     UParseError parseError;
     parseError.line = 0;
     parseError.offset = 0;
