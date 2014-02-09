@@ -3,16 +3,12 @@
    This code is in the public domain.
    }}} */
 
-/* HEADERS {{{ */
 #if HAVE_CONFIG_H
 # include "olyconf.h"
 #endif
 
 #include <stdio.h>
 
-/* }}} */
-
-/* MAIN FUNCTION BODIES {{{*/
 extern char *strerror ();
 
 /* If strerror returns NULL, we'll format the number into a static 
@@ -35,7 +31,5 @@ xstrerror (int errnum)
 
   return errstr;
 }
-
-/*}}}*/
 
 
