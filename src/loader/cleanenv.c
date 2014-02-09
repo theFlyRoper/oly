@@ -1,4 +1,4 @@
-/* cleanenv-inl.h -- perform initial cleaning of environment  License GPL2+ {{{
+/* cleanenv.c -- perform initial cleaning of environment  License GPL2+ {{{
  * Copyright (C) 2012 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,8 +20,23 @@
  * doc/bibliography.wiki for details.
  * }}} */
 
-#ifndef LIBOLY_STARTUP_CLEANENV_INL_H
-#define LIBOLY_STARTUP_CLEANENV_INL_H 1
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
+
+#include "common.h"
+#include "output.h"
+#include "error.h"
+#include "list.h"
+#include "syntax.h"
+#include "oly.h"
+#include "loader.h"
+
+/* The following function(s) are
+ * adapted from the Secure Programming 
+ * Cookbook, John Viega and Matt Messier.
+ * 2003, O'Reilly Press.
+ */
 
 /* These arrays are both null-terminated. 
  * was thinking of recording current user, but, enh.
@@ -44,11 +59,11 @@ spc_preserve_environ[  ] = {
   0
 };
 
-static int
-cleanenv () {
-    int i,status=OLY_OKAY;
-    char   **new_environ, *path, *home, *username, *ptr;
-    const char *value, *var; 
+int
+cleanenv (Oly *oly) {
+    int         i,status=OLY_OKAY;
+    char        **new_environ, *path, *home, *username, *ptr;
+    const char  *value, *var; 
     size_t path_size = 0,
            arr_size = 1, 
            arr_ptr = 0, 
@@ -155,5 +170,4 @@ cleanenv () {
     return status;
 }
 
-#endif /* LIBOLY_STARTUP_CLEANENV_INL_H */
 

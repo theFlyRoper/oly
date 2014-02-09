@@ -46,15 +46,21 @@ AM_CFLAGS 							= -fstack-protector-all \
 bin_PROGRAMS					=	csvparse
 
 csvparse_SOURCES			= src/main.c \
-												src/print_text_range.c \
-												src/print_each_forward.c \
-												src/print_each_backward.c \
-												src/print_at.c \
-												src/print_first.c \
-												src/print_last.c \
+												src/loader/init_io.c \
+												src/print_demo/print_text_range.c \
+												src/print_demo/print_each_forward.c \
+												src/print_demo/print_each_backward.c \
+												src/print_demo/print_at.c \
+												src/print_demo/print_first.c \
+												src/print_demo/print_last.c \
 												src/get_rules.c \
 												src/xmalloc.c \
 												src/xstrdup.c \
+												src/xstrerror.c \
+												src/oly.c \
+												src/builtin.c \
+												src/eval.c \
+												src/syntax.c \
 												src/error.c
 
 

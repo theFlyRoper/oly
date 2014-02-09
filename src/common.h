@@ -23,6 +23,10 @@
 #ifndef OLY_COMMON_H
 #define OLY_COMMON_H 1
 
+#ifdef OLYDEV
+#include "oly_dev.h"
+#endif /* OLYDEV */
+
 /** HEADERS */
 
 #if HAVE_CONFIG_H
@@ -133,7 +137,7 @@ extern int errno;
 #define CONC(x, y)      x/**/y
 #endif
 
-/** @start 4 MALLOC MACROS {{{ */
+/** MALLOC MACROS */
 BEGIN_C_DECLS
 
 #define XCALLOC(type, num) \
@@ -204,24 +208,6 @@ END_C_DECLS
 #if WITH_DMALLOC
 # include <dmalloc.h>
 #endif /* WITH_DMALLOC */
-
-/** @end 4 }}} */
-
-/** @start 6 Oly typedefs and macros {{{ */
-
-#if HAVE_UNICODE_USTRING_H
-#include <unicode/utypes.h>
-typedef UChar OChar;
-/* was thinking of defining an OFILE macro, but 
- * really, we're not creating that many files.  For those 
- * we are creating, UFILE will be fine.
- */
-
-#else
-#error "Oly depends on ICU.  Please install ICU."
-#endif /*HAVE_UNICODE_USTRING_H*/
-
-/** @end 6 }}} **/
 
 #endif /* !OLY_COMMON_H */
 
