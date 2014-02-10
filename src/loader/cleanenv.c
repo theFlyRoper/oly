@@ -24,13 +24,21 @@
 #  include "olyconf.h"
 #endif
 
+#include <unicode/ustdio.h>
+#include <unicode/ustring.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <pwd.h>
+#include <unistd.h>
+#include <assert.h>
+
 #include "common.h"
 #include "output.h"
 #include "error.h"
 #include "list.h"
 #include "syntax.h"
 #include "oly.h"
-#include "loader.h"
 
 /* The following function(s) are
  * adapted from the Secure Programming 

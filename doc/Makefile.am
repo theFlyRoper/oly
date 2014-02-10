@@ -1,7 +1,7 @@
 ## doc/Makefile.am 
 ## Makefile.am doc automake file
 ## Process this file with automake to produce Makefile.in
-## Copyright (C) A Pointy-Headed Thingy with a Lovely Squarish Shape
+## Copyright (C) Oly Project
 ##
 ## This program is free software; you can redistribute it and/or modify
 ## it under the terms of the GNU General Public License as published by
@@ -19,7 +19,11 @@
 ## MA 02110-1301, USA.
 
 
-MAINTAINERCLEANFILES 	= Makefile.in maintainer-clean-local wiki $(HTMLPAGES)
+MAINTAINERCLEANFILES 	= maintainer-clean-local
+
+CLEANFILES						= $(HTMLPAGES)
+
+DISTCLEANFILES				= $(HTMLPAGES)
 
 SUFFIXES							= .wiki
 
@@ -35,6 +39,9 @@ html-local: htmlrebuild $(HTMLPAGES)
 
 
 maintainer-clean-local: wiki 
+
+atool-clean: maintainer-clean-local 
+		rm -rf Makefile.in Makefile
 
 TXTFILES							=	index.txt \
 												input_doc.txt \

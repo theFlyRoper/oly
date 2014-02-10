@@ -18,10 +18,15 @@
  *
  * }}} */
 
-#ifndef SRC_CLOSE_OLY_INL_H
-#define SRC_CLOSE_OLY_INL_H 1
 
-static void close_oly (void) {
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
+#include "common.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+void close_oly (void) {
   if (fclose (stdout) != EXIT_SUCCESS) {
     perror ("oly: write error");
     exit (EXIT_FAILURE);
@@ -31,7 +36,5 @@ static void close_oly (void) {
     exit (EXIT_FAILURE);
   }
 }
-
-#endif /* SRC_CLOSE_OLY_INL_H */
 
 

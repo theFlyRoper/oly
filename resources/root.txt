@@ -1,0 +1,21 @@
+//   Copyright (C) 2014, Oly Project
+
+//  root.txt
+//
+//     root resource file for oly.
+//     This data will be used as a fall-back if no other resource bundle
+//     matches the requested locale.
+//     
+
+//     usage         - the usage string to display if there's a command line error 
+//                     or in response to -? or --help.
+//     optionMessage - the error text to display in response to an unrecognized
+//                     option on the command line.
+//
+
+root {
+
+   usage           {"usage: oly [options will go here]"}
+   optionMessage   {"unrecognized command line option:"} 
+
+}

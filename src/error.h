@@ -22,6 +22,8 @@
 BEGIN_C_DECLS
 
 extern UFILE *u_stderr;
+extern UFILE *u_stdout;
+extern UFILE *u_stdin;
 extern const UChar *program_name;
 
 extern void oly_warning      (const UChar *message);

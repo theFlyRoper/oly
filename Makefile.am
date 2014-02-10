@@ -18,57 +18,71 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ## MA 02110-1301, USA. }}}
 
-## you might want to check out doc/inline_in_automake.html.
-## it's how I was doing this a little while ago.
+MAINTAINERCLEANFILES 		=	.deps \
+													deps \
+													src/olyconf-h.in~
 
-MAINTAINERCLEANFILES 				=	aclocal.m4 \
-															configure \
-															Makefile.in \
-															ltmain.sh \
-															deps \
-															src/olyconf-h.in~
+.PHONY: atool-clean 
 
-DISTCLEANFILES 							=	*~
+atool-clean: distclean 
+	@echo "atool-clean is a special command that clears out autotool detritus."
+	rm -f resources/Makefile.in
+	rm -f tests/Makefile.in
+	rm -f doc/Makefile.in
+	rm -rf autom4te.cache .deps
+	rm -rf aclocal.m4 Makefile.in configure  src/olyconf-h.in~ tests/atconfig
 
-ACLOCAL_AMFLAGS 						= -I ac-aux/m4
 
-EXTRA_DIST									= ac-aux/config.rpath \
-															ChangeLog
+DISTCLEANFILES 					=	*~
 
-SUBDIRS 										= tests \
-															doc 
+ACLOCAL_AMFLAGS 				= -I ac-aux/m4
+
+EXTRA_DIST							= ac-aux/config.rpath \
+													ChangeLog
+
+SUBDIRS 								= tests \
+													doc \
+													resources
 
 DEFS 										= @DEFS@ @DEV_DEF@
+
+noinst_HEADERS					=	src/error.h \
+													src/loader.h \
+													src/output.h \
+													src/common.h
 
 AM_CFLAGS 							= -fstack-protector-all \
 													@ICU_CFLAGS@
 
-bin_PROGRAMS					=	csvparse
+RESDIR									=	$(top_srcdir)/resources
 
-csvparse_SOURCES			= src/main.c \
-												src/loader/init_io.c \
-												src/print_demo/print_text_range.c \
-												src/print_demo/print_each_forward.c \
-												src/print_demo/print_each_backward.c \
-												src/print_demo/print_at.c \
-												src/print_demo/print_first.c \
-												src/print_demo/print_last.c \
-												src/get_rules.c \
-												src/xmalloc.c \
-												src/xstrdup.c \
-												src/xstrerror.c \
-												src/oly.c \
-												src/builtin.c \
-												src/eval.c \
-												src/syntax.c \
-												src/error.c
+RESNAME									=	fortune_resources
+RESLDFLAGS							= -L$(RESDIR) -l$(RESNAME) 
 
+bin_PROGRAMS						=	csvparse 
 
-noinst_HEADERS				=	src/error.h \
-												src/loader.h \
-												src/output.h \
-												src/common.h
+csvparse_SOURCES				= src/main.c \
+													src/loader/init_io.c \
+													src/loader/close_oly.c \
+													src/loader/init_all.c \
+													src/loader/cleanenv.c \
+													src/print_demo/print_text_range.c \
+													src/print_demo/print_each_forward.c \
+													src/print_demo/print_each_backward.c \
+													src/print_demo/print_at.c \
+													src/print_demo/print_first.c \
+													src/print_demo/print_last.c \
+													src/get_rules.c \
+													src/xmalloc.c \
+													src/xstrdup.c \
+													src/xstrerror.c \
+													src/oly.c \
+													src/builtin.c \
+													src/eval.c \
+													src/syntax.c \
+													src/error.c
 
-csvparse_LDADD 				=	@ICUIO_LIBS@ \
-												@ICU_LIBS@ 
+csvparse_LDADD 					=	@ICUIO_LIBS@ \
+													@ICU_LIBS@ 
+
 

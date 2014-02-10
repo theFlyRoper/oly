@@ -1,5 +1,5 @@
 /* main for csv importer. License GPL2+ {{{
- * Copyright (C) 2012 Oly Project
+ * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
- *
  * }}} */
 
 #ifdef HAVE_CONFIG_H
@@ -44,9 +43,9 @@
 #include "builtin.h"
 #include "loader.h"
 
-UFILE *u_stdout = NULL;   /* Unicode output file */
-UFILE *u_stdin  = NULL;   /* Unicode input file */
-UFILE *u_stderr = NULL;
+UFILE *u_stdout = NULL;   /* Unicode output */
+UFILE *u_stdin  = NULL;   /* Unicode input */
+UFILE *u_stderr = NULL;   /* Unicode error output */
 const UChar *program_name;
 
 /* MAIN */
@@ -70,8 +69,12 @@ main( int argc, char **argv ){
   char            c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle";
   atexit (close_oly);
   program_name      = argv[0];
-  init_all(oly, locale);
   
+  /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
+   * for the internal app data for ICU, which lives in a shared library. */
+
+  u_setDataDirectory("./resources");
+  init_all(oly, locale);
   
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);

@@ -34,6 +34,7 @@ dnl establish the necessary version for autoconf.
 AC_PREREQ(2.60)
 
 AC_INIT([Oly],[0.0.0],[bugs@fakesite.com],[oly],[http://fakesite.com])
+
 AC_SUBST(OLY_COPYRIGHT,["Copyright (c) 2012 The Oly Project."])
 AC_COPYRIGHT([Copyright (c) 2012 The Oly Project.])
 AC_CONFIG_SRCDIR([src/main.c])
@@ -82,12 +83,15 @@ AC_PROG_CC_C99
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MKDIR_P
+
+AC_PATH_PROG([GENRB],[genrb],[])
+AC_PATH_PROG([PKGDATA],[pkgdata],[])
+
 AM_PROG_CC_C_O
 
 LT_INIT
 
 dnl AC_PATH_PROG([PKGCONFIG],[pkg-config],[])
-dnl PKG_PROG_PKG_CONFIG([0.18])
 
 dnl checks for libraries 
 
@@ -187,6 +191,10 @@ AC_DEFINE([UNISTR_FROM_STRING_EXPLICIT],[explicit],
           [Recommended setting from ICU documentation; stipulates 
            all conversion from char * to UNISTR must be explicit])
 
+dnl if you get static linking for app data working, use this.
+AC_DEFINE([UFORTUNE_NOSETAPPDATA],[1],
+           [ICU ufortune demo data])
+
 dnl Substitutions and output 
 
 AC_DISABLE_FAST_INSTALL
@@ -194,6 +202,7 @@ dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
                  tests/Makefile \
+                 resources/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)
