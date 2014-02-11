@@ -23,7 +23,11 @@ MAINTAINERCLEANFILES 	= maintainer-clean-local $(HTMLPAGES)
 
 CLEANFILES						= $(HTMLPAGES)
 
+DISTCLEANFILES				= $(WIKIPAGES)
+
 SUFFIXES							= .wiki
+
+.PHONY: html htmlrebuild wikirebuild atool-clean wiki
 
 wikirebuild:
 	rm -f $(WIKIPAGES)
@@ -33,10 +37,12 @@ wiki: wikirebuild $(WIKIPAGES)
 htmlrebuild:
 	rm -f $(HTMLPAGES)
 
-html-local: htmlrebuild $(HTMLPAGES)
+html: htmlrebuild $(HTMLPAGES)
 
 
-maintainer-clean-local: wiki 
+maintainer-clean-local: wiki htmlrebuild
+
+distclean-local: html
 
 atool-clean: 
 		rm -rf Makefile.in Makefile
@@ -95,3 +101,4 @@ dist_man_MANS 				= man/reverse.1
 dist_doc_DATA					= $(HTMLPAGES)
 
 EXTRA_DIST 						= $(TXTFILES)
+

@@ -35,8 +35,8 @@ AC_PREREQ(2.60)
 
 AC_INIT([Oly],[0.0.0],[bugs@fakesite.com],[oly],[http://fakesite.com])
 
-AC_SUBST(OLY_COPYRIGHT,["Copyright (c) 2012 The Oly Project."])
-AC_COPYRIGHT([Copyright (c) 2012 The Oly Project.])
+AC_SUBST(OLY_COPYRIGHT,["Copyright (c) 2014 The Oly Project."])
+AC_COPYRIGHT([Copyright (c) 2014 The Oly Project.])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_AUX_DIR([ac-aux])
 AC_CONFIG_MACRO_DIR([ac-aux/m4])
@@ -91,8 +91,6 @@ AM_PROG_CC_C_O
 
 LT_INIT
 
-dnl AC_PATH_PROG([PKGCONFIG],[pkg-config],[])
-
 dnl checks for libraries 
 
 dnl adapted to oly. finds two extra variables;
@@ -105,10 +103,11 @@ dnl AC_STDC_HEADERS
 AC_HEADER_SYS_WAIT
 
 dnl checks for ICU headers at the end; check as needed.
+dnl                  sqlite3.h \
 AC_CHECK_HEADERS([locale.h \
                   paths.h \
-                  sqlite3.h \
                   unicode/udata.h \
+                  unicode/ubrk.h \
                   unicode/ustdio.h \
                   unicode/ures.h \
                   unicode/ustring.h])
@@ -118,9 +117,7 @@ AC_TYPE_PID_T
 AC_FUNC_MALLOC
 AM_WITH_DMALLOC
 
-ACX_PTHREAD
-
-dnl OLY_WITH_READLINE
+dnl ACX_PTHREAD
 
 AC_CHECK_FUNCS([bzero \
                 memset], \
@@ -131,16 +128,9 @@ AC_CHECK_FUNCS([calloc \
                 strrchr \
                 setlocale])
 
-dnl AC_REPLACE_FUNCS([basename \
-dnl                   strspn \
-dnl                   strcspn \
-dnl                   strerror \
-dnl                   strlcpy \
-dnl                   strlcat \
-dnl                   wcswidth \
-dnl                   wcwidth \
-dnl                   strsignal \
-dnl                   waitpid])
+AC_REPLACE_FUNCS([basename \
+                  strsignal \
+                  waitpid])
 
 dnl verify how big the system is.
 AC_CHECK_SIZEOF([size_t])
@@ -199,6 +189,7 @@ dnl AC_DISABLE_STATIC
 AC_CONFIG_FILES([doc/Makefile \
                  tests/Makefile \
                  resources/Makefile \
+                 replace/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)

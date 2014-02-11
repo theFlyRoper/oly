@@ -1,5 +1,4 @@
 ## Makefile.am LICENSE (GPL 2+) {{{
-## main automake file
 ## Process this file with automake to produce Makefile.in
 ## Copyright (C) Oly Project
 ##
@@ -18,5 +17,12 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ## MA 02110-1301, USA. }}}
 
-MAINTAINERCLEANFILES 	=	Makefile.in
+check_PROGRAMS 					= runtests
+runtests_CPPFLAGS 			= -DSOURCE='"$(abs_top_srcdir)/tests"' \
+													-DBUILD='"$(abs_top_builddir)/tests"'
+check_LIBRARIES 				=	tap/libtap.a
+tap_libtap_a_CPPFLAGS 	= -I$(abs_top_srcdir)/tests
+tap_libtap_a_SOURCES 		= tap/basic.c tap/basic.h \
+													tap/float.c tap/float.h tap/macros.h
+
 

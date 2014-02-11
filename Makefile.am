@@ -33,15 +33,15 @@ atool-clean: distclean
 	rm -rf aclocal.m4 Makefile.in configure  src/olyconf-h.in~ tests/atconfig
 
 
-DISTCLEANFILES 					=	*~
+DISTCLEANFILES 					=	*~ src/*~
 
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
-EXTRA_DIST							= ac-aux/config.rpath \
-													ChangeLog
+EXTRA_DIST							= ChangeLog
 
 SUBDIRS 								= tests \
 													doc \
+													replace \
 													resources
 
 DEFS 										= @DEFS@ @DEV_DEF@
