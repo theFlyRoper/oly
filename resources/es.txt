@@ -1,9 +1,9 @@
-﻿//   Copyright (C) 2014, Oly Project
+﻿/*   // Copyright (C) 2014, Oly Project
 
 //
 //  es.txt
 //
-//     Spanish resource file for oly
+//     Spanish resource file for oly. Currently empty.
 //     
 
 //     usage         - the usage string to display if there's a command line error 
@@ -11,6 +11,7 @@
 //     optionMessage - the error text to display in response to an unrecognized
 //                     option on the command line.
 //
+*/
 
 es {
 

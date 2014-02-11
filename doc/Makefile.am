@@ -19,11 +19,9 @@
 ## MA 02110-1301, USA.
 
 
-MAINTAINERCLEANFILES 	= maintainer-clean-local
+MAINTAINERCLEANFILES 	= maintainer-clean-local $(HTMLPAGES)
 
 CLEANFILES						= $(HTMLPAGES)
-
-DISTCLEANFILES				= $(HTMLPAGES)
 
 SUFFIXES							= .wiki
 
@@ -40,7 +38,7 @@ html-local: htmlrebuild $(HTMLPAGES)
 
 maintainer-clean-local: wiki 
 
-atool-clean: maintainer-clean-local 
+atool-clean: 
 		rm -rf Makefile.in Makefile
 
 TXTFILES							=	index.txt \
@@ -83,7 +81,6 @@ AD1										=	a2x
 
 .txt.1:
 	$(AD1) --doctype=manpage --format=manpage $<
-												
 
 .txt.wiki:
 	$(ASCIIDOC) --doctype article $(ADOCFLAGS) -o $@ $<

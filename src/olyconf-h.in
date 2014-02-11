@@ -117,9 +117,6 @@
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
 
-/* ICU ufortune demo data */
-#undef UFORTUNE_NOSETAPPDATA
-
 /* Recommended setting from ICU documentation; stipulates all conversion from
    char * to UNISTR must be explicit */
 #undef UNISTR_FROM_STRING_EXPLICIT

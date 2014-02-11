@@ -191,10 +191,6 @@ AC_DEFINE([UNISTR_FROM_STRING_EXPLICIT],[explicit],
           [Recommended setting from ICU documentation; stipulates 
            all conversion from char * to UNISTR must be explicit])
 
-dnl if you get static linking for app data working, use this.
-AC_DEFINE([UFORTUNE_NOSETAPPDATA],[1],
-           [ICU ufortune demo data])
-
 dnl Substitutions and output 
 
 AC_DISABLE_FAST_INSTALL
@@ -217,10 +213,5 @@ AS_IF([test "x$enable_debug" != xyes],
       [AC_MSG_NOTICE([Developer debug mode enabled.])])
 
 AC_MSG_NOTICE([CFG_LOCALEDIR  =  $CFG_LOCALEDIR])
-
-dnl sizeof returns the number of BYTES, as opposed to number 
-dnl of bits.  Thus, if this func says 8, we're 64 bit.
-
-dnl AC_MSG_NOTICE([sizeof found: $ac_cv_sizeof_size_t])
 
 
