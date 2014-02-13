@@ -37,7 +37,9 @@ DISTCLEANFILES 					=	*~ src/*~
 
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
-EXTRA_DIST							= ChangeLog
+EXTRA_DIST							= ChangeLog tests/oly/loader/sh-oget_home tests/oly/loader/sh-oget_home.output 
+													
+
 
 SUBDIRS 								= doc \
 													replace \
