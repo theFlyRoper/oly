@@ -16,12 +16,14 @@
    MA 02110-1301, USA.
    }}} */
 
-#ifndef HAVE_UNICODE_USTRING_H
-#define HAVE_UNICODE_USTRING_H 1
-#endif /* !HAVE_UNICODE_USTRING_H */
 
 #ifndef OLY_COMMON_H
 #define OLY_COMMON_H 1
+
+#ifdef HAVE_UNICODE_USTDIO_H
+#define OChar UChar
+#define OLYFILE UFILE
+#endif /* !HAVE_UNICODE_USTDIO_H */
 
 #ifdef OLYDEV
 #include "oly_dev.h"

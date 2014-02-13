@@ -39,8 +39,7 @@ ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
 EXTRA_DIST							= ChangeLog
 
-SUBDIRS 								= tests \
-													doc \
+SUBDIRS 								= doc \
 													replace \
 													resources
 
@@ -61,19 +60,15 @@ RESLDFLAGS							= -L$(RESDIR) -l$(RESNAME)
 
 bin_PROGRAMS						=	csvparse 
 
-csvparse_SOURCES				= src/main.c \
-													src/loader/init_io.c \
+noinst_LIBRARIES				=	src/libloader.a src/liboly.a
+
+src_libloader_a_SOURCES		=	src/loader/init_io.c \
+													src/loader/oget_home.c \
 													src/loader/close_oly.c \
 													src/loader/init_all.c \
-													src/loader/cleanenv.c \
-													src/print_demo/print_text_range.c \
-													src/print_demo/print_each_forward.c \
-													src/print_demo/print_each_backward.c \
-													src/print_demo/print_at.c \
-													src/print_demo/print_first.c \
-													src/print_demo/print_last.c \
-													src/get_rules.c \
-													src/xmalloc.c \
+													src/loader/cleanenv.c 
+
+src_liboly_a_SOURCES		=	src/xmalloc.c \
 													src/xstrdup.c \
 													src/xstrerror.c \
 													src/oly.c \
@@ -82,7 +77,34 @@ csvparse_SOURCES				= src/main.c \
 													src/syntax.c \
 													src/error.c
 
-csvparse_LDADD 					=	@ICUIO_LIBS@ \
-													@ICU_LIBS@ 
+csvparse_SOURCES				= src/main.c \
+													src/print_demo/print_text_range.c \
+													src/print_demo/print_each_forward.c \
+													src/print_demo/print_each_backward.c \
+													src/print_demo/print_at.c \
+													src/print_demo/print_first.c \
+													src/print_demo/print_last.c \
+													src/get_rules.c 
 
+csvparse_LDADD 					=	@ICUIO_LIBS@ @ICU_LIBS@ src/libloader.a src/liboly.a
+
+
+check_PROGRAMS 								= tests/runtests \
+																tests/oly/loader/c-oget_home
+tests_runtests_CPPFLAGS 			= -DSOURCE='"$(abs_top_srcdir)"' \
+																-DBUILD='"$(abs_top_builddir)"'
+check_LIBRARIES 							=	tests/tap/libtap.a
+tests_tap_libtap_a_CPPFLAGS 	= -I$(abs_top_srcdir)/tests
+tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
+																tests/tap/float.c tests/tap/float.h \
+																tests/tap/macros.h
+
+tests_oly_loader_c_oget_home_SOURCES 	= tests/oly/loader/c-oget_home.c 
+tests_oly_loader_c_oget_home_LDADD 		= tests/tap/libtap.a src/libloader.a src/liboly.a \
+																				@ICUIO_LIBS@ 
+
+
+check-local: $(check_PROGRAMS)
+	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
+	    -b '$(abs_top_builddir)/tests' -l '$(abs_top_srcdir)/tests/TESTS'
 

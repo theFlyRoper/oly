@@ -26,50 +26,20 @@
 #endif
 
 BEGIN_C_DECLS
-extern char **environ; 
 
-/* Oly_Status type:
- * Defines states for Oly.
- * 
- * Negative numbers and zero are non-error states
- * or warning states. Positive numbers are error 
- * states. Starts at lowest negative number and goes 
- * up. 
- *
- * Standard return state is OLY_OKAY, which you should
- * test for after calling most functions. Use others as
- * appropriate. OLY_OKAY is equal to zero.
- */
-
-typedef enum oly_status {
-    OLY_EOF=-5,
-    OLY_EXIT=-4,
-    OLY_CONTINUE=-3,
-    OLY_BREAK=-2,
-    OLY_INCOMPLETE=-1,
-    OLY_OKAY=0,
-    OLY_ERR_ICU=1,
-    OLY_ERR_UNSPECIFIED=2,
-    OLY_ERR_INIT=3,
-    OLY_ERR_NOUSER=4,
-    OLY_ERR_NOPATH=5,
-    OLY_ERR_NOARGS=6
-} Oly_Status;
-
-/* macro to catch Oly errors */
-#define O_FAILURE (x) ((x)>OLY_OKAY)
+/* o_stdin, o_stdout and o_stderr are defined in error.h */
 
 struct builtintab;
 
 typedef struct statedata {
   struct statedata *next;       /* so they can be chained */
-  UChar *key;        			/* used as a key to find the right data */
+  OChar *key;        			/* used as a key to find the right data */
   void *data;                   /* associated state data */
   void (*delete) (void *data);
 } OlyState;
 
 typedef struct oly {
-  UChar *result;                 /* result string */
+  OChar *result;                 /* result string */
   size_t len;                   /* bytes used by result field */
   size_t lim;                   /* bytes allocated to result field */
   struct builtintab *builtins;  /* tables of builtin functions */
@@ -95,27 +65,22 @@ Oly *oly_delete        (Oly *stale);
 
 int olystate_set       (
     Oly *oly,
-    const UChar *key,
+    const OChar *key,
     void *value,
     void (*delete) (void *value)
     );
 
-void  *olystate_get     (Oly *oly, const UChar *key);
-int   olystate_clear     (Oly *oly, const UChar *key);
+void  *olystate_get     (Oly *oly, const OChar *key);
+int   olystate_clear     (Oly *oly, const OChar *key);
 
 Oly *oly_result_clear  (Oly *oly);
-const UChar *oly_result_get (Oly *oly);
-Oly *oly_result_set    (Oly *oly, const UChar *value, size_t len);
-Oly *oly_result_append (Oly *oly, const UChar *value);
+const OChar *oly_result_get (Oly *oly);
+Oly *oly_result_set    (Oly *oly, const OChar *value, size_t len);
+Oly *oly_result_append (Oly *oly, const OChar *value);
 
 extern void print_help (void);
 extern void print_version (void);
-
-extern void close_oly (void);
-extern void init_io(const char *locale);
-
-extern int cleanenv (Oly *oly);
-extern Oly_Status init_all (Oly *oly, char *locale);
+extern int init_all (Oly *oly, char *locale);
 
 END_C_DECLS
 

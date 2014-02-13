@@ -2,12 +2,18 @@
  * File loader.h
  *
  * load and initialize everything.
- * used in main.c, get_rules.c
+ * used in main.c and the loading functions
  */
 
 #ifndef LOADER_H
 #define LOADER_H 1
 
-UBreakIterator  *get_rules(const char *ruleFileName, UErrorCode status);
+extern char **environ; 
+char *oget_home (struct passwd *pwd);
+
+extern void close_oly (void);
+extern void init_io(const char *locale);
+
+extern int cleanenv (void);
 
 #endif /* LOADER_H */

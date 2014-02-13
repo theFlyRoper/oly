@@ -1,6 +1,9 @@
 /*
 * File get_rules.c
 */
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
 
 #include <unicode/utypes.h>
 #include <unicode/ucnv.h>
@@ -15,7 +18,7 @@
 #include <string.h>
 
 #include "common.h"
-#include "loader.h"
+#include "break_rules.h"
 #include "error.h"
 
 UBreakIterator* 

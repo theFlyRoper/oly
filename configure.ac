@@ -99,18 +99,14 @@ dnl ICUIO_LIBS and ICULAYOUT_LIBS
 OLY_CHECK_ICU([4.8],[],[])
 
 dnl checks for header files 
-dnl AC_STDC_HEADERS
+AC_STDC_HEADERS
 AC_HEADER_SYS_WAIT
 
 dnl checks for ICU headers at the end; check as needed.
 dnl                  sqlite3.h \
 AC_CHECK_HEADERS([locale.h \
                   paths.h \
-                  unicode/udata.h \
-                  unicode/ubrk.h \
-                  unicode/ustdio.h \
-                  unicode/ures.h \
-                  unicode/ustring.h])
+                  unicode/ustdio.h])
 
 AC_TYPE_PID_T
 
@@ -187,7 +183,6 @@ AC_DISABLE_FAST_INSTALL
 dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
-                 tests/Makefile \
                  resources/Makefile \
                  replace/Makefile \
                  Makefile])

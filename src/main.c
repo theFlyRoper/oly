@@ -42,11 +42,9 @@
 #include "oly.h"
 #include "builtin.h"
 #include "loader.h"
+#include "break_rules.h"
+/* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
-UFILE *u_stdout = NULL;   /* Unicode output */
-UFILE *u_stdin  = NULL;   /* Unicode input */
-UFILE *u_stderr = NULL;   /* Unicode error output */
-const UChar *program_name;
 
 /* MAIN */
 int
@@ -56,23 +54,22 @@ main( int argc, char **argv ){
   UErrorCode      u_status  = U_ZERO_ERROR; /* Unicode u_status code */
   Oly_Status      o_status  = OLY_OKAY;
   UBreakIterator  *boundary;
-  char            rules_file_name[] = "./tests/supabreak.txt";
-  UChar           line[BUFSIZ];     /* main buffer */
+  char            rules_file_name[] = "./tests/data/supabreak.txt";
+  OChar           line[BUFSIZ];     /* main buffer */
   UBool           displayUsage      = FALSE;
   char            *optionError      = NULL;     
   char            *locale           = NULL;
+  char            *dbg_var          = NULL;
   UResourceBundle *OlyResources;
-  int             i;
-  UChar           *resString;
+  int             i=1;
+  OChar           *resString;
 
   char            c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"";
   char            c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle";
   atexit (close_oly);
   program_name      = argv[0];
-  
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
-
   u_setDataDirectory("./resources");
   init_all(oly, locale);
   
