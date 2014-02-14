@@ -50,9 +50,6 @@ typedef enum oly_status {
     OLY_ERR_NOARGS=6
 } Oly_Status;
 
-/* macro to catch Oly errors */
-#define O_FAILURE (x) ((x)>OLY_OKAY)
-
 extern UFILE *u_stderr;
 extern UFILE *u_stdout;
 extern UFILE *u_stdin;

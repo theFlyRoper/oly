@@ -20,8 +20,10 @@ RESLIST									=	$(RESNAME).txt
 
 RESDIR									=	$(top_srcdir)/resources
 
-RESFILES								= root.res \
-													en.res
+RESFILES								= root.res 
+
+RESTEXT									= root.txt \
+													en.txt
 
 RESLDFLAGS= 						-L$(RESDIR) -l$(RESNAME)
 
@@ -29,7 +31,7 @@ PKGDATAOPTS							=	-v -d . --tempdir .deps -e $(RESNAME)
 
 LINK.cc									= $(CC) $(CFLAGS) $(LDFLAGS)
 
-GENRBOPT								= -v 
+GENRBOPT								= -v --bundle-name $(RESNAMEj
 
 pkgdata_DATA						=	oly_lang.dat
 
@@ -38,6 +40,10 @@ BUILT_SOURCES						= liboly_lang.a
 .txt.res:
 	@echo "generating $@"
 	$(GENRB) $(GENRBOPT) $^ -d $(RESDIR)
+
+root.res:
+	@echo "generating $@"
+	$(GENRB) $(GENRBOPT) $^ -d $(RESDIR) $(RESTEXT)
 
 $(RESLIST): $(RESFILES)
 	ls *.res > $@
@@ -49,9 +55,9 @@ oly_lang.dat: $(RESFILES) $(RESLIST)
 	mkdir -p .deps
 	$(PKGDATA) --name $(RESNAME) --mode common $(PKGDATAOPTS) $(RESLIST)
 
-liboly_lang.a: $(RESFILES) $(RESLIST)
-	mkdir -p .deps
-	$(PKGDATA) --name $(RESNAME) --mode static $(PKGDATAOPTS) $(RESLIST)
+# liboly_lang.a: $(RESFILES) $(RESLIST)
+#	mkdir -p .deps
+#	$(PKGDATA) --name $(RESNAME) --mode static $(PKGDATAOPTS) $(RESLIST)
 
 #	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@ $(XTRALIBS)
 # gencmn --name $(RESNAME) -t dat 0 $(RESLIST)
