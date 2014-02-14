@@ -64,13 +64,19 @@ RESLDFLAGS							=
 
 bin_PROGRAMS						=	csvparse 
 
-noinst_LIBRARIES				=	src/libloader.a src/liboly.a
+noinst_LIBRARIES				=	src/libloader.a src/liboly.a \
+													src/liboly_dev.a
+
+src_liboly_dev_a_SOURCES	=	src/debug/list_icu_countries.c \
+														src/debug/list_icu_langs.c \
+														src/debug/list_package_locales.c 
 
 src_libloader_a_SOURCES		=	src/loader/init_io.c \
-													src/loader/oget_home.c \
-													src/loader/close_oly.c \
-													src/loader/init_all.c \
-													src/loader/cleanenv.c 
+														src/loader/oget_home.c \
+														src/loader/oget_user_locale.c \
+														src/loader/close_oly.c \
+														src/loader/init_all.c \
+														src/loader/cleanenv.c 
 
 src_liboly_a_SOURCES		=	src/xmalloc.c \
 													src/xstrdup.c \
@@ -90,10 +96,10 @@ csvparse_SOURCES				= src/main.c \
 													src/print_demo/print_last.c \
 													src/get_rules.c 
 
-csvparse_LDADD 					=	@ICUIO_LIBS@ @ICU_LIBS@ src/libloader.a src/liboly.a
+csvparse_LDADD 					=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
+													src/libloader.a src/liboly.a 
 
-csvparse_LDFLAGS				= -L$(RESDIR) -l$(RESNAME) 
-
+## csvparse_LDFLAGS				= -L$(RESDIR) -l$(RESNAME) 
 
 check_PROGRAMS 								= tests/runtests \
 																tests/oly/loader/c-oget_home

@@ -45,7 +45,6 @@
 #include "break_rules.h"
 /* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
-
 /* MAIN */
 int
 main( int argc, char **argv ){
@@ -67,16 +66,26 @@ main( int argc, char **argv ){
 
   atexit (close_oly);
   program_name      = argv[0];
+
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(LOCALEDIR);
+#ifdef OLYDEV
+  printf("\n-- top of program --\n");
+  list_icu_langs();
+#endif /* OLYDEV */
+  OlyResources = ures_open("oly_lang", locale, &u_status);
+#ifdef OLYDEV
+  printf("\n-- after init --\n");
+  list_package_locales(NULL);
+#endif /* OLYDEV */
 
   init_all(oly, locale);
   boundary = get_rules(rules_file_name, u_status);
-  OlyResources = ures_open("oly_lang", locale, &u_status);
   if (U_FAILURE(u_status)) {
     printf("Could not open!\n");
   }
+  locale = oget_user_locale();
   
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);
@@ -85,14 +94,7 @@ main( int argc, char **argv ){
   len = NULL;
 
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
-  /* u_fprintf(u_stdout,"%s\n", ures_getStringByIndex(OlyResources, 1, len, &u_status )); */
-
   u_file_write(liner, len, u_stdout);
-  while ( OlySubresource=ures_getNextResource(OlyResources, NULL, &u_status ) != NULL) {
-    printf("Key: %s | Type: %i | Locale: %s\n", ures_getKey(OlyResources), ures_getType(OlyResources),ures_getLocale(OlyResources, &u_status));
-  }
-
-  printf("DUDE %s\n", ures_getLocale(OlyResources, &u_status));
   
   return u_status;
 }

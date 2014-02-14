@@ -39,29 +39,33 @@ oget_user_locale (void) {
    * LANG 
    */
   int32_t i = 0;
-  int32_t len = 20;
-  int32_t reslen = 0;
+  int32_t len = 0;
   UAcceptResult acceptable;
   UErrorCode *u_status = U_ZERO_ERROR;
-  char    *language_val = strdup(getenv("LANGUAGE"));
-  char    locale[len];
-  char    **curr = &strtok_r(language_val, ":", NULL);
-  UEnumeration *available = ures_openAvailableLocales("oly_lang", u_status);
-  
+  char    *language_val = getenv("LANGUAGE");
+  char    *locale = NULL;
+  const char  **curr = NULL;
+  char    *item = NULL;
   if (language_val != NULL) {
-    for (i = 1; ((curr[i] += strtok_r(NULL, ":", NULL)) != NULL) ; i++)
+    UEnumeration *available = ures_openAvailableLocales("oly_lang", u_status);
+    curr[i] = strtok_r(language_val, ":", &item);
+    for (i = 1; ((curr[i] = strdup(strtok_r(NULL, ":", &item))) != NULL); i++)
       ;
+    curr[i] = NULL;
     uloc_acceptLanguage(locale, len, &acceptable, curr, i, available, u_status) ;
   }
 
-  if (locale == NULL) then
-    locale = getenv("LC_ALL");
+  if (locale == NULL) {
+    locale = xstrdup(getenv("LC_ALL"));
+  }
 
-  if (locale == NULL) then
-    locale = getenv("LANG");
-
-  if (locale == NULL) then
-    locale = uloc_getDefault();
+  if (locale == NULL) {
+    locale = xstrdup(getenv("LANG"));
+  }
+  
+  if (locale == NULL) {
+    locale = xstrdup("root");
+  }
 
   return locale;
 }

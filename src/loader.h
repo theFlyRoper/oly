@@ -10,6 +10,7 @@
 
 extern char **environ; 
 char *oget_home (struct passwd *pwd);
+char *oget_user_locale (void);
 
 extern void close_oly (void);
 extern void init_io(const char *locale);

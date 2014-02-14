@@ -71,6 +71,10 @@ AS_IF([test "x$enable_debug" != xyes],
       [AC_SUBST(DEV_DEF,["-DNDEBUG=1"])],
       [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])])
 
+AS_IF([test "x$enable_debug" != xyes],
+      ,
+      [AC_SUBST(DEV_LIB,["src/liboly_dev.a"])])
+
 CFG_LOCALEDIR="${CFG_LOCALEDIR-${datadir}/locale/oly}"
 
 AC_ARG_VAR([CFG_LOCALEDIR],[The directory to store \

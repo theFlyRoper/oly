@@ -25,10 +25,6 @@
 #define OLYFILE UFILE
 #endif /* !HAVE_UNICODE_USTDIO_H */
 
-#ifdef OLYDEV
-#include "oly_dev.h"
-#endif /* OLYDEV */
-
 /** HEADERS */
 
 #if HAVE_CONFIG_H
@@ -210,6 +206,10 @@ END_C_DECLS
 #if WITH_DMALLOC
 # include <dmalloc.h>
 #endif /* WITH_DMALLOC */
+
+#ifdef OLYDEV
+#include "oly_dev.h"
+#endif /* OLYDEV */
 
 #endif /* !OLY_COMMON_H */
 
