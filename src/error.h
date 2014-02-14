@@ -55,6 +55,7 @@ extern UFILE *u_stderr;
 extern UFILE *u_stdout;
 extern UFILE *u_stdin;
 extern const OChar *program_name;
+extern UResourceBundle *OlyResources;
 
 extern void oly_warning      (const OChar *message);
 extern void oly_error        (const OChar *message);

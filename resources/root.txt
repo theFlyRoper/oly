@@ -1,21 +1,18 @@
-//   Copyright (C) 2014, Oly Project
+// Copyright (c) 2014 Oly Project
+// See LICENSE file for details
+root:table {
+    OlyUsage:string {"usage: oly [-fwe] <input> <output>"}
+    OlyVersion:string {"Copyright (C) {1} Oly Project\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"}
+    OlyErrors {
+                "OLY_OKAY"
+              }
+    OlyHelpTopics {
+        configuration     { "ROOT configuration help topic" }
+    }
 
-//  root.txt
-//
-//     root resource file for oly.
-//     This data will be used as a fall-back if no other resource bundle
-//     matches the requested locale.
-//     
-
-//     usage         - the usage string to display if there's a command line error 
-//                     or in response to -? or --help.
-//     optionMessage - the error text to display in response to an unrecognized
-//                     option on the command line.
-//
-
-root {
-
-   usage           {"usage: oly [options will go here]"}
-   optionMessage   {"unrecognized command line option:"} 
-
+    OlyHelpKeywords {
+        configuration     { "configuration" }
+    }
 }
+      
+// vim: set syntax=javascript:

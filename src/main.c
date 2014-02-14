@@ -51,26 +51,25 @@ int
 main( int argc, char **argv ){
   Oly             *oly      = oly_new ();
   int32_t         len,optc  = 0;
-  UErrorCode      u_status  = U_ZERO_ERROR; /* Unicode u_status code */
-  Oly_Status      o_status  = OLY_OKAY;
-  UBreakIterator  *boundary;
   char            rules_file_name[] = "./tests/data/supabreak.txt";
   OChar           line[BUFSIZ];     /* main buffer */
-  UBool           displayUsage      = FALSE;
   char            *optionError      = NULL;     
   char            *locale           = NULL;
   char            *dbg_var          = NULL;
-  UResourceBundle *OlyResources;
-  int             i=1;
-  OChar           *resString;
-
   char            c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"";
   char            c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle";
+  int             i=1;
+  Oly_Status      o_status  = OLY_OKAY;
+  UErrorCode      u_status  = U_ZERO_ERROR; 
+  UBreakIterator  *boundary;
+
   atexit (close_oly);
   program_name      = argv[0];
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
-  u_setDataDirectory("./resources");
+  
+  u_setDataDirectory("LOCALEDIR");
+  OlyResources = ures_open("oly_lang", NULL, &u_status);
   init_all(oly, locale);
   
   printf("Examining: %s\n", c_line);
@@ -78,48 +77,6 @@ main( int argc, char **argv ){
 
   boundary = get_rules(rules_file_name, u_status);
   ubrk_setText(boundary, line, u_strlen(line), &u_status);
-
-  /*print each sentence in forward and reverse order*/
-  if (U_FAILURE(u_status)) {
-    printf("ubrk_open error: %s\n", u_errorName(u_status));
-    exit(1);
-  }
-
-  printf("\n----- test sequence 1, forward -----------\n"); 
-  print_each_forward(boundary, line);
-  printf("\n----- test sequence 1, backward: ----------\n");
-  print_each_backward(boundary, line);
-  ubrk_close(boundary);
-
-  printf("\n\nExamining: %s\n", c_line2);
-  u_uastrcpy(line, c_line2);
-
-  boundary = get_rules(rules_file_name, u_status);
-  ubrk_setText(boundary, line, u_strlen(line), &u_status);
-
-  printf("\n----- test sequence 2 -----------\n"); 
-  print_each_forward(boundary, line);
-    
-/*  boundary = ubrk_open(UBRK_WORD, "en_us", line,
-		       u_strlen(line), &u_status);
-  printf("\n----- Word Boundaries, forward: -----------\n"); 
-  print_each_forward(boundary, line);
-  printf("\n----- Word Boundaries, backward: ----------\n");
-  print_each_backward(boundary, line);
-  printf("\n----- first: -------------\n");
-  print_first(boundary, line);
-  printf("\n----- last: --------------\n");
-  print_last(boundary, line);
-  printf("\n----- at pos 10: ---------\n");
-  print_at(boundary, 10 , line); */
-  
-  ubrk_close(boundary);
-
-  printf("\nEnd of C boundary analysis\n");
-  
-#ifdef OLYDEV
-
-#endif /* OLYDEV */
   
   return u_status;
 }

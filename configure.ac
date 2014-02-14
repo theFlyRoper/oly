@@ -126,6 +126,7 @@ AC_CHECK_FUNCS([calloc \
 
 AC_REPLACE_FUNCS([basename \
                   strsignal \
+                  strtok_r \
                   waitpid])
 
 dnl verify how big the system is.

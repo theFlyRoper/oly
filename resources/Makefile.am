@@ -6,7 +6,7 @@
 
 .PHONY									= clean-local-res
 
-SUFFIXES								= .res .dat
+SUFFIXES								= .res 
 
 # Resource shortname
 RESNAME									=	oly_lang
@@ -24,9 +24,7 @@ PKGDATAOPTS							=	-v -d . --tempdir .deps -e oly_lang
 
 LINK.cc									= $(CC) $(CFLAGS) $(LDFLAGS)
 
-data_DATA								=	oly_lang.dat
-
-# BUILT_SOURCES						= liboly_lang.a
+pkgdata_DATA						=	oly_lang.dat
 
 .txt.res:
 	@echo "generating $@"
@@ -34,10 +32,6 @@ data_DATA								=	oly_lang.dat
 
 $(RESLIST): $(RESFILES)
 	ls *.res > $@
-
-liboly_lang.a: $(RESFILES) $(RESLIST)
-	mkdir -p .deps
-	$(PKGDATA) --name $(RESNAME) --mode static $(PKGDATAOPTS) $(RESLIST)
 
 # gencmn can generate a .dat file too using these commands
 oly_lang.dat: $(RESFILES) $(RESLIST)

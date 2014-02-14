@@ -29,6 +29,7 @@ UFILE *u_stdout = NULL;   /* Unicode output */
 UFILE *u_stdin  = NULL;   /* Unicode input */
 UFILE *u_stderr = NULL;   /* Unicode error output */
 const OChar *program_name;
+const UResourceBundle *OlyResources;
 
 /** function definitions  */
 

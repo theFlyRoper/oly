@@ -52,6 +52,7 @@ spc_restricted_environ[  ] = {
  
 const char *
 spc_preserve_environ[  ] = {
+  "LANGUAGE",
   "LC_ALL",
   "LANG",
   "TZ",

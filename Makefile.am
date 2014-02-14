@@ -38,14 +38,12 @@ DISTCLEANFILES 					=	*~ src/*~
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
 EXTRA_DIST							= ChangeLog tests/oly/loader/sh-oget_home tests/oly/loader/sh-oget_home.output 
-													
-
 
 SUBDIRS 								= doc \
 													replace \
 													resources
 
-DEFS 										= @DEFS@ @DEV_DEF@
+DEFS 										= @DEFS@ @DEV_DEF@ -DLOCALEDIR="$(CNF_LOCALEDIR)"
 
 noinst_HEADERS					=	src/error.h \
 													src/loader.h \

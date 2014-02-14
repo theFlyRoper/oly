@@ -20,7 +20,7 @@ static char xstrerror_buf[sizeof ERRSTR_FMT + 20];
 char *
 xstrerror (int errnum)
 {
-  char *errstr = strerror (errnum);
+  char *errstr = strerror_r (errnum);
 
   /* If `errnum' is out of range, result might be NULL.  We'll fix that.  */
   if (!errstr)
