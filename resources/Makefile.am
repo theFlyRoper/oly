@@ -3,6 +3,11 @@
 # uses gencmn to build the resource data
 # gencmn can also make a C header, thus:
 # gencmn --name oly_lang -t dat -S fortune_resources.c fortune_resources.txt 
+datadir									= @datadir@
+datarootdir							= @datarootdir@
+localedir								= @localedir@
+
+DEFS 										= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 
 .PHONY									= clean-local-res
 
@@ -16,15 +21,19 @@ RESLIST									=	$(RESNAME).txt
 RESDIR									=	$(top_srcdir)/resources
 
 RESFILES								= root.res \
-													es.res
+													en.res
 
 RESLDFLAGS= 						-L$(RESDIR) -l$(RESNAME)
 
-PKGDATAOPTS							=	-v -d . --tempdir .deps -e oly_lang 
+PKGDATAOPTS							=	-v -d . --tempdir .deps -e $(RESNAME)
 
 LINK.cc									= $(CC) $(CFLAGS) $(LDFLAGS)
 
+GENRBOPT								= -v 
+
 pkgdata_DATA						=	oly_lang.dat
+
+BUILT_SOURCES						= liboly_lang.a
 
 .txt.res:
 	@echo "generating $@"
@@ -33,10 +42,19 @@ pkgdata_DATA						=	oly_lang.dat
 $(RESLIST): $(RESFILES)
 	ls *.res > $@
 
+# $(GENRB) $(GENRBOPT) $^ -d $(RESDIR) $(RESFILES)
+
 # gencmn can generate a .dat file too using these commands
 oly_lang.dat: $(RESFILES) $(RESLIST)
 	mkdir -p .deps
-	gencmn --name $(RESNAME) -t dat 0 $(RESLIST)
+	$(PKGDATA) --name $(RESNAME) --mode common $(PKGDATAOPTS) $(RESLIST)
+
+liboly_lang.a: $(RESFILES) $(RESLIST)
+	mkdir -p .deps
+	$(PKGDATA) --name $(RESNAME) --mode static $(PKGDATAOPTS) $(RESLIST)
+
+#	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@ $(XTRALIBS)
+# gencmn --name $(RESNAME) -t dat 0 $(RESLIST)
 
 CLEANFILES							= $(RESFILES) \
 													$(RESLIST) \

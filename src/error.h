@@ -19,6 +19,8 @@
 #ifndef OLY_ERROR_H
 #define OLY_ERROR_H 1
 
+#include <unicode/ures.h>
+
 BEGIN_C_DECLS
 
 /* Oly_Status type:

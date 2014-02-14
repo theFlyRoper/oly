@@ -53,6 +53,7 @@ main( int argc, char **argv ){
   int32_t         len,optc  = 0;
   char            rules_file_name[] = "./tests/data/supabreak.txt";
   OChar           line[BUFSIZ];     /* main buffer */
+  OChar           *liner;
   char            *optionError      = NULL;     
   char            *locale           = NULL;
   char            *dbg_var          = NULL;
@@ -62,21 +63,36 @@ main( int argc, char **argv ){
   Oly_Status      o_status  = OLY_OKAY;
   UErrorCode      u_status  = U_ZERO_ERROR; 
   UBreakIterator  *boundary;
+  UResourceBundle *OlySubresource;
 
   atexit (close_oly);
   program_name      = argv[0];
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
-  
-  u_setDataDirectory("LOCALEDIR");
-  OlyResources = ures_open("oly_lang", NULL, &u_status);
+  u_setDataDirectory(LOCALEDIR);
+
   init_all(oly, locale);
+  boundary = get_rules(rules_file_name, u_status);
+  OlyResources = ures_open("oly_lang", locale, &u_status);
+  if (U_FAILURE(u_status)) {
+    printf("Could not open!\n");
+  }
   
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);
 
-  boundary = get_rules(rules_file_name, u_status);
   ubrk_setText(boundary, line, u_strlen(line), &u_status);
+  len = NULL;
+
+  liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
+  /* u_fprintf(u_stdout,"%s\n", ures_getStringByIndex(OlyResources, 1, len, &u_status )); */
+
+  u_file_write(liner, len, u_stdout);
+  while ( OlySubresource=ures_getNextResource(OlyResources, NULL, &u_status ) != NULL) {
+    printf("Key: %s | Type: %i | Locale: %s\n", ures_getKey(OlyResources), ures_getType(OlyResources),ures_getLocale(OlyResources, &u_status));
+  }
+
+  printf("DUDE %s\n", ures_getLocale(OlyResources, &u_status));
   
   return u_status;
 }

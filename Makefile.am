@@ -43,7 +43,11 @@ SUBDIRS 								= doc \
 													replace \
 													resources
 
-DEFS 										= @DEFS@ @DEV_DEF@ -DLOCALEDIR="$(CNF_LOCALEDIR)"
+datadir									= @datadir@
+datarootdir							= @datarootdir@
+localedir								= @localedir@
+
+DEFS 										= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 
 noinst_HEADERS					=	src/error.h \
 													src/loader.h \
@@ -55,8 +59,8 @@ AM_CFLAGS 							= -fstack-protector-all \
 
 RESDIR									=	$(top_srcdir)/resources
 
-RESNAME									=	fortune_resources
-RESLDFLAGS							= -L$(RESDIR) -l$(RESNAME) 
+RESNAME									=	oly_lang
+RESLDFLAGS							= 
 
 bin_PROGRAMS						=	csvparse 
 
@@ -87,6 +91,8 @@ csvparse_SOURCES				= src/main.c \
 													src/get_rules.c 
 
 csvparse_LDADD 					=	@ICUIO_LIBS@ @ICU_LIBS@ src/libloader.a src/liboly.a
+
+csvparse_LDFLAGS				= -L$(RESDIR) -l$(RESNAME) 
 
 
 check_PROGRAMS 								= tests/runtests \
