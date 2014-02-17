@@ -13,15 +13,8 @@ cd "${BUILD}/oly/resources"
 ok_result () {
     "$2"/oly/resources/"$1" > "$1".result 2>&1
     status=$?
-    ok "$1 exit status" [ $status -eq "$3" ]
-    case "$1" in
-        c-el_gr)
-            diff -u "${BUILD}/oly/resources/$1".output "$1".result 2>&1
-            ;;
-        *)
-            diff -u "${SOURCE}/oly/resources/$1".output "$1".result 2>&1
-            ;;
-    esac
+    ok "$1 exit status: $status" [ $status -eq "$3" ]
+    diff -u "${BUILD}/oly/resources/$1".output "$1".result 2>&1
     status=$?
     ok "$1 output" [ $status -eq 0 ]
     if [ $status -eq 0 ] ; then
@@ -30,10 +23,14 @@ ok_result () {
 }
 
 # Total tests.  There are two tests per row in ok_result.
-plan 6
+plan 10
 
 # Run the individual tests.
 ok_result c-el_gr "$BUILD"  0
 ok_result c-ja "$BUILD"  0
 ok_result c-root "$BUILD"  0
+# special test for missing resource.  Returns zero but zero represents an error state here, specifically U_USING_DEFAULT_WARNING.
+ok_result c-missing-resource "$BUILD" 0
+# test for language not in Oly, but available in ICU
+ok_result c-missing-lang "$BUILD" 0
 

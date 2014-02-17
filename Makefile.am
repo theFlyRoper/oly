@@ -105,6 +105,8 @@ check_PROGRAMS 								= tests/runtests \
 																tests/oly/loader/c-oget_home \
 																tests/oly/resources/c-ja \
 																tests/oly/resources/c-root \
+																tests/oly/resources/c-missing-resource \
+																tests/oly/resources/c-missing-lang \
 																tests/oly/resources/c-el_gr 
 tests_runtests_CPPFLAGS 			= -DSOURCE='"$(abs_top_srcdir)"' \
 																-DBUILD='"$(abs_top_builddir)"'
@@ -126,6 +128,23 @@ tests_oly_resources_c_ja_SOURCES 			= tests/oly/resources/c-ja.c src/error.c
 tests_oly_resources_c_ja_CPPFLAGS 		= @DEFS@ @DEV_DEF@ \
 																				-DLOCALEDIR=\"$(abs_top_builddir)/resources\" 
 tests_oly_resources_c_ja_LDADD 				= tests/tap/libtap.a src/libloader.a \
+																				@ICUIO_LIBS@ 
+tests_oly_resources_c_root_SOURCES 			= tests/oly/resources/c-root.c src/error.c
+tests_oly_resources_c_root_CPPFLAGS 		= @DEFS@ @DEV_DEF@ \
+																				-DLOCALEDIR=\"$(abs_top_builddir)/resources\" 
+tests_oly_resources_c_root_LDADD 				= tests/tap/libtap.a src/libloader.a \
+																				@ICUIO_LIBS@ 
+tests_oly_resources_c_missing_resource_SOURCES 	= tests/oly/resources/c-missing-resource.c \
+																									src/error.c
+tests_oly_resources_c_missing_resource_CPPFLAGS = @DEFS@ @DEV_DEF@ \
+																				-DLOCALEDIR=\"$(abs_top_builddir)/resources\" 
+tests_oly_resources_c_missing_resource_LDADD = tests/tap/libtap.a src/libloader.a \
+																				@ICUIO_LIBS@ 
+tests_oly_resources_c_missing_lang_SOURCES 	= tests/oly/resources/c-missing-lang.c \
+																									src/error.c
+tests_oly_resources_c_missing_lang_CPPFLAGS = @DEFS@ @DEV_DEF@ \
+																				-DLOCALEDIR=\"$(abs_top_builddir)/resources\" 
+tests_oly_resources_c_missing_lang_LDADD = tests/tap/libtap.a src/libloader.a \
 																				@ICUIO_LIBS@ 
 
 

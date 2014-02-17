@@ -56,7 +56,12 @@ main( int argc, char **argv ){
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);
   
-  return u_status;
+  if (U_SUCCESS(u_status)) {
+    return EXIT_SUCCESS;
+  }
+  else {
+    return EXIT_FAILURE;
+  }
 }
 
 

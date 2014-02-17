@@ -1,4 +1,4 @@
-/* root test file for resources. License GPL2+ {{{
+/* missing resource test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -38,7 +38,7 @@ int
 main( int argc, char **argv ){
   int32_t         len       = 0;
   OChar           *liner;
-  char            *locale   = "root";
+  char            *locale   = "QQQQETOPQIEJGF";
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 
 
@@ -55,7 +55,7 @@ main( int argc, char **argv ){
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);
   
-  if (U_SUCCESS(u_status)) {
+  if (u_status == U_USING_DEFAULT_WARNING) {
     return EXIT_SUCCESS;
   }
   else {
