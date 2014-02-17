@@ -47,5 +47,6 @@ void list_package_locales(const char *package_name)
   while ((item = uenum_next(list, len, &u_status)) != NULL) {
     printf("%s ", item);
   }
+  printf("\n");
 }
 

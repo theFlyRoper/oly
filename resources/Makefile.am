@@ -31,11 +31,10 @@ PKGDATAOPTS							=	-v -d . --tempdir .deps -e $(RESNAME)
 
 LINK.cc									= $(CC) $(CFLAGS) $(LDFLAGS)
 
-GENRBOPT								= -v --bundle-name $(RESNAMEj
+GENRBOPT								= -v --bundle-name $(RESNAME)
 
 pkgdata_DATA						=	oly_lang.dat
 
-BUILT_SOURCES						= liboly_lang.a
 
 .txt.res:
 	@echo "generating $@"

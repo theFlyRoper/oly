@@ -246,7 +246,7 @@ SUFFIXES = .res
 RESNAME = oly_lang
 RESLIST = $(RESNAME).txt
 RESDIR = $(top_srcdir)/resources
-RESFILES = oly_lang.res 
+RESFILES = root.res 
 RESTEXT = root.txt \
 													en.txt
 
@@ -255,7 +255,6 @@ PKGDATAOPTS = -v -d . --tempdir .deps -e $(RESNAME)
 LINK.cc = $(CC) $(CFLAGS) $(LDFLAGS)
 GENRBOPT = -v --bundle-name $(RESNAME)
 pkgdata_DATA = oly_lang.dat
-BUILT_SOURCES = liboly_lang.a
 
 # liboly_lang.a: $(RESFILES) $(RESLIST)
 #	mkdir -p .deps
@@ -269,11 +268,10 @@ CLEANFILES = $(RESFILES) \
 													$(RESNAME).dat \
 													$(RESNAME)_dat.s 
 
-all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-am
+all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .res
+.SUFFIXES: .res .txt
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -369,15 +367,13 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) check-am
+check: check-am
 all-am: Makefile $(DATA)
 installdirs:
 	for dir in "$(DESTDIR)$(pkgdatadir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) install-am
+install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -408,7 +404,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-local mostlyclean-am
@@ -475,7 +470,7 @@ ps-am:
 
 uninstall-am: uninstall-pkgdataDATA
 
-.MAKE: all check install install-am install-strip
+.MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	clean-local distclean distclean-generic distclean-libtool \
@@ -490,7 +485,11 @@ uninstall-am: uninstall-pkgdataDATA
 	ps ps-am uninstall uninstall-am uninstall-pkgdataDATA
 
 
-oly_lang.res:
+.txt.res:
+	@echo "generating $@"
+	$(GENRB) $(GENRBOPT) $^ -d $(RESDIR)
+
+root.res:
 	@echo "generating $@"
 	$(GENRB) $(GENRBOPT) $^ -d $(RESDIR) $(RESTEXT)
 

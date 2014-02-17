@@ -38,5 +38,6 @@ void list_icu_langs(void)
   for (i = 0; (list[i] != NULL); i++) {
     printf("%s ", list[i]);
   }
+  printf("\n\n");
 }
 

@@ -71,13 +71,12 @@ main( int argc, char **argv ){
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(LOCALEDIR);
 #ifdef OLYDEV
-  printf("\n-- top of program --\n");
-  list_icu_langs();
+/* printf("\n-- top of program --\n");
+  list_icu_langs(); */
 #endif /* OLYDEV */
-  OlyResources = ures_open("oly_lang", locale, &u_status);
 #ifdef OLYDEV
-  printf("\n-- after init --\n");
-  list_package_locales(NULL);
+/*  printf("\n-- after init --\n");
+  list_package_locales(NULL); */
 #endif /* OLYDEV */
 
   init_all(oly, locale);
@@ -85,8 +84,9 @@ main( int argc, char **argv ){
   if (U_FAILURE(u_status)) {
     printf("Could not open!\n");
   }
-  locale = oget_user_locale();
   
+  OlyResources = ures_open("oly_lang", locale, &u_status); 
+  /* locale = oget_user_locale(); */
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);
 

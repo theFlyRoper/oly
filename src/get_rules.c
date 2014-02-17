@@ -54,7 +54,7 @@ get_rules(const char *ruleFileName, UErrorCode status) {
                            ruleSourceC, ruleFileSize, &signatureLength, &status);
     /* fprintf(stderr, "DetectUnicodeSig: \"%s\"\n", encoding); */
     if (U_FAILURE(status)) {
-        fprintf(stderr, "can not initialize ICU.  status = %s\n",
+        fprintf(stderr, "\nCan not initialize ICU.  status = %s\n",
             u_errorName(status));
         exit(1);
     }
