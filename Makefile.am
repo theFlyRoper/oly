@@ -47,8 +47,6 @@ datadir									= @datadir@
 datarootdir							= @datarootdir@
 localedir								= @localedir@
 
-DEFS 										= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
-
 noinst_HEADERS					=	src/error.h \
 													src/loader.h \
 													src/output.h \
@@ -61,6 +59,8 @@ RESDIR									=	$(top_srcdir)/resources
 
 RESNAME									=	oly_lang
 RESLDFLAGS							= 
+
+csvparse_CPPFLAGS 			= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 
 bin_PROGRAMS						=	csvparse 
 
@@ -102,7 +102,10 @@ csvparse_LDADD 					=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
 ## csvparse_LDFLAGS				= -L$(RESDIR) -l$(RESNAME) 
 
 check_PROGRAMS 								= tests/runtests \
-																tests/oly/loader/c-oget_home
+																tests/oly/loader/c-oget_home \
+																tests/oly/resources/c-ja \
+																tests/oly/resources/c-root \
+																tests/oly/resources/c-el_gr 
 tests_runtests_CPPFLAGS 			= -DSOURCE='"$(abs_top_srcdir)"' \
 																-DBUILD='"$(abs_top_builddir)"'
 check_LIBRARIES 							=	tests/tap/libtap.a
@@ -114,6 +117,17 @@ tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 tests_oly_loader_c_oget_home_SOURCES 	= tests/oly/loader/c-oget_home.c 
 tests_oly_loader_c_oget_home_LDADD 		= tests/tap/libtap.a src/libloader.a src/liboly.a \
 																				@ICUIO_LIBS@ 
+tests_oly_resources_c_el_gr_SOURCES 	= tests/oly/resources/c-el_gr.c src/error.c
+tests_oly_resources_c_el_gr_CPPFLAGS 	= @DEFS@ @DEV_DEF@ \
+																				-DLOCALEDIR=\"$(abs_top_builddir)/resources\" 
+tests_oly_resources_c_el_gr_LDADD 		= tests/tap/libtap.a src/libloader.a \
+																				@ICUIO_LIBS@ 
+tests_oly_resources_c_ja_SOURCES 			= tests/oly/resources/c-ja.c src/error.c
+tests_oly_resources_c_ja_CPPFLAGS 		= @DEFS@ @DEV_DEF@ \
+																				-DLOCALEDIR=\"$(abs_top_builddir)/resources\" 
+tests_oly_resources_c_ja_LDADD 				= tests/tap/libtap.a src/libloader.a \
+																				@ICUIO_LIBS@ 
+
 
 
 check-local: $(check_PROGRAMS)

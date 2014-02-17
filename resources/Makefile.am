@@ -23,7 +23,9 @@ RESDIR									=	$(top_srcdir)/resources
 RESFILES								= root.res 
 
 RESTEXT									= root.txt \
-													en.txt
+													en.txt \
+													el_GR.txt \
+													ja.txt
 
 RESLDFLAGS= 						-L$(RESDIR) -l$(RESNAME)
 
