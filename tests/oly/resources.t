@@ -31,6 +31,7 @@ ok_result c-ja "$BUILD"  0
 ok_result c-root "$BUILD"  0
 # special test for missing resource.  Returns zero but zero represents an error state here, specifically U_USING_DEFAULT_WARNING.
 ok_result c-missing-resource "$BUILD" 0
-# test for language not in Oly, but available in ICU
+# test for language not in Oly, but available in ICU.  Currently uses Lakota (lkt).
 ok_result c-missing-lang "$BUILD" 0
+
 

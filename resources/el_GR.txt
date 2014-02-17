@@ -1,0 +1,9 @@
+// Copyright (c) 2014 Oly Project
+// See LICENSE file for details
+el_GR:table {
+// greek national anthem first line
+// if updated, please replace lines in test files at tests/oly/resources/c-el_gr.{c,output}
+    OlyUsage:string {"Σὲ γνωρίζω ἀπὸ τὴν κόψη\n"}
+}
+      
+// vim: set syntax=javascript:

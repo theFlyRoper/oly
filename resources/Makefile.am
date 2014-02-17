@@ -20,12 +20,13 @@ RESLIST									=	$(RESNAME).txt
 
 RESDIR									=	$(top_srcdir)/resources
 
-RESFILES								= root.res 
-
 RESTEXT									= root.txt \
 													en.txt \
 													el_GR.txt \
 													ja.txt
+
+RESFILES								= $(RESTEXT:txt=res)
+
 
 RESLDFLAGS= 						-L$(RESDIR) -l$(RESNAME)
 
