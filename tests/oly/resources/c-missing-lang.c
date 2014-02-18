@@ -54,7 +54,7 @@ main( int argc, char **argv ){
   program_name      = argv[0];
 
   u_setDataDirectory(LOCALEDIR);
-  OlyResources = ures_open("oly_lang", locale, &u_status); 
+  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
   u_init(&u_status);
   init_io(locale);

@@ -19,9 +19,9 @@
 ## MA 02110-1301, USA.
 
 
-MAINTAINERCLEANFILES 	= maintainer-clean-local $(HTMLPAGES)
+MAINTAINERCLEANFILES 	= maintainer-clean-local $(HTMLPAGES) 
 
-CLEANFILES						= $(HTMLPAGES)
+CLEANFILES						= $(HTMLPAGES) man/reverse.1 man/reverse.pdf
 
 DISTCLEANFILES				= $(WIKIPAGES)
 

@@ -1,4 +1,4 @@
-/* missing resource test License GPL2+ {{{
+/* fallback resource test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -38,13 +38,14 @@ int
 main( int argc, char **argv ){
   int32_t         len       = 0;
   OChar           *liner;
-  char            *locale   = "QQQQETOPQIEJGF";
+  char            *locale   = "en_US_POSIX";
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 
 
   program_name      = argv[0];
 
   u_setDataDirectory(LOCALEDIR);
+  
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
   u_init(&u_status);
@@ -53,9 +54,11 @@ main( int argc, char **argv ){
     printf("Could not open! status: %s\n", u_errorName(u_status));
   }
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
+  printf("Status: %s\nStatus number: %i\nLocale: %s\n", 
+      u_errorName(u_status), u_status, ures_getLocale(OlyResources,&u_status) );
   u_file_write(liner, len, u_stdout);
   
-  if (u_status == U_USING_DEFAULT_WARNING) {
+  if ( u_status == U_ZERO_ERROR ) {
     return EXIT_SUCCESS;
   }
   else {

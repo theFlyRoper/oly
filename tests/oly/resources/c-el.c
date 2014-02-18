@@ -38,7 +38,7 @@ int
 main( int argc, char **argv ){
   int32_t         len       = 0;
   OChar           *liner;
-  char            *locale           = "el_GR";
+  char            *locale           = "el";
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 
 
@@ -47,13 +47,10 @@ main( int argc, char **argv ){
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(LOCALEDIR);
-  OlyResources = ures_open("oly_lang", locale, &u_status); 
+  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
   u_init(&u_status);
   init_io(locale);
-  if (U_FAILURE(u_status)) {
-    printf("Could not open! status: %s\n", u_errorName(u_status));
-  }
 
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);

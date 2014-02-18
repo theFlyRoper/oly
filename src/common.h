@@ -20,16 +20,16 @@
 #ifndef OLY_COMMON_H
 #define OLY_COMMON_H 1
 
+#if HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
+
 #ifdef HAVE_UNICODE_USTDIO_H
 #define OChar UChar
 #define OLYFILE UFILE
 #endif /* !HAVE_UNICODE_USTDIO_H */
 
 /** HEADERS */
-
-#if HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
 
 #include <stdio.h>
 #include <sys/types.h>

@@ -62,7 +62,6 @@ main( int argc, char **argv ){
   Oly_Status      o_status  = OLY_OKAY;
   UErrorCode      u_status  = U_ZERO_ERROR; 
   UBreakIterator  *boundary;
-  UResourceBundle *OlySubresource;
 
   atexit (close_oly);
   program_name      = argv[0];
@@ -71,21 +70,19 @@ main( int argc, char **argv ){
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(LOCALEDIR);
 #ifdef OLYDEV
-/* printf("\n-- top of program --\n");
-  list_icu_langs(); */
+  printf("\n-- top of program --\n");
 #endif /* OLYDEV */
+  init_all(oly, locale);
 #ifdef OLYDEV
-/*  printf("\n-- after init --\n");
-  list_package_locales(NULL); */
+  printf("\n-- after init --\n");
 #endif /* OLYDEV */
 
-  init_all(oly, locale);
   boundary = get_rules(rules_file_name, u_status);
   if (U_FAILURE(u_status)) {
     printf("Could not open!\n");
   }
   
-  OlyResources = ures_open("oly_lang", locale, &u_status); 
+  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
   /* locale = oget_user_locale(); */
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);
@@ -97,7 +94,7 @@ main( int argc, char **argv ){
   u_file_write(liner, len, u_stdout);
   
   if (U_FAILURE(u_status)) {
-      return EXIT_FAILURE;
+    return EXIT_FAILURE;
   } else {
     return EXIT_SUCCESS;
   }

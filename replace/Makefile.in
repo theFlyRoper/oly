@@ -55,7 +55,8 @@ subdir = replace
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in basename.c \
 	malloc.c strsignal.c strtok_r.c waitpid.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/ac-aux/m4/libtool.m4 \
+am__aclocal_m4_deps = $(top_srcdir)/ac-aux/m4/acx_define_subst.m4 \
+	$(top_srcdir)/ac-aux/m4/libtool.m4 \
 	$(top_srcdir)/ac-aux/m4/ltoptions.m4 \
 	$(top_srcdir)/ac-aux/m4/ltsugar.m4 \
 	$(top_srcdir)/ac-aux/m4/ltversion.m4 \
@@ -153,6 +154,7 @@ NMEDIT = @NMEDIT@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OLY_COPYRIGHT = @OLY_COPYRIGHT@
+OLY_RESOURCE = @OLY_RESOURCE@
 OTOOL = @OTOOL@
 OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@

@@ -1,1 +1,1 @@
-usage: oly [-fwe] <input> <output>
+usage: oly [options] <input> <output>

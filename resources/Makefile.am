@@ -14,15 +14,17 @@ DEFS 										= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 SUFFIXES								= .res 
 
 # Resource shortname
-RESNAME									=	oly_lang
+RESNAME									=	@OLY_RESOURCE@
 
 RESLIST									=	$(RESNAME).txt
+
+DATFILE									= $(RESNAME).dat
 
 RESDIR									=	$(top_srcdir)/resources
 
 RESTEXT									= root.txt \
 													en.txt \
-													el_GR.txt \
+													el.txt \
 													ja.txt
 
 RESFILES								= $(RESTEXT:txt=res)
@@ -36,7 +38,7 @@ LINK.cc									= $(CC) $(CFLAGS) $(LDFLAGS)
 
 GENRBOPT								= -v --bundle-name $(RESNAME)
 
-pkgdata_DATA						=	oly_lang.dat
+pkgdata_DATA						=	$(DATFILE)
 
 
 .txt.res:
@@ -53,11 +55,11 @@ $(RESLIST): $(RESFILES)
 # $(GENRB) $(GENRBOPT) $^ -d $(RESDIR) $(RESFILES)
 
 # gencmn can generate a .dat file too using these commands
-oly_lang.dat: $(RESFILES) $(RESLIST)
+$(DATFILE): $(RESFILES) $(RESLIST)
 	mkdir -p .deps
 	$(PKGDATA) --name $(RESNAME) --mode common $(PKGDATAOPTS) $(RESLIST)
 
-# liboly_lang.a: $(RESFILES) $(RESLIST)
+# lib$(RESNAME).a: $(RESFILES) $(RESLIST)
 #	mkdir -p .deps
 #	$(PKGDATA) --name $(RESNAME) --mode static $(PKGDATAOPTS) $(RESLIST)
 

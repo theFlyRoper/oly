@@ -1,8 +1,35 @@
 // Copyright (c) 2014 Oly Project
 // See LICENSE file for details
 root:table {
-    OlyUsage:string {"usage: oly [-fwe] <input> <output>\n"}
-    OlyVersion:string {"Copyright (C) {1} Oly Project\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"}
+    OlyUsage:string {"usage: oly [options] <input> <output>\n"}
+    OlyVersion:string {"{1}, version {2}.{3}"
+      "Copyright (C) {4} Oly Project\n"
+      "\tLicense GPLv3+: GNU GPL version 3 or later "
+      "<http://gnu.org/licenses/gpl.html>\n"
+      "\tThis is free software: you are free to change and redistribute it.\n"
+      "\tThere is NO WARRANTY, to the extent permitted by law.\n"}
+    HelpTemplate:string{"\t-{1}\t--{2}\t\t{3}\n"}
+    // OlyOptionType should not be translated.  It refers to an enum in the code.
+    OlyOptionType:array {
+      0:string{"NO_ARGUMENT"}
+      1:string{"OPTIONAL_ARGUMENT"}
+      2:string{"REQUIRED_ARGUMENT"}
+    }
+    OlyOptions:table {
+      DisplayHelp:table{
+        ShortOpt:string{"h"}
+        LongOpt:string{"help"}
+        // 0 = requires no value, 1 = optional value, 2 = required value
+        Type:int{0}
+        Display:string{"Show this help message."}
+      }
+      DisplayVersion:table{
+        ShortOpt:string{"v"}
+        LongOpt:string{"version"}
+        Type:int{0}
+        Display:string{"Show current version information for Oly."}
+      }
+    }
     OlyErrors {
                 "OLY_OKAY"
               }

@@ -193,6 +193,7 @@ AC_CONFIG_FILES([doc/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)
+AC_DEFINE_SUBST([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])
 
 AC_OUTPUT
 

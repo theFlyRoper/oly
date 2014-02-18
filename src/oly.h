@@ -21,10 +21,6 @@
 #ifndef OLY_SRC_H
 #define OLY_SRC_H 1
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
-
 BEGIN_C_DECLS
 
 /* o_stdin, o_stdout and o_stderr are defined in error.h */
