@@ -147,24 +147,24 @@ tests_oly_resources_c_missing_resource_LDADD = tests/tap/libtap.a src/libloader.
 tests_oly_resources_c_missing_lang_SOURCES 	= tests/oly/resources/c-missing-lang.c \
 																									src/error.c
 tests_oly_resources_c_missing_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_resources_c_missing_lang_LDADD = tests/tap/libtap.a src/libloader.a \
-																				@ICUIO_LIBS@ 
+tests_oly_resources_c_missing_lang_LDADD 	= tests/tap/libtap.a src/libloader.a \
+																						@ICUIO_LIBS@ 
 tests_oly_resources_c_fallback_lang_SOURCES 	= tests/oly/resources/c-fallback-lang.c \
 																									src/error.c
 tests_oly_resources_c_fallback_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_resources_c_fallback_lang_LDADD = tests/tap/libtap.a src/libloader.a \
-																				@ICUIO_LIBS@ 
+																						@ICUIO_LIBS@ 
 tests_oly_resources_c_alias_SOURCES 			= tests/oly/resources/c-alias.c \
 																						src/error.c
-tests_oly_resources_c_alias_CPPFLAGS 		= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_resources_c_alias_CPPFLAGS 			= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_resources_c_alias_LDADD 				= tests/tap/libtap.a src/libloader.a \
-																				@ICUIO_LIBS@ 
-tests_oly_io_c_oly_getOCharArgs_SOURCES 			= tests/oly/io/c-oly_getOCharArgs.c \
+																						@ICUIO_LIBS@ 
+tests_oly_io_c_oly_getOCharArgs_SOURCES 	= tests/oly/io/c-oly_getOCharArgs.c \
 																						src/error.c src/xmalloc.c \
 																						src/io/oly_getOCharArgs.c
-tests_oly_io_c_oly_getOCharArgs_CPPFLAGS 		= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_io_c_oly_getOCharArgs_LDADD 				= tests/tap/libtap.a src/libloader.a \
-																				@ICUIO_LIBS@ 
+tests_oly_io_c_oly_getOCharArgs_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_io_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a src/libloader.a \
+																						@ICUIO_LIBS@ 
 
 
 

@@ -6,7 +6,7 @@
 # See LICENSE for licensing terms.
 
 . "$SOURCE/tap/libtap.sh"
-cd "${BUILD}/oly/resources"
+cd "${BUILD}/oly/olyio"
 
 # Run a binary, saving its output, and then compare that output to the
 # corresponding *.output file.
@@ -26,16 +26,6 @@ ok_result () {
 plan 12
 
 # Run the individual tests.
-ok_result c-el "$BUILD"  0
-ok_result c-ja "$BUILD"  0
-ok_result c-root "$BUILD"  0
-# special test for missing resource.  Returns zero but zero represents an error state here, specifically U_USING_DEFAULT_WARNING.
-ok_result c-missing-resource "$BUILD" 0
-# test for language not in Oly, but available in ICU.  Currently uses Lakota (lkt).
-ok_result c-missing-lang "$BUILD" 0
-ok_result c-fallback-lang "$BUILD" 0
-
-# could not get this to do what i wanted so it is not happening.
-# ok_result c-alias "$BUILD" 0
+ok_result sh-oly_getOCharArgs "$BUILD"  0
 
 
