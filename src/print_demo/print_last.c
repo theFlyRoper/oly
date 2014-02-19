@@ -14,12 +14,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "common.h"
-#include "output.h"
+#include "oly/common.h"
+#include "oly/output.h"
 
 #ifdef OLYDEV
 #include <assert.h>
-#include "oly_dev.h"
+#include "oly/oly_dev.h"
 #endif /* OLYDEV */
 
 /* Print last element */

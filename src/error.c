@@ -22,8 +22,8 @@
 
 #include <unicode/ustdio.h> 
 
-#include "common.h"
-#include "error.h"
+#include "oly/common.h"
+#include "oly/error.h"
 
 UFILE *u_stdout = NULL;   /* Unicode output */
 UFILE *u_stdin  = NULL;   /* Unicode input */

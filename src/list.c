@@ -17,11 +17,11 @@
    }}} */
 
 #if HAVE_CONFIG_H
-# include "liboly/olyconf.h"
+# include "liboly/oly/olyconf.h"
 #endif
-#include "common.h"
+#include "oly/common.h"
 
-#include "list.h"
+#include "oly/list.h"
 
 List *
 list_new (void *userdata)

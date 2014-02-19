@@ -23,8 +23,8 @@
 #include <unicode/ustdio.h>
 #include <sys/types.h>
 
-#include "common.h"
-#include "error.h"
+#include "oly/common.h"
+#include "oly/error.h"
 
 void *
 xmalloc (size_t num)

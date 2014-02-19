@@ -47,10 +47,14 @@ datadir									= @datadir@
 datarootdir							= @datarootdir@
 localedir								= @localedir@
 
-noinst_HEADERS					=	src/error.h \
-													src/loader.h \
-													src/output.h \
-													src/common.h
+noinst_HEADERS					=	src/oly/error.h \
+													src/oly/loader.h \
+													src/olyconf.h \
+													src/oly/output.h \
+													src/oly/common.h \
+													tests/tap/basic.h \
+													tests/tap/float.h \
+													tests/tap/macros.h
 
 AM_CFLAGS 							= -fstack-protector-all \
 													@ICU_CFLAGS@
@@ -61,6 +65,7 @@ RESNAME									=	@OLY_RESOURCE@
 
 RESLDFLAGS							= 
 
+AM_CPPFLAGS							= 
 
 csvparse_CPPFLAGS 			= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 
@@ -80,9 +85,10 @@ src_libloader_a_SOURCES		=	src/loader/init_io.c \
 														src/loader/init_all.c \
 														src/loader/cleanenv.c 
 
-src_liboly_a_SOURCES		=	src/xmalloc.c \
-													src/xstrdup.c \
-													src/xstrerror.c \
+src_liboly_a_SOURCES		=	\
+													src/wrappers/xstrdup.c \
+													src/wrappers/xmalloc.c \
+													src/wrappers/xstrerror.c \
 													src/oly.c \
 													src/builtin.c \
 													src/eval.c \
@@ -160,7 +166,7 @@ tests_oly_resources_c_alias_CPPFLAGS 			= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_resources_c_alias_LDADD 				= tests/tap/libtap.a src/libloader.a \
 																						@ICUIO_LIBS@ 
 tests_oly_olyio_c_oly_getOCharArgs_SOURCES 	= tests/oly/olyio/c-oly_getOCharArgs.c \
-																						src/error.c src/xmalloc.c \
+																						src/error.c src/wrappers/xmalloc.c \
 																						src/olyio/oly_getOCharArgs.c
 tests_oly_olyio_c_oly_getOCharArgs_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_olyio_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a src/libloader.a \

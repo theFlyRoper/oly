@@ -16,11 +16,6 @@
    MA 02110-1301, USA.
    }}} */
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
-#include "common.h"
-
 #ifndef SRC_OLY_DEV_H
 #define SRC_OLY_DEV_H 1
 

@@ -27,9 +27,9 @@
 #include <unistd.h>
 #include <pwd.h>
 
-#include "common.h"
-#include "error.h"
-#include "loader.h"
+#include "oly/common.h"
+#include "oly/error.h"
+#include "oly/loader.h"
 
 char *
 oget_home (struct passwd *pwd) {

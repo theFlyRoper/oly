@@ -22,11 +22,11 @@
 
 #include <unicode/ustdio.h>
 
-#include "common.h"
-#include "error.h"
-#include "syntax.h"
-#include "list.h"
-#include "oly.h"
+#include "oly/common.h"
+#include "oly/error.h"
+#include "oly/syntax.h"
+#include "oly/list.h"
+#include "oly/oly.h"
 
 struct syntaxnode {
   struct syntaxnode *next;
@@ -50,7 +50,7 @@ syntax_install (Oly *oly, Syntax *table)
     {
       OChar *ch_ptr = table_ptr->ch;
       
-      /* You can set the syntax habdler for ASCII '\0' by using
+      /* You can set the syntax_handler for ASCII '\0' by using
 	 "" in the syntax table. */
       if (*ch_ptr == 0)
 	oly->syntax[0] = syntax_new (oly->syntax[0], table_ptr->handler);
@@ -65,8 +65,7 @@ syntax_install (Oly *oly, Syntax *table)
   return OLY_OKAY;
 }
 	
-SyntaxHandler *
-syntax_handler (Oly *oly, int ch)
+SyntaxHandler *syntax_handler (Oly *oly, int ch)
 {
   return oly->syntax[ch] ? oly->syntax[ch]->handler : NULL;
 }

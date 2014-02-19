@@ -56,11 +56,13 @@ Functions should use lower case exclusively.
 
 Names
 ~~~~~
-** initializing/opening? use +init_+.  This also applies to files, so file openers are prefixed with +init_+.
-** retrieving something? use +get_+.
-** sending/putting something? use +put_+.
-** closing? use +free_+.
-** applying/performing something? use +do_+.  Read the next item, though.  This is where the rule breaks a bit.
+** initializing/opening? Use +init_+.  This also applies to files, so file openers are prefixed with +init_+.
+** retrieving something? Use +get_+.
+** sending/putting/setting something? Use +put_+ or +set_+.
+** displaying something? Use +display_+ or +show_+.
+** logging something? Use +log_+.
+** closing? Use +free_+.
+** applying/performing something? Use +do_+.  Read the next item, though.  This is where the rule breaks a bit.
 ** Don't use +do_+ where you are not performing an action based on an argument. For example, there is no verb in front of +char_to_ochar+ because it does not apply the char to the ochar or vice versa.
 ** converting should have no prefix and +_to_+ between the items converted.  For limit parameter functions (think of +strncpy+ vs +strcpy+), use +_nto_+ wherever there is a limit parameter.
 
@@ -72,11 +74,12 @@ Oly was designed using http://site.icu-project.org/[ICU], and Oly's error handli
 .. A value less than zero indicates a warning state.
 .. +OLY_OKAY+ = 0.  Zero indicates everything is fine.
 .. A value greater than zero indicates an error and should either be handled or displayed.
+. Try to find an error that describes what problem you have found.  If you cannot find one, add a new +OLY_ERR_<whatever>+ to +src/oly/oly_status.h+.
 . These special error states indicate an external problem:
 .. +OLY_ERR_SYSTEM+: Check system error status and display any messages from it.
-.. +OLY_ERR_LIB+: Check Oly's build library error status and display any mesages.  Currently, Oly builds against ICU only, so this displays ICU errors.
-
-.oly_status values
+.. +OLY_ERR_LIB+: Check Oly's primary build library error status and display any messages.  Currently, Oly builds against ICU only, so this displays ICU errors.
+. For localized error messages, Oly can send arguments to error messages.  In ICU message syntax, these are numbered and look like this: `{1}`, `{2}` etc.  Not all errors require arguments and an error should display whether arguments are provided or not.
+. See function +set_err+, +append_err_arg+, +log_err+, +show_warn+, +show_err+ and +fatal_err+ in +src/error/+ for details.
 
 Types
 -----

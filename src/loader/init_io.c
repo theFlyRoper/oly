@@ -24,13 +24,13 @@
 #include <unicode/ubrk.h>
 #include <stdio.h>
 
-#include "common.h"
-#include "output.h"
-#include "error.h"
-#include "list.h"
-#include "syntax.h"
-#include "oly.h"
-#include "loader.h"
+#include "oly/common.h"
+#include "oly/output.h"
+#include "oly/error.h"
+#include "oly/list.h"
+#include "oly/syntax.h"
+#include "oly/oly.h"
+#include "oly/loader.h"
 
 void
 init_io(const char *locale) {

@@ -19,7 +19,7 @@
 #ifdef HAVE_CONFIG_H
 #  include "olyconf.h"
 #endif
-#include "common.h"
+#include "oly/common.h"
 
 #include <unicode/ustdio.h>
 #include <unicode/ures.h>
@@ -28,8 +28,8 @@
 #include <unistd.h>
 #include <pwd.h>
 
-#include "error.h"
-#include "loader.h"
+#include "oly/error.h"
+#include "oly/loader.h"
 
 char *
 oget_user_locale (void) {

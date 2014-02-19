@@ -4,7 +4,7 @@
 #  include "olyconf.h"
 #endif
 
-#include "common.h"
+#include "oly/common.h"
 
 #include <unicode/ustdio.h>
 #include <unicode/ustring.h>
@@ -12,9 +12,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "loader.h"
-#include "error.h"
-#include "olyio.h"
+#include "oly/loader.h"
+#include "oly/error.h"
+#include "oly/olyio.h"
 
 int
 main( int argc, char **argv ){

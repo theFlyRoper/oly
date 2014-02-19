@@ -21,7 +21,7 @@
 #  include "olyconf.h"
 #endif
 
-#include "common.h"
+#include "oly/common.h"
 
 #include <unicode/ustdio.h>
 #include <unicode/ustring.h>
@@ -29,8 +29,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "error.h"
-#include "olyio.h"
+#include "oly/error.h"
+#include "oly/olyio.h"
 
 Oly_Status
 oly_getOCharArgs(OChar ***result, char **source, int32_t argc){

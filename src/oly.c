@@ -22,13 +22,13 @@
 
 #include <unicode/ustdio.h>
 
-#include "common.h"
-#include "error.h"
-#include "list.h"
-#include "syntax.h"
-#include "oly.h"
-#include "builtin.h"
-#include "eval.h"
+#include "oly/common.h"
+#include "oly/error.h"
+#include "oly/list.h"
+#include "oly/syntax.h"
+#include "oly/oly.h"
+#include "oly/builtin.h"
+#include "oly/eval.h"
 
 #define CHUNK_SIZE	256
 

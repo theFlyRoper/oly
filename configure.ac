@@ -33,7 +33,7 @@ dnl }}}
 dnl establish the necessary version for autoconf.
 AC_PREREQ(2.60)
 
-AC_INIT([Oly],[0.0.0],[bugs@fakesite.com],[oly],[http://fakesite.com])
+AC_INIT([Oly],[1.0.1],[bugs@fakesite.com],[oly],[http://fakesite.com])
 
 AC_SUBST(OLY_COPYRIGHT,["Copyright (c) 2014 The Oly Project."])
 AC_COPYRIGHT([Copyright (c) 2014 The Oly Project.])
@@ -49,6 +49,9 @@ AM_INIT_AUTOMAKE([1.8 subdir-objects \
 AC_CONFIG_HEADERS([src/olyconf.h:src/olyconf-h.in])
 dnl questions address
 AC_SUBST(FAQ_ADDR,[maintainer@fakesite.com])
+
+dnl set libtool version info here.  Default for arg one uses PACKAGE_VERSION from AC_INIT
+AX_SET_VERSION_INFO([],[MAIN_])
 
 dnl Architecture, target and host checks 
 dnl must run early, otherwise, we won't know our host system.

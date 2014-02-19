@@ -30,9 +30,9 @@
 #include <pwd.h>
 #include <unistd.h>
 
-#include "common.h"
-#include "error.h"
-#include "loader.h"
+#include "oly/common.h"
+#include "oly/error.h"
+#include "oly/loader.h"
 
 /* The following function(s) are
  * adapted from the Secure Programming 

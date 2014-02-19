@@ -22,7 +22,7 @@
 # include "olyconf.h"
 #endif
 
-#include "common.h"
+#include "oly/common.h"
 
 char *
 xstrdup (const char *string)

@@ -21,6 +21,8 @@
 #  include "olyconf.h"
 #endif
 
+#include "oly/common.h"
+
 #include <unicode/ustdio.h>
 #include <unicode/ustring.h>
 #include <unicode/ubrk.h>
@@ -34,15 +36,14 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include "common.h"
-#include "output.h"
-#include "error.h"
-#include "list.h"
-#include "syntax.h"
-#include "oly.h"
-#include "builtin.h"
-#include "loader.h"
-#include "break_rules.h"
+#include "oly/output.h"
+#include "oly/error.h"
+#include "oly/list.h"
+#include "oly/syntax.h"
+#include "oly/oly.h"
+#include "oly/builtin.h"
+#include "oly/loader.h"
+#include "oly/break_rules.h"
 /* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
 /* MAIN */

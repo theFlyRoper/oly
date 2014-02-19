@@ -30,12 +30,12 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include "common.h"
-#include "output.h"
-#include "error.h"
-#include "list.h"
-#include "syntax.h"
-#include "oly.h"
+#include "oly/common.h"
+#include "oly/output.h"
+#include "oly/error.h"
+#include "oly/list.h"
+#include "oly/syntax.h"
+#include "oly/oly.h"
 
 
 Oly_Status

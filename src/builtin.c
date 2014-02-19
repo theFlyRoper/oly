@@ -23,13 +23,13 @@
 
 #include <unicode/ustdio.h>
 
-#include "common.h"
-#include "error.h"
-#include "syntax.h"
-#include "list.h"
-#include "oly.h"
-#include "builtin.h"
-#include "eval.h"
+#include "oly/common.h"
+#include "oly/error.h"
+#include "oly/syntax.h"
+#include "oly/list.h"
+#include "oly/oly.h"
+#include "oly/builtin.h"
+#include "oly/eval.h"
 
 struct builtintab {
   struct builtintab *next;

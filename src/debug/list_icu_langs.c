@@ -21,7 +21,7 @@
 #ifdef HAVE_CONFIG_H
 #  include "olyconf.h"
 #endif
-#include "common.h"
+#include "oly/common.h"
 
 #include <unicode/ustdio.h>
 #include <unicode/uloc.h>

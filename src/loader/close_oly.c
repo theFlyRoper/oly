@@ -22,7 +22,7 @@
 #ifdef HAVE_CONFIG_H
 #  include "olyconf.h"
 #endif
-#include "common.h"
+#include "oly/common.h"
 #include <stdio.h>
 #include <stdlib.h>
 

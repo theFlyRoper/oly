@@ -28,9 +28,9 @@
 #include <string.h>
 #include <assert.h>
 
-#include "common.h"
-#include "error.h"
-#include "loader.h"
+#include "oly/common.h"
+#include "oly/error.h"
+#include "oly/loader.h"
 /* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
 /* MAIN */
