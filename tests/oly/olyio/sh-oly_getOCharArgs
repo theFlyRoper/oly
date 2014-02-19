@@ -9,7 +9,7 @@
 
 # Plan test.
 plan 3
-ok_program 'Zero args.' 0 '' "$BUILD/oly/io/c-oly_getOCharArgs"
-ok_program 'One arg.' 0 '' "$BUILD/oly/io/c-oly_getOCharArgs Argo"
-ok_program 'Many args.' 0 '' "$BUILD/oly/io/c-oly_getOCharArgs Argo Nautica -h -i -v vee beee"
+ok_program 'Zero args.' 0 '' "$BUILD/oly/olyio/c-oly_getOCharArgs"
+ok_program 'One arg.' 0 'Argo' "$BUILD/oly/olyio/c-oly_getOCharArgs" "Argo"
+ok_program 'Many args.' 0 'Argo Nautica help vee beee' "$BUILD/oly/olyio/c-oly_getOCharArgs" 'Argo Nautica help vee beee'
 

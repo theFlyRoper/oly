@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "loader.h"
 #include "error.h"
 #include "olyio.h"
 
@@ -28,12 +29,16 @@ main( int argc, char **argv ){
 
   if (U_FAILURE(u_status)) {
     printf("Could not open! status: %s\n", u_errorName(u_status));
+    return EXIT_FAILURE;
   }
   status = oly_getOCharArgs(&result, argv, argc); 
-  for (i = 0;  ((curr = result[i]) != NULL);  i++) {
+  if (status != OLY_OKAY) {
+    printf("Status: %i\n", status);
+    return EXIT_FAILURE;
+  }
+  for (i = 1;  ((curr = result[i]) != NULL);  i++) {
     curr = result[i];
-    u_fprintf(u_stdout, "NumItems: %i\n", i);
-    u_fprintf(u_stdout, "curr: %S\n", curr);
+    u_fprintf(u_stdout, "%S\n", curr);
   }
   return EXIT_SUCCESS;
 }

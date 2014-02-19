@@ -30,7 +30,7 @@ typedef struct oly_optlist{
 */
 
 /* init_io is part of the loader, so we expect u_stderr, u_stdin and u_stdout to be ready */
-Oly_Status oly_getOCharArgs(OChar **result, char **source, int32_t argc);
+Oly_Status oly_getOCharArgs(OChar ***result, char **source, int32_t argc);
 /* Oly_Status oly_allocopt( OChar **argv, size_t argc, OlyOptList *options );
 Oly_Status oly_parseopt( OChar **argv, size_t argc, OlyOptList *options );
 Oly_Status oly_nextopt( OChar **argv, size_t argc, OlyOptList *options ); */

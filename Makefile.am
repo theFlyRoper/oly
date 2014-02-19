@@ -108,7 +108,7 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ \
 
 check_PROGRAMS 								= tests/runtests \
 																tests/oly/loader/c-oget_home \
-																tests/oly/io/c-oly_getOCharArgs \
+																tests/oly/olyio/c-oly_getOCharArgs \
 																tests/oly/resources/c-alias \
 																tests/oly/resources/c-ja \
 																tests/oly/resources/c-el \
@@ -159,11 +159,11 @@ tests_oly_resources_c_alias_SOURCES 			= tests/oly/resources/c-alias.c \
 tests_oly_resources_c_alias_CPPFLAGS 			= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_resources_c_alias_LDADD 				= tests/tap/libtap.a src/libloader.a \
 																						@ICUIO_LIBS@ 
-tests_oly_io_c_oly_getOCharArgs_SOURCES 	= tests/oly/io/c-oly_getOCharArgs.c \
+tests_oly_olyio_c_oly_getOCharArgs_SOURCES 	= tests/oly/olyio/c-oly_getOCharArgs.c \
 																						src/error.c src/xmalloc.c \
-																						src/io/oly_getOCharArgs.c
-tests_oly_io_c_oly_getOCharArgs_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_io_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a src/libloader.a \
+																						src/olyio/oly_getOCharArgs.c
+tests_oly_olyio_c_oly_getOCharArgs_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_olyio_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a src/libloader.a \
 																						@ICUIO_LIBS@ 
 
 

@@ -1,0 +1,92 @@
+Oly Code Standards
+==================
+:description: Oly C Coding standards and conventions.
+:keywords:    Oly, standards, names, C code
+:title:       Oly Code Standards
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:icons:
+:toc2:
+endif::is_standalone[]
+ifdef::is_fossil[]
+:iconsdir:  /doc/tip/doc/icons
+:imagesdir: /doc/tip/doc/images
+:icons:
+link:/doc/tip/doc/index.wiki[Back to Home.]
+endif::is_fossil[]
+
+Names
+-----
+. No spaces in filenames.
+. Lower case only, except for macros.
+. Words separated by underscores.
+. Prefix with "oly_" if risk of confusing with system function.
+. After prefix, lead with verb appropriate to action.
+. Macros, when used, should be all caps, thus: +OLY_HAS_THISOPTION+.  Macros are to be avoided, though.  Prefer typedefs.
+. Also look at naming rules for <<_names_2,functions>> and <<_names_3,types>>.
+
+
+C language files (code and headers)
+-----------------------------------
+All files should be named after what they contain.  Headers should group functions by purpose such as +wrapper.h+ (holds wrapper functions around system interfaces).  Only exceptions are +olyconf.h+ (autoconf header) and +common.h+ (cross-compatibility header).
+
+Code
+~~~~
+. Files for functions should be named after the function they contain.
+Ideally, one function per file.
+. Code should be in a subdirectory of +src/+ named after the header holding its details.  Thus, all wrapper functions are in +src/wrapper/+.
+. Tests are an exception.  C tests for functions should be prefixed with +c-+, 
+  so a test for a function called +char_to_ochar+ would be in a file called +c-char_to_ochar.c+.  See +tests/oly/+ subdirs for examples.
+. See naming rules for <<_names_2,functions>> and <<_names_3,types>>, also.
+
+Headers
+~~~~~~~
+. Headers should be referenced with the directory prefix +oly/+.  This is a simple clear rule to avoid separate rules for headers to be installed vs. non-installed headers.
+. All functions in each header should build as a convenience library.  See +noinst_LIBRARIES+ in the root directory +Makefile.am+ file for examples.
+. Headers should list all functions in their subdirectory.  Every file in +src/wrapper/+ should have one corresponding row in +oly/wrapper.h+.
+. For struct definitions and extern objects (such as +ostdout+, the oly +stdout+ wrapper object), add a comment telling which C file it can be found in.
+
+Functions
+---------
+If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "+io.h+", but rather "oly_io.h".
+
+Functions should use lower case exclusively.
+
+Names
+~~~~~
+** initializing/opening? use +init_+.  This also applies to files, so file openers are prefixed with +init_+.
+** retrieving something? use +get_+.
+** sending/putting something? use +put_+.
+** closing? use +free_+.
+** applying/performing something? use +do_+.  Read the next item, though.  This is where the rule breaks a bit.
+** Don't use +do_+ where you are not performing an action based on an argument. For example, there is no verb in front of +char_to_ochar+ because it does not apply the char to the ochar or vice versa.
+** converting should have no prefix and +_to_+ between the items converted.  For limit parameter functions (think of +strncpy+ vs +strcpy+), use +_nto_+ wherever there is a limit parameter.
+
+Error handling
+~~~~~~~~~~~~~~
+Oly was designed using http://site.icu-project.org/[ICU], and Oly's error handling uses ICU's localization systems.  So, when you check for errors, follow this process:
+
+. Define a local variable of type +oly_status+. 
+.. A value less than zero indicates a warning state.
+.. +OLY_OKAY+ = 0.  Zero indicates everything is fine.
+.. A value greater than zero indicates an error and should either be handled or displayed.
+. These special error states indicate an external problem:
+.. +OLY_ERR_SYSTEM+: Check system error status and display any messages from it.
+.. +OLY_ERR_LIB+: Check Oly's build library error status and display any mesages.  Currently, Oly builds against ICU only, so this displays ICU errors.
+
+.oly_status values
+
+Types
+-----
+For designing structures, go read Eric S. Raymond's essay on http://www.catb.org/esr/structure-packing/[C structure packing].  Oly must have very efficient structures.
+
+Names
+~~~~~
+Types should use lower case exclusively.
+
+If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "+io.h+", but rather "oly_io.h".
+
+
+// vim: set syntax=asciidoc:

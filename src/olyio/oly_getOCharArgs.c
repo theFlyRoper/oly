@@ -33,7 +33,7 @@
 #include "olyio.h"
 
 Oly_Status
-oly_getOCharArgs(OChar **result, char **source, int32_t argc){
+oly_getOCharArgs(OChar ***result, char **source, int32_t argc){
   size_t          i = 0, storage = 0, arr_size =1, arr_ptr = 0;
   char            *var = NULL;
   OChar           **curr, *ptr;
@@ -48,22 +48,18 @@ oly_getOCharArgs(OChar **result, char **source, int32_t argc){
     abort(  );
   }
   curr[arr_size - 1] = 0;
-  printf("Allocated %i for %i array items.\n", storage, arr_size);
   
   ptr = (OChar *)curr + (arr_size * sizeof(OChar *));
   for (i = 0;  (var = source[i]) != 0;  i++) {
     curr[arr_ptr++] = ptr;
-    printf("Position %i, Charchar: %s\n", arr_ptr, var);
     storage = (strlen(var) + sizeof(OChar));
     u_uastrncpy( ptr, var, storage );
-    u_fprintf(u_stdout, "Position %i, UChar: %S\n", arr_ptr, ptr);
     ptr += (storage * sizeof(OChar *));
   }
-  u_fprintf(u_stdout, "curr[0]: %S\n", curr[0]);
 
   /* C passes in a copy of the pointer in the original value. Thus, 
    * when you set the pointed-to value to curr, you get the right behavior. 
    */
-  *result = curr;
+  (*result) = curr;
   return OLY_OKAY;
 }

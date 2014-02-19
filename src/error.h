@@ -47,7 +47,9 @@ typedef enum oly_status {
     OLY_ERR_UNSPECIFIED=2,
     OLY_ERR_INIT=3,
     OLY_ERR_NOPWD=4,
-    OLY_ERR_NOARGS=6
+    OLY_ERR_NOARGS=6,
+    OLY_ERR_NOMEM=7,
+    OLY_ERR_GETARGC=8
 } Oly_Status;
 
 extern UFILE *u_stderr;
