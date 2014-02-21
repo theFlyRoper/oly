@@ -38,21 +38,50 @@ oget_user_locale (void) {
    * LC_ALL
    * LANG 
    */
-  int32_t i = 0;
-  int32_t len = 0;
+  size_t i = 0, len = 1, langlen = 0;
   UAcceptResult acceptable;
-  UErrorCode *u_status = U_ZERO_ERROR;
+  UErrorCode u_status = U_ZERO_ERROR;
   char    *language_val = getenv("LANGUAGE");
-  char    *locale = NULL;
-  const char  **curr = NULL;
-  char    *item = NULL;
+  char    sep[1] = ":";
+  char    **curr = NULL, *locale = NULL, *word = NULL, *item = NULL, *ptr = NULL;
+  printf("We're in the oget_user_locale function!\n");
   if (language_val != NULL) {
-    UEnumeration *available = ures_openAvailableLocales("oly_lang", u_status);
-    curr[i] = strtok_r(language_val, ":", &item);
-    for (i = 1; ((curr[i] = strdup(strtok_r(NULL, ":", &item))) != NULL); i++)
-      ;
-    curr[i] = NULL;
-    uloc_acceptLanguage(locale, len, &acceptable, curr, i, available, u_status) ;
+    UEnumeration *available = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
+    printf("We've just gotten available locales, yay! Language_val: %s\n", language_val);
+    langlen = strlen(language_val);
+    for (item = language_val; i<langlen; item++) {
+      if ( *item == ':') {
+        len++;
+      } 
+      i++;
+    }
+    
+    i -= (len-1);
+    printf("i minus len: %i\n",i);
+    i += (len * sizeof(char *));
+    printf("did some stuff. i = %i, len = %i.\n",i, len);
+    if (!(curr = (char **)xmalloc(i))) {
+      abort();
+    }
+    printf("Some other stuff.\n");
+
+    curr[len - 1] = 0;
+    i = 0;
+    printf("Even more other stuff.\n");
+    ptr = (char *)curr + (len * sizeof(char *));
+    for (word = strtok_r(language_val, sep, &item); word; 
+        word = strtok_r(NULL, sep, &item))
+    {
+      curr[i++] = ptr;
+      len = strlen(word);
+      memcpy(ptr, word, len + 1);
+      ptr += len + 1;
+      printf("curr[%i] == %s. word: %s.\n", i, ptr, word);
+    }
+    uloc_acceptLanguage(locale, len, &acceptable, (const char **)curr, 
+        len, available, &u_status) ;
+  } else {
+    printf("Language is null.\n");
   }
 
   if (locale == NULL) {

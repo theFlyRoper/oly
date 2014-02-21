@@ -37,7 +37,7 @@
 int
 main( int argc, char **argv ){
   int32_t         len       = 0;
-  OChar           *liner;
+  ochar           *liner;
   char            *locale   = "en_US_POSIX";
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 

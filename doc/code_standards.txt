@@ -56,7 +56,7 @@ Functions should use lower case exclusively.
 
 Names
 ~~~~~
-** initializing/opening? Use +init_+.  This also applies to files, so file openers are prefixed with +init_+.
+** initializing/opening? Use +init_+ or +open_+.  This also applies to files, so file openers are prefixed with +open_+.
 ** retrieving something? Use +get_+.
 ** sending/putting/setting something? Use +put_+ or +set_+.
 ** displaying something? Use +display_+ or +show_+.
@@ -64,7 +64,7 @@ Names
 ** closing? Use +free_+.
 ** applying/performing something? Use +do_+.  Read the next item, though.  This is where the rule breaks a bit.
 ** Don't use +do_+ where you are not performing an action based on an argument. For example, there is no verb in front of +char_to_ochar+ because it does not apply the char to the ochar or vice versa.
-** converting should have no prefix and +_to_+ between the items converted.  For limit parameter functions (think of +strncpy+ vs +strcpy+), use +_nto_+ wherever there is a limit parameter.
+** converting should have no prefix and `_to_` between the items converted.  For limit parameter functions (think of +strncpy+ vs +strcpy+), use `_nto_` wherever there is a limit parameter.
 
 Error handling
 ~~~~~~~~~~~~~~

@@ -27,7 +27,7 @@ get_rules(const char *ruleFileName, UErrorCode status) {
     long        result;
     long        ruleFileSize;
     FILE        *file;
-    UFILE       *ufile;
+    OFILE       *ufile;
     UBreakIterator *return_me;
 
     file = fopen(ruleFileName, "rb");

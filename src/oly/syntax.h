@@ -26,14 +26,14 @@ BEGIN_C_DECLS
 struct oly;
 
 typedef struct {
-  OChar *start;          /* start of buffered string */
-  size_t i;             /* offset to next unused OChar */
+  ochar *start;          /* start of buffered string */
+  size_t i;             /* offset to next unused ochar */
   size_t lim;           /* upper limit for I */
 } Buffer;
 
 typedef struct {
   Buffer buf;           /* the buffer details */
-  OChar *start;          /* start of the current command */
+  ochar *start;          /* start of the current command */
 } BufferIn;
 
 typedef struct {
@@ -58,7 +58,7 @@ typedef struct syntaxnode SyntaxTable;
 /** @start 1 */
 typedef struct syntax {
   SyntaxHandler *handler;
-  OChar *ch;
+  ochar *ch;
 } Syntax;
 
 extern int syntax_install (struct oly *oly, Syntax *table);

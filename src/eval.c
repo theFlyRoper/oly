@@ -29,7 +29,7 @@
 #include "oly/builtin.h"
 #include "oly/eval.h"
 
-static void bufferin_init  (BufferIn *in, OChar *command);
+static void bufferin_init  (BufferIn *in, ochar *command);
 static void bufferout_init (BufferOut *out, size_t lim);
 
 int
@@ -64,9 +64,9 @@ eval (Oly *oly, Tokens *tokens)
 }
 
 int
-untokenize (Oly *oly, OChar **pcommand, Tokens *tokens)
+untokenize (Oly *oly, ochar **pcommand, Tokens *tokens)
 {
-  OChar *command = NULL;
+  ochar *command = NULL;
   int i, off;
 
   if (tokens->lim < 1)
@@ -75,7 +75,7 @@ untokenize (Oly *oly, OChar **pcommand, Tokens *tokens)
 	tokens->lim += 1 + strlen (tokens->argv[i]);
     }
 
-  command = XMALLOC ( OChar, tokens->lim);
+  command = XMALLOC ( ochar, tokens->lim);
   
   for (off = i = 0; tokens->argv[i]; ++i)
     {
@@ -90,7 +90,7 @@ untokenize (Oly *oly, OChar **pcommand, Tokens *tokens)
 }
 
 int
-tokenize (Oly *oly, Tokens **ptokens, OChar **pcommand)
+tokenize (Oly *oly, Tokens **ptokens, ochar **pcommand)
 {
   BufferIn in;
   BufferOut out;
@@ -124,7 +124,7 @@ tokenize (Oly *oly, Tokens **ptokens, OChar **pcommand)
     /* Can't fill ARGV on the fly incase BUF moved during realloc. */
     Tokens *tokens = XMALLOC (Tokens, 1);
     
-    tokens->argv = XMALLOC ( OChar *, 1 + out.offc);
+    tokens->argv = XMALLOC ( ochar *, 1 + out.offc);
 
     for (tokens->argc = 0; tokens->argc < out.offc; ++tokens->argc)
       tokens->argv[tokens->argc] = out.buf.start + out.offv[tokens->argc];
@@ -144,7 +144,7 @@ tokenize (Oly *oly, Tokens **ptokens, OChar **pcommand)
 }
 
 static void
-bufferin_init (BufferIn *in, OChar *command)
+bufferin_init (BufferIn *in, ochar *command)
 {
   in->buf.lim	= 1 + strlen (command);
   in->buf.start	= command;
@@ -157,7 +157,7 @@ static void
 bufferout_init (BufferOut *out, size_t lim)
 {
   out->buf.lim	= lim;
-  out->buf.start= XMALLOC ( OChar, lim);
+  out->buf.start= XMALLOC ( ochar, lim);
   out->buf.i	= 0;
 
   out->offc	= 0;

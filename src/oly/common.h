@@ -25,8 +25,9 @@
 #endif
 
 #ifdef HAVE_UNICODE_USTDIO_H
-#define OChar UChar
-#define OLYFILE UFILE
+#include <unicode/ustdio.h>
+typedef UChar ochar;
+#define OFILE UFILE
 #endif /* !HAVE_UNICODE_USTDIO_H */
 
 /** HEADERS */

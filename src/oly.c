@@ -32,7 +32,7 @@
 
 #define CHUNK_SIZE	256
 
-static OlyState *olystate_find (Oly *oly, const OChar *key);
+static OlyState *olystate_find (Oly *oly, const ochar *key);
 
 Oly *
 oly_new (void)
@@ -51,7 +51,7 @@ oly_delete (Oly *stale)
 }
 
 int
-olystate_set (Oly *oly, const OChar *key, void *value, 
+olystate_set (Oly *oly, const ochar *key, void *value, 
 	      void (*delete) (void *value))
 {
   OlyState *state = olystate_find (oly, key);
@@ -78,14 +78,14 @@ olystate_set (Oly *oly, const OChar *key, void *value,
 }
 
 void *
-olystate_get (Oly *oly, const OChar *key)
+olystate_get (Oly *oly, const ochar *key)
 {
   OlyState *state = olystate_find (oly, key);
   return state ? state->data : NULL;
 }
 
 int
-olystate_clear (Oly *oly, const OChar *key)
+olystate_clear (Oly *oly, const ochar *key)
 {
   OlyState *state = oly->state;
   OlyState *stale = NULL;
@@ -130,14 +130,14 @@ oly_result_clear (Oly *oly)
   return oly;
 }
 
-const OChar *
+const ochar *
 oly_result_get (Oly *oly)
 {
   return oly->result;
 }
 
 Oly *
-oly_result_set (Oly *oly, const OChar *value, size_t len)
+oly_result_set (Oly *oly, const ochar *value, size_t len)
 {
   if (len < 0) len = strlen (value);
   
@@ -146,14 +146,14 @@ oly_result_set (Oly *oly, const OChar *value, size_t len)
   if (len < CHUNK_SIZE)
     {
       oly->lim = CHUNK_SIZE;
-      oly->result = XREALLOC ( OChar, oly->result, oly->lim);
+      oly->result = XREALLOC ( ochar, oly->result, oly->lim);
     }
   
   return oly_result_append (oly, value);
 }
 
 Oly *
-oly_result_append (Oly *oly, const OChar *value)
+oly_result_append (Oly *oly, const ochar *value)
 {
   size_t len;
   
@@ -163,7 +163,7 @@ oly_result_append (Oly *oly, const OChar *value)
   if (oly->len + len >= oly->lim)
     {
       oly->lim += CHUNK_SIZE;
-      oly->result = XREALLOC (OChar, oly->result, oly->lim);
+      oly->result = XREALLOC (ochar, oly->result, oly->lim);
     }
 
   strncpy (&oly->result[oly->len], value, len);
@@ -174,7 +174,7 @@ oly_result_append (Oly *oly, const OChar *value)
 }
 
 static OlyState *
-olystate_find (Oly *oly, const OChar *key)
+olystate_find (Oly *oly, const ochar *key)
 {
   OlyState *state;
 

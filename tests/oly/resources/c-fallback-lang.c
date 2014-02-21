@@ -37,7 +37,7 @@
 int
 main( int argc, char **argv ){
   int32_t         len       = 0;
-  OChar           *liner;
+  ochar           *liner;
   char            *locale   = "el_CY";
   /* el_CY = Cyprus Greek
    * The point of this test is to check ICU's fallback language functions.

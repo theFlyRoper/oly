@@ -29,13 +29,13 @@ struct builtintab;
 
 typedef struct statedata {
   struct statedata *next;       /* so they can be chained */
-  OChar *key;        			/* used as a key to find the right data */
+  ochar *key;        			/* used as a key to find the right data */
   void *data;                   /* associated state data */
   void (*delete) (void *data);
 } OlyState;
 
 typedef struct oly {
-  OChar *result;                 /* result string */
+  ochar *result;                 /* result string */
   size_t len;                   /* bytes used by result field */
   size_t lim;                   /* bytes allocated to result field */
   struct builtintab *builtins;  /* tables of builtin functions */
@@ -61,18 +61,18 @@ Oly *oly_delete        (Oly *stale);
 
 int olystate_set       (
     Oly *oly,
-    const OChar *key,
+    const ochar *key,
     void *value,
     void (*delete) (void *value)
     );
 
-void  *olystate_get     (Oly *oly, const OChar *key);
-int   olystate_clear     (Oly *oly, const OChar *key);
+void  *olystate_get     (Oly *oly, const ochar *key);
+int   olystate_clear     (Oly *oly, const ochar *key);
 
 Oly *oly_result_clear  (Oly *oly);
-const OChar *oly_result_get (Oly *oly);
-Oly *oly_result_set    (Oly *oly, const OChar *value, size_t len);
-Oly *oly_result_append (Oly *oly, const OChar *value);
+const ochar *oly_result_get (Oly *oly);
+Oly *oly_result_set    (Oly *oly, const ochar *value, size_t len);
+Oly *oly_result_append (Oly *oly, const ochar *value);
 
 extern void print_help (void);
 extern void print_version (void);

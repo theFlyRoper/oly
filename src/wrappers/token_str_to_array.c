@@ -1,4 +1,4 @@
-/* oly_getopt.c - get options from an ochar string. License GPL2+ {{{
+/* token_str_to_array.c - Transforms a tokenized string into an array License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,5 +16,3 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
-
-

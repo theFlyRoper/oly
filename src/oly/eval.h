@@ -24,13 +24,13 @@ BEGIN_C_DECLS
 
 typedef struct {
   int   argc;            /* number of elements in ARGV */
-  OChar **argv;          /* array of pointers to elements */
+  ochar **argv;          /* array of pointers to elements */
   size_t  lim;           /* number of bytes allocated */
 } Tokens;
 
 extern int eval       (Oly *oly, Tokens *tokens);
-extern int untokenize (Oly *oly, OChar **pcommand, Tokens *tokens);
-extern int tokenize   (Oly *oly, Tokens **ptokens, OChar **pcommand);
+extern int untokenize (Oly *oly, ochar **pcommand, Tokens *tokens);
+extern int tokenize   (Oly *oly, Tokens **ptokens, ochar **pcommand);
 
 END_C_DECLS
 

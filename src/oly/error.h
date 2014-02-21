@@ -52,15 +52,15 @@ typedef enum oly_status {
     OLY_ERR_GETARGC=8
 } Oly_Status;
 
-extern UFILE *u_stderr;
-extern UFILE *u_stdout;
-extern UFILE *u_stdin;
-extern const OChar *program_name;
+extern OFILE *u_stderr;
+extern OFILE *u_stdout;
+extern OFILE *u_stdin;
+extern const ochar *program_name;
 extern UResourceBundle *OlyResources;
 
-extern void oly_warning      (const OChar *message);
-extern void oly_error        (const OChar *message);
-extern void oly_fatal        (const OChar *message);
+extern void oly_warning      (const ochar *message);
+extern void oly_error        (const ochar *message);
+extern void oly_fatal        (const ochar *message);
 
 END_C_DECLS
 

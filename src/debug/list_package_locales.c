@@ -29,23 +29,26 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "oly/oly_dev.h"
+
+#define URES_TREE_DEBUG 1
+
 void list_package_locales(const char *package_name)
 { 
   UEnumeration   *list; 
   UErrorCode      u_status = U_ZERO_ERROR;
   char           *item = NULL;
-  int32_t         len = NULL;
+  int32_t         len = 0;
 
-  int       i = 0;
   list = ures_openAvailableLocales(package_name, &u_status);
   if (U_FAILURE(u_status)) {
-    fprintf(stderr, "Can not find package %s locales. Err: %s\n",
+    fprintf(stderr, "Can not find package %s. Err: %s\n",
         package_name, u_errorName(u_status));
     exit(1);
   }
 
-  while ((item = uenum_next(list, len, &u_status)) != NULL) {
-    printf("%s ", item);
+  while ((item = (char *)uenum_next(list, &len, &u_status)) != NULL) {
+    printf("%s \n", item);
   }
   printf("\n");
 }

@@ -37,7 +37,7 @@
 int
 main( int argc, char **argv ){
   int32_t         len       = 0;
-  OChar           *liner;
+  ochar           *liner;
   char            *locale   = "lkt";
   /* lkt = lakota.  Language of North American indigenous peoples on the great plains.
    * Has relatively few native speakers, though enough to justify inclusion in

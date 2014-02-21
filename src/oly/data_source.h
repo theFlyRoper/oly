@@ -32,9 +32,9 @@ typedef enum oly_ds_direction {
 } OlyDSDirection;
 
 Oly_Status oly_get_ds(OlyDataSource *ds, 
-    OChar *ds_type, 
+    ochar *ds_type, 
     OlyDSDirection ds_direct,
-    OChar **ds_args);
+    ochar **ds_args);
 
 END_C_DECLS
 

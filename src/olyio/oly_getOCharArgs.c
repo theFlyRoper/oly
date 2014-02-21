@@ -1,4 +1,4 @@
-/* oly_getOCharArgs.c - flip a **char argv into a **OChar argv {{{
+/* oly_getocharArgs.c - flip a **char argv into a **ochar argv {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -33,28 +33,28 @@
 #include "oly/olyio.h"
 
 Oly_Status
-oly_getOCharArgs(OChar ***result, char **source, int32_t argc){
+oly_getocharArgs(ochar ***result, char **source, int32_t argc){
   size_t          i = 0, storage = 0, arr_size =1, arr_ptr = 0;
   char            *var = NULL;
-  OChar           **curr, *ptr;
+  ochar           **curr, *ptr;
 
   for (i = 0;  ((var = source[i]) != 0);  i++) {
-    storage += ((strlen(var)+1) * sizeof(OChar *));
+    storage += ((strlen(var)+1) * sizeof(ochar *));
     arr_size++;
   }
-    storage += (arr_size * sizeof(OChar *));
+    storage += (arr_size * sizeof(ochar *));
 
-  if (!(curr = (OChar **)xmalloc(storage))) {
+  if (!(curr = (ochar **)xmalloc(storage))) {
     abort(  );
   }
   curr[arr_size - 1] = 0;
   
-  ptr = (OChar *)curr + (arr_size * sizeof(OChar *));
+  ptr = (ochar *)curr + (arr_size * sizeof(ochar *));
   for (i = 0;  (var = source[i]) != 0;  i++) {
     curr[arr_ptr++] = ptr;
-    storage = (strlen(var) + sizeof(OChar));
+    storage = (strlen(var) + sizeof(ochar));
     u_uastrncpy( ptr, var, storage );
-    ptr += (storage * sizeof(OChar *));
+    ptr += (storage * sizeof(ochar *));
   }
 
   /* C passes in a copy of the pointer in the original value. Thus, 

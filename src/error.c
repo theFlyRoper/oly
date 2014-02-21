@@ -25,21 +25,21 @@
 #include "oly/common.h"
 #include "oly/error.h"
 
-UFILE *u_stdout = NULL;   /* Unicode output */
-UFILE *u_stdin  = NULL;   /* Unicode input */
-UFILE *u_stderr = NULL;   /* Unicode error output */
-const OChar *program_name;
+OFILE *u_stdout = NULL;   /* Unicode output */
+OFILE *u_stdin  = NULL;   /* Unicode input */
+OFILE *u_stderr = NULL;   /* Unicode error output */
+const ochar *program_name;
 UResourceBundle *OlyResources;
 
 /** function definitions  */
 
 static void error (int32_t exit_status,
-                  const OChar *mode, 
-                  const OChar *message);
+                  const ochar *mode, 
+                  const ochar *message);
 
 static void
 error (int32_t exit_status,
-    const OChar *mode, const OChar *message)
+    const ochar *mode, const ochar *message)
 {
 
   u_fprintf (u_stderr, "%s: %s: %s.\n", program_name, mode, message);
@@ -49,19 +49,19 @@ error (int32_t exit_status,
 }
 
 void
-oly_warning (const OChar *message)
+oly_warning (const ochar *message)
 {
   error (-1, "warning", message);
 }
 
 void
-oly_error (const OChar *message)
+oly_error (const ochar *message)
 {
   error (-1, "ERROR", message);
 }
 
 void
-oly_fatal (const OChar *message)
+oly_fatal (const ochar *message)
 {
   error (EXIT_FAILURE, "FATAL", message);
 }

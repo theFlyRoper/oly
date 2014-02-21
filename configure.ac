@@ -50,9 +50,6 @@ AC_CONFIG_HEADERS([src/olyconf.h:src/olyconf-h.in])
 dnl questions address
 AC_SUBST(FAQ_ADDR,[maintainer@fakesite.com])
 
-dnl set libtool version info here.  Default for arg one uses PACKAGE_VERSION from AC_INIT
-AX_SET_VERSION_INFO([],[MAIN_])
-
 dnl Architecture, target and host checks 
 dnl must run early, otherwise, we won't know our host system.
 
@@ -91,6 +88,7 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MKDIR_P
 
+AC_PATH_PROG([RMV],[rm],[])
 AC_PATH_PROG([GENRB],[genrb],[])
 AC_PATH_PROG([PKGDATA],[pkgdata],[])
 
@@ -196,7 +194,9 @@ AC_CONFIG_FILES([doc/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)
-AC_DEFINE_SUBST([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])
+AC_SUBST([OLY_RESOURCE],[oly_lang])
+AC_DEFINE([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])
+
 
 AC_OUTPUT
 

@@ -48,7 +48,7 @@ syntax_install (Oly *oly, Syntax *table)
 
   for (table_ptr = table; table_ptr->handler; ++table_ptr)
     {
-      OChar *ch_ptr = table_ptr->ch;
+      ochar *ch_ptr = table_ptr->ch;
       
       /* You can set the syntax_handler for ASCII '\0' by using
 	 "" in the syntax table. */

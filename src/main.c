@@ -52,11 +52,11 @@ main( int argc, char **argv ){
   Oly             *oly      = oly_new ();
   int32_t         len,optc  = 0;
   char            rules_file_name[] = "./tests/data/supabreak.txt";
-  OChar           line[BUFSIZ];     /* main buffer */
-  OChar           *liner;
-  char            *optionError      = NULL;     
-  char            *locale           = NULL;
-  char            *dbg_var          = NULL;
+  ochar           line[BUFSIZ];     /* main buffer */
+  ochar           *liner;
+  char            *optionError;     
+  char            *locale;
+  char            *dbg_var;
   char            c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"";
   char            c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle";
   int             i=1;
@@ -70,8 +70,10 @@ main( int argc, char **argv ){
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(LOCALEDIR);
+  printf("\nHaven't run oget_user_locale yet.\n");
+  locale = oget_user_locale(); 
 #ifdef OLYDEV
-  printf("\n-- top of program --\n");
+  printf("\n-- top of program, locale is : %s\n", locale);
 #endif /* OLYDEV */
   init_all(oly, locale);
 #ifdef OLYDEV
@@ -84,7 +86,6 @@ main( int argc, char **argv ){
   }
   
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
-  /* locale = oget_user_locale(); */
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);
 
@@ -93,6 +94,7 @@ main( int argc, char **argv ){
 
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);
+  list_package_locales(OLY_RESOURCE);
   
   if (U_FAILURE(u_status)) {
     return EXIT_FAILURE;
