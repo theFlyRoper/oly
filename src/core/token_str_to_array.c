@@ -23,8 +23,12 @@
 #include <string.h>
 #include "oly/core.h"
 
-/* allocates a char ** array and copies each token into it. */
-char **token_str_to_array(char *s, char *delims, Oly_Status *status) 
+/* allocates a char ** array and copies each token into it. 
+ * will always return a (char **) where there is at least one string with 
+ * an empty value.
+ */
+char **
+token_str_to_array(char *s, char *delims, Oly_Status *status) 
 {
   const size_t    arr_size = count_tokens(s,delims), 
                   num_chars = count_nondelim_chars(s,delims);

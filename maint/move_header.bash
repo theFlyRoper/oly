@@ -8,7 +8,7 @@ scriptname=$0
 company=""
 version="0.1"
 
-description=" "
+description="Replace a header file location in a C source file with a new location."
 
 usage()
 {
