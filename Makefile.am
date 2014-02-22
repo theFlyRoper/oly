@@ -26,7 +26,7 @@ MAINTAINERCLEANFILES 		=	.deps \
 
 atool-clean: distclean 
 	@echo "atool-clean is a special command that clears out autotool detritus."
-	rm -f resources/Makefile.in
+	rm -f i18n/Makefile.in
 	rm -f tests/Makefile.in
 	rm -f doc/Makefile.in
 	rm -rf autom4te.cache .deps
@@ -40,8 +40,8 @@ ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 EXTRA_DIST							= ChangeLog tests/oly/loader/sh-oget_home tests/oly/loader/sh-oget_home.output 
 
 SUBDIRS 								= doc \
-													replace \
-													resources
+													lib \
+													i18n
 
 datadir									= @datadir@
 datarootdir							= @datarootdir@
@@ -72,7 +72,7 @@ csvparse_CPPFLAGS 			= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS						=	csvparse 
 
 noinst_LIBRARIES				=	src/libloader.a src/liboly.a \
-													src/liboly_dev.a src/libwrappers.a
+													src/liboly_dev.a src/libcore.a
 
 src_liboly_dev_a_SOURCES	=	src/debug/list_icu_countries.c \
 														src/debug/list_icu_langs.c \
@@ -85,14 +85,14 @@ src_libloader_a_SOURCES		=	src/loader/init_io.c \
 														src/loader/init_all.c \
 														src/loader/cleanenv.c 
 
-src_libwrappers_a_SOURCES	=	src/wrappers/count_tokens.c \
-													  src/wrappers/token_str_to_array.c \
-														src/wrappers/count_nondelim_chars.c 
+src_libcore_a_SOURCES			=	src/core/count_tokens.c \
+													  src/core/token_str_to_array.c \
+														src/core/count_nondelim_chars.c 
 
 src_liboly_a_SOURCES		=	\
-													src/wrappers/xstrdup.c \
-													src/wrappers/xmalloc.c \
-													src/wrappers/xstrerror.c \
+													src/core/xstrdup.c \
+													src/core/xmalloc.c \
+													src/core/xstrerror.c \
 													src/oly.c \
 													src/builtin.c \
 													src/eval.c \
@@ -119,16 +119,16 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ \
 check_PROGRAMS 								= tests/runtests \
 																tests/oly/loader/c-oget_home \
 																tests/oly/olyio/c-oly_getOCharArgs \
-																tests/oly/wrappers/c-count_tokens \
-																tests/oly/wrappers/c-count_nondelim_chars \
-																tests/oly/wrappers/c-token_str_to_array \
-																tests/oly/resources/c-alias \
-																tests/oly/resources/c-ja \
-																tests/oly/resources/c-el \
-																tests/oly/resources/c-root \
-																tests/oly/resources/c-missing-resource \
-																tests/oly/resources/c-missing-lang \
-																tests/oly/resources/c-fallback-lang 
+																tests/oly/core/c-count_tokens \
+																tests/oly/core/c-count_nondelim_chars \
+																tests/oly/core/c-token_str_to_array \
+																tests/oly/i18n/c-alias \
+																tests/oly/i18n/c-ja \
+																tests/oly/i18n/c-el \
+																tests/oly/i18n/c-root \
+																tests/oly/i18n/c-missing-resource \
+																tests/oly/i18n/c-missing-lang \
+																tests/oly/i18n/c-fallback-lang 
 tests_runtests_CPPFLAGS 			= -DSOURCE='"$(abs_top_srcdir)"' \
 																-DBUILD='"$(abs_top_builddir)"'
 check_LIBRARIES 							=	tests/tap/libtap.a
@@ -140,62 +140,62 @@ tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 tests_oly_loader_c_oget_home_SOURCES 	= tests/oly/loader/c-oget_home.c 
 tests_oly_loader_c_oget_home_LDADD 		= tests/tap/libtap.a src/libloader.a src/liboly.a \
 																				@ICUIO_LIBS@ 
-tests_oly_resources_c_el_SOURCES 	= tests/oly/resources/c-el.c src/error.c
-tests_oly_resources_c_el_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS) 
-tests_oly_resources_c_el_LDADD 		= tests/tap/libtap.a src/libloader.a \
+tests_oly_i18n_c_el_SOURCES 	= tests/oly/i18n/c-el.c src/error.c
+tests_oly_i18n_c_el_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS) 
+tests_oly_i18n_c_el_LDADD 		= tests/tap/libtap.a src/libloader.a \
 																				@ICUIO_LIBS@ 
-tests_oly_resources_c_ja_SOURCES 			= tests/oly/resources/c-ja.c src/error.c
-tests_oly_resources_c_ja_CPPFLAGS 		= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_resources_c_ja_LDADD 				= tests/tap/libtap.a src/libloader.a \
+tests_oly_i18n_c_ja_SOURCES 			= tests/oly/i18n/c-ja.c src/error.c
+tests_oly_i18n_c_ja_CPPFLAGS 		= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_i18n_c_ja_LDADD 				= tests/tap/libtap.a src/libloader.a \
 																				@ICUIO_LIBS@ 
-tests_oly_resources_c_root_SOURCES 			= tests/oly/resources/c-root.c src/error.c
-tests_oly_resources_c_root_CPPFLAGS 		= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_resources_c_root_LDADD 				= tests/tap/libtap.a src/libloader.a \
+tests_oly_i18n_c_root_SOURCES 			= tests/oly/i18n/c-root.c src/error.c
+tests_oly_i18n_c_root_CPPFLAGS 		= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_i18n_c_root_LDADD 				= tests/tap/libtap.a src/libloader.a \
 																				@ICUIO_LIBS@ 
-tests_oly_resources_c_missing_resource_SOURCES 	= tests/oly/resources/c-missing-resource.c \
+tests_oly_i18n_c_missing_resource_SOURCES 	= tests/oly/i18n/c-missing-resource.c \
 																									src/error.c
-tests_oly_resources_c_missing_resource_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_resources_c_missing_resource_LDADD = tests/tap/libtap.a src/libloader.a \
+tests_oly_i18n_c_missing_resource_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_i18n_c_missing_resource_LDADD = tests/tap/libtap.a src/libloader.a \
 																				@ICUIO_LIBS@ 
-tests_oly_resources_c_missing_lang_SOURCES 	= tests/oly/resources/c-missing-lang.c \
+tests_oly_i18n_c_missing_lang_SOURCES 	= tests/oly/i18n/c-missing-lang.c \
 																									src/error.c
-tests_oly_resources_c_missing_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_resources_c_missing_lang_LDADD 	= tests/tap/libtap.a src/libloader.a \
+tests_oly_i18n_c_missing_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_i18n_c_missing_lang_LDADD 	= tests/tap/libtap.a src/libloader.a \
 																						@ICUIO_LIBS@ 
-tests_oly_resources_c_fallback_lang_SOURCES 	= tests/oly/resources/c-fallback-lang.c \
+tests_oly_i18n_c_fallback_lang_SOURCES 	= tests/oly/i18n/c-fallback-lang.c \
 																									src/error.c
-tests_oly_resources_c_fallback_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_resources_c_fallback_lang_LDADD = tests/tap/libtap.a src/libloader.a \
+tests_oly_i18n_c_fallback_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_i18n_c_fallback_lang_LDADD = tests/tap/libtap.a src/libloader.a \
 																						@ICUIO_LIBS@ 
-tests_oly_resources_c_alias_SOURCES 			= tests/oly/resources/c-alias.c \
+tests_oly_i18n_c_alias_SOURCES 			= tests/oly/i18n/c-alias.c \
 																						src/error.c
-tests_oly_resources_c_alias_CPPFLAGS 			= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_resources_c_alias_LDADD 				= tests/tap/libtap.a src/libloader.a \
+tests_oly_i18n_c_alias_CPPFLAGS 			= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_i18n_c_alias_LDADD 				= tests/tap/libtap.a src/libloader.a \
 																						@ICUIO_LIBS@ 
 tests_oly_olyio_c_oly_getOCharArgs_SOURCES 	= tests/oly/olyio/c-oly_getOCharArgs.c \
-																						src/error.c src/wrappers/xmalloc.c \
-																						src/olyio/oly_getOCharArgs.c
+																							src/error.c src/core/xmalloc.c \
+																							src/olyio/oly_getOCharArgs.c
 tests_oly_olyio_c_oly_getOCharArgs_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_olyio_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a src/libloader.a \
 																						@ICUIO_LIBS@ 
-tests_oly_wrappers_c_count_tokens_SOURCES = tests/oly/wrappers/c-count_tokens.c \
-																						src/wrappers/count_tokens.c
-tests_oly_wrappers_c_count_tokens_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_wrappers_c_count_tokens_LDADD 		= tests/tap/libtap.a \
-																						@ICUIO_LIBS@ 
-tests_oly_wrappers_c_count_nondelim_chars_SOURCES = tests/oly/wrappers/c-count_nondelim_chars.c \
-																						src/wrappers/count_nondelim_chars.c
-tests_oly_wrappers_c_count_nondelim_chars_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_wrappers_c_count_nondelim_chars_LDADD 		= tests/tap/libtap.a \
-																						@ICUIO_LIBS@ 
-tests_oly_wrappers_c_token_str_to_array_SOURCES = tests/oly/wrappers/c-token_str_to_array.c \
-																									src/wrappers/token_str_to_array.c \
-																									src/wrappers/xmalloc.c \
-																						src/error.c
-tests_oly_wrappers_c_token_str_to_array_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
-tests_oly_wrappers_c_token_str_to_array_LDADD 		= tests/tap/libtap.a \
-																										src/libwrappers.a  \
-																						@ICUIO_LIBS@ 
+tests_oly_core_c_count_tokens_SOURCES 	= tests/oly/core/c-count_tokens.c \
+																					src/core/count_tokens.c
+tests_oly_core_c_count_tokens_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_count_tokens_LDADD 		= tests/tap/libtap.a \
+																					@ICUIO_LIBS@ 
+tests_oly_core_c_count_nondelim_chars_SOURCES 	= tests/oly/core/c-count_nondelim_chars.c \
+																									src/core/count_nondelim_chars.c
+tests_oly_core_c_count_nondelim_chars_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_count_nondelim_chars_LDADD 		= tests/tap/libtap.a \
+																									@ICUIO_LIBS@ 
+tests_oly_core_c_token_str_to_array_SOURCES = tests/oly/core/c-token_str_to_array.c \
+																							src/core/token_str_to_array.c \
+																							src/core/xmalloc.c \
+																							src/error.c
+tests_oly_core_c_token_str_to_array_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_token_str_to_array_LDADD 	= tests/tap/libtap.a \
+																							src/libcore.a  \
+																							@ICUIO_LIBS@ 
 
 
 

@@ -2,7 +2,7 @@
 
 # uses gencmn to build the resource data
 # gencmn can also make a C header, thus:
-# gencmn --name oly_lang -t dat -S fortune_resources.c fortune_resources.txt 
+# gencmn --name oly_lang -t dat -S root.c root.txt 
 datadir									= @datadir@
 datarootdir							= @datarootdir@
 localedir								= @localedir@
@@ -20,7 +20,7 @@ RESLIST									=	$(RESNAME).txt
 
 DATFILE									= $(RESNAME).dat
 
-RESDIR									=	$(top_srcdir)/resources
+RESDIR									=	$(top_srcdir)/i18n
 
 INDEX_NAME							= res_index
 

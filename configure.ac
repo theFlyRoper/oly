@@ -41,7 +41,7 @@ AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_AUX_DIR([ac-aux])
 AC_CONFIG_MACRO_DIR([ac-aux/m4])
 AC_CONFIG_TESTDIR([tests])
-AC_CONFIG_LIBOBJ_DIR([replace])
+AC_CONFIG_LIBOBJ_DIR([lib])
 
 AM_INIT_AUTOMAKE([1.8 subdir-objects \
                   dist-bzip2 no-dist-gzip readme-alpha])
@@ -77,9 +77,6 @@ AS_IF([test "x$enable_debug" != xyes],
 
 CFG_LOCALEDIR="${CFG_LOCALEDIR-${datadir}/locale/oly}"
 
-AC_ARG_VAR([CFG_LOCALEDIR],[The directory to store \
-            the ICU locale data for the program.  Defaults \
-            to ${datadir}/locale/oly.])
 
 dnl Checks for programs.
 AC_PROG_CPP
@@ -189,8 +186,8 @@ AC_DISABLE_FAST_INSTALL
 dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
-                 resources/Makefile \
-                 replace/Makefile \
+                 i18n/Makefile \
+                 lib/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)
@@ -206,7 +203,5 @@ dnl the configure tests and output.
 AS_IF([test "x$enable_debug" != xyes],
       [],
       [AC_MSG_NOTICE([Developer debug mode enabled.])])
-
-AC_MSG_NOTICE([CFG_LOCALEDIR  =  $CFG_LOCALEDIR])
 
 

@@ -53,7 +53,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = resources
+subdir = i18n
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/ac-aux/m4/libtool.m4 \
@@ -115,7 +115,6 @@ AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
-CFG_LOCALEDIR = @CFG_LOCALEDIR@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -207,7 +206,7 @@ builddir = @builddir@
 
 # uses gencmn to build the resource data
 # gencmn can also make a C header, thus:
-# gencmn --name oly_lang -t dat -S fortune_resources.c fortune_resources.txt 
+# gencmn --name oly_lang -t dat -S root.c root.txt 
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
@@ -248,7 +247,7 @@ SUFFIXES = .res
 RESNAME = @OLY_RESOURCE@
 RESLIST = $(RESNAME).txt
 DATFILE = $(RESNAME).dat
-RESDIR = $(top_srcdir)/resources
+RESDIR = $(top_srcdir)/i18n
 INDEX_NAME = res_index
 LANG_INDEX_FILE = $(INDEX_NAME).txt
 LANG_INDEX_RES = $(INDEX_NAME).res
@@ -298,9 +297,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu resources/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu i18n/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu resources/Makefile
+	  $(AUTOMAKE) --gnu i18n/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
