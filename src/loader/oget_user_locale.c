@@ -38,7 +38,7 @@ oget_user_locale (void) {
    * LC_ALL
    * LANG 
    */
-  size_t i = 0, len = 1, langlen = 0;
+  size_t i = 0, len = 1, langlen = 0, separators = 0;
   UAcceptResult acceptable;
   UErrorCode u_status = U_ZERO_ERROR;
   char    *language_val = getenv("LANGUAGE");
@@ -48,22 +48,6 @@ oget_user_locale (void) {
   if (language_val != NULL) {
     UEnumeration *available = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
     printf("We've just gotten available locales, yay! Language_val: %s\n", language_val);
-    langlen = strlen(language_val);
-    for (item = language_val; i<langlen; item++) {
-      if ( *item == ':') {
-        len++;
-      } 
-      i++;
-    }
-    
-    i -= (len-1);
-    printf("i minus len: %i\n",i);
-    i += (len * sizeof(char *));
-    printf("did some stuff. i = %i, len = %i.\n",i, len);
-    if (!(curr = (char **)xmalloc(i))) {
-      abort();
-    }
-    printf("Some other stuff.\n");
 
     curr[len - 1] = 0;
     i = 0;

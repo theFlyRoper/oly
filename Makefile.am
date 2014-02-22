@@ -72,7 +72,7 @@ csvparse_CPPFLAGS 			= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS						=	csvparse 
 
 noinst_LIBRARIES				=	src/libloader.a src/liboly.a \
-													src/liboly_dev.a
+													src/liboly_dev.a src/libwrappers.a
 
 src_liboly_dev_a_SOURCES	=	src/debug/list_icu_countries.c \
 														src/debug/list_icu_langs.c \
@@ -84,6 +84,10 @@ src_libloader_a_SOURCES		=	src/loader/init_io.c \
 														src/loader/close_oly.c \
 														src/loader/init_all.c \
 														src/loader/cleanenv.c 
+
+src_libwrappers_a_SOURCES	=	src/wrappers/count_tokens.c \
+													  src/wrappers/token_str_to_array.c \
+														src/wrappers/count_nondelim_chars.c 
 
 src_liboly_a_SOURCES		=	\
 													src/wrappers/xstrdup.c \
@@ -115,6 +119,9 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ \
 check_PROGRAMS 								= tests/runtests \
 																tests/oly/loader/c-oget_home \
 																tests/oly/olyio/c-oly_getOCharArgs \
+																tests/oly/wrappers/c-count_tokens \
+																tests/oly/wrappers/c-count_nondelim_chars \
+																tests/oly/wrappers/c-token_str_to_array \
 																tests/oly/resources/c-alias \
 																tests/oly/resources/c-ja \
 																tests/oly/resources/c-el \
@@ -170,6 +177,24 @@ tests_oly_olyio_c_oly_getOCharArgs_SOURCES 	= tests/oly/olyio/c-oly_getOCharArgs
 																						src/olyio/oly_getOCharArgs.c
 tests_oly_olyio_c_oly_getOCharArgs_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_olyio_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a src/libloader.a \
+																						@ICUIO_LIBS@ 
+tests_oly_wrappers_c_count_tokens_SOURCES = tests/oly/wrappers/c-count_tokens.c \
+																						src/wrappers/count_tokens.c
+tests_oly_wrappers_c_count_tokens_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_wrappers_c_count_tokens_LDADD 		= tests/tap/libtap.a \
+																						@ICUIO_LIBS@ 
+tests_oly_wrappers_c_count_nondelim_chars_SOURCES = tests/oly/wrappers/c-count_nondelim_chars.c \
+																						src/wrappers/count_nondelim_chars.c
+tests_oly_wrappers_c_count_nondelim_chars_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_wrappers_c_count_nondelim_chars_LDADD 		= tests/tap/libtap.a \
+																						@ICUIO_LIBS@ 
+tests_oly_wrappers_c_token_str_to_array_SOURCES = tests/oly/wrappers/c-token_str_to_array.c \
+																									src/wrappers/token_str_to_array.c \
+																									src/wrappers/xmalloc.c \
+																						src/error.c
+tests_oly_wrappers_c_token_str_to_array_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_wrappers_c_token_str_to_array_LDADD 		= tests/tap/libtap.a \
+																										src/libwrappers.a  \
 																						@ICUIO_LIBS@ 
 
 
