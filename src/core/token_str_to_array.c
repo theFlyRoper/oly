@@ -21,6 +21,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include "oly/core.h"
 
 /* allocates a char ** array and copies each token into it. 
@@ -38,6 +39,8 @@ token_str_to_array(char *s, char *delims, Oly_Status *status)
                   ((arr_size * sizeof(char *)) 
                    + ((arr_size + num_chars) * sizeof(char)))),
                  *next, *result_position;
+
+  assert(result != NULL);
 
   *status = OLY_OKAY;
   result_position = (char *)(result + (arr_size * sizeof(char *)));

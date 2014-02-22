@@ -91,5 +91,18 @@ Types should use lower case exclusively.
 
 If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "+io.h+", but rather "oly_io.h".
 
+Error handling
+--------------
+For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs.
+
+References:
+
+[quote, 'http://stackoverflow.com/questions/385975/error-handling-in-c-code/387123#387123[AShelly Stack Overflow User]']
+____
+If the only possible errors are programmer errors, don't return an error code, use asserts inside the function.
+
+An assertion that validates the inputs clearly communicates what the function expects, while too much error checking can obscure the program logic. Deciding what to do for all the various error cases can really complicate the design. Why figure out how functionX should handle a null pointer if you can instead insist that the programmer never pass one?
+____
+
 
 // vim: set syntax=asciidoc:

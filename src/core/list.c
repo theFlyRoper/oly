@@ -17,7 +17,7 @@
    }}} */
 
 #if HAVE_CONFIG_H
-# include "liboly/oly/olyconf.h"
+# include "olyconf.h"
 #endif
 #include "oly/common.h"
 

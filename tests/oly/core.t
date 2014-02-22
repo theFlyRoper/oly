@@ -23,11 +23,13 @@ ok_result () {
 }
 
 # Total tests.  There are two tests per row in ok_result.
-plan 6
+plan 10
 
 # Run the individual tests.
 ok_result c-count_tokens "$BUILD"  0
 ok_result c-count_nondelim_chars "$BUILD"  0
 ok_result c-token_str_to_array "$BUILD"  0
+ok_result sh-oget_home "$BUILD"  0
+ok_result sh-oly_getOCharArgs "$BUILD"  0
 
 

@@ -49,6 +49,7 @@ atool-clean:
 
 TXTFILES							=	index.txt \
 												input_doc.txt \
+												code_standards.txt \
 												inline_in_automake.txt \
 												bibliography.txt
 

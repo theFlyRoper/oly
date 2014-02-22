@@ -63,16 +63,14 @@ dnl simple configuration level debug mode, define in makefile.am
 
 AC_ARG_ENABLE(debug,
     [AS_HELP_STRING([--enable-debug],
-                    [enables debug defines and asserts (default is no).])],
+                    [enables debug defines (default is no).])],
                     [enable_debug=yes],
                     [enable_debug=no])
 
-AS_IF([test "x$enable_debug" != xyes],
-      [AC_SUBST(DEV_DEF,["-DNDEBUG=1"])],
+AS_IF([test "x$enable_debug" != xyes],,
       [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])])
 
-AS_IF([test "x$enable_debug" != xyes],
-      ,
+AS_IF([test "x$enable_debug" != xyes],,
       [AC_SUBST(DEV_LIB,["src/liboly_dev.a"])])
 
 CFG_LOCALEDIR="${CFG_LOCALEDIR-${datadir}/locale/oly}"
