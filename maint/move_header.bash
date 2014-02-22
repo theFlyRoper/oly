@@ -83,16 +83,11 @@ else
         usage
 fi
 
-if [ -z "${dirval}" || -z "${oldname}" || -z "${newname}" ]
-then
-    echo "ERROR: -d, -o and -n are all required."
-    exit
-fi
 
 
 
-for file in $( find $dirval -type f ); 
+for file in $( find ${dirval?} -type f ); 
 do 
-  sed -i "$file" -e "s@${oldname}@${newname}@g"
+  sed -i "${file?}" -e "s@${oldname?}@${newname?}@g"
 done
 

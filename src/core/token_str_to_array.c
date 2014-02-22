@@ -21,7 +21,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "oly/wrappers.h"
+#include "oly/core.h"
 
 /* allocates a char ** array and copies each token into it. */
 char **token_str_to_array(char *s, char *delims, Oly_Status *status) 
