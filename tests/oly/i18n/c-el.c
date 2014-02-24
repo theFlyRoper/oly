@@ -46,11 +46,11 @@ main( int argc, char **argv ){
 
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
-  u_setDataDirectory(LOCALEDIR);
+  u_setDataDirectory(TEST_LOCALEDIR);
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
   u_init(&u_status);
-  init_io(locale);
+  init_io(locale, NULL);
 
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);

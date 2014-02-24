@@ -38,26 +38,17 @@ int
 main( int argc, char **argv ){
   int32_t         len       = 0;
   ochar           *liner;
-  char            *locale   = "lkt";
-  /* lkt = lakota.  Language of North American indigenous peoples on the great plains.
-   * Has relatively few native speakers, though enough to justify inclusion in
-   * ICU.  If we do have someone translate oly into lakota, well, then, it will
-   * be a bigger success than I ever thought possible. - Jon T. 
-   *
-   * The point of this test is to check that a language which is unavailable in
-   * Oly but available in ICU comes back as the default. 
-   * checks for U_USING_DEFAULT_WARNING at the end and returns 0 if it is found.
-   */
+  char            *locale   = "QQQQETOPQIEJGF";
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 
 
   program_name      = argv[0];
 
-  u_setDataDirectory(LOCALEDIR);
+  u_setDataDirectory(TEST_LOCALEDIR);
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
   u_init(&u_status);
-  init_io(locale);
+  init_io(locale, NULL);
   if (U_FAILURE(u_status)) {
     printf("Could not open! status: %s\n", u_errorName(u_status));
   }

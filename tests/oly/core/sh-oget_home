@@ -9,9 +9,9 @@
 
 # Plan test.
 plan 2
-ok_program 'With real env.' 0 '' "$BUILD/oly/loader/c-oget_home"
+ok_program 'With real env.' 0 '' "$BUILD/oly/core/c-oget_home"
 HOMEHOLD=$HOME
 export HOME=/fakehome
-ok_program 'With fake env.' 1 '' "$BUILD/oly/loader/c-oget_home"
+ok_program 'With fake env.' 1 '' "$BUILD/oly/core/c-oget_home"
 export HOME=$HOMEHOLD
 unset HOMEHOLD

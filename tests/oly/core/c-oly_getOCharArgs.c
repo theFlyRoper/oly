@@ -14,7 +14,6 @@
 
 #include "oly/core.h"
 #include "oly/error.h"
-#include "oly/olyio.h"
 
 int
 main( int argc, char **argv ){
@@ -25,7 +24,7 @@ main( int argc, char **argv ){
   Oly_Status      status;
 
   u_init(&u_status);
-  init_io(locale);
+  init_io(locale, NULL);
 
   if (U_FAILURE(u_status)) {
     printf("Could not open! status: %s\n", u_errorName(u_status));
@@ -38,7 +37,8 @@ main( int argc, char **argv ){
   }
   for (i = 1;  ((curr = result[i]) != NULL);  i++) {
     curr = result[i];
-    u_fprintf(u_stdout, "%S\n", curr);
+    u_fprintf(u_stdout, "%S!", curr);
   }
+  u_fprintf(u_stdout, "\n");
   return EXIT_SUCCESS;
 }

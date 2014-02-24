@@ -18,37 +18,29 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ## MA 02110-1301, USA. }}}
 
-datadir									= @datadir@
-datarootdir							= @datarootdir@
-localedir								= @localedir@
-
-RMV 										= @RMV@
-
-RESNAMES								= root en el ja
-INDEX_NAME							= res_index
-LANG_INDEX_FILE					=	$(INDEX_NAME).txt
-LANG_INDEX_RES					=	$(INDEX_NAME).res
-
-BUILT_SOURCES						= i18n/$(LANG_INDEX_FILE)
-
-ACLOCAL_AMFLAGS 				= -I ac-aux/m4
-EXTRA_DIST							= ChangeLog i18n/$(LANG_INDEX_FILE) \
-													tests/oly/core/sh-oget_home \
-													tests/oly/core/sh-oget_home.output 
-
-pkgdata_DATA						=	i18n/$(DATFILE).dat i18n/root.res i18n/en.res \
-													i18n/el.res i18n/ja.res i18n/$(LANG_INDEX_RES)
-
-check_DATA							= tests/data/i18n/$(DATFILE).dat \
-													tests/data/i18n/root.res \
-													tests/data/i18n/en.res \
-													tests/data/i18n/el.res \
-													tests/data/i18n/ja.res \
-													tests/data/i18n/$(LANG_INDEX_RES)
-
+SUFFIXES									= .res .dat .txt
 SUBDIRS 								= doc lib 
+ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
-noinst_HEADERS					=	src/oly/break_rules.h src/oly/builtin.h \
+AM_CPPFLAGS							= -I$(top_srcdir) -I$(top_srcdir)/src
+
+## first i18n files, then test files.
+EXTRA_DIST							= i18n/en.txt i18n/root.txt i18n/el.txt i18n/ja.txt i18n/zh.txt \
+													tests/data/i18n/en.txt tests/data/i18n/root.txt \
+													tests/data/i18n/el.txt tests/data/i18n/ja.txt
+
+dist_check_DATA					= tests/TESTS \
+													tests/oly/core/c-alias.output \
+													tests/oly/core/c-el.output \
+													tests/oly/core/c-fallback_lang.output 
+
+dist_check_SCRIPTS			= tests/core.t tests/i18n.t \
+													tests/oly/core/sh-oget_home \
+													tests/oly/core/sh-oget_user_locale \
+													tests/oly/core/sh-oly_getOCharArgs
+													
+## TODO: this should use nobase_ instead 
+dist_noinst_HEADERS			=	src/oly/break_rules.h src/oly/builtin.h \
 													src/oly/common.h src/oly/core.h \
 													src/oly/data_source.h  \
 													src/oly/error.h src/oly/eval.h \
@@ -57,13 +49,9 @@ noinst_HEADERS					=	src/oly/break_rules.h src/oly/builtin.h \
 													src/oly/output.h src/oly/syntax.h \
 													tests/tap/basic.h tests/tap/float.h \
 													tests/tap/macros.h
-DEFS 											= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
-DATFILE										=	@OLY_RESOURCE@
-SUFFIXES									= .res .dat
-I18N_BUILDDIR							= $(abs_top_builddir)/i18n/
-I18N_TESTBUILDDIR					= $(abs_top_builddir)/tests/data/i18n/
 AM_CFLAGS 								= -fstack-protector-all @ICU_CFLAGS@
-csvparse_CPPFLAGS 				= $(DEFS)
+csvparse_CPPFLAGS 				= $(AM_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
+														-DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS							=	csvparse 
 noinst_LIBRARIES					=	src/liboly_dev.a src/libcore.a src/libstate.a
 src_liboly_dev_a_SOURCES	=	src/debug/list_icu_countries.c \
@@ -112,61 +100,85 @@ csvparse_SOURCES					= src/main.c \
 csvparse_LDADD 						=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
 														src/libcore.a 
 
-# i18n stuff starts here.
+## i18n, both for tests and the main library.
 
-# uses pkgdata tool from ICU to build the resource data
-# ICU tool gencmn can also make a C header, thus:
-# gencmn --name oly_lang -t dat -S root.c root.txt 
+RESNAMES									= root en el ja
 
-# Resource shortname
-ALLRESFILES							= $(LANG_INDEX_RES) $(RESFILES)
-PKGDATAOPTS							=	-s $(abs_top_srcdir) --tempdir .deps \
-													-e $(DATFILE) -v
+i18ndir										= $(datadir)/i18n/
+
+i18n_DATA									= i18n/oly_lang.dat tests/data/i18n/testlang.dat
+
+i18n_oly_lang_dat_RES			= i18n/en.res i18n/root.res i18n/el.res i18n/ja.res i18n/zh.res
+tests_data_i18n_testlang_dat_RES = tests/data/i18n/en.res tests/data/i18n/root.res \
+																	 tests/data/i18n/el.res tests/data/i18n/ja.res 
+i18n_oly_lang_dat_PREFLIGHT	= $(i18n_oly_lang_dat_RES) i18n/res_index.txt \
+															i18n/res_list.txt i18n/res_index.res
+														
+tests_data_i18n_testlang_dat_PREFLIGHT =  $(tests_data_i18n_testlang_dat_RES) \
+																			tests/data/i18n/res_list.txt \
+																			tests/data/i18n/res_index.txt \
+																			tests/data/i18n/res_index.res
+
+
+PKGDATAOPTS							=	-s $(abs_top_builddir) --tempdir .deps -v
 GENRBOPT								= -s $(abs_top_srcdir) -e UTF-8 \
 													--omitCollationRules
 
-RESLIST									=	$(DATFILE).txt
+i18ndirs:
+	$(MKDIR_P) i18n tests/data/i18n
 
-.txt.res:
-	@echo "generating $@"
-	$(GENRB) $(GENRBOPT) $^
+.txt.res: 
+	@echo "generating $@"; \
+	SRCDIR_VAL=`echo "$(top_srcdir)" | $(SED) -e 's@[\.\*]@\\\\&@g'`; \
+	echo "SRCDIR_VAL: $$SRCDIR_VAL"; \
+	$(GENRB) $(GENRBOPT) $^ -d `echo "$^" | $(SED) -e 's@/[^/]*$$@@g' \
+		-e "s@^$$SRCDIR_VAL@$(abs_top_builddir)@g"`
 
 define build_index
 @echo "generating $@ (list of installed language name locales)"; \
+$(RMV) -f $@; \
+INDEX_NAME=`echo "$@" | $(SED) -e 's@.*/@@g' -e 's@\..*@@g'`; \
+filelist=`echo "$@" | $(SED) 's@/[^/]*$$@@g'`; \
 echo "// Warning this file is automatically generated" > $@; \
-echo "$(INDEX_NAME):table(nofallback) {" >> $@; \
+echo "$$INDEX_NAME:table(nofallback) {" >> $@; \
 echo "    InstalledLocales {" >> $@; \
-for file in $(RESNAMES); do \
+for file in `ls $$filelist | $(SED) -e 's@.*/@@g' -e 's@\..*@@g'`; do \
 	echo "        $$file {\"\"}" >> $@; \
 done; \
 echo "    }" >> $@; \
 echo "}" >> $@;
 endef
 
-i18n/$(LANG_INDEX_FILE):
+i18n/res_index.txt:
 	$(build_index)
 
-tests/data/i18n/$(LANG_INDEX_FILE):
+tests/data/i18n/res_index.txt:
 	$(build_index)
 
-$(RESLIST): $(dist_pkgdata_DATA) 
-	ls $(I18N_BUILDDIR)/*.res > $@
+i18n/res_list.txt: $(i18n_oly_lang_dat_RES) i18n/res_index.res
+	$(MKDIR_P) i18n/
+	ls i18n/*.res > $@
 
-$(DATFILE).dat: $(ALLRESFILES) $(RESLIST)
+tests/data/i18n/res_list.txt: $(tests_data_i18n_oly_lang_dat_RES) tests/data/i18n/res_index.res
+	$(MKDIR_P) tests/data/i18n/
+	ls tests/data/i18n/*.res > $@
+
+i18n/oly_lang.dat: $(i18n_oly_lang_dat_PREFLIGHT) 
 	mkdir -p .deps
-	$(PKGDATA) --name $(DATFILE) --mode common $(PKGDATAOPTS) $(RESLIST)
+	$(PKGDATA) --name oly_lang --mode common $(PKGDATAOPTS) \
+		-d i18n i18n/res_list.txt 
 
-# gencmn can generate a .dat file too using these commands
-# gencmn --name $(DATFILE) -t dat 0 $(RESLIST)
+tests/data/i18n/testlang.dat: $(tests_data_i18n_testlang_dat_PREFLIGHT) 
+	mkdir -p .deps
+	$(PKGDATA) --name testlang --mode common $(PKGDATAOPTS) \
+		-d `echo "$@" | $(SED) 's@/[^/]*$$@@g'` tests/data/i18n/res_list.txt
 
-# build a static lib with pkgdata:
-# lib$(DATFILE).a: $(RESFILES) $(RESLIST)
-#	mkdir -p .deps
-#	$(PKGDATA) --name $(DATFILE) --mode static $(PKGDATAOPTS) $(RESLIST)
+# end of i18n.
 
-## test/check starts here.
-CHECK_DEFS							= @DEFS@ @DEV_DEF@ \
-													-DTEST_LOCALEDIR=\"$(I18N_TESTBUILDDIR)\"
+## tests/check starts here.
+CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
+													-DTEST_LOCALEDIR=\"$(I18N_TESTBUILDDIR)\" \
+													-I$(top_srcdir)/src
 
 check_PROGRAMS 					= tests/runtests \
 													tests/oly/core/c-oget_home \
@@ -179,9 +191,9 @@ check_PROGRAMS 					= tests/runtests \
 													tests/oly/i18n/c-ja \
 													tests/oly/i18n/c-el \
 													tests/oly/i18n/c-root \
-													tests/oly/i18n/c-missing-resource \
-													tests/oly/i18n/c-missing-lang \
-													tests/oly/i18n/c-fallback-lang 
+													tests/oly/i18n/c-missing_resource \
+													tests/oly/i18n/c-missing_lang \
+													tests/oly/i18n/c-fallback_lang 
 tests_runtests_CPPFLAGS 			= $(CHECK_DEFS) 
 check_LIBRARIES 							=	tests/tap/libtap.a
 tests_tap_libtap_a_CPPFLAGS 	= $(CPPFLAGS) -I$(abs_top_srcdir)/tests
@@ -189,7 +201,12 @@ tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 																tests/tap/float.c tests/tap/float.h \
 																tests/tap/macros.h
 
+tests_oly_core_c_oget_user_locale_SOURCES 	= tests/oly/core/c-oget_user_locale.c 
+tests_oly_core_c_oget_user_locale_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_oget_user_locale_LDADD 		= tests/tap/libtap.a src/libcore.a \
+																			@ICUIO_LIBS@ 
 tests_oly_core_c_oget_home_SOURCES 	= tests/oly/core/c-oget_home.c 
+tests_oly_core_c_oget_home_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oget_home_LDADD 		= tests/tap/libtap.a src/libcore.a \
 																			@ICUIO_LIBS@ 
 tests_oly_core_c_oly_getOCharArgs_SOURCES 	= tests/oly/core/c-oly_getOCharArgs.c \
@@ -222,13 +239,13 @@ tests_oly_i18n_c_ja_LDADD 				= tests/tap/libtap.a src/libcore.a @ICUIO_LIBS@
 tests_oly_i18n_c_root_SOURCES 		= tests/oly/i18n/c-root.c 
 tests_oly_i18n_c_root_CPPFLAGS 		= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_root_LDADD 			= tests/tap/libtap.a src/libcore.a @ICUIO_LIBS@ 
-tests_oly_i18n_c_missing_resource_SOURCES 	= tests/oly/i18n/c-missing-resource.c 
+tests_oly_i18n_c_missing_resource_SOURCES 	= tests/oly/i18n/c-missing_resource.c 
 tests_oly_i18n_c_missing_resource_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_missing_resource_LDADD = tests/tap/libtap.a src/libcore.a @ICUIO_LIBS@ 
-tests_oly_i18n_c_missing_lang_SOURCES 	= tests/oly/i18n/c-missing-lang.c src/core/error.c
+tests_oly_i18n_c_missing_lang_SOURCES 	= tests/oly/i18n/c-missing_lang.c src/core/error.c
 tests_oly_i18n_c_missing_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_missing_lang_LDADD 	= tests/tap/libtap.a src/libcore.a @ICUIO_LIBS@ 
-tests_oly_i18n_c_fallback_lang_SOURCES 	= tests/oly/i18n/c-fallback-lang.c 
+tests_oly_i18n_c_fallback_lang_SOURCES 	= tests/oly/i18n/c-fallback_lang.c 
 tests_oly_i18n_c_fallback_lang_CPPFLAGS = $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_fallback_lang_LDADD = tests/tap/libtap.a src/libcore.a @ICUIO_LIBS@ 
 tests_oly_i18n_c_alias_SOURCES 			= tests/oly/i18n/c-alias.c 
@@ -240,40 +257,12 @@ check-local: $(check_PROGRAMS)
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
 	    -b '$(abs_top_builddir)/tests' -l '$(abs_top_srcdir)/tests/TESTS'
 
-## end of test/check stuff.
+## end of tests/check stuff.
 
-## maintenance and cleaning
-MAINTAINERCLEANFILES 		=	.deps \
-													deps \
-													src/olyconf-h.in~
-.PHONY: atool-clean clean-local-res
+## maint and cleaning
+CLEANFILES 					= $(i18n_oly_lang_dat_PREFLIGHT) \
+											$(tests_data_i18n_testlang_dat_PREFLIGHT) \
+											$(i18n_DATA) 
 
-maintainer-clean-local: i18n/$(LANG_INDEX_FILE) \
-	tests/data/i18n/$(LANG_INDEX_FILE)
-
-clean-local-res:
-	$(RMV) -rf .deps
-	$(RMV) -f i18n/*.res
-	$(RMV) -f tests/data/i18n/*.res
-
-clean-local: clean-local-res
-
-distclean-local: clean-local 
-
-atool-clean: distclean 
-	@echo "atool-clean is a special command that clears out autotool detritus."
-	$(RMV) -f i18n/Makefile.in
-	$(RMV) -f tests/Makefile.in
-	$(RMV) -f doc/Makefile.in
-	$(RMV) -rf autom4te.cache .deps
-	$(RMV) -rf aclocal.m4 Makefile.in configure  src/olyconf-h.in~ tests/atconfig
-
-DISTCLEANFILES 					=	*~ src/*~
-
-CLEANFILES							= $(RESLIST) \
-													$(RESTARGET) \
-													$(DATFILE).dat \
-													$(INDEX_NAME).res \
-													$(LANG_INDEX_FILE) \
-													$(DATFILE)_dat.s 
+DISTCLEANFILES 			= tests/atconfig
 

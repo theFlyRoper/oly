@@ -191,6 +191,7 @@ AC_SUBST(ac_aux_dir)
 AC_SUBST([OLY_RESOURCE],[oly_lang])
 AC_DEFINE([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])
 
+AC_CONFIG_COMMANDS([i18n],[$MKDIR_P i18n tests/data/i18n],[])
 
 AC_OUTPUT
 

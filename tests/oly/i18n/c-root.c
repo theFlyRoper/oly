@@ -44,11 +44,11 @@ main( int argc, char **argv ){
 
   program_name      = argv[0];
 
-  u_setDataDirectory(LOCALEDIR);
+  u_setDataDirectory(TEST_LOCALEDIR);
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
   u_init(&u_status);
-  init_io(locale);
+  init_io(locale, NULL);
   if (U_FAILURE(u_status)) {
     printf("Could not open! status: %s\n", u_errorName(u_status));
   }

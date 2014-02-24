@@ -29,8 +29,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "oly/core.h"
 #include "oly/error.h"
-#include "oly/olyio.h"
 
 Oly_Status
 oly_getocharArgs(ochar ***result, char **source, int32_t argc){
@@ -52,7 +52,7 @@ oly_getocharArgs(ochar ***result, char **source, int32_t argc){
   ptr = (ochar *)curr + (arr_size * sizeof(ochar *));
   for (i = 0;  (var = source[i]) != 0;  i++) {
     curr[arr_ptr++] = ptr;
-    storage = (strlen(var) + sizeof(ochar));
+    storage = ((strlen(var)+1) * sizeof(ochar));
     u_uastrncpy( ptr, var, storage );
     ptr += (storage * sizeof(ochar *));
   }
