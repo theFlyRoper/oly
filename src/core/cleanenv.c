@@ -32,7 +32,7 @@
 
 #include "oly/common.h"
 #include "oly/error.h"
-#include "oly/loader.h"
+#include "oly/core.h"
 
 /* The following function(s) are
  * adapted from the Secure Programming 

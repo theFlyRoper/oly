@@ -1,8 +1,5 @@
 /*
- * File loader.h
- *
- * load and initialize everything.
- * used in main.c and the loading functions
+ * File break_rules.h
  */
 #ifndef BREAK_RULES_H
 #define BREAK_RULES_H 1

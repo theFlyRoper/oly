@@ -22,7 +22,7 @@ datadir									= @datadir@
 datarootdir							= @datarootdir@
 localedir								= @localedir@
 
-RMV = @RMV@
+RMV 										= @RMV@
 
 RESNAMES								= root en el ja
 INDEX_NAME							= res_index
@@ -48,18 +48,20 @@ check_DATA							= tests/data/i18n/$(DATFILE).dat \
 
 SUBDIRS 								= doc lib 
 
-noinst_HEADERS					=	src/oly/error.h \
-													src/oly/loader.h \
-													src/olyconf.h \
-													src/oly/output.h \
-													src/oly/common.h \
-													tests/tap/basic.h \
-													tests/tap/float.h \
+noinst_HEADERS					=	src/oly/break_rules.h src/oly/builtin.h \
+													src/oly/common.h src/oly/core.h \
+													src/oly/data_source.h  \
+													src/oly/error.h src/oly/eval.h \
+													src/oly/list.h src/oly/oly.h \
+													src/oly/oly_dev.h \
+													src/oly/output.h src/oly/syntax.h \
+													tests/tap/basic.h tests/tap/float.h \
 													tests/tap/macros.h
 DEFS 											= @DEFS@ @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
 DATFILE										=	@OLY_RESOURCE@
-SUFFIXES									= .res 
+SUFFIXES									= .res .dat
 I18N_BUILDDIR							= $(abs_top_builddir)/i18n/
+I18N_TESTBUILDDIR					= $(abs_top_builddir)/tests/data/i18n/
 AM_CFLAGS 								= -fstack-protector-all @ICU_CFLAGS@
 csvparse_CPPFLAGS 				= $(DEFS)
 bin_PROGRAMS							=	csvparse 
@@ -118,10 +120,10 @@ csvparse_LDADD 						=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
 
 # Resource shortname
 ALLRESFILES							= $(LANG_INDEX_RES) $(RESFILES)
-PKGDATAOPTS							=	-s $(abs_top_srcdir) -d $(I18N_BUILDDIR) \
-													--tempdir .deps -e $(DATFILE) -v
-GENRBOPT								= -s $(abs_top_srcdir) -d $(I18N_BUILDDIR) \
-													-e UTF-8 --omitCollationRules
+PKGDATAOPTS							=	-s $(abs_top_srcdir) --tempdir .deps \
+													-e $(DATFILE) -v
+GENRBOPT								= -s $(abs_top_srcdir) -e UTF-8 \
+													--omitCollationRules
 
 RESLIST									=	$(DATFILE).txt
 
@@ -144,6 +146,9 @@ endef
 i18n/$(LANG_INDEX_FILE):
 	$(build_index)
 
+tests/data/i18n/$(LANG_INDEX_FILE):
+	$(build_index)
+
 $(RESLIST): $(dist_pkgdata_DATA) 
 	ls $(I18N_BUILDDIR)/*.res > $@
 
@@ -161,7 +166,7 @@ $(DATFILE).dat: $(ALLRESFILES) $(RESLIST)
 
 ## test/check starts here.
 CHECK_DEFS							= @DEFS@ @DEV_DEF@ \
-													-DTEST_LOCALEDIR=\"$(abs_top_builddir)/tests/data/i18n/\"
+													-DTEST_LOCALEDIR=\"$(I18N_TESTBUILDDIR)\"
 
 check_PROGRAMS 					= tests/runtests \
 													tests/oly/core/c-oget_home \
@@ -188,7 +193,7 @@ tests_oly_core_c_oget_home_SOURCES 	= tests/oly/core/c-oget_home.c
 tests_oly_core_c_oget_home_LDADD 		= tests/tap/libtap.a src/libcore.a \
 																			@ICUIO_LIBS@ 
 tests_oly_core_c_oly_getOCharArgs_SOURCES 	= tests/oly/core/c-oly_getOCharArgs.c \
-																							src/error.c src/core/xmalloc.c \
+																							src/core/error.c src/core/xmalloc.c \
 																							src/core/oly_getOCharArgs.c
 tests_oly_core_c_oly_getOCharArgs_CPPFLAGS 	= $(CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a src/libcore.a \
@@ -265,8 +270,7 @@ atool-clean: distclean
 
 DISTCLEANFILES 					=	*~ src/*~
 
-CLEANFILES							= $(RESFILES) \
-													$(RESLIST) \
+CLEANFILES							= $(RESLIST) \
 													$(RESTARGET) \
 													$(DATFILE).dat \
 													$(INDEX_NAME).res \

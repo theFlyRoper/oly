@@ -29,7 +29,7 @@
 
 #include "oly/common.h"
 #include "oly/error.h"
-#include "oly/loader.h"
+#include "oly/core.h"
 
 char *
 oget_home (struct passwd *pwd) {

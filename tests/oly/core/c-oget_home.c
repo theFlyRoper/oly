@@ -27,7 +27,7 @@
 #include <pwd.h>
 
 #include "oly/common.h"
-#include "oly/loader.h"
+#include "oly/core.h"
 
 extern char **environ; 
 

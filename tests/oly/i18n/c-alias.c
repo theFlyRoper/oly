@@ -30,7 +30,7 @@
 
 #include "oly/common.h"
 #include "oly/error.h"
-#include "oly/loader.h"
+#include "oly/core.h"
 /* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
 /* MAIN */

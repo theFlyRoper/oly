@@ -20,7 +20,6 @@ usage()
         
         -o          : old header name.
         -n          : new header name.
-        -d          : dir where you start.
         " 
     exit
 }
@@ -64,15 +63,6 @@ then
                 fi
                 newname="$1"
                 ;;
-            -d )
-                shift
-                if [[ "$1" == -* || -z "$1" ]] 
-                then
-                    echo "ERROR: Please specify the working directory with -d"
-                    exit
-                fi
-                dirval="$1"
-                ;;
             * )
                 usage
             ;;
@@ -84,9 +74,7 @@ else
 fi
 
 
-
-
-for file in $( find ${dirval?} -type f ); 
+for file in `grep -rlI "${oldname}" .`; 
 do 
   sed -i "${file?}" -e "s@${oldname?}@${newname?}@g"
 done
