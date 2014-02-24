@@ -29,55 +29,40 @@
 #include <pwd.h>
 
 #include "oly/error.h"
-#include "oly/loader.h"
+#include "oly/core.h"
 
 char *
 oget_user_locale (void) {
-  /* currently follows GNU coding standards by environment variables:
-   * LANGUAGE (a colon-separated list of language codes)
-   * LC_ALL
-   * LANG 
+  /* sorta follows the GNU coding standards; looks at LANGUAGE 
+   * (a colon-separated list of language codes) first, then uses
+   * ICU's uloc_getName function, which sets locale to the default 
+   * if it is null.
    */
-  size_t i = 0, len = 1, langlen = 0, separators = 0;
-  UAcceptResult acceptable;
-  UErrorCode u_status = U_ZERO_ERROR;
-  char    *language_val = getenv("LANGUAGE");
-  char    sep[1] = ":";
-  char    **curr = NULL, *locale = NULL, *word = NULL, *item = NULL, *ptr = NULL;
-  printf("We're in the oget_user_locale function!\n");
-  if (language_val != NULL) {
-    UEnumeration *available = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
-    printf("We've just gotten available locales, yay! Language_val: %s\n", language_val);
-
-    curr[len - 1] = 0;
-    i = 0;
-    printf("Even more other stuff.\n");
-    ptr = (char *)curr + (len * sizeof(char *));
-    for (word = strtok_r(language_val, sep, &item); word; 
-        word = strtok_r(NULL, sep, &item))
-    {
-      curr[i++] = ptr;
-      len = strlen(word);
-      memcpy(ptr, word, len + 1);
-      ptr += len + 1;
-      printf("curr[%i] == %s. word: %s.\n", i, ptr, word);
-    }
-    uloc_acceptLanguage(locale, len, &acceptable, (const char **)curr, 
-        len, available, &u_status) ;
-  } else {
-    printf("Language is null.\n");
-  }
-
-  if (locale == NULL) {
-    locale = xstrdup(getenv("LC_ALL"));
-  }
-
-  if (locale == NULL) {
-    locale = xstrdup(getenv("LANG"));
-  }
+  const size_t    buffer_size = OLY_SMALL_BUFFER;
+  size_t          output_size = 0, len = 0;
+  UAcceptResult   acceptable;
+  UErrorCode      u_status  = U_ZERO_ERROR;
+  Oly_Status      status    = OLY_OKAY;
+  char           *language_val = getenv("LANGUAGE"), sep[1] = ":";
+  char          **curr = NULL, result[buffer_size], *locale = NULL;
   
-  if (locale == NULL) {
-    locale = xstrdup("root");
+  if ( language_val != NULL ) {
+    UEnumeration *available = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
+    curr  = token_str_to_array(language_val, sep, &status);
+    len   = count_tokens (language_val, sep);
+    output_size = (size_t)uloc_acceptLanguage(result, buffer_size, &acceptable, 
+        (const char **)curr, len, available, &u_status) ;
+  }
+
+  if ( output_size == 0 ) {
+    output_size = (size_t)uloc_getName( (const char *)locale, 
+        result, buffer_size, &u_status );
+  }
+
+  if ( output_size > 0 ) {
+    locale = (char *)xmalloc( (output_size + 1) * ( sizeof(char) ));
+    strncpy(locale, result, output_size);
+    *(locale + output_size + 1) = '\0';
   }
 
   return locale;

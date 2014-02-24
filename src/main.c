@@ -70,12 +70,13 @@ main( int argc, char **argv ){
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(LOCALEDIR);
-  printf("\nHaven't run oget_user_locale yet.\n");
   locale = oget_user_locale(); 
 #ifdef OLYDEV
   printf("\n-- top of program, locale is : %s\n", locale);
 #endif /* OLYDEV */
+  printf("Stuff before init all.\n");
   init_all(oly, locale);
+  printf("Stuff after init all.\n");
 #ifdef OLYDEV
   printf("\n-- after init --\n");
 #endif /* OLYDEV */

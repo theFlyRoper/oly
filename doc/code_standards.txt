@@ -17,6 +17,24 @@ ifdef::is_fossil[]
 link:/doc/tip/doc/index.wiki[Back to Home.]
 endif::is_fossil[]
 
+Language and i18n initialization
+--------------------------------
+This section is first because I've done this research a good four times and still haven't come up with a better answer than what follows.  
+
+Gettext, the GNU standard program message dictionary, uses https://www.gnu.org/software/gettext/manual/gettext.html#Locale-Environment-Variables[several environment variables] to determine what language the user sees:
+
+. LANGUAGE, a colon separated (":") list of two character language codes, representing the user's preferred languages, in order.
+. LC_ALL, the posix standard marker.
+. LC_<xxx>, where <xxx> refers to one of the numerous subcategories for localization.
+. Last, the LANG variable.
+
+Having looked in the ICU source, I found many circular references culminating in a function that returns the system default locale ID.  It's a twisty maze of calls to various functions, but some digging unearthed one called uprv_getDefaultLocaleID(), which can be found in source/common/putil.c at line 1444. As it happens, it calls ANOTHER function called uprv_getPOSIXIDForCategory, which I am glad I dug up.  Looks like that one behaves reasonably, all things
+considered.
+
+It has distinct behaviors for several OSes and factors in which posix IDs are most consistent.  In POSIX, It uses setlocale() with either of these categories: LC_MESSAGES, LC_CTYPE first.  Then, if they don't return anything, it looks at getenv("LC_ALL").
+
+After this research I have decided I will fish up the "LANGUAGE" environment variable if available, then use ICU's default if it is not.
+
 Names
 -----
 . No spaces in filenames.
@@ -24,7 +42,7 @@ Names
 . Words separated by underscores.
 . Prefix with "oly_" if risk of confusing with system function.
 . After prefix, lead with verb appropriate to action.
-. Macros, when used, should be all caps, thus: +OLY_HAS_THISOPTION+.  Macros are to be avoided, though.  Prefer typedefs.
+. Macros, when used, should be all caps, thus: +OLY_HAS_THISOPTION+.  Macros are to be avoided, though.  Prefer typedefs and suchlike.
 . Also look at naming rules for <<_names_2,functions>> and <<_names_3,types>>.
 
 
@@ -94,6 +112,10 @@ If something could be confused with a system object on another system, add the p
 Error handling
 --------------
 For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs.
+
+Do not use strerror or perror.  Use strerror_r only.
+
+Oly initializes language as early as it can, as it is essential to error handling.
 
 References:
 

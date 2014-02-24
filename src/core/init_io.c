@@ -30,31 +30,39 @@
 #include "oly/list.h"
 #include "oly/syntax.h"
 #include "oly/oly.h"
-#include "oly/loader.h"
+#include "oly/core.h"
 
 void
-init_io(const char *locale) {
+init_io(const char *locale, const char *codepage) {
+  char    err_buffer[BUFSIZ];
+  int     errnum=0;
+
   if ( u_stderr == NULL ) {
       u_stderr=u_finit(stderr, locale,  NULL /*codepage */);
       if(!u_stderr) {
-          fprintf(stderr, "Could not initialize u_stderr! \n");
+          if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+              printf("%s", err_buffer);
+          }
+          exit(1);
       }
-  };
+  }
   if( u_stdout == NULL ) {
       u_stdout = u_finit(stdout, locale,  NULL /*codepage */);
       if(!u_stdout) {
-          fprintf(stderr, 
-              "%s: Could not initiate u_stdout\n", program_name);
+          if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+              printf("%s", err_buffer);
+          }
           exit(1);
       }
-  };
+  }
   if(u_stdin == NULL) {
       u_stdin = u_finit(stdin, locale, NULL);
       if(!u_stdin) {
-          fprintf(stderr, 
-              "%s: Could not initiate u_stdin\n", program_name);
+          if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+              printf("%s", err_buffer);
+          }
           exit(1);
       }
-    };
+  }
 }
 

@@ -184,7 +184,6 @@ AC_DISABLE_FAST_INSTALL
 dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
-                 i18n/Makefile \
                  lib/Makefile \
                  Makefile])
 

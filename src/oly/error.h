@@ -43,16 +43,14 @@ typedef enum oly_status {
     OLY_BREAK=-2,
     OLY_INCOMPLETE=-1,
     OLY_OKAY=0,
-    OLY_ERR_ICU=1,
-    OLY_ERR_UNSPECIFIED=2,
-    OLY_ERR_INIT=3,
-    OLY_ERR_NOPWD=4,
-    OLY_ERR_NOARGS=6,
-    OLY_ERR_NOMEM=7,
-    OLY_ERR_GETARGC=8
+    OLY_ERR_UNSPECIFIED=1,
+    OLY_ERR_SYS=2,
+    OLY_ERR_ICU=3,
+    OLY_ERR_INIT=4,
+    OLY_ERR_NOMEM=5,
+    OLY_ERR_NOPWD=6,
+    OLY_ERR_NOUSER=7
 } Oly_Status;
-
-
 
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
