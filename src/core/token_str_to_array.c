@@ -29,7 +29,7 @@
  * an empty value.
  */
 char **
-token_str_to_array(char *s, char *delims, Oly_Status *status) 
+token_str_to_array(char *s, char *delims, oly_status *status) 
 {
   const size_t    arr_size = count_tokens(s,delims), 
                   num_chars = count_nondelim_chars(s,delims);

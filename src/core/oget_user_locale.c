@@ -28,7 +28,7 @@
 #include <unistd.h>
 #include <pwd.h>
 
-#include "oly/error.h"
+#include "oly/state.h"
 #include "oly/core.h"
 
 char *
@@ -42,7 +42,7 @@ oget_user_locale (void) {
   size_t          output_size = 0, len = 0;
   UAcceptResult   acceptable;
   UErrorCode      u_status  = U_ZERO_ERROR;
-  Oly_Status      status    = OLY_OKAY;
+  oly_status      status    = OLY_OKAY;
   char           *language_val = getenv("LANGUAGE"), sep[1] = ":";
   char          **curr = NULL, result[buffer_size], *locale = NULL;
   

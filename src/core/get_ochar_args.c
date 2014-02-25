@@ -30,9 +30,9 @@
 #include <stdio.h>
 
 #include "oly/core.h"
-#include "oly/error.h"
+#include "oly/state.h"
 
-Oly_Status
+oly_status
 oly_getocharArgs(ochar ***result, char **source, int32_t argc){
   size_t          i = 0, storage = 0, arr_size =1, arr_ptr = 0;
   char            *var = NULL;

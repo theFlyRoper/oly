@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include "oly/break_rules.h"
-#include "oly/error.h"
+#include "oly/state.h"
 
 UBreakIterator* 
 get_rules(const char *ruleFileName, UErrorCode status) {

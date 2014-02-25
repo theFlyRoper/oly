@@ -20,10 +20,8 @@
 #  include "olyconf.h"
 #endif
 
-#include <unicode/ustdio.h> 
-
 #include "oly/common.h"
-#include "oly/error.h"
+#include "oly/state.h"
 
 OFILE *u_stdout = NULL;   /* Unicode output */
 OFILE *u_stdin  = NULL;   /* Unicode input */

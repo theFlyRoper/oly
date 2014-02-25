@@ -31,7 +31,7 @@
 #include <unistd.h>
 
 #include "oly/common.h"
-#include "oly/error.h"
+#include "oly/state.h"
 #include "oly/core.h"
 
 /* The following function(s) are
@@ -59,7 +59,7 @@ spc_preserve_environ[  ] = {
   0
 };
 
-Oly_Status
+oly_status
 cleanenv (void) {
     int         i,status=OLY_OKAY;
     char        **new_environ, *ptr;

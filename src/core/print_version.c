@@ -1,4 +1,4 @@
-/* Print_version-inl.h -- inline function to show program version.  License GPL2+ {{{
+/* print_version.c -- inline function to show program version.  License GPL2+ {{{
  * Copyright (C) 2012 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify

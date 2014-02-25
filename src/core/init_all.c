@@ -32,13 +32,13 @@
 
 #include "oly/common.h"
 #include "oly/output.h"
-#include "oly/error.h"
+#include "oly/state.h"
 #include "oly/list.h"
 #include "oly/syntax.h"
 #include "oly/oly.h"
 
 
-Oly_Status
+oly_status
 init_all (Oly *oly, char *locale) {
   UErrorCode      u_status  = U_ZERO_ERROR; /* Unicode u_status code */
   clean_io_open();

@@ -39,7 +39,7 @@ root:table {
         0:string{"OLY_OKAY"},
         1:string{"OLY_ERR_UNSPECIFIED"},
         2:string{"OLY_ERR_SYS"},
-        3:string{"OLY_ERR_ICU"},
+        3:string{"OLY_ERR_LIB"},
         4:string{"OLY_ERR_INIT"}
               }
     OlyHelpTopics {

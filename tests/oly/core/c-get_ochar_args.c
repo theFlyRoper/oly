@@ -13,7 +13,7 @@
 #include <stdio.h>
 
 #include "oly/core.h"
-#include "oly/error.h"
+#include "oly/state.h"
 
 int
 main( int argc, char **argv ){
@@ -21,7 +21,7 @@ main( int argc, char **argv ){
   char            *locale           = NULL;
   UErrorCode      u_status  = U_ZERO_ERROR; 
   ochar           **result, *curr;
-  Oly_Status      status;
+  oly_status      status;
 
   u_init(&u_status);
   init_io(locale, NULL);

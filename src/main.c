@@ -23,11 +23,9 @@
 
 #include "oly/common.h"
 
-#include <unicode/ustdio.h>
 #include <unicode/ustring.h>
 #include <unicode/ubrk.h>
 #include <unicode/udata.h>
-#include <unicode/ures.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,13 +34,13 @@
 #include <unistd.h>
 #include <assert.h>
 
+#include "oly/state.h"
+#include "oly/core.h"
 #include "oly/output.h"
-#include "oly/error.h"
 #include "oly/list.h"
 #include "oly/syntax.h"
 #include "oly/oly.h"
 #include "oly/builtin.h"
-#include "oly/core.h"
 #include "oly/break_rules.h"
 /* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
@@ -60,7 +58,7 @@ main( int argc, char **argv ){
   char            c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"";
   char            c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle";
   int             i=1;
-  Oly_Status      o_status  = OLY_OKAY;
+  oly_status      o_status  = OLY_OKAY;
   UErrorCode      u_status  = U_ZERO_ERROR; 
   UBreakIterator  *boundary;
 

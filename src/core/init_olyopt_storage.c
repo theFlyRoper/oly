@@ -17,7 +17,7 @@
  * MA 02110-1301, USA.
  * }}} */
 
-Oly_Status oly_allocopt( ochar *argv, const size_t argc, OlyOptList *options ) {
+oly_status oly_allocopt( ochar *argv, const size_t argc, OlyOptList *options ) {
 
 }
 

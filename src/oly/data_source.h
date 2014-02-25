@@ -31,7 +31,7 @@ typedef enum oly_ds_direction {
   IN, OUT, INOUT
 } OlyDSDirection;
 
-Oly_Status oly_get_ds(OlyDataSource *ds, 
+oly_status oly_get_ds(OlyDataSource *ds, 
     ochar *ds_type, 
     OlyDSDirection ds_direct,
     ochar **ds_args);

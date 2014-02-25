@@ -24,7 +24,7 @@
 #include <sys/types.h>
 
 #include "oly/common.h"
-#include "oly/error.h"
+#include "oly/state.h"
 
 void *
 xmalloc (size_t num)

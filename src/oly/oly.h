@@ -23,7 +23,7 @@
 
 BEGIN_C_DECLS
 
-/* o_stdin, o_stdout and o_stderr are defined in error.h */
+/* o_stdin, o_stdout and o_stderr are defined in state.h */
 
 struct builtintab;
 

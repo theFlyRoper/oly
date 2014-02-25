@@ -28,7 +28,7 @@
 #include <pwd.h>
 
 #include "oly/common.h"
-#include "oly/error.h"
+#include "oly/state.h"
 #include "oly/core.h"
 
 char *

@@ -23,7 +23,7 @@
 #include <unicode/ustdio.h>
 
 #include "oly/common.h"
-#include "oly/error.h"
+#include "oly/state.h"
 #include "oly/list.h"
 #include "oly/syntax.h"
 #include "oly/oly.h"

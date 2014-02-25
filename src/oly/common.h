@@ -25,6 +25,7 @@
 #endif
 
 #ifdef HAVE_UNICODE_USTDIO_H
+#include <unicode/ures.h>
 #include <unicode/ustdio.h>
 typedef UChar ochar;
 #define OFILE UFILE

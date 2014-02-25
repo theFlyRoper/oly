@@ -66,7 +66,7 @@ dist_check_SCRIPTS			= tests/tap/libtap.sh \
 dist_noinst_HEADERS			=	src/oly/break_rules.h src/oly/builtin.h \
 													src/oly/common.h src/oly/core.h \
 													src/oly/data_source.h  \
-													src/oly/error.h src/oly/eval.h \
+													src/oly/state.h src/oly/eval.h \
 													src/oly/list.h src/oly/oly.h \
 													src/oly/oly_dev.h \
 													src/oly/output.h src/oly/syntax.h \
@@ -83,7 +83,7 @@ liboly_dev_a_SOURCES			=	src/debug/list_icu_countries.c \
 
 liboly_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 
-## error handling is tightly coupled to i18n.
+## state.handling is tightly coupled to i18n.
 libstate_a_SOURCES				= src/state/init_oly_state.c \
 														src/state/print_oly_state.c \
 														src/state/flush_oly_state.c \

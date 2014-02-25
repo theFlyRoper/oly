@@ -1,4 +1,4 @@
-/* error.h -- display formatted error diagnostics of varying severity licence GPL2+ {{{
+/* state.h -- Check current state and display formatted warnings, errors GPL2+ {{{
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -16,14 +16,12 @@
    MA 02110-1301, USA.
    }}} */
 
-#ifndef OLY_ERROR_H
-#define OLY_ERROR_H 1
-
-#include <unicode/ures.h>
+#ifndef OLY_STATE_H
+#define OLY_STATE_H 1
 
 BEGIN_C_DECLS
 
-/* Oly_Status type:
+/* oly_status type:
  * Defines states for Oly.
  * 
  * Negative numbers and zero are non-error states
@@ -36,7 +34,7 @@ BEGIN_C_DECLS
  * appropriate. OLY_OKAY is equal to zero.
  */
 
-typedef enum oly_status {
+typedef enum oly_status_t {
     OLY_EOF=-5,
     OLY_EXIT=-4,
     OLY_CONTINUE=-3,
@@ -45,12 +43,12 @@ typedef enum oly_status {
     OLY_OKAY=0,
     OLY_ERR_UNSPECIFIED=1,
     OLY_ERR_SYS=2,
-    OLY_ERR_ICU=3,
+    OLY_ERR_LIB=3,
     OLY_ERR_INIT=4,
     OLY_ERR_NOMEM=5,
     OLY_ERR_NOPWD=6,
     OLY_ERR_NOUSER=7
-} Oly_Status;
+} oly_status;
 
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
@@ -64,5 +62,5 @@ extern void oly_fatal        (const ochar *message);
 
 END_C_DECLS
 
-#endif /* !OLY_ERROR_H */
+#endif /* !OLY_STATE_H */
 
