@@ -14,7 +14,7 @@ ok_result () {
     "$2"/oly/i18n/"$1" > "$1".result 2>&1
     status=$?
     ok "$1 exit status: $status" [ $status -eq "$3" ]
-    diff -u "${BUILD}/oly/i18n/$1".output "$1".result 2>&1
+    diff -u "${SOURCE}/oly/i18n/$1".output "$1".result 2>&1
     status=$?
     ok "$1 output" [ $status -eq 0 ]
     if [ $status -eq 0 ] ; then

@@ -14,7 +14,7 @@ ok_result () {
     "$2"/oly/core/"$1" > "$1".result 2>&1
     status=$?
     ok "$1 exit status: $status" [ $status -eq "$3" ]
-    diff -u "${BUILD}/oly/core/$1".output "$1".result 2>&1
+    diff -u "${SOURCE}/oly/core/$1".output "$1".result 2>&1
     status=$?
     ok "$1 output" [ $status -eq 0 ]
     if [ $status -eq 0 ] ; then
@@ -29,7 +29,7 @@ plan 10
 ok_result c-count_tokens "$BUILD"  0
 ok_result c-count_nondelim_chars "$BUILD"  0
 ok_result c-token_str_to_array "$BUILD"  0
-ok_result sh-oget_home "$BUILD"  0
-ok_result sh-oly_getOCharArgs "$BUILD"  0
+ok_result sh-oget_home "$SOURCE"  0
+ok_result sh-oly_getOCharArgs "$SOURCE"  0
 
 

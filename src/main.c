@@ -70,6 +70,7 @@ main( int argc, char **argv ){
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(LOCALEDIR);
+  printf("Data directory set to : %s\n", LOCALEDIR);
   locale = oget_user_locale(); 
 #ifdef OLYDEV
   printf("\n-- top of program, locale is : %s\n", locale);
@@ -87,6 +88,9 @@ main( int argc, char **argv ){
   }
   
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
+  if (U_FAILURE(u_status)) {
+    printf("Could not open! status: %s\n", u_errorName(u_status));
+  }
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);
 
@@ -95,7 +99,7 @@ main( int argc, char **argv ){
 
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);
-  /* list_package_locales(OLY_RESOURCE); */
+  list_package_locales(OLY_RESOURCE);
   
   if (U_FAILURE(u_status)) {
     return EXIT_FAILURE;
