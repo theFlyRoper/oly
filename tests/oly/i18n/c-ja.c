@@ -46,12 +46,13 @@ main( int argc, char **argv ){
 
   u_setDataDirectory(TEST_LOCALEDIR);
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
+  if (U_FAILURE(u_status)) {
+    printf("Could not open! status: %s\nlocdir: %s\nResource name: %s\n", 
+        u_errorName(u_status), TEST_LOCALEDIR, OLY_RESOURCE);
+  }
 
   u_init(&u_status);
   init_io(locale, NULL);
-  if (U_FAILURE(u_status)) {
-    printf("Could not open! status: %s\n", u_errorName(u_status));
-  }
 
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);

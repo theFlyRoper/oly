@@ -99,7 +99,9 @@ main( int argc, char **argv ){
 
   liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
   u_file_write(liner, len, u_stdout);
+#ifdef OLYDEV
   list_package_locales(OLY_RESOURCE);
+#endif /* OLYDEV */
   
   if (U_FAILURE(u_status)) {
     return EXIT_FAILURE;
