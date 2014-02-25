@@ -40,7 +40,7 @@ htmlrebuild:
 html: htmlrebuild $(HTMLPAGES)
 
 
-maintainer-clean-local: wiki htmlrebuild
+maintainer-clean-local: wiki 
 
 distclean-local: html
 

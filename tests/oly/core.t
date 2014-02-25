@@ -30,6 +30,6 @@ ok_result c-count_tokens "$BUILD"  0
 ok_result c-count_nondelim_chars "$BUILD"  0
 ok_result c-token_str_to_array "$BUILD"  0
 ok_result sh-oget_home "$SOURCE"  0
-ok_result sh-oly_getOCharArgs "$SOURCE"  0
+ok_result sh-get_ochar_args "$SOURCE"  0
 
 

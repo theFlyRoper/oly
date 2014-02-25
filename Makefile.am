@@ -53,14 +53,14 @@ dist_check_DATA					= tests/TESTS \
 													tests/oly/core/c-token_str_to_array.output \
 													tests/oly/core/sh-oget_home.output \
 													tests/oly/core/sh-oget_user_locale.output \
-													tests/oly/core/sh-oly_getOCharArgs.output 
+													tests/oly/core/sh-get_ochar_args.output 
 
 
 dist_check_SCRIPTS			= tests/tap/libtap.sh \
 													tests/oly/core.t tests/oly/i18n.t \
 													tests/oly/core/sh-oget_home \
 													tests/oly/core/sh-oget_user_locale \
-													tests/oly/core/sh-oly_getOCharArgs
+													tests/oly/core/sh-get_ochar_args
 													
 ## TODO: this should use nobase_ instead 
 dist_noinst_HEADERS			=	src/oly/break_rules.h src/oly/builtin.h \
@@ -139,7 +139,7 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 check_PROGRAMS 					= tests/runtests \
 													tests/oly/core/c-oget_home \
 													tests/oly/core/c-oget_user_locale \
-													tests/oly/core/c-oly_getOCharArgs \
+													tests/oly/core/c-get_ochar_args \
 													tests/oly/core/c-count_tokens \
 													tests/oly/core/c-count_nondelim_chars \
 													tests/oly/core/c-token_str_to_array \
@@ -165,11 +165,11 @@ tests_oly_core_c_oget_home_SOURCES 	= tests/oly/core/c-oget_home.c
 tests_oly_core_c_oget_home_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oget_home_LDADD 		= tests/tap/libtap.a libcore.a \
 																			@ICUIO_LIBS@ 
-tests_oly_core_c_oly_getOCharArgs_SOURCES 	= tests/oly/core/c-oly_getOCharArgs.c \
+tests_oly_core_c_get_ochar_args_SOURCES 	= tests/oly/core/c-get_ochar_args.c \
 																							src/core/error.c src/core/xmalloc.c \
-																							src/core/oly_getOCharArgs.c
-tests_oly_core_c_oly_getOCharArgs_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_oly_getOCharArgs_LDADD 		= tests/tap/libtap.a libcore.a \
+																							src/core/get_ochar_args.c
+tests_oly_core_c_get_ochar_args_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_get_ochar_args_LDADD 		= tests/tap/libtap.a libcore.a \
 																						@ICUIO_LIBS@ 
 tests_oly_core_c_count_tokens_SOURCES 	= tests/oly/core/c-count_tokens.c \
 																					src/core/count_tokens.c

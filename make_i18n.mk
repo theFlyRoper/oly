@@ -1,4 +1,7 @@
-## i18n, both for tests and the main library. {{{
+## i18n, both for tests and the main library. 
+
+## build sequence: clean up derived files, rebuild text indexes, .txt to .res language files, .txt to .res index files, make a list of all res files, compile them into a single .dat file.  
+## TODO: add the ability to switch to static/files/dll.
 
 ## I18N_MODE can also be a dll, static or files 
 I18N_MODE								= common
@@ -95,7 +98,6 @@ $(TEST_ROOT):
 	cd $(TEST_OUTDIR); \
 		$(GENRB) $(TEST_GENRBOPT) $(TEST_I18N_TXT)
 
-## this worked before. Shrug.
 $(MAIN_I18N_INDEX): $(MAIN_I18N_INDEX_TXT) $(MAIN_ROOT)
 	@echo "generating $@ (ICU resource index output)"
 	cd $(MAIN_OUTDIR); \
@@ -130,5 +132,5 @@ tests/data/i18n/oly_lang.dat: tests/data/i18n/$(LIST_NAME)
 	$(PKGDATA) $(PKGDATAOPTS); \
 	$(RMV) -rf $(I18N_DEPSDIR); 
 
-# end of i18n. }}}
+# end of i18n. 
 

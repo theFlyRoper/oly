@@ -1,4 +1,4 @@
-/* oly_getocharArgs.c - flip a **char argv into a **ochar argv {{{
+/* oly_get_ochar_args.c - flip a **char argv into a **ochar argv {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify

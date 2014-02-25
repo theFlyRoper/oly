@@ -41,7 +41,6 @@
 Oly_Status
 init_all (Oly *oly, char *locale) {
   UErrorCode      u_status  = U_ZERO_ERROR; /* Unicode u_status code */
-  printf("We are in init all!\n");
   clean_io_open();
   oly_result_clear (oly);
   

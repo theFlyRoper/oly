@@ -1,4 +1,4 @@
-/* Print_help-inl.h -- inline funciton to show help text.  License GPL2+ {{{
+/* Print_help.c -- inline funciton to show help text.  License GPL2+ {{{
  * Copyright (C) 2012 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify

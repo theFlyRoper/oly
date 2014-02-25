@@ -1,4 +1,4 @@
-/* close_oly-inl.h inline function to perform oly closing License GPL2+ {{{
+/* close_oly.c inline function to perform oly closing License GPL2+ {{{
  * Copyright (C) 2012 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
