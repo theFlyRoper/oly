@@ -1,9 +1,0 @@
-// nothing here right now.  lkt = Lakota.  If you are a translator for Lakota and you
-// wish to translate Oly, Lakota is used as a test for the ICU
-// missing language default finder, found at tests/oly/resources/c-missing-lang.c
-// and tests/oly/resources/c-missing-lang.output .
-
-// It would be delightful if Oly were translated into Lakota, but we would have to 
-// find another rare language to use as a test for the default language check.
-
-// vim: set syntax=javascript:

@@ -22,23 +22,21 @@ SUBDIRS 								= doc lib
 SUFFIXES								= .res .dat .txt
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
-## first i18n files, then test files.  Use $(addsuffix <x>) later on to transform these.
-MAIN_I18N								= en root el ja zh 
-TEST_I18N								= en root el ja
+## first i18n files, then test files.  Uses $(addsuffix <x>) later on to transform these.
+MAIN_I18N								= en root en_US_POSIX
+TEST_I18N								= en root el ja zh
 
 MAIN_I18N_DIR						= i18n/
-TEST_I18N_DIR						= test/data/i18n/
+TEST_I18N_DIR						= tests/data/i18n/
 
 OLY_I18N_NAME						= @OLY_RESOURCE@
 RMV 										= @RMV@
 
 ## logic for i18n is pretty complex so it is in an included .mk file.
-include
+include make_i18n.mk
 
-# end of i18n.
-
-EXTRA_DIST							= $(REL_MAIN_I18N_TXT) $(REL_TEST_I18N_TXT) \
-													$(REL_MAIN_I18N_INDEX_TXT) $(REL_TEST_I18N_INDEX_TXT)
+EXTRA_DIST							= $(MAIN_I18N_INDEX_TXT) 	$(TEST_I18N_INDEX_TXT) \
+													$(FULL_MAIN_I18N_TXT)  	$(FULL_TEST_I18N_TXT)
 
 HEAD_CPPFLAGS						=  -I$(top_srcdir) -I$(top_srcdir)/src
 
@@ -215,9 +213,9 @@ check-local: check-i18n $(check_PROGRAMS)
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
 	    -b '$(abs_top_builddir)/tests' -l '$(abs_top_srcdir)/tests/TESTS'
 
-i18n: $(MAIN_I18N_OUTPUT)
+i18n: i18n/oly_lang.dat
 	
-check-i18n:	$(TEST_I18N_OUTPUT)
+check-i18n:	tests/data/i18n/oly_lang.dat
 
 all-local: i18n
 
@@ -230,8 +228,14 @@ CLEANFILES 					= $(MAIN_I18N_CLEAN) \
 
 DISTCLEANFILES 			= tests/atconfig $(ALL_I18N_CLEAN)
 
+distclean-local:
+	test -z "$(MAIN_I18N_CLEAN)" || rm -f $(MAIN_I18N_CLEAN);
+	test -z "$(TEST_I18N_CLEAN)" || rm -f $(TEST_I18N_CLEAN);
+	test -z "$(MAIN_I18N_OUTPUT)" || rm -f $(MAIN_I18N_OUTPUT);
+	test -z "$(TEST_I18N_OUTPUT)" || rm -f $(TEST_I18N_OUTPUT);
+
 .PHONY = i18n-main-built-clean i18n-test-built-clean check-i18n i18n \
-	$(MAIN_I18N_OUTPUT) $(TEST_I18N_OUTPUT) tests/data/i18n/$(LIST_NAME) \
-	i18n/$(LIST_NAME) $(MAIN_I18N_INDEX) $(TEST_I18N_INDEX) $(TEST_I18N_INDEX_TXT) \
-	$(MAIN_I18N_INDEX_TXT)
+	$(MAIN_I18N_INDEX) $(MAIN_ROOT) $(MAIN_I18N_INDEX_TXT) $(MAIN_I18N_OUTPUT) \
+	i18n/$(LIST_NAME) $(TEST_I18N_INDEX) $(TEST_ROOT) $(TEST_I18N_INDEX_TXT) \
+	$(TEST_I18N_OUTPUT) tests/data/i18n/$(LIST_NAME)
 

@@ -1,6 +1,8 @@
+
 zh:table {
 // a stub taken from 维基百科, please replace.
   OlyUsage:string {"「漢字」一詞早出自元朝《金史》卷九本紀第九，「章宗一」：「十八年，封金源郡王。始習本朝語言小字，及漢字經書，以進士完顏匡、司經徐孝美等侍讀」。\n"}
 }
 
 // vim: set syntax=javascript:
+
