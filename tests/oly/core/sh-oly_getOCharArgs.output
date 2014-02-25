@@ -1,0 +1,5 @@
+1..3
+ok 1 - Zero args.
+ok 2 - One arg.
+ok 3 - Many args.
+# All 3 tests successful or skipped

@@ -1,0 +1,17 @@
+// Copyright (c) 2014 Oly Project
+// See LICENSE file for details
+en:table {
+    OlyUsage:string {"usage: oly [-fwe] <input> <output>\n"}
+    OlyVersion:string {"Copyright (C) {1} Oly Project\nLicense GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>\nThis is free software: you are free to change and redistribute it.\nThere is NO WARRANTY, to the extent permitted by law.\n"}
+    OlyErrors {
+                "OLY_OKAY"
+              }
+    OlyHelpTopics {
+        configuration     { "ROOT configuration help topic" }
+    }
+    OlyHelpKeywords {
+        configuration     { "configuration" }
+    }
+}
+      
+// vim: set syntax=javascript:

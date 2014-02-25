@@ -33,17 +33,18 @@ dnl }}}
 dnl establish the necessary version for autoconf.
 AC_PREREQ(2.60)
 
-AC_INIT([Oly],[0.0.0],[bugs@fakesite.com],[oly],[http://fakesite.com])
-AC_SUBST(OLY_COPYRIGHT,["Copyright (c) 2012 The Oly Project."])
-AC_COPYRIGHT([Copyright (c) 2012 The Oly Project.])
+AC_INIT([Oly],[1.0.1],[bugs@fakesite.com],[oly],[http://fakesite.com])
+
+AC_SUBST(OLY_COPYRIGHT,["Copyright (c) 2014 The Oly Project."])
+AC_COPYRIGHT([Copyright (c) 2014 The Oly Project.])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_AUX_DIR([ac-aux])
 AC_CONFIG_MACRO_DIR([ac-aux/m4])
 AC_CONFIG_TESTDIR([tests])
-AC_CONFIG_LIBOBJ_DIR([replace])
+AC_CONFIG_LIBOBJ_DIR([lib])
 
 AM_INIT_AUTOMAKE([1.8 subdir-objects \
-                  dist-bzip2 no-dist-gzip readme-alpha])
+                  dist-bzip2 no-dist-gzip readme-alpha -Wno-portability])
 
 AC_CONFIG_HEADERS([src/olyconf.h:src/olyconf-h.in])
 dnl questions address
@@ -62,19 +63,18 @@ dnl simple configuration level debug mode, define in makefile.am
 
 AC_ARG_ENABLE(debug,
     [AS_HELP_STRING([--enable-debug],
-                    [enables debug defines and asserts (default is no).])],
+                    [enables debug defines (default is no).])],
                     [enable_debug=yes],
                     [enable_debug=no])
 
-AS_IF([test "x$enable_debug" != xyes],
-      [AC_SUBST(DEV_DEF,["-DNDEBUG=1"])],
+AS_IF([test "x$enable_debug" != xyes],,
       [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])])
+
+AS_IF([test "x$enable_debug" != xyes],,
+      [AC_SUBST(DEV_LIB,["liboly_dev.a"])])
 
 CFG_LOCALEDIR="${CFG_LOCALEDIR-${datadir}/locale/oly}"
 
-AC_ARG_VAR([CFG_LOCALEDIR],[The directory to store \
-            the ICU locale data for the program.  Defaults \
-            to ${datadir}/locale/oly.])
 
 dnl Checks for programs.
 AC_PROG_CPP
@@ -82,12 +82,14 @@ AC_PROG_CC_C99
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MKDIR_P
+
+AC_PATH_PROG([RMV],[rm],[])
+AC_PATH_PROG([GENRB],[genrb],[])
+AC_PATH_PROG([PKGDATA],[pkgdata],[])
+
 AM_PROG_CC_C_O
 
 LT_INIT
-
-dnl AC_PATH_PROG([PKGCONFIG],[pkg-config],[])
-dnl PKG_PROG_PKG_CONFIG([0.18])
 
 dnl checks for libraries 
 
@@ -97,26 +99,21 @@ dnl ICUIO_LIBS and ICULAYOUT_LIBS
 OLY_CHECK_ICU([4.8],[],[])
 
 dnl checks for header files 
-dnl AC_STDC_HEADERS
+AC_STDC_HEADERS
 AC_HEADER_SYS_WAIT
 
 dnl checks for ICU headers at the end; check as needed.
+dnl                  sqlite3.h \
 AC_CHECK_HEADERS([locale.h \
                   paths.h \
-                  sqlite3.h \
-                  unicode/udata.h \
-                  unicode/ustdio.h \
-                  unicode/ures.h \
-                  unicode/ustring.h])
+                  unicode/ustdio.h])
 
 AC_TYPE_PID_T
 
 AC_FUNC_MALLOC
 AM_WITH_DMALLOC
 
-ACX_PTHREAD
-
-dnl OLY_WITH_READLINE
+dnl ACX_PTHREAD
 
 AC_CHECK_FUNCS([bzero \
                 memset], \
@@ -127,16 +124,10 @@ AC_CHECK_FUNCS([calloc \
                 strrchr \
                 setlocale])
 
-dnl AC_REPLACE_FUNCS([basename \
-dnl                   strspn \
-dnl                   strcspn \
-dnl                   strerror \
-dnl                   strlcpy \
-dnl                   strlcat \
-dnl                   wcswidth \
-dnl                   wcwidth \
-dnl                   strsignal \
-dnl                   waitpid])
+AC_REPLACE_FUNCS([basename \
+                  strsignal \
+                  strtok_r \
+                  waitpid])
 
 dnl verify how big the system is.
 AC_CHECK_SIZEOF([size_t])
@@ -193,10 +184,14 @@ AC_DISABLE_FAST_INSTALL
 dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
-                 tests/Makefile \
+                 lib/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)
+AC_SUBST([OLY_RESOURCE],[oly_lang])
+AC_DEFINE([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])
+
+AC_CONFIG_COMMANDS([i18n],[$MKDIR_P i18n tests/data/i18n .i18ndeps],[])
 
 AC_OUTPUT
 
@@ -206,12 +201,5 @@ dnl the configure tests and output.
 AS_IF([test "x$enable_debug" != xyes],
       [],
       [AC_MSG_NOTICE([Developer debug mode enabled.])])
-
-AC_MSG_NOTICE([CFG_LOCALEDIR  =  $CFG_LOCALEDIR])
-
-dnl sizeof returns the number of BYTES, as opposed to number 
-dnl of bits.  Thus, if this func says 8, we're 64 bit.
-
-dnl AC_MSG_NOTICE([sizeof found: $ac_cv_sizeof_size_t])
 
 

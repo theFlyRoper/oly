@@ -1,6 +1,9 @@
 /*
 * File get_rules.c
 */
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
 
 #include <unicode/utypes.h>
 #include <unicode/ucnv.h>
@@ -14,9 +17,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common.h"
-#include "loader.h"
-#include "error.h"
+#include "oly/common.h"
+#include "oly/break_rules.h"
+#include "oly/error.h"
 
 UBreakIterator* 
 get_rules(const char *ruleFileName, UErrorCode status) {
@@ -24,7 +27,7 @@ get_rules(const char *ruleFileName, UErrorCode status) {
     long        result;
     long        ruleFileSize;
     FILE        *file;
-    UFILE       *ufile;
+    OFILE       *ufile;
     UBreakIterator *return_me;
 
     file = fopen(ruleFileName, "rb");
@@ -51,7 +54,7 @@ get_rules(const char *ruleFileName, UErrorCode status) {
                            ruleSourceC, ruleFileSize, &signatureLength, &status);
     /* fprintf(stderr, "DetectUnicodeSig: \"%s\"\n", encoding); */
     if (U_FAILURE(status)) {
-        fprintf(stderr, "can not initialize ICU.  status = %s\n",
+        fprintf(stderr, "\nCan not initialize ICU.  status = %s\n",
             u_errorName(status));
         exit(1);
     }

@@ -4,9 +4,7 @@
  * show the text in this range.  From ubreak.c
  */
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
+#include "oly/common.h"
 
 #include <unicode/ustdio.h> 
 #include <unicode/ustring.h>
@@ -17,7 +15,7 @@
 
 #ifdef OLYDEV
 #include <assert.h>
-#include "oly_dev.h"
+#include "oly/oly_dev.h"
 #endif /* OLYDEV */
 
 void 

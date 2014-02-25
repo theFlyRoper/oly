@@ -14,7 +14,7 @@ ifdef::is_fossil[]
 :iconsdir:  /doc/tip/doc/icons
 :imagesdir: /doc/tip/doc/images
 :icons:
-// link:/doc/tip/README_hrc_data_code.wiki[Back to Home.]
+link:/doc/tip/doc/index.wiki[Back to Home.]
 endif::is_fossil[]
 
 Statement of Purpose

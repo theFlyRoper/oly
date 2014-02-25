@@ -1,0 +1,130 @@
+Oly Code Standards
+==================
+:description: Oly C Coding standards and conventions.
+:keywords:    Oly, standards, names, C code
+:title:       Oly Code Standards
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:icons:
+:toc2:
+endif::is_standalone[]
+ifdef::is_fossil[]
+:iconsdir:  /doc/tip/doc/icons
+:imagesdir: /doc/tip/doc/images
+:icons:
+link:/doc/tip/doc/index.wiki[Back to Home.]
+endif::is_fossil[]
+
+Language and i18n initialization
+--------------------------------
+This section is first because I've done this research a good four times and still haven't come up with a better answer than what follows.  
+
+Gettext, the GNU standard program message dictionary, uses https://www.gnu.org/software/gettext/manual/gettext.html#Locale-Environment-Variables[several environment variables] to determine what language the user sees:
+
+. LANGUAGE, a colon separated (":") list of two character language codes, representing the user's preferred languages, in order.
+. LC_ALL, the posix standard marker.
+. LC_<xxx>, where <xxx> refers to one of the numerous subcategories for localization.
+. Last, the LANG variable.
+
+Having looked in the ICU source, I found many circular references culminating in a function that returns the system default locale ID.  It's a twisty maze of calls to various functions, but some digging unearthed one called uprv_getDefaultLocaleID(), which can be found in source/common/putil.c at line 1444. As it happens, it calls ANOTHER function called uprv_getPOSIXIDForCategory, which I am glad I dug up.  Looks like that one behaves reasonably, all things
+considered.
+
+It has distinct behaviors for several OSes and factors in which posix IDs are most consistent.  In POSIX, It uses setlocale() with either of these categories: LC_MESSAGES, LC_CTYPE first.  Then, if they don't return anything, it looks at getenv("LC_ALL").
+
+After this research I have decided I will fish up the "LANGUAGE" environment variable if available, then use ICU's default if it is not.
+
+Names
+-----
+. No spaces in filenames.
+. Lower case only, except for macros.
+. Words separated by underscores.
+. Prefix with "oly_" if risk of confusing with system function.
+. After prefix, lead with verb appropriate to action.
+. Macros, when used, should be all caps, thus: +OLY_HAS_THISOPTION+.  Macros are to be avoided, though.  Prefer typedefs and suchlike.
+. Also look at naming rules for <<_names_2,functions>> and <<_names_3,types>>.
+
+
+C language files (code and headers)
+-----------------------------------
+All files should be named after what they contain.  Headers should group functions by purpose such as +wrapper.h+ (holds wrapper functions around system interfaces).  Only exceptions are +olyconf.h+ (autoconf header) and +common.h+ (cross-compatibility header).
+
+Code
+~~~~
+. Files for functions should be named after the function they contain.
+Ideally, one function per file.
+. Code should be in a subdirectory of +src/+ named after the header holding its details.  Thus, all wrapper functions are in +src/wrapper/+.
+. Tests are an exception.  C tests for functions should be prefixed with +c-+, 
+  so a test for a function called +char_to_ochar+ would be in a file called +c-char_to_ochar.c+.  See +tests/oly/+ subdirs for examples.
+. See naming rules for <<_names_2,functions>> and <<_names_3,types>>, also.
+
+Headers
+~~~~~~~
+. Headers should be referenced with the directory prefix +oly/+.  This is a simple clear rule to avoid separate rules for headers to be installed vs. non-installed headers.
+. All functions in each header should build as a convenience library.  See +noinst_LIBRARIES+ in the root directory +Makefile.am+ file for examples.
+. Headers should list all functions in their subdirectory.  Every file in +src/wrapper/+ should have one corresponding row in +oly/wrapper.h+.
+. For struct definitions and extern objects (such as +ostdout+, the oly +stdout+ wrapper object), add a comment telling which C file it can be found in.
+
+Functions
+---------
+If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "+io.h+", but rather "oly_io.h".
+
+Functions should use lower case exclusively.
+
+Names
+~~~~~
+** initializing/opening? Use +init_+ or +open_+.  This also applies to files, so file openers are prefixed with +open_+.
+** retrieving something? Use +get_+.
+** sending/putting/setting something? Use +put_+ or +set_+.
+** displaying something? Use +display_+ or +show_+.
+** logging something? Use +log_+.
+** closing? Use +free_+.
+** applying/performing something? Use +do_+.  Read the next item, though.  This is where the rule breaks a bit.
+** Don't use +do_+ where you are not performing an action based on an argument. For example, there is no verb in front of +char_to_ochar+ because it does not apply the char to the ochar or vice versa.
+** converting should have no prefix and `_to_` between the items converted.  For limit parameter functions (think of +strncpy+ vs +strcpy+), use `_nto_` wherever there is a limit parameter.
+
+Error handling
+~~~~~~~~~~~~~~
+Oly was designed using http://site.icu-project.org/[ICU], and Oly's error handling uses ICU's localization systems.  So, when you check for errors, follow this process:
+
+. Define a local variable of type +oly_status+. 
+.. A value less than zero indicates a warning state.
+.. +OLY_OKAY+ = 0.  Zero indicates everything is fine.
+.. A value greater than zero indicates an error and should either be handled or displayed.
+. Try to find an error that describes what problem you have found.  If you cannot find one, add a new +OLY_ERR_<whatever>+ to +src/oly/oly_status.h+.
+. These special error states indicate an external problem:
+.. +OLY_ERR_SYSTEM+: Check system error status and display any messages from it.
+.. +OLY_ERR_LIB+: Check Oly's primary build library error status and display any messages.  Currently, Oly builds against ICU only, so this displays ICU errors.
+. For localized error messages, Oly can send arguments to error messages.  In ICU message syntax, these are numbered and look like this: `{1}`, `{2}` etc.  Not all errors require arguments and an error should display whether arguments are provided or not.
+. See function +set_err+, +append_err_arg+, +log_err+, +show_warn+, +show_err+ and +fatal_err+ in +src/error/+ for details.
+
+Types
+-----
+For designing structures, go read Eric S. Raymond's essay on http://www.catb.org/esr/structure-packing/[C structure packing].  Oly must have very efficient structures.
+
+Names
+~~~~~
+Types should use lower case exclusively.
+
+If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "+io.h+", but rather "oly_io.h".
+
+Error handling
+--------------
+For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs.
+
+Do not use strerror or perror.  Use strerror_r only.
+
+Oly initializes language as early as it can, as it is essential to error handling.
+
+References:
+
+[quote, 'http://stackoverflow.com/questions/385975/error-handling-in-c-code/387123#387123[AShelly Stack Overflow User]']
+____
+If the only possible errors are programmer errors, don't return an error code, use asserts inside the function.
+
+An assertion that validates the inputs clearly communicates what the function expects, while too much error checking can obscure the program logic. Deciding what to do for all the various error cases can really complicate the design. Why figure out how functionX should handle a null pointer if you can instead insist that the programmer never pass one?
+____
+
+
+// vim: set syntax=asciidoc:
