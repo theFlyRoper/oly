@@ -16,6 +16,6 @@
 ## Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 noinst_LTLIBRARIES      = libreplace.la
-libreplace_la_SOURCES   = 
+libreplace_la_SOURCES   = pretend.c
 libreplace_la_LIBADD    = @LTLIBOBJS@
 

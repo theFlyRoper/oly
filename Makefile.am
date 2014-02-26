@@ -18,7 +18,8 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ## MA 02110-1301, USA. }}}
 
-SUBDIRS 								= doc lib 
+## may change src/sha_three later but for now, separate.
+SUBDIRS 								= doc lib sha_three
 SUFFIXES								= .res .dat .txt
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 

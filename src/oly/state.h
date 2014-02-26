@@ -50,22 +50,6 @@ typedef enum oly_status_t {
     OLY_ERR_NOUSER=7
 } oly_status;
 
-typedef enum oly_status_t {
-    OLY_EOF=-5,
-    OLY_EXIT=-4,
-    OLY_CONTINUE=-3,
-    OLY_BREAK=-2,
-    OLY_INCOMPLETE=-1,
-    OLY_OKAY=0,
-    OLY_ERR_UNSPECIFIED=1,
-    OLY_ERR_SYS=2,
-    OLY_ERR_LIB=3,
-    OLY_ERR_INIT=4,
-    OLY_ERR_NOMEM=5,
-    OLY_ERR_NOPWD=6,
-    OLY_ERR_NOUSER=7
-} oly_status;
-
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;

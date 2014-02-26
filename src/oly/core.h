@@ -1,4 +1,4 @@
-/* wrappers.h - wrapper functions for Oly IO and other stuff. License GPL2+ {{{
+/* core.h - Basic functions, IO and other stuff. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -52,6 +52,7 @@ char **token_str_to_array(char *s, char *delims, oly_status *status) ;
 
 char *oget_home (struct passwd *pwd);
 char *oget_user_locale (void);
+int   is_big_endian (void);
 
 extern void close_oly (void);
 extern void init_io(const char *locale, const char *codepage); 
