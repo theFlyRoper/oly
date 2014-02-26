@@ -55,6 +55,22 @@ dnl must run early, otherwise, we won't know our host system.
 
 AC_CANONICAL_HOST
 
+dnl Determine the platform type and cache its value.
+dnl Oly includes the source code for SHA-3, optimized 
+dnl for 32 bit or 64 bit systems, and hence, checks the 
+dnl host value.
+
+dnl by all means add more.  This is just a preemptive catch.
+dnl case $host in
+dnl  x86_64-*)
+dnl    AC_CONFIG_LINKS([src/oly/cpu.h:src/oly/cpu/x86_64.h]) ;;
+dnl    ;;
+dnl  *)
+dnl    AC_CONFIG_LINKS([src/oly/cpu.h:src/oly/cpu/ix86.h]) ;;
+dnl    ;;
+dnl esac
+
+
 dnl command line args 
 dnl these args have messages at the bottom, after AC_OUTPUT, because
 dnl that ensures they are very obvious to maintainers and users.
