@@ -29,6 +29,7 @@
 
 BEGIN_C_DECLS
 
+struct passwd;
 /* OFILE IO */
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;

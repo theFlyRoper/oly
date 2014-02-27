@@ -24,15 +24,15 @@
 #define BUFSIZ 8192
 #endif /* BUFSIZ */
 
-#include <sha_three/KeccakNISTInterface.h>
+#include <lib/sha_three/KeccakNISTInterface.h>
 #include "oly/state.h"
 
 /* the NIST interface for SHA 3 defines a few simple data types, 
  * which Oly will use for any other hash function as well.
  * They are:
- *    bit_sequence (from BitSequence)
- *    data_length (from DataLength)
- *    hash_return (from HashReturn)
+ *    bit_sequence (from NIST BitSequence)
+ *    data_length (from NIST DataLength)
+ *    hash_return (from NIST HashReturn)
  *    hash_state
  * Oly uses 256 bit hashing.  I see no reason to change this.  Max addressing
  * on most systems is 64 bits so odds are Oly will only ever use <32 or <64 bits, 
@@ -59,5 +59,5 @@ void print_result(const char *c);
 oly_status str4_to_int(const char *c, int *res);
 oly_status oly_hash( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
 
-#endif // OLY_OLY_HASH_H
+#endif /* OLY_OLY_HASH_H */
 

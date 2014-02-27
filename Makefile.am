@@ -77,7 +77,21 @@ AM_CFLAGS 								= -fstack-protector-all @ICU_CFLAGS@
 csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 														-DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS							=	csvparse 
-noinst_LIBRARIES					=	liboly_dev.a libcore.a libstate.a
+noinst_LIBRARIES					=	liboly_dev.a libcore.a libstate.a libhash.a
+libhash_a_SOURCES					=	src/hash/n_to_uint.c \
+														src/hash/print_nint_as_hex.c \
+														src/hash/oly_hash.c \
+														lib/sha_three/genKAT.c \
+														lib/sha_three/KeccakDuplex.c \
+														lib/sha_three/KeccakNISTInterface.c \
+														lib/sha_three/KeccakSponge.c \
+														lib/sha_three/KeccakF-1600-opt64.c
+
+libhash_a_CPPFLAGS				= $(HEAD_CPPFLAGS)
+libhash_a_CFLAGS					= -fomit-frame-pointer -O3 -g0 -m64 $(CFLAGS)
+
+## libhash_a_LIBADD					= lib/sha_three/libo64_hash.a
+
 liboly_dev_a_SOURCES			=	src/debug/list_icu_countries.c \
 														src/debug/list_icu_langs.c \
 														src/debug/list_package_locales.c 
@@ -135,7 +149,7 @@ I18N_TESTBUILDDIR				= $(abs_top_builddir)/tests/data/i18n/
 
 CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 													-DTEST_LOCALEDIR=\"$(I18N_TESTBUILDDIR)\" \
-													-I$(top_srcdir)/src
+													-I$(top_srcdir)/src 
 
 check_PROGRAMS 					= tests/runtests \
 													tests/oly/core/c-oget_home \
@@ -144,6 +158,8 @@ check_PROGRAMS 					= tests/runtests \
 													tests/oly/core/c-count_tokens \
 													tests/oly/core/c-count_nondelim_chars \
 													tests/oly/core/c-token_str_to_array \
+													tests/oly/hash/c-get_hashbits \
+													tests/oly/hash/c-n_to_uint \
 													tests/oly/i18n/c-alias \
 													tests/oly/i18n/c-ja \
 													tests/oly/i18n/c-el \
@@ -157,7 +173,14 @@ tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests
 tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 																tests/tap/float.c tests/tap/float.h \
 																tests/tap/macros.h
-
+tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c 
+tests_oly_hash_c_get_hashbits_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_get_hashbits_LDADD 		= tests/tap/libtap.a \
+																					libcore.a libhash.a
+tests_oly_hash_c_n_to_uint_SOURCES 	= tests/oly/hash/c-n_to_uint.c 
+tests_oly_hash_c_n_to_uint_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_n_to_uint_LDADD 		= tests/tap/libtap.a \
+																					libcore.a libhash.a
 tests_oly_core_c_oget_user_locale_SOURCES 	= tests/oly/core/c-oget_user_locale.c 
 tests_oly_core_c_oget_user_locale_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oget_user_locale_LDADD 		= tests/tap/libtap.a libcore.a \

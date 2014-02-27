@@ -7,19 +7,19 @@ cflags_o64 = -fomit-frame-pointer -O3 -g0 -m64
 cflags_o32 = -fomit-frame-pointer -O3 -g0 -m32
 
 ##														libo32_hash.la
-noinst_LTLIBRARIES				=	libo64_hash.la 
+noinst_LIBRARIES				=	libo64_hash.a 
 
-libo64_hash_la_SOURCES		=	$(sources_optimized_64) \
+libo64_hash_a_SOURCES		=	$(sources_optimized_64) \
 														$(headers_optimized_64)
 
-libo64_hash_la_CFLAGS			= $(cflags_o64) $(CFLAGS)
-libo64_hash_la_CPPFLAGS		= $(CPPFLAGS) -I/usr/include/x86_64-linux-gnu/
+libo64_hash_a_CFLAGS			= $(cflags_o64) $(CFLAGS)
+libo64_hash_a_CPPFLAGS		= $(CPPFLAGS) -I/usr/include/x86_64-linux-gnu/
 
-##libo32_hash_la_SOURCES		=	$(sources_optimized_32) \
+##libo32_hash_a_SOURCES		=	$(sources_optimized_32) \
 ##														$(headers_optimized_32)
-##libo32_hash_la_CPPFLAGS		= $(CPPFLAGS) -I/usr/include/x86_64-linux-gnu/ 
+##libo32_hash_a_CPPFLAGS		= $(CPPFLAGS) -I/usr/include/x86_64-linux-gnu/ 
 ##
-##libo32_hash_la_CFLAGS			= $(cflags_o32) $(CFLAGS)
+##libo32_hash_a_CFLAGS			= $(cflags_o32) $(CFLAGS)
 
 sources_common = \
     genKAT.c \

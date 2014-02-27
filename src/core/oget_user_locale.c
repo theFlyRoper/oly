@@ -22,6 +22,7 @@
 #include "oly/common.h"
 
 #include <unicode/ustdio.h>
+#include <unicode/uloc.h>
 #include <unicode/ures.h>
 
 #include <sys/types.h>

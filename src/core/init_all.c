@@ -21,6 +21,7 @@
 #  include "olyconf.h"
 #endif
 
+#include <unicode/uclean.h>
 #include <unicode/ustdio.h>
 #include <unicode/ustring.h>
 #include <stdio.h>
@@ -31,7 +32,7 @@
 #include <assert.h>
 
 #include "oly/common.h"
-#include "oly/output.h"
+#include "oly/core.h"
 #include "oly/state.h"
 #include "oly/list.h"
 #include "oly/syntax.h"
@@ -40,11 +41,12 @@
 
 oly_status
 init_all (Oly *oly, char *locale) {
-  UErrorCode      u_status  = U_ZERO_ERROR; /* Unicode u_status code */
+  UErrorCode      u_status  = U_ZERO_ERROR; 
+  oly_status      o_status = OLY_OKAY;
   clean_io_open();
   oly_result_clear (oly);
   
-  init_io(locale);
+  init_io(locale, NULL);
   
   if ( cleanenv() != OLY_OKAY )
     oly_fatal (oly_result_get(oly));
@@ -56,6 +58,7 @@ init_all (Oly *oly, char *locale) {
       oly_result_append (oly, u_errorName(u_status));
       oly_fatal (oly_result_get(oly));
   }
+  return o_status;
 }
 
 

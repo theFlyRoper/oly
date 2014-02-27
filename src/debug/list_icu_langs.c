@@ -22,6 +22,7 @@
 #  include "olyconf.h"
 #endif
 #include "oly/common.h"
+#include "oly/oly_dev.h"
 
 #include <unicode/ustdio.h>
 #include <unicode/uloc.h>
@@ -32,9 +33,8 @@
 
 void list_icu_langs(void)
 { 
-  const char    **list; 
+  const char *const *list = uloc_getISOLanguages(); 
   int       i = 0;
-  list = uloc_getISOLanguages();
   for (i = 0; (list[i] != NULL); i++) {
     printf("%s ", list[i]);
   }

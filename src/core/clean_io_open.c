@@ -25,6 +25,7 @@
 
 #include <sys/types.h>
 #include <limits.h>
+#include <sys/resource.h>
 #include <sys/stat.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -66,15 +67,21 @@ static int open_devnull(int fd) {
 }
 
 void clean_io_open(void) {
-  int         fd, fds;
-  struct stat st;
+  int           fd, fds;
+  struct rlimit lim;
+  struct stat   st;
+  int           status;
   /* posix provides these macros, so why not use them? */
   int         std_fileno[] = {
                 STDIN_FILENO, 
                 STDOUT_FILENO,
                 STDERR_FILENO };
   /* make sure all open descriptors other than the standard ones are closed */
-  if ((fds = getdtablesize()) == -1) {
+  status = getrlimit(RLIMIT_NOFILE, &lim);
+  if (status != 0) {
+      abort();
+  }
+  if ((fds = (int)lim.rlim_max) == -1) {
     fds = OPEN_MAX;
   }
   for (fd = 3; fd < fds; fd++) {
