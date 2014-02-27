@@ -19,7 +19,7 @@
 ## MA 02110-1301, USA. }}}
 
 ## may change src/sha_three later but for now, separate.
-SUBDIRS 								= doc lib sha_three
+SUBDIRS 								= doc lib lib/sha_three
 SUFFIXES								= .res .dat .txt
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 

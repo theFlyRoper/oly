@@ -201,7 +201,7 @@ dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
                  lib/Makefile \
-                 sha_three/Makefile \
+                 lib/sha_three/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)
