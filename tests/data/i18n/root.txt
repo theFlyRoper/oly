@@ -1,0 +1,53 @@
+// Copyright (c) 2014 Oly Project
+// See LICENSE file for details
+root:table {
+    OlyUsage:string {"usage: oly [options] <input> <output>\n"}
+    OlyVersion:string {"{1}, version {2}.{3}"
+      "Copyright (C) {4} Oly Project\n"
+      "\tLicense GPLv3+: GNU GPL version 3 or later "
+      "<http://gnu.org/licenses/gpl.html>\n"
+      "\tThis is free software: you are free to change and redistribute it.\n"
+      "\tThere is NO WARRANTY, to the extent permitted by law.\n"}
+    HelpTemplate:string{"\t-{1}\t--{2}\t\t{3}\n"}
+    // OlyOptionType should not be translated.  It refers to an enum in the code.
+    OlyOptionType:array {
+      0:string{"NO_ARGUMENT"}
+      1:string{"OPTIONAL_ARGUMENT"}
+      2:string{"REQUIRED_ARGUMENT"}
+    }
+    OlyOptions:table {
+      DisplayHelp:table{
+        ShortOpt:string{"h"}
+        LongOpt:string{"help"}
+        // 0 = requires no value, 1 = optional value, 2 = required value
+        Type:int{0}
+        Display:string{"Show this help message."}
+      }
+      DisplayVersion:table{
+        ShortOpt:string{"v"}
+        LongOpt:string{"version"}
+        Type:int{0}
+        Display:string{"Show current version information for Oly."}
+      }
+    }
+    OlyErrors:array {
+        -5:string{"OLY_EOF"},
+        -4:string{"OLY_EXIT"},
+        -3:string{"OLY_CONTINUE"},
+        -2:string{"OLY_BREAK"},
+        -1:string{"OLY_INCOMPLETE"},
+        0:string{"OLY_OKAY"},
+        1:string{"OLY_ERR_UNSPECIFIED"},
+        2:string{"OLY_ERR_SYS"},
+        3:string{"OLY_ERR_ICU"},
+        4:string{"OLY_ERR_INIT"}
+              }
+    OlyHelpTopics {
+        configuration     { "ROOT configuration help topic" }
+    }
+    OlyHelpKeywords {
+        configuration     { "configuration" }
+    }
+}
+      
+// vim: set syntax=javascript:

@@ -1,0 +1,6 @@
+1..4
+ok 1 - result[0](ten) = output[0](ten)
+ok 2 - result[1](chars) = output[1](chars)
+ok 3 - result[2](!!) = output[2](!!)
+ok 4 - result[3](3120) = output[3](3120)
+# All 4 tests successful or skipped

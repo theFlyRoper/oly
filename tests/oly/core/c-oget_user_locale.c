@@ -1,4 +1,4 @@
-/* oly_hash - return the sha3 hash of the bitstream input {{{
+/* oget_user_locale test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,21 +16,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+
 #ifdef HAVE_CONFIG_H
 #  include "olyconf.h"
 #endif
 
-#include <lib/sha_three/KeccakNISTInterface.h>
+#include <stdio.h>
+#include <assert.h>
+
 #include "oly/common.h"
+#include "oly/core.h"
 
-#include "oly/hash.h"
-
-oly_status 
-get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) 
-{
-  if (Hash(OLY_HASH_BITS, data, len, hash) != SUCCESS) {
-    return OLY_ERR_UNSPECIFIED;
-  };
-  return OLY_OKAY;
+int
+main( void ){
+  char          *locale;
+  u_setDataDirectory(TEST_LOCALEDIR);
+  
+  /* oget_user_locale should always return SOME value.
+   * in ICU, the default passed back when absolutely no 
+   * language value is available on a Unix system is en_US_POSIX,
+   * which is a good default.
+   */
+  assert((locale = oget_user_locale()) != NULL);
+  
+  printf("Locale: %s\n", locale);
+  return EXIT_SUCCESS;
 }
+
 

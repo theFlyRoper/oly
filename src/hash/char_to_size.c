@@ -1,4 +1,4 @@
-/* print_nint_as_hex.c: for N ints, print each as a hex, with no spaces. {{{
+/* char_to_size - convert 8 chars into a single uint32_t and return it {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,33 +21,36 @@
 #endif
 
 #include "oly/common.h"
+#include <limits.h>
 
 #include "oly/core.h"
 #include "oly/hash.h"
 
-void print_result(const char *c){
-  int       i=0, limit = (OLY_HASH_BITS/CHAR_BIT);
-  for (i = 0; (i <limit ); i += sizeof(char)) {
-    printf("%02x", (unsigned char)c[i]);
-  }
-  printf("\n");
-}
+/* because this counts through an array, this should work on any platform. 
+ * we will find out later. For now I assume it will.  */
 
-void print_int32hash(int32hash *result){
-  uint32_t        i = 0;
-  oly_status      status = OLY_OKAY;
-  for (i = 0; (i < UINT32_HASH); i++) {
-    printf("%08x",*result[i]);
+/* added note: addressing misbehaves over 32, so for now, we just deal with 32. */
+/* for now, on hiatus.
+static uint64_t char_to_uint64(const unsigned char *c){
+  union {
+    uint32_t i32[2];
+    uint64_t i64;
+  } xform;
+  xform.i32[0] = char_to_uint32(c+4);
+  xform.i32[1] = char_to_uint32(c);
+  printf("xform: %016llx\n", xform.i64);
+  return xform.i64;
+}
+*/
+
+oly_status char_to_size(const unsigned char *c, size_t *res){
+  size_t        i = 0, j = (sizeof(size_t)-1);
+  oly_status    status = OLY_OKAY;
+  *res = 0;
+  for (i = 0; (i <= j); i++) {
+    *res |= ((size_t)c[i] << (CHAR_BIT * (j - i)));
   }
-  printf("\n");
   return status;
 }
 
-void print_sizehash(sizehash *c){
-  int       i=0;
-  for (i = 0; (i < SIZE_HASH ); i++) {
-    printf("%016llx", *c[i]);
-  }
-  printf("\n");
-}
 

@@ -1,6 +1,0 @@
-# TODO: rearrange this to add a bigendian chunk.
-1..3
-ok 1 - BAADBEEF: Probably mad cow disease.
-ok 2 - 00BEADED: Ah, lovely work.
-ok 3 - FEED0BED: What, you mean like fertilizer?
-# All 3 tests successful or skipped

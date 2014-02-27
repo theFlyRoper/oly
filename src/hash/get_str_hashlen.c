@@ -1,4 +1,4 @@
-/* oly_hash - return the sha3 hash of the bitstream input {{{
+/* get_hashlen - return the size, cast to data_length, of the incoming hashable data. {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,17 +20,16 @@
 #  include "olyconf.h"
 #endif
 
-#include <lib/sha_three/KeccakNISTInterface.h>
 #include "oly/common.h"
+#include <limits.h>
 
 #include "oly/hash.h"
+#include "oly/state.h"
+  
 
-oly_status 
-get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) 
-{
-  if (Hash(OLY_HASH_BITS, data, len, hash) != SUCCESS) {
-    return OLY_ERR_UNSPECIFIED;
-  };
-  return OLY_OKAY;
+oly_status get_str_hashlen(const char *c, data_length *result){
+  oly_status      status = OLY_OKAY;
+  *result = ((data_length)strlen(c)*CHAR_BIT);
+  return status;
 }
 

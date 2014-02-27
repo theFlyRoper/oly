@@ -1,4 +1,4 @@
-/* char_to_size test License GPL2+ {{{
+/* hash_to_uint32 test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -39,27 +39,22 @@ HashReturn Update(hashState *state, const BitSequence *data,
 HashReturn Final(hashState *state, BitSequence *hashval);
 HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
 
-typedef union hash_t {
-  unsigned long long ulong_hash[ULONG_HASH_ARRAY];
-  unsigned int uint_hash[UINT_HASH_ARRAY];
-  unsigned char char_hash[CHAR_HASH_ARRAY];
-} hash_val;
-
 int
 main (void){
-  hash_val    test1 = {0xEFBEADBA}, test2 = {0xEDADBE00},
-              test3 = {0xED0BEDFE};
-  unsigned int result1 = 0xBAADBEEF, result2 = 0x00BEADED, 
-               result3 = 0xFEED0BED,
-                output_val = 0;
-  diag("TODO: rearrange this to add a bigendian chunk.");
-  plan(3);
-  output_val = char_to_size(test1.char_hash);
-  is_hex(result1, output_val, "%08X: Probably mad cow disease.", output_val);
-  output_val = char_to_size(test2.char_hash);
-  is_hex(result2, output_val, "%08X: Ah, lovely work.", output_val);
-  output_val = char_to_size(test3.char_hash);
-  is_hex(result3, output_val, "%08X: What, you mean like fertilizer?", output_val);
+  sizehash            input;
+  char                *hash_me = "jonathan";
+  int32hash            result;
+  data_length         hash_length ;
+  oly_status          ostatus = OLY_OKAY;
+  
+  ostatus = get_str_hashlen(hash_me, &hash_length);
+
+  ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
+    (bit_sequence *)input);
+  print_result((const char *)input);
+  ostatus = hash_to_uint32((const unsigned char *)input,&result);
+  print_int32hash(result);
+  plan(1);
   return EXIT_SUCCESS;
   
 }

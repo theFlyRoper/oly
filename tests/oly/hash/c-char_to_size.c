@@ -1,4 +1,4 @@
-/* get_hashbits test License GPL2+ {{{
+/* char_to_size test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -41,29 +41,20 @@ HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, 
 
 int
 main (void){
-  unsigned char       curr_bits = 8;
-  size_t              curr_mask = 255;
-  int                 result = 0;
-  char                *hash_me = "jonathan";
-  charhash            corned_beef;
-  data_length         hash_length = 0;
-  oly_status          ostatus = OLY_OKAY;
-
-  char                checkme[] = "@@@@";
-  
-  plan(9);
-  hash_length = ((data_length)strlen(hash_me)*CHAR_BIT);
-  
-  ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
-    (bit_sequence *)corned_beef);
-
-  print_result((const char *)corned_beef);
-  printf("SIZE_T: %u UCHAR: %u\n",SIZE_HASH, CHAR_HASH);
-  printf("before treatment: %08lx\n",(unsigned long)corned_beef);
-  printf("after treatment: %08lx\n",(unsigned long)char_to_size(&corned_beef));
- 
-  plan(1);
-  is_int(8, 8, "string=");
+  oly_hash    test1 = {0xEFBEADBAED0BEDFE}, test2 = {0xEDEDDE00EDADBE00},
+              test3 = {0xED0BEDFEADDEEDDE};
+  size_t      result1 = 0xFEED0BEDBAADBEEF, result2 = 0x00BEADED00DEEDED, 
+               result3 = 0xDEEDDEADFEED0BED,
+                output_val = 0;
+  oly_status  status;
+  diag("TODO: rearrange this to add a bigendian chunk.");
+  plan(3);
+  status = char_to_size(test1.cval,&output_val);
+  is_hex(result1, output_val, "%016lX: Probably mad cow disease.", output_val);
+  status = char_to_size(test2.cval,&output_val);
+  is_hex(result2, output_val, "%016lX: That was how he rolled, man.", output_val);
+  status = char_to_size(test3.cval,&output_val);
+  is_hex(result3, output_val, "%016lX: A feedbed without deeds is dead.", output_val);
   return EXIT_SUCCESS;
   
 }

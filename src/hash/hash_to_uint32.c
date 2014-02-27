@@ -1,4 +1,4 @@
-/* oly_hash - return the sha3 hash of the bitstream input {{{
+/* hash_to_uint32 - transform all chars from a hash return to uints {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,17 +20,28 @@
 #  include "olyconf.h"
 #endif
 
-#include <lib/sha_three/KeccakNISTInterface.h>
 #include "oly/common.h"
+#include <limits.h>
 
+#include "oly/core.h"
 #include "oly/hash.h"
+#include "oly/state.h"
+/* added note: addressing misbehaves over 32, so for now, we just deal with 32. */
+static uint32_t char_to_uint32(charhash c){
+  uint32_t        i = 0, j = (sizeof(uint32_t)-1);
+  uint32_t        res = 0;
+  for (i = 0; (i <= j); i += sizeof(char)) {
+    res |= ((uint32_t)c[i] << (CHAR_BIT * (j - i)));
+  }
+  return res;
+};
 
-oly_status 
-get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) 
-{
-  if (Hash(OLY_HASH_BITS, data, len, hash) != SUCCESS) {
-    return OLY_ERR_UNSPECIFIED;
-  };
-  return OLY_OKAY;
+oly_status hash_to_uint32(const unsigned char *c, uint32_t *result[]){
+  uint32_t        i = 0;
+  oly_status      status = OLY_OKAY;
+  for (i = 0; (i < CHAR_HASH); i += sizeof(uint32_t)) {
+    result[i] = char_to_uint32(&c[i]);
+  }
+  return status;
 }
 
