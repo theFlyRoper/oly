@@ -18,7 +18,6 @@
 ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 ## MA 02110-1301, USA. }}}
 
-## may change src/sha_three later but for now, separate.
 SUBDIRS 								= doc lib 
 SUFFIXES								= .res .dat .txt
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
@@ -87,9 +86,9 @@ SHA3_SRC = lib/sha_three/KeccakF-1600-opt32.c
 SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
 endif !SHA3_64BIT
 
-libhash_a_SOURCES					=	src/hash/n_to_uint.c \
+libhash_a_SOURCES					=	src/hash/char_to_size.c \
 														src/hash/print_nint_as_hex.c \
-														src/hash/oly_hash.c \
+														src/hash/get_hashbits.c \
 														lib/sha_three/genKAT.c \
 														lib/sha_three/KeccakDuplex.c \
 														lib/sha_three/KeccakNISTInterface.c \
@@ -169,7 +168,7 @@ check_PROGRAMS 					= tests/runtests \
 													tests/oly/core/c-count_nondelim_chars \
 													tests/oly/core/c-token_str_to_array \
 													tests/oly/hash/c-get_hashbits \
-													tests/oly/hash/c-n_to_uint \
+													tests/oly/hash/c-char_to_size \
 													tests/oly/i18n/c-alias \
 													tests/oly/i18n/c-ja \
 													tests/oly/i18n/c-el \
@@ -187,9 +186,9 @@ tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c
 tests_oly_hash_c_get_hashbits_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_get_hashbits_LDADD 		= tests/tap/libtap.a \
 																					libcore.a libhash.a
-tests_oly_hash_c_n_to_uint_SOURCES 	= tests/oly/hash/c-n_to_uint.c 
-tests_oly_hash_c_n_to_uint_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_n_to_uint_LDADD 		= tests/tap/libtap.a \
+tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
+tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_char_to_size_LDADD 		= tests/tap/libtap.a \
 																					libcore.a libhash.a
 tests_oly_core_c_oget_user_locale_SOURCES 	= tests/oly/core/c-oget_user_locale.c 
 tests_oly_core_c_oget_user_locale_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)

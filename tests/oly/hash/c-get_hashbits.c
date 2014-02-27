@@ -39,19 +39,14 @@ HashReturn Update(hashState *state, const BitSequence *data,
 HashReturn Final(hashState *state, BitSequence *hashval);
 HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
 
-typedef union hash_t {
-  unsigned long long ulong_hash[ULONG_HASH_ARRAY];
-  unsigned int uint_hash[UINT_HASH_ARRAY];
-  unsigned char char_hash[CHAR_HASH_ARRAY];
-} hash_val;
-
 int
 main (void){
   unsigned char       curr_bits = 8;
   size_t              curr_mask = 255;
-  int                 i_like_turtles = 0;
+  char                input[8] = 0;
+  int                 result = 0;
   char                *hash_me = "jonathan";
-  hash_val            corned_beef;
+  oly_hash            corned_beef;
   data_length         hash_length = 0;
   oly_status          ostatus = OLY_OKAY;
 
@@ -60,16 +55,14 @@ main (void){
   plan(9);
   hash_length = ((data_length)strlen(hash_me)*CHAR_BIT);
   
-  ostatus = oly_hash((const bit_sequence *)hash_me, hash_length,
-    (bit_sequence *)corned_beef.char_hash);
+  ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
+    (bit_sequence *)corned_beef.charval);
 
-  print_result((const char *)corned_beef.char_hash);
-  printf("ULONG: %u UINT: %u UCHAR: %u\n",ULONG_HASH_ARRAY, 
-      UINT_HASH_ARRAY, CHAR_HASH_ARRAY);
-  
-  printf("before treatment: %04x\n",corned_beef.uint_hash[0]);
-
-  printf("after treatment: %04x\n",n_to_uint(&corned_beef.char_hash));
+  print_result((const char *)corned_beef.charval);
+  printf("SIZE_T: %u UCHAR: %u\n",SIZE_HASH, CHAR_HASH);
+  printf("before treatment: %04x\n",corned_beef.intval[0]);
+  printf("after treatment: %08x\n",char_to_size(&corned_beef.charval));
+  printf("Macro version: %08x\n", );
  
   plan(1);
   is_int(8, 8, "string=");

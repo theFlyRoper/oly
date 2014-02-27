@@ -153,7 +153,7 @@ AS_IF([test "x$ac_cv_sizeof_size_t" = x],
       [])
 
 AM_CONDITIONAL(SHA3_64BIT,
-               [test "x$ac_cv_sizeof_size_t" = 8])
+               [test "x$ac_cv_sizeof_size_t" = x8])
 
 AC_C_CONST
 AC_C_VOLATILE

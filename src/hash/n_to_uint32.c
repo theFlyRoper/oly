@@ -1,4 +1,4 @@
-/* n_to_uint32 - convert 8 chars into a single uint32_t and return it {{{
+/* char_to_size32 - convert 8 chars into a single uint32_t and return it {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
  * MA 02110-1301, USA.
  * }}} */
 
-uint32_t n_to_uint32(const unsigned char *c){
+uint32_t char_to_size32(const unsigned char *c){
   /* converts 4 chars into a single sizeof(intval). */
   size_t    i = 0;
   uint32_t  res = 0;

@@ -19,6 +19,7 @@
 #define OLY_OLY_HASH_H 1
 
 #include <string.h>
+#include <limits.h>
 
 #ifndef BUFSIZ
 #define BUFSIZ 8192
@@ -34,17 +35,35 @@
  *    data_length (from NIST DataLength)
  *    hash_return (from NIST HashReturn)
  *    hash_state
- * Oly uses 256 bit hashing.  I see no reason to change this.  Max addressing
- * on most systems is 64 bits so odds are Oly will only ever use <32 or <64 bits, 
- * that is, unsigned char[4] or unsigned char[8] for addresssing 
- * (assuming char = 8 bits).
+ * Oly uses 256 bit hashing.  It transforms the output from 64 chars to an array of
+ * 256/(sizeof(size_t)*CHAR_BIT).  I think this is a flexible solution.
+ *
  */
 
-#define OLY_HASH_SIZE 256 
-#define ULONG_HASH_ARRAY (OLY_HASH_SIZE/(sizeof(unsigned long long)*CHAR_BIT))
-#define UINT_HASH_ARRAY (OLY_HASH_SIZE/(sizeof(unsigned int)*CHAR_BIT))
-#define CHAR_HASH_ARRAY (OLY_HASH_SIZE/CHAR_BIT)
+#define OLY_HASH_BITS 256 
+#define SIZE_HASH (OLY_HASH_BITS/(SIZEOF_SIZE_T*CHAR_BIT))
+#define CHAR_HASH (OLY_HASH_BITS/CHAR_BIT)
 
+typedef union oly_hash_type {
+  size_t        intval[SIZE_HASH];
+  unsigned char charval[CHAR_HASH];
+} oly_hash;
+
+#define VALUE_TO_STRING(x) #x
+#define VALUE(x) VALUE_TO_STRING(x)
+/* little endian = low byte leftmost. big endian = low byte rightmost. */
+#define POSITION(i, j) result |= ((size_t)input[i] << j) ;
+/* res |= ((unsigned int)c[i] << (CHAR_BIT * (j - i))); */
+#if SIZEOF_SIZE_T == 8
+#define CHAR_TO_SIZE(input, result) \
+    POSITION(0, 0) POSITION(1, 8) POSITION(2, 16) POSITION(3, 24) \
+    POSITION(4, 32) POSITION(5, 40) POSITION(6, 48) POSITION(7, 56) 
+#else
+#define CHAR_TO_SIZE(input, result) ( \
+    POSITION(0, 0) POSITION(1, 8) POSITION(2, 16) POSITION(3, 24) )
+#endif
+#pragma message "CHARTOSIZE=" VALUE(CHAR_TO_SIZE(hi,lo))
+/**/
 typedef HashReturn hash_return;
 typedef BitSequence bit_sequence;
 typedef DataLength data_length;
@@ -56,8 +75,8 @@ size_t memory_left_now(void);
 size_t getMemorySize( );
 void print_result(const char *c);
 
-oly_status str4_to_int(const char *c, int *res);
-oly_status oly_hash( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
+
+oly_status get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
 
 #endif /* OLY_OLY_HASH_H */
 

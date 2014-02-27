@@ -21,13 +21,12 @@
 #endif
 
 #include "oly/common.h"
-#include <limits.h>
 
 #include "oly/core.h"
 #include "oly/hash.h"
 
 void print_result(const char *c){
-  int       i=0, limit = (OLY_HASH_SIZE/CHAR_BIT);
+  int       i=0, limit = (OLY_HASH_BITS/CHAR_BIT);
   for (i = 0; (i <limit ); i += sizeof(char)) {
     printf("%02x", (unsigned char)c[i]);
   }

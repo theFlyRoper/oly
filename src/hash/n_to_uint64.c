@@ -1,4 +1,4 @@
-/* n_to_uint64 - convert 8 chars into a single uint64_t and return it {{{
+/* char_to_size64 - convert 8 chars into a single uint64_t and return it {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,7 @@
  * MA 02110-1301, USA.
  * }}} */
 
-uint64_t n_to_uint64(const unsigned char *c){
+uint64_t char_to_size64(const unsigned char *c){
   size_t    i = 0;
   uint64_t  retval = 0;
   for (i = 0; (i < sizeof(uint64_t)); i++) {

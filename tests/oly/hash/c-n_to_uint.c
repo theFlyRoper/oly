@@ -1,4 +1,4 @@
-/* n_to_uint test License GPL2+ {{{
+/* char_to_size test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -54,11 +54,11 @@ main (void){
                 output_val = 0;
   diag("TODO: rearrange this to add a bigendian chunk.");
   plan(3);
-  output_val = n_to_uint(test1.char_hash);
+  output_val = char_to_size(test1.char_hash);
   is_hex(result1, output_val, "%08X: Probably mad cow disease.", output_val);
-  output_val = n_to_uint(test2.char_hash);
+  output_val = char_to_size(test2.char_hash);
   is_hex(result2, output_val, "%08X: Ah, lovely work.", output_val);
-  output_val = n_to_uint(test3.char_hash);
+  output_val = char_to_size(test3.char_hash);
   is_hex(result3, output_val, "%08X: What, you mean like fertilizer?", output_val);
   return EXIT_SUCCESS;
   
