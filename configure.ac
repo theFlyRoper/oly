@@ -152,6 +152,9 @@ AS_IF([test "x$ac_cv_sizeof_size_t" = x],
       [AC_SUBST(ac_cv_sizeof_size_t,[4])],
       [])
 
+AM_CONDITIONAL(SHA3_64BIT,
+               [test "x$ac_cv_sizeof_size_t" = 8])
+
 AC_C_CONST
 AC_C_VOLATILE
 AC_C_INLINE
@@ -201,7 +204,6 @@ dnl AC_DISABLE_STATIC
 
 AC_CONFIG_FILES([doc/Makefile \
                  lib/Makefile \
-                 lib/sha_three/Makefile \
                  Makefile])
 
 AC_SUBST(ac_aux_dir)

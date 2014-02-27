@@ -19,7 +19,7 @@
 ## MA 02110-1301, USA. }}}
 
 ## may change src/sha_three later but for now, separate.
-SUBDIRS 								= doc lib lib/sha_three
+SUBDIRS 								= doc lib 
 SUFFIXES								= .res .dat .txt
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
@@ -78,6 +78,15 @@ csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 														-DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS							=	csvparse 
 noinst_LIBRARIES					=	liboly_dev.a libcore.a libstate.a libhash.a
+
+if SHA3_64BIT
+SHA3_SRC = lib/sha_three/KeccakF-1600-opt64.c
+SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m64 $(CFLAGS)
+else !SHA3_64BIT
+SHA3_SRC = lib/sha_three/KeccakF-1600-opt32.c
+SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
+endif !SHA3_64BIT
+
 libhash_a_SOURCES					=	src/hash/n_to_uint.c \
 														src/hash/print_nint_as_hex.c \
 														src/hash/oly_hash.c \
@@ -85,10 +94,11 @@ libhash_a_SOURCES					=	src/hash/n_to_uint.c \
 														lib/sha_three/KeccakDuplex.c \
 														lib/sha_three/KeccakNISTInterface.c \
 														lib/sha_three/KeccakSponge.c \
-														lib/sha_three/KeccakF-1600-opt64.c
+														$(SHA3_SRC)
+
 
 libhash_a_CPPFLAGS				= $(HEAD_CPPFLAGS)
-libhash_a_CFLAGS					= -fomit-frame-pointer -O3 -g0 -m64 $(CFLAGS)
+libhash_a_CFLAGS					= $(SHA3_CFLAGS)
 
 ## libhash_a_LIBADD					= lib/sha_three/libo64_hash.a
 
