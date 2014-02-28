@@ -1,4 +1,4 @@
-/* hash_to_uint32 test License GPL2+ {{{
+/* char_to_uint32 test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@ int
 main (void){
   charhash            input;
   char                *hash_me = "jonathan";
-  sizehash            result;
+  int32hash            result;
   data_length         hash_length ;
   oly_status          ostatus = OLY_OKAY;
   
@@ -51,7 +51,7 @@ main (void){
 
   ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
     (bit_sequence *)input);
-  print_charhash((const char *)input);
+  print_charhash(input);
   ostatus = hash_to_uint32((const unsigned char *)input,&result);
   print_int32hash(result);
   plan(1);

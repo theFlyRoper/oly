@@ -36,21 +36,21 @@ print_charhash(const charhash c)
 }
 
 void 
-print_int32hash(const int32hash *result)
+print_int32hash(const int32hash result)
 {
   uint32_t        i = 0;
   for (i = 0; (i < UINT32_HASH); i++) {
-    printf("%08x",*result[i]);
+    printf("%08x", result[i]);
   }
   printf("\n");
 }
 
 void
-print_sizehash(const sizehash *c)
+print_sizehash(const sizehash c)
 {
   int       i=0;
   for (i = 0; (i < SIZE_HASH ); i++) {
-    printf("%016llx", *c[i]);
+    printf("%016llx", c[i]);
   }
   printf("\n");
 }

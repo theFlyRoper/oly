@@ -64,13 +64,13 @@ oly_status nchar_bitand(const char *s1, const char *s2, char *out, size_t len);
 
 size_t memory_left_now(void);
 size_t getMemorySize( );
-void print_sizehash (const sizehash *c);
-void print_int32hash(const int32hash *result);
+void print_sizehash (const sizehash c);
+void print_int32hash(const int32hash result);
 void print_charhash(const charhash c);
 
 oly_status char_to_size(const unsigned char *c, size_t *res);
-oly_status hash_char_to_hash_size(const unsigned char *c, size_t *result[]);
-oly_status hash_to_uint32(const unsigned char *c, uint32_t *result[]);
+oly_status hash_char_to_hash_size(const unsigned char *c, size_t result[]);
+oly_status hash_char_to_hash_uint32(const unsigned char *c, uint32_t *result[]);
 
 #endif /* OLY_OLY_HASH_H */
 

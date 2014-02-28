@@ -84,7 +84,8 @@ AC_ARG_ENABLE(debug,
                     [enable_debug=no])
 
 AS_IF([test "x$enable_debug" != xyes],,
-      [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])])
+      [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])
+       AC_SUBST(DEV_CFLAGS,["-ggdb3"])])
 
 AS_IF([test "x$enable_debug" != xyes],,
       [AC_SUBST(DEV_LIB,["liboly_dev.a"])])

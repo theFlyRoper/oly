@@ -1,6 +1,6 @@
 use Digest::SHA3 qw(sha3_256_hex);
 
-$data = jonathan;
+$data = Argo;
 @frags = split(//, $data);
 
 # all-at-once (Functional style)

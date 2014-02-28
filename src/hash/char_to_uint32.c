@@ -1,4 +1,4 @@
-/* hash_to_uint32 - transform all chars from a hash return to uints {{{
+/* char_to_uint32 - transform all chars from a hash return to uints {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,7 +26,9 @@
 #include "oly/core.h"
 #include "oly/hash.h"
 #include "oly/state.h"
-static uint32_t char_to_uint32(const charhash c){
+static uint32_t 
+char_to_uint32(const charhash c)
+{
   uint32_t        i = 0, j = (sizeof(uint32_t)-1);
   uint32_t        res = 0;
   for (i = 0; (i <= j); i += sizeof(char)) {
@@ -35,7 +37,9 @@ static uint32_t char_to_uint32(const charhash c){
   return res;
 };
 
-oly_status hash_to_uint32(const unsigned char *c, uint32_t *result[]){
+oly_status 
+hash_char_to_hash_uint32(const unsigned char *c, uint32_t *result[])
+{
   uint32_t        i = 0;
   oly_status      status = OLY_OKAY;
   for (i = 0; (i < CHAR_HASH); i += sizeof(uint32_t)) {

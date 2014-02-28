@@ -72,7 +72,7 @@ dist_noinst_HEADERS			=	src/oly/break_rules.h src/oly/builtin.h \
 													src/oly/output.h src/oly/syntax.h \
 													tests/tap/basic.h tests/tap/float.h \
 													tests/tap/macros.h
-AM_CFLAGS 								= -fstack-protector-all @ICU_CFLAGS@
+AM_CFLAGS 								= -fstack-protector-all @ICU_CFLAGS@ @DEV_CFLAGS@
 csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 														-DLOCALEDIR=\"$(localedir)\"
 bin_PROGRAMS							=	csvparse 
@@ -90,7 +90,7 @@ libhash_a_SOURCES					=	src/hash/char_to_size.c \
 														src/hash/print_nint_as_hex.c \
 														src/hash/get_str_hashlen.c \
 														src/hash/char_to_size.c \
-														src/hash/hash_to_uint32.c \
+														src/hash/char_to_uint32.c \
 														src/hash/get_hashbits.c \
 														lib/sha_three/genKAT.c \
 														lib/sha_three/KeccakDuplex.c \
@@ -173,7 +173,7 @@ check_PROGRAMS 					= tests/runtests \
 													tests/oly/core/c-token_str_to_array \
 													tests/oly/hash/c-get_hashbits \
 													tests/oly/hash/c-get_str_hashlen \
-													tests/oly/hash/c-hash_to_uint32 \
+													tests/oly/hash/c-char_to_uint32 \
 													tests/oly/hash/c-char_to_size \
 													tests/oly/hash/c-hash_char_to_hash_size \
 													tests/oly/i18n/c-alias \
@@ -201,9 +201,9 @@ tests_oly_hash_c_get_str_hashlen_SOURCES 	= tests/oly/hash/c-get_str_hashlen.c
 tests_oly_hash_c_get_str_hashlen_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_get_str_hashlen_LDADD 		= tests/tap/libtap.a \
 																					libcore.a libhash.a @ICUIO_LIBS@ 
-tests_oly_hash_c_hash_to_uint32_SOURCES 	= tests/oly/hash/c-hash_to_uint32.c 
-tests_oly_hash_c_hash_to_uint32_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_hash_to_uint32_LDADD 		= tests/tap/libtap.a \
+tests_oly_hash_c_char_to_uint32_SOURCES 	= tests/oly/hash/c-char_to_uint32.c 
+tests_oly_hash_c_char_to_uint32_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_char_to_uint32_LDADD 		= tests/tap/libtap.a \
 																					libcore.a libhash.a
 tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
 tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)

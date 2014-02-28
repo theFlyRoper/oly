@@ -1,0 +1,6 @@
+# TODO: rearrange this to add a bigendian chunk.
+1..3
+ok 1 - FEED0BEDBAADBEEF: Probably mad cow disease.
+ok 2 - 00BEADED00DEEDED: That was how he rolled, man.
+ok 3 - DEEDDEADFEED0BED: A feedbed without deeds is dead.
+# All 3 tests successful or skipped
