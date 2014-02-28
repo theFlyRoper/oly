@@ -1,21 +1,21 @@
 /* get_hashbits test License GPL2+ {{{
- * Copyright (C) 2014 Oly Project
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
- * MA 02110-1301, USA.
- * }}} */
+  * Copyright (C) 2014 Oly Project
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2, or (at your option)
+  * any later version.
+  *
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+  * MA 02110-1301, USA.
+  * }}} */
 
 #ifdef HAVE_CONFIG_H
 #  include "olyconf.h"
@@ -39,40 +39,57 @@ HashReturn Update(hashState *state, const BitSequence *data,
 HashReturn Final(hashState *state, BitSequence *hashval);
 HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
 
-typedef union oly_hash_union {
-  size_t        sval[SIZE_HASH];
-  uint32_t      ival[UINT32_HASH];
-  unsigned char cval[CHAR_HASH];
-} oly_hash;
+#define UINT_HASH_ARRAY (OLY_HASH_BITS/(sizeof(uint32_t)*CHAR_BIT))
+#define ULONG_HASH_ARRAY (OLY_HASH_BITS/(sizeof(unsigned long long)*CHAR_BIT))
+#define CHAR_HASH_ARRAY (OLY_HASH_BITS/CHAR_BIT)
+
+typedef union hash_t {
+  unsigned long long ulong_hash[ULONG_HASH_ARRAY];
+  unsigned int uint_hash[UINT_HASH_ARRAY];
+  unsigned char char_hash[CHAR_HASH_ARRAY];
+} hash_val;
+
+
+
+uint32_t n_to_uint(const unsigned char *c){
+  /* converts 4 chars into a single sizeof(intval). */
+  size_t    i = 0;
+  uint32_t  res = 0;
+  for (i = 0; (i < sizeof(uint32_t)); i += sizeof(char)) {
+    res |= (c[i] << (CHAR_BIT * (sizeof(uint32_t) - i)));
+  }
+  return OLY_OKAY;
+}
 
 int
-main (int argc, char **argv){
-  char                *hash_me = argv[1];
-  charhash            corned_beef;
+main (void){
+  unsigned char       curr_bits = 8;
+  size_t              curr_mask = 255;
+  int                 i_like_turtles = 0;
+  char                *hash_me = "jonathan";
+  hash_val            corned_beef;
   data_length         hash_length = 0;
   oly_status          ostatus = OLY_OKAY;
+
+  char                checkme[] = "@@@@";
+  
+  plan(9);
+  hash_length = ((data_length)strlen(hash_me)*CHAR_BIT);
+  
+  ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
+    (bit_sequence *)corned_beef.char_hash);
+
+  print_result((const char *)corned_beef.char_hash);
+  printf("ULONG: %u UINT: %u UCHAR: %u\n",ULONG_HASH_ARRAY, 
+      UINT_HASH_ARRAY, CHAR_HASH_ARRAY);
+  
+  printf("before treatment: %04x\n",corned_beef.uint_hash[0]);
+
+  printf("after treatment: %04x\n",n_to_uint(&corned_beef.char_hash));
   
   plan(1);
-  if (argc != 2) {
-    printf("Please provide exactly one argument.\n");
-    return EXIT_FAILURE;
-  }
-  ostatus = get_str_hashlen((const unsigned char *)hash_me, &hash_length);
-    
-  printf("hash_me: %s, hash_length: %u\n", hash_me, hash_length);
-  ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
-    &corned_beef);
-
-  print_charhash(corned_beef);
-  printf("SIZE_T: %u UCHAR: %u\n",SIZE_HASH, CHAR_HASH);
- 
-  plan(1);
   is_int(8, 8, "string=");
-  if (ostatus == OLY_OKAY) {
-    return EXIT_SUCCESS;
-  } else {
-    return EXIT_FAILURE;
-  }
+  return EXIT_SUCCESS;
   
 }
 
