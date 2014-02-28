@@ -41,21 +41,16 @@ HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, 
 
 int
 main( int argc, char **argv ){
-  unsigned char       curr_bits = 8;
-  size_t              curr_mask = 255;
-  int                 i_like_turtles = 0;
   char                *hash_me = argv[1];
   charhash            corned_beef;
   data_length         hash_length = 0;
   oly_status          ostatus = OLY_OKAY;
-
-  char                checkme[] = "@@@@";
   
   if (argc != 2) {
     printf("Please provide exactly 1 argument.  Exiting...\n");
     exit(EXIT_FAILURE);
   }
-  hash_length = ((data_length)strlen(hash_me)*CHAR_BIT);
+  ostatus = get_str_hashlen((const unsigned char *)hash_me, &hash_length);
   
   ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
     (bit_sequence *)corned_beef);

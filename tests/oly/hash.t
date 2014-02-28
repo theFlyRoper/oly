@@ -23,10 +23,11 @@ ok_result () {
 }
 
 # Total tests.  There are two tests per row in ok_result.
-plan 4
+plan 6
 
 # Run the individual tests.
 ok_result c-char_to_size "$BUILD"  0
 ok_result c-get_str_hashlen "$BUILD"  0
+ok_result sh-get_hashbits "$SOURCE"  0
 
 
