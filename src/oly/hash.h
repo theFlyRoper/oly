@@ -46,20 +46,17 @@
 #define CHAR_HASH (OLY_HASH_BITS/CHAR_BIT)
 
 /* little endian = low byte leftmost. big endian = low byte rightmost. */
-typedef union oly_hash_union {
-  size_t        sval[SIZE_HASH];
-  uint32_t      ival[UINT32_HASH];
-  unsigned char cval[CHAR_HASH];
-} oly_hash;
 
 typedef size_t        sizehash[SIZE_HASH];
 typedef uint32_t      int32hash[UINT32_HASH];
 typedef unsigned char charhash[CHAR_HASH];
 
-
 typedef HashReturn hash_return;
 typedef BitSequence bit_sequence;
 typedef DataLength data_length;
+
+oly_status get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
+oly_status get_str_hashlen(const unsigned char *c, data_length *result);
 
 oly_status nchar_bitnot(const char *s,  char *not_s, size_t len);
 oly_status nchar_bitor (const char *s1, const char *s2, char *out, size_t len);
@@ -67,12 +64,13 @@ oly_status nchar_bitand(const char *s1, const char *s2, char *out, size_t len);
 
 size_t memory_left_now(void);
 size_t getMemorySize( );
-void print_result(const char *c);
+void print_sizehash (const sizehash *c);
+void print_int32hash(const int32hash *result);
+void print_charhash(const charhash *c);
 
 oly_status char_to_size(const unsigned char *c, size_t *res);
+oly_status hash_char_to_hash_size(const unsigned char *c, size_t *result[]);
 oly_status hash_to_uint32(const unsigned char *c, uint32_t *result[]);
-
-oly_status get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
 
 #endif /* OLY_OLY_HASH_H */
 

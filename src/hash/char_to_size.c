@@ -52,5 +52,14 @@ oly_status char_to_size(const unsigned char *c, size_t *res){
   }
   return status;
 }
+  
+oly_status hash_char_to_hash_size(const unsigned char *c, size_t *result[]){
+  size_t        i = 0, j = (sizeof(size_t)-1);
+  oly_status    status = OLY_OKAY;
+  for (i = 0; (i <= j); i += sizeof(size_t)) {
+    status = char_to_size(&c[i], &result[i]);
+  }
+  return status;
+}
 
 

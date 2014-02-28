@@ -25,25 +25,30 @@
 #include "oly/core.h"
 #include "oly/hash.h"
 
-void print_result(const char *c){
+void 
+print_charhash(const charhash *c)
+{
   int       i=0, limit = (OLY_HASH_BITS/CHAR_BIT);
+  printf("limit = %u, size of **c: %u\n", limit, sizeof(*c[i]));
   for (i = 0; (i <limit ); i += sizeof(char)) {
-    printf("%02x", (unsigned char)c[i]);
+    printf("%02x", *c[i]);
   }
   printf("\n");
 }
 
-void print_int32hash(int32hash *result){
+void 
+print_int32hash(const int32hash *result)
+{
   uint32_t        i = 0;
-  oly_status      status = OLY_OKAY;
   for (i = 0; (i < UINT32_HASH); i++) {
     printf("%08x",*result[i]);
   }
   printf("\n");
-  return status;
 }
 
-void print_sizehash(sizehash *c){
+void
+print_sizehash(const sizehash *c)
+{
   int       i=0;
   for (i = 0; (i < SIZE_HASH ); i++) {
     printf("%016llx", *c[i]);

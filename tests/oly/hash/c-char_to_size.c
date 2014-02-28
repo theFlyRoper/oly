@@ -38,14 +38,19 @@ HashReturn Update(hashState *state, const BitSequence *data,
     DataLength databitlen);
 HashReturn Final(hashState *state, BitSequence *hashval);
 HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
+typedef union oly_hash_union {
+  size_t        sval[SIZE_HASH];
+  uint32_t      ival[UINT32_HASH];
+  unsigned char cval[CHAR_HASH];
+} oly_hash;
+
 
 int
 main (void){
   oly_hash    test1 = {0xEFBEADBAED0BEDFE}, test2 = {0xEDEDDE00EDADBE00},
               test3 = {0xED0BEDFEADDEEDDE};
-  size_t      result1 = 0xFEED0BEDBAADBEEF, result2 = 0x00BEADED00DEEDED, 
-               result3 = 0xDEEDDEADFEED0BED,
-                output_val = 0;
+  size_t      result1 = {0xFEED0BEDBAADBEEF}, result2 = {0x00BEADED00DEEDED}, 
+               result3 = {0xDEEDDEADFEED0BED}, output_val = 0;
   oly_status  status;
   diag("TODO: rearrange this to add a bigendian chunk.");
   plan(3);

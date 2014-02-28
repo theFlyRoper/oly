@@ -39,32 +39,40 @@ HashReturn Update(hashState *state, const BitSequence *data,
 HashReturn Final(hashState *state, BitSequence *hashval);
 HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
 
+typedef union oly_hash_union {
+  size_t        sval[SIZE_HASH];
+  uint32_t      ival[UINT32_HASH];
+  unsigned char cval[CHAR_HASH];
+} oly_hash;
+
 int
-main (void){
-  unsigned char       curr_bits = 8;
-  size_t              curr_mask = 255;
-  int                 result = 0;
-  char                *hash_me = "jonathan";
+main (int argc, char **argv){
+  char                *hash_me = argv[1];
   charhash            corned_beef;
   data_length         hash_length = 0;
   oly_status          ostatus = OLY_OKAY;
-
-  char                checkme[] = "@@@@";
   
-  plan(9);
-  hash_length = ((data_length)strlen(hash_me)*CHAR_BIT);
-  
+  plan(1);
+  if (argc != 2) {
+    printf("Please provide exactly one argument.\n");
+    return EXIT_FAILURE;
+  }
+  ostatus = get_str_hashlen((const unsigned char *)hash_me, &hash_length);
+    
+  printf("hash_me: %s, hash_length: %u\n", hash_me, hash_length);
   ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
-    (bit_sequence *)corned_beef);
+    &corned_beef);
 
-  print_result((const char *)corned_beef);
+  print_charhash(corned_beef);
   printf("SIZE_T: %u UCHAR: %u\n",SIZE_HASH, CHAR_HASH);
-  printf("before treatment: %08lx\n",(unsigned long)corned_beef);
-  printf("after treatment: %08lx\n",(unsigned long)char_to_size(&corned_beef));
  
   plan(1);
   is_int(8, 8, "string=");
-  return EXIT_SUCCESS;
+  if (ostatus == OLY_OKAY) {
+    return EXIT_SUCCESS;
+  } else {
+    return EXIT_FAILURE;
+  }
   
 }
 

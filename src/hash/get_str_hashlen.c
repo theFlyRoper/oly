@@ -1,4 +1,4 @@
-/* get_hashlen - return the size, cast to data_length, of the incoming hashable data. {{{
+/* get_str_hashlen - return the size, cast to data_length, of the incoming hashable data. {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,9 +27,10 @@
 #include "oly/state.h"
   
 
-oly_status get_str_hashlen(const char *c, data_length *result){
+oly_status 
+get_str_hashlen(const unsigned char *c, data_length *result){
   oly_status      status = OLY_OKAY;
-  *result = ((data_length)strlen(c)*CHAR_BIT);
+  *result = (data_length)(strlen(c)*CHAR_BIT);
   return status;
 }
 
