@@ -35,12 +35,11 @@ void print_result(const char *c){
 }
 
 void 
-print_charhash(const charhash *c)
+print_charhash(const charhash c)
 {
   int       i=0, limit = (OLY_HASH_BITS/CHAR_BIT);
-  printf("limit = %u, size of **c: %u\n", limit, sizeof(*c[i]));
   for (i = 0; (i <limit ); i += sizeof(char)) {
-    printf("%02x", *c[i]);
+    printf("%02x", c[i]);
   }
   printf("\n");
 }

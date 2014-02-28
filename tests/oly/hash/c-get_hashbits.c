@@ -39,56 +39,28 @@ HashReturn Update(hashState *state, const BitSequence *data,
 HashReturn Final(hashState *state, BitSequence *hashval);
 HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
 
-#define UINT_HASH_ARRAY (OLY_HASH_BITS/(sizeof(uint32_t)*CHAR_BIT))
-#define ULONG_HASH_ARRAY (OLY_HASH_BITS/(sizeof(unsigned long long)*CHAR_BIT))
-#define CHAR_HASH_ARRAY (OLY_HASH_BITS/CHAR_BIT)
-
-typedef union hash_t {
-  unsigned long long ulong_hash[ULONG_HASH_ARRAY];
-  unsigned int uint_hash[UINT_HASH_ARRAY];
-  unsigned char char_hash[CHAR_HASH_ARRAY];
-} hash_val;
-
-
-
-uint32_t n_to_uint(const unsigned char *c){
-  /* converts 4 chars into a single sizeof(intval). */
-  size_t    i = 0;
-  uint32_t  res = 0;
-  for (i = 0; (i < sizeof(uint32_t)); i += sizeof(char)) {
-    res |= (c[i] << (CHAR_BIT * (sizeof(uint32_t) - i)));
-  }
-  return OLY_OKAY;
-}
-
 int
-main (void){
+main( int argc, char **argv ){
   unsigned char       curr_bits = 8;
   size_t              curr_mask = 255;
   int                 i_like_turtles = 0;
-  char                *hash_me = "jonathan";
-  hash_val            corned_beef;
+  char                *hash_me = argv[1];
+  charhash            corned_beef;
   data_length         hash_length = 0;
   oly_status          ostatus = OLY_OKAY;
 
   char                checkme[] = "@@@@";
   
-  plan(9);
+  if (argc != 2) {
+    printf("Please provide exactly 1 argument.  Exiting...\n");
+    exit(EXIT_FAILURE);
+  }
   hash_length = ((data_length)strlen(hash_me)*CHAR_BIT);
   
   ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
-    (bit_sequence *)corned_beef.char_hash);
+    (bit_sequence *)corned_beef);
 
-  print_result((const char *)corned_beef.char_hash);
-  printf("ULONG: %u UINT: %u UCHAR: %u\n",ULONG_HASH_ARRAY, 
-      UINT_HASH_ARRAY, CHAR_HASH_ARRAY);
-  
-  printf("before treatment: %04x\n",corned_beef.uint_hash[0]);
-
-  printf("after treatment: %04x\n",n_to_uint(&corned_beef.char_hash));
-  
-  plan(1);
-  is_int(8, 8, "string=");
+  print_charhash(corned_beef);
   return EXIT_SUCCESS;
   
 }
