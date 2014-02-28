@@ -1,4 +1,4 @@
-/* char_to_uint32 test License GPL2+ {{{
+/* hash_char_to_hash_uint32 test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -33,28 +33,59 @@
 #include "oly/hash.h"
 #include "tests/tap/basic.h"
 
-/* HashReturn Init(hashState *state, int hashbitlen);
-HashReturn Update(hashState *state, const BitSequence *data, 
-    DataLength databitlen);
-HashReturn Final(hashState *state, BitSequence *hashval);
-HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
-
 int
 main (void){
-  charhash            input;
-  char                *hash_me = "jonathan";
-  int32hash            result;
-  data_length         hash_length ;
-  oly_status          ostatus = OLY_OKAY;
-  
-  ostatus = get_str_hashlen(hash_me, &hash_length);
+    charhash            input;
+    char                *hash_me = "jonathan";
+    int32hash            result;
+    data_length         hash_length ;
+    oly_status          ostatus = OLY_OKAY;
+    
+    ostatus = get_str_hashlen(hash_me, &hash_length);
 
+    assert((test_data_dir_len + strlen((char *)fileloc) + 1 ) < BUFSIZ);
+    
+    strcpy(filename, TESTDATADIR);
+    strcpy(&filename[test_data_dir_len-1], fileloc);
+    test2file = fopen(filename, "rb");
+    if( test2file == 0 ) {
+        fprintf(stderr, "Could not open file \"%s\"\n", filename);
+        exit(EXIT_FAILURE);
+    }
+    fseek(test2file, 0, SEEK_END);
+    test_data_dir_len = ftell(test2file);
+    fseek(test2file, 0, SEEK_SET);
+    
+    test2 = (char *)xmalloc (test_data_dir_len + 1);
+    test2[test_data_dir_len] = '\0';
+    result = (long)fread(test2, 1, test_data_dir_len, test2file);
+    if (result != test_data_dir_len)  {
+        fprintf(stderr, "Error reading file \"%s\"\n", filename);
+        exit (EXIT_FAILURE);
+    }
+    plan(3);
+    ostatus = get_str_hashlen((const unsigned char *)test1, &hash_length);
+    if (ostatus != OLY_OKAY) {
+        fprintf(stderr, "Test 1 failed.\n");
+        exit (EXIT_FAILURE);
+    }
+    is_int(56, hash_length, "Test1, should be 56. hash_length: %u",   (int)hash_length);
+    ostatus = get_str_hashlen((const unsigned char *)test2, &hash_length);
+    if (ostatus != OLY_OKAY) {
+        fprintf(stderr, "Test 2 failed.\n");
+        exit (EXIT_FAILURE);
+    }
+    diag("Test 2 opens this file:\n%s", filename);
+    is_int(74352, hash_length, "Test2, should be 74352. hash_length: %u",
+        (int)hash_length);
+    ostatus = get_str_hashlen((const unsigned char *)test3, &hash_length);
+    is_int(128, hash_length, "Test3, should be 128. hash_length: %u", (int)hash_length);
+    return EXIT_SUCCESS;
   ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
     (bit_sequence *)input);
-  print_charhash(input);
-  ostatus = hash_to_uint32((const unsigned char *)input,&result);
+  print_hex_from_charhash(input);
+  ostatus = hash_char_to_hash_uint32((const unsigned char *)input,&result);
   print_int32hash(result);
-  plan(1);
   return EXIT_SUCCESS;
   
 }

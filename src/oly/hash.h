@@ -21,10 +21,6 @@
 #include <string.h>
 #include <limits.h>
 
-#ifndef BUFSIZ
-#define BUFSIZ 8192
-#endif /* BUFSIZ */
-
 #include <lib/sha_three/KeccakNISTInterface.h>
 #include "oly/state.h"
 
@@ -39,16 +35,13 @@
  * 256/(sizeof(size_t)*CHAR_BIT).  I think this is a flexible solution.
  *
  */
-
 #define OLY_HASH_BITS 256 
-#define UINT32_HASH (OLY_HASH_BITS/(sizeof(uint32_t)*CHAR_BIT))
 #define SIZE_HASH (OLY_HASH_BITS/(SIZEOF_SIZE_T*CHAR_BIT))
 #define CHAR_HASH (OLY_HASH_BITS/CHAR_BIT)
 
 /* little endian = low byte leftmost. big endian = low byte rightmost. */
 
 typedef size_t        sizehash[SIZE_HASH];
-typedef uint32_t      int32hash[UINT32_HASH];
 typedef unsigned char charhash[CHAR_HASH];
 
 typedef HashReturn hash_return;
@@ -64,9 +57,14 @@ oly_status nchar_bitand(const char *s1, const char *s2, char *out, size_t len);
 
 size_t memory_left_now(void);
 size_t getMemorySize( );
-void print_sizehash (const sizehash c);
-void print_int32hash(const int32hash result);
-void print_charhash(const charhash c);
+/* print_<x> is a wrapper around write_<x> and can be found
+ * in the write_<x> files. */
+oly_status print_hex_from_sizehash (const sizehash c, oly_state state);
+oly_status print_hex_from_charhash (const charhash c, oly_state state);
+oly_status write_hex_from_sizehash (FILE *f, const sizehash c, oly_state state);
+oly_status write_hex_from_charhash (FILE *f, const charhash c, oly_state state);
+oly_status read_sizehash_from_hex  (FILE *f, const sizehash c, oly_state state);
+oly_status read_charhash_from_hex  (FILE *f, const charhash c, oly_state state);
 
 oly_status char_to_size(const unsigned char *c, size_t *res);
 oly_status hash_char_to_hash_size(const unsigned char *c, size_t result[]);

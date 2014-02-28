@@ -55,7 +55,7 @@ main( int argc, char **argv ){
   ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
     (bit_sequence *)corned_beef);
 
-  print_charhash(corned_beef);
+  print_hex_from_charhash(corned_beef);
   return EXIT_SUCCESS;
   
 }

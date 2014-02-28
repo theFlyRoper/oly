@@ -50,6 +50,15 @@ typedef enum oly_status_t {
     OLY_ERR_NOUSER=7
 } oly_status;
 
+typedef struct oly_state_t *state_p;
+
+typedef struct oly_state_t {
+  oly_status  status;   /* status for instance of oly_state */
+  ochar      *message;  /* ochar holding the message */
+  state_p     next;     /* the next oly_state record */
+  void       *support;  /* holds pointer to supporting data. */
+} oly_state;
+
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;
