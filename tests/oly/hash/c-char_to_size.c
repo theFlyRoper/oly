@@ -40,7 +40,6 @@ HashReturn Final(hashState *state, BitSequence *hashval);
 HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
 typedef union oly_hash_union {
   size_t        sval[SIZE_HASH];
-  uint32_t      ival[UINT32_HASH];
   unsigned char cval[CHAR_HASH];
 } oly_hash;
 

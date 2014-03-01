@@ -61,14 +61,14 @@ size_t getMemorySize( );
  * in the write_<x> files. */
 oly_status print_hex_from_sizehash (const sizehash c, oly_state state);
 oly_status print_hex_from_charhash (const charhash c, oly_state state);
+
 oly_status write_hex_from_sizehash (FILE *f, const sizehash c, oly_state state);
 oly_status write_hex_from_charhash (FILE *f, const charhash c, oly_state state);
-oly_status read_sizehash_from_hex  (FILE *f, const sizehash c, oly_state state);
-oly_status read_charhash_from_hex  (FILE *f, const charhash c, oly_state state);
+oly_status read_sizehash_from_hex  (const char *s, sizehash c, oly_state state);
+oly_status read_charhash_from_hex  (const char *s, charhash c, oly_state state);
 
 oly_status char_to_size(const unsigned char *c, size_t *res);
 oly_status hash_char_to_hash_size(const unsigned char *c, size_t result[]);
-oly_status hash_char_to_hash_uint32(const unsigned char *c, uint32_t *result[]);
 
 #endif /* OLY_OLY_HASH_H */
 

@@ -1,0 +1,36 @@
+/* init_oly_state.c - initialize an oly_state struct GPL2+ {{{
+ * Copyright (C) 2014 Oly Project
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * }}} */
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
+
+#include <ctype.h>
+#include "oly/common.h"
+
+#include "oly/core.h"
+#include "oly/state.h"
+
+oly_status
+init_oly_state(oly_state *s){
+  oly_status ostatus = OLY_OKAY;
+  oly_state *new = (oly_state *)xcalloc(1,sizeof(oly_state));
+  *s = *new;
+  return ostatus;
+}
+

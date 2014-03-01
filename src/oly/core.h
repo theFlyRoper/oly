@@ -30,36 +30,28 @@
 BEGIN_C_DECLS
 
 struct passwd;
-/* OFILE IO */
-extern OFILE *u_stderr;
-extern OFILE *u_stdout;
-extern OFILE *u_stdin;
 
-/* program name and primary resource bundle */
-extern const ochar *program_name;
-extern UResourceBundle *OlyResources;
-
-/* holds the cleaned environment for use with getenv() */
-extern char **environ; 
-
-oly_status check_uerror(UErrorCode *status);
-void clean_io_open(void);
+/* a general-purpose key-value linked list. */
+typedef struct oly_keystore_t {
+  struct oly_keystore   *next;
+  ochar                 *key;
+  ochar                 *value;
+} oly_keystore;
 
 size_t count_tokens (char *s, char *delims);
 size_t count_nondelim_chars (char *s, char *delims);
 oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
 /* allocates a char ** array and copies each token into it. */
-char **token_str_to_array(char *s, char *delims, oly_status *status) ;
+char **token_str_to_array(char *s, char *delims, oly_status *status); 
 
+void  clean_io_open(void);
 char *oget_home (struct passwd *pwd);
 char *oget_user_locale (void);
 int   is_big_endian (void);
 
 extern void close_oly (void);
 extern void init_io(const char *locale, const char *codepage); 
-
 extern int cleanenv (void);
-
 
 /* optlist is an array of values that apply to a given option. 
 typedef struct oly_optlist{

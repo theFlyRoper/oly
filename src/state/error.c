@@ -28,7 +28,6 @@ OFILE *u_stdin  = NULL;   /* Unicode input */
 OFILE *u_stderr = NULL;   /* Unicode error output */
 const ochar *program_name;
 UResourceBundle *OlyResources;
-
 /** function definitions  */
 
 static void error (int32_t exit_status,

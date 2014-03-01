@@ -1,4 +1,4 @@
-/* char_to_size test License GPL2+ {{{
+/* hash_char_to_hash_size test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -33,33 +33,52 @@
 #include "oly/hash.h"
 #include "tests/tap/basic.h"
 
-/* HashReturn Init(hashState *state, int hashbitlen);
-HashReturn Update(hashState *state, const BitSequence *data, 
-    DataLength databitlen);
-HashReturn Final(hashState *state, BitSequence *hashval);
-HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, BitSequence *hashval); */
 typedef union oly_hash_union {
   size_t        sval[SIZE_HASH];
-  uint32_t      ival[UINT32_HASH];
   unsigned char cval[CHAR_HASH];
 } oly_hash;
 
-
 int
-main (void){
-  oly_hash    test1 = {0xEFBEADBAED0BEDFE}, test2 = {0xEDEDDE00EDADBE00},
-              test3 = {0xED0BEDFEADDEEDDE};
-  size_t      result1 = {0xFEED0BEDBAADBEEF}, result2 = {0x00BEADED00DEEDED}, 
-               result3 = {0xDEEDDEADFEED0BED}, output_val = 0;
-  oly_status  status;
-  diag("TODO: rearrange this to add a bigendian chunk.");
-  plan(3);
-  status = char_to_size(test1.cval,&output_val);
-  is_hex(result1, output_val, "%016lX: Probably mad cow disease.", output_val);
-  status = char_to_size(test2.cval,&output_val);
-  is_hex(result2, output_val, "%016lX: That was how he rolled, man.", output_val);
-  status = char_to_size(test3.cval,&output_val);
-  is_hex(result3, output_val, "%016lX: A feedbed without deeds is dead.", output_val);
+main( int argc, char **argv ){
+  charhash            input;
+  const unsigned char *hash_me = (const unsigned char *)argv[1];
+  sizehash            result;
+  data_length         hash_length ;
+  oly_state           oly; 
+  
+  if (argc != 2) {
+    printf("Takes 1 argument, to be hashed. exiting...");
+  }
+  if (OLY_OKAY != init_oly_state(&oly)) 
+  {
+    exit(EXIT_FAILURE);
+  }
+  
+  if (OLY_OKAY != get_str_hashlen(hash_me, &hash_length)) 
+  {
+    exit(EXIT_FAILURE);
+  }
+
+  if (OLY_OKAY != get_hashbits((const bit_sequence *)hash_me,
+        hash_length, (bit_sequence *)&input)) 
+  {
+    exit(EXIT_FAILURE);
+  }
+  if (OLY_OKAY != print_hex_from_charhash((const charhash *)&input, oly)) {
+    exit(EXIT_FAILURE);
+  }
+  printf("\n");
+  if (OLY_OKAY != hash_char_to_hash_size(
+        (const unsigned char *)input, (size_t **)&result)) 
+  {
+    exit(EXIT_FAILURE);
+  }
+  if (OLY_OKAY != print_hex_from_sizehash((const sizehash *)result, oly)) 
+  {
+      fprintf(stderr, "Test 2 failed.\n");
+      exit (EXIT_FAILURE);
+  }
+  printf("\n");
   return EXIT_SUCCESS;
   
 }

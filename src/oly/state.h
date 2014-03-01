@@ -47,27 +47,46 @@ typedef enum oly_status_t {
     OLY_ERR_INIT=4,
     OLY_ERR_NOMEM=5,
     OLY_ERR_NOPWD=6,
-    OLY_ERR_NOUSER=7
+    OLY_ERR_NOUSER=7,
+    OLY_ERR_FILEIO=8,
+    OLY_ERR_READHEX=9
 } oly_status;
+
+/* locale info structure */
+typedef struct locinfo_t {
+  ochar          *locale;
+  ochar          *lang;
+  ochar          *charset;
+  ochar          *country;
+  void           *other;     /* Special data like currency */
+} oly_locinfo;
 
 typedef struct oly_state_t *state_p;
 
 typedef struct oly_state_t {
   oly_status  status;   /* status for instance of oly_state */
   ochar      *message;  /* ochar holding the message */
-  state_p     next;     /* the next oly_state record */
+  oly_locinfo    *i18n;     /* localizing info struct */
   void       *support;  /* holds pointer to supporting data. */
 } oly_state;
 
+/* OFILE IO */
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;
+
+/* program name and primary resource bundle */
 extern const ochar *program_name;
 extern UResourceBundle *OlyResources;
+
+/* holds the cleaned environment for use with getenv() */
+extern char **environ; 
 
 extern void oly_warning      (const ochar *message);
 extern void oly_error        (const ochar *message);
 extern void oly_fatal        (const ochar *message);
+
+oly_status init_oly_state(oly_state *s);
 
 END_C_DECLS
 

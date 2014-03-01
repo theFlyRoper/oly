@@ -44,19 +44,29 @@ main( int argc, char **argv ){
   char                *hash_me = argv[1];
   charhash            corned_beef;
   data_length         hash_length = 0;
-  oly_status          ostatus = OLY_OKAY;
+  oly_state           ostate;
   
   if (argc != 2) {
     printf("Please provide exactly 1 argument.  Exiting...\n");
     exit(EXIT_FAILURE);
   }
-  ostatus = get_str_hashlen((const unsigned char *)hash_me, &hash_length);
+  if (OLY_OKAY != get_str_hashlen((const unsigned char *)hash_me, 
+        &hash_length)) {
+    exit(EXIT_FAILURE);
+  }
   
-  ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
-    (bit_sequence *)corned_beef);
+  if (OLY_OKAY != get_hashbits((const bit_sequence *)hash_me,
+        hash_length, (bit_sequence *)corned_beef)) {
+    exit(EXIT_FAILURE);
+  }
 
-  print_hex_from_charhash(corned_beef);
-  return EXIT_SUCCESS;
-  
+  if ( OLY_OKAY == print_hex_from_charhash(corned_beef, ostate)) 
+  {
+    exit(EXIT_SUCCESS);
+  }
+  else 
+  {
+    exit(EXIT_FAILURE);
+  }
 }
 

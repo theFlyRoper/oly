@@ -42,7 +42,6 @@
 #include "oly/oly.h"
 #include "oly/builtin.h"
 #include "oly/break_rules.h"
-/* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
 /* MAIN */
 int

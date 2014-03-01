@@ -1,4 +1,4 @@
-/* hash_char_to_hash_uint32 test License GPL2+ {{{
+/* get_str_hashlen test License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -35,13 +35,15 @@
 
 int
 main (void){
-    charhash            input;
-    char                *hash_me = "jonathan";
-    int32hash            result;
-    data_length         hash_length ;
-    oly_status          ostatus = OLY_OKAY;
-    
-    ostatus = get_str_hashlen(hash_me, &hash_length);
+    const char *test1 = "ABCDEFG", test3[] = {
+                    0x30, 0x60, 0x4A, 0x6F, 0x6E, 0x06, 0x57, 0x41,
+                    0x73, 0x68, 0x45, 0x52, 0x65, 0x21, 0x26, 0x26, '\0'},
+                  *fileloc = "/data/user_account_testdata.csv";
+    char filename[BUFSIZ],*test2;
+    FILE         *test2file;
+    size_t        test_data_dir_len = strlen(TESTDATADIR), result;
+    data_length   hash_length ;
+    oly_status    ostatus = OLY_OKAY;
 
     assert((test_data_dir_len + strlen((char *)fileloc) + 1 ) < BUFSIZ);
     
@@ -81,12 +83,6 @@ main (void){
     ostatus = get_str_hashlen((const unsigned char *)test3, &hash_length);
     is_int(128, hash_length, "Test3, should be 128. hash_length: %u", (int)hash_length);
     return EXIT_SUCCESS;
-  ostatus = get_hashbits((const bit_sequence *)hash_me, hash_length,
-    (bit_sequence *)input);
-  print_hex_from_charhash(input);
-  ostatus = hash_char_to_hash_uint32((const unsigned char *)input,&result);
-  print_int32hash(result);
-  return EXIT_SUCCESS;
   
 }
 
