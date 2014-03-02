@@ -33,7 +33,7 @@ int
 main( int argc, char **argv ){
     int32_t         len = 0;
     ochar           line[BUFSIZ];     /* main buffer */
-    char            *locale = NULL, *locdir=LOCALEDIR, *opt_error = NULL,
+    char            *locale = "root", *locdir=LOCALEDIR, *opt_error = NULL,
                     *filename = OLY_RESOURCE, c, *find_me = NULL;
     res_disp_flag   flag = {1,0,0,0,0,0,0,0};
     int             i=0;
@@ -101,13 +101,16 @@ main( int argc, char **argv ){
   /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
    * for the internal app data for ICU, which lives in a shared library. */
   u_setDataDirectory(locdir);
+  printf("Datadir: %s\n", locdir);
 
   if (locale == NULL) {
     locale = oget_user_locale(); 
   }
+  printf("locale: %s\n", locale);
     resbund = ures_open(filename, locale, &u_status); 
     if (U_FAILURE(u_status)) {
-        printf("Could not open resource %s\n", filename);
+        printf("Could not open resource %s, error %s, locale: %s\n", 
+                filename, u_status, locale);
     }
     list_bundle_resources(resbund, &flag, 0);
   

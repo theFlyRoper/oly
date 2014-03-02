@@ -39,6 +39,7 @@ void list_bundle_resources(UResourceBundle *res, const res_disp_flag *flag, cons
     char           *item = NULL;
     int32_t         type_val = 0;
     UResourceBundle *subres = NULL;
+    fprintf(stderr, "Lookin around\n");
 
     ures_resetIterator(res);
     while (ures_hasNext (res)) {
@@ -53,9 +54,12 @@ void list_bundle_resources(UResourceBundle *res, const res_disp_flag *flag, cons
             display_resource_type(subres, level);
         } else 
         {
+            /* suspect problem is here. */
+            fprintf(stderr, "Ifelse res displayin man\n");
             ifelse_res_display(res, *flag, level);
         }
         type_val = ures_getType(subres);
+        fprintf(stderr, "%i\n", type_val);
         if ( type_val == URES_ARRAY || type_val == URES_TABLE ) {
             list_bundle_resources(subres, flag, (level + 1));
         }

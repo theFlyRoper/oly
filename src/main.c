@@ -91,7 +91,7 @@ main( int argc, char **argv ){
   i = BUFSIZ;
   
 #ifdef OLYDEV
-    list_package_locales(OLY_RESOURCE);
+    /* list_package_locales(OLY_RESOURCE); */
     list_bundle_resources(OlyResources, NULL, 0);
 #endif /* OLYDEV */
     get_i18n_errstring(&line, &i, OLY_CONTINUE);

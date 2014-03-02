@@ -28,8 +28,10 @@
 
 void ifelse_res_display(UResourceBundle *res, const res_disp_flag flag, const int level)
 {
+    fprintf(stderr, "Doin my thing at the top of ifelse resdisplay\n");
     if (flag.all == 1) {
         display_resource_type(res, level);
+        fprintf(stderr, "Boy that was somthin\n");
     } else {
         switch (ures_getType(res)) {
         case URES_ALIAS:
