@@ -37,32 +37,22 @@ void list_bundle_resources(UResourceBundle *res, const res_disp_flag *flag, cons
 { 
     UErrorCode      u_status = U_ZERO_ERROR;
     char           *item = NULL;
-    int32_t         type_val = 0;
+    int32_t         len = 0;
     UResourceBundle *subres = NULL;
-    fprintf(stderr, "Lookin around\n");
-
-    ures_resetIterator(res);
+        ures_resetIterator (res);
     while (ures_hasNext (res)) {
         subres = ures_getNextResource (res, subres, &u_status);
+        item = ures_getKey(subres);
+        printf("%s \n", item);
         if (U_FAILURE(u_status)) {
             fprintf(stderr, "Err: %s\n",
                     u_errorName(u_status));
             exit(1);
         }
-        if (flag == NULL) 
-        {
-            display_resource_type(subres, level);
-        } else 
-        {
-            /* suspect problem is here. */
-            fprintf(stderr, "Ifelse res displayin man\n");
-            ifelse_res_display(res, *flag, level);
-        }
-        type_val = ures_getType(subres);
-        fprintf(stderr, "%i\n", type_val);
-        if ( type_val == URES_ARRAY || type_val == URES_TABLE ) {
-            list_bundle_resources(subres, flag, (level + 1));
-        }
     }
+        subres = ures_getNextResource (res, subres, &u_status);
+
+
+    printf("\n");
 }
 
