@@ -23,10 +23,6 @@
 
 #include "oly/common.h"
 
-#include <unicode/ustring.h>
-#include <unicode/ubrk.h>
-#include <unicode/udata.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -69,11 +65,13 @@ main( int argc, char **argv ){
   u_setDataDirectory(LOCALEDIR);
   printf("Data directory set to : %s\n", LOCALEDIR);
   locale = oget_user_locale(); 
+  locale = "root";
 #ifdef OLYDEV
   printf("\n-- top of program, locale is : %s\n", locale);
 #endif /* OLYDEV */
   printf("Stuff before init all.\n");
   init_all(oly, locale);
+  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
   printf("Stuff after init all.\n");
 #ifdef OLYDEV
   printf("\n-- after init --\n");
@@ -84,21 +82,51 @@ main( int argc, char **argv ){
     printf("Could not open!\n");
   }
   
-  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
-  if (U_FAILURE(u_status)) {
-    printf("Could not open! status: %s\n", u_errorName(u_status));
-  }
   printf("Examining: %s\n", c_line);
   u_uastrcpy(line, c_line);
 
   ubrk_setText(boundary, line, u_strlen(line), &u_status);
   len = NULL;
 
-  liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
-  u_file_write(liner, len, u_stdout);
+  i = BUFSIZ;
+  
 #ifdef OLYDEV
-  list_package_locales(OLY_RESOURCE);
+    list_package_locales(OLY_RESOURCE);
+    printf("OlyResources package type: ");
+    switch (ures_getType(OlyResources)) {
+    case URES_NONE:
+        printf("URES_NONE\n");
+        break;
+    case URES_STRING:
+        printf("URES_STRING\n");
+        break;
+    case URES_BINARY:
+        printf("URES_BINARY\n");
+        break;
+    case URES_TABLE:
+        printf("URES_TABLE\n");
+        break;
+    case URES_ALIAS:
+        printf("URES_ALIAS\n");
+        break;
+    case URES_INT:
+        printf("URES_INT\n");
+        break;
+    case URES_ARRAY:
+        printf("URES_ARRAY\n");
+        break;
+    case URES_INT_VECTOR:
+        printf("URES_INT_VECTOR\n");
+        break;
+    default:
+        printf("NONE OF THE ABOVE\n");
+        break;
+    }
+    list_bundle_resources(OlyResources);
 #endif /* OLYDEV */
+    get_i18n_errstring(&line, &i, OLY_CONTINUE);
+  u_file_write(line, len, u_stdout);
+
   
   if (U_FAILURE(u_status)) {
     return EXIT_FAILURE;

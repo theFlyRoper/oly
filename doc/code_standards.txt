@@ -17,6 +17,17 @@ ifdef::is_fossil[]
 link:/doc/tip/doc/index.wiki[Back to Home.]
 endif::is_fossil[]
 
+State/Error Handling
+--------------------
+Oly has a struct called oly_state which contains a pointer to a function called handler. 
+When you start a function, call _set_state_handler(<state struct>, <handler function address>)_ and that sets the state handler.
+
+When oly needs to split into threads, be sure to initialize one instance of a state handler for each thread.  Obviously we do not want to change the handler halfway through a lengthy procedure!
+
+There is a function in the core part of the program called oly_fatal, which kills the program and displays very basic information.  This function is for emergencies, initialization errors and suchlike. 
+It is not for general use.  Use the oly_state struct and its supporting 
+functions for internal errors.  If you are writing a function that must have a handler before the general handling functions are available, add your function to the list of functions that call it in the code for oly_fatal.  It can be found at _src/core/oly_fatal.c_.
+
 Language and i18n initialization
 --------------------------------
 This section is first because I've done this research a good four times and still haven't come up with a better answer than what follows.  

@@ -1,15 +1,16 @@
 // Copyright (c) 2014 Oly Project
 // See LICENSE file for details
 root:table {
-    OlyUsage:string {"usage: oly [options] <input> <output>\n"}
-    OlyVersion:string {"{1}, version {2}.{3}"
+    OlyUsage:table {
+        usage:string {"usage: oly [options] <input> <output>\n"}
+        version:string {"{1}, version {2}.{3}"
       "Copyright (C) {4} Oly Project\n"
       "\tLicense GPLv3+: GNU GPL version 3 or later "
       "<http://gnu.org/licenses/gpl.html>\n"
       "\tThis is free software: you are free to change and redistribute it.\n"
       "\tThere is NO WARRANTY, to the extent permitted by law.\n"}
-    HelpTemplate:string{"\t-{1}\t--{2}\t\t{3}\n"}
-    // OlyOptionType should not be translated.  It refers to an enum in the code.
+        helpTemplate:string{"\t-{1}\t--{2}\t\t{3}\n"}
+        }
     OlyOptionType:array {
       0:string{"NO_ARGUMENT"}
       1:string{"OPTIONAL_ARGUMENT"}
@@ -31,6 +32,7 @@ root:table {
       }
     }
     OlyErrors:array {
+        -6:string{"OLY_WARN_ERROR_NOT_FOUND"},
         -5:string{"OLY_EOF"},
         -4:string{"OLY_EXIT"},
         -3:string{"OLY_CONTINUE"},
@@ -42,10 +44,10 @@ root:table {
         3:string{"OLY_ERR_LIB"},
         4:string{"OLY_ERR_INIT"}
               }
-    OlyHelpTopics {
+    OlyHelpTopics:table {
         configuration     { "ROOT configuration help topic" }
     }
-    OlyHelpKeywords {
+    OlyHelpKeywords:table {
         configuration     { "configuration" }
     }
 }

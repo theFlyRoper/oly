@@ -23,7 +23,7 @@ SUFFIXES								= .res .dat .txt
 ACLOCAL_AMFLAGS 				= -I ac-aux/m4
 
 ## first i18n files, then test files.  Uses $(addsuffix <x>) later on to transform these.
-MAIN_I18N								= en root en_US_POSIX
+MAIN_I18N								= en en_US root en_US_POSIX
 TEST_I18N								= en root el ja zh
 
 MAIN_I18N_DIR						= i18n/
@@ -106,8 +106,9 @@ libhash_a_CFLAGS					= $(SHA3_CFLAGS)
 ## libhash_a_LIBADD					= lib/sha_three/libo64_hash.a
 
 liboly_dev_a_SOURCES			=	src/debug/list_icu_countries.c \
-														src/debug/list_icu_langs.c \
-														src/debug/list_package_locales.c 
+									src/debug/list_bundle_resources.c \
+									src/debug/list_icu_langs.c \
+									src/debug/list_package_locales.c 
 
 liboly_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 
@@ -119,7 +120,7 @@ libcore_a_SOURCES					=	\
 														src/state/error.c \
 														src/state/set_oly_state.c \
 														src/state/append_oly_state.c \
-														src/state/check_oly_state.c \
+														src/core/oly_fatal.c \
 														src/core/builtin.c \
 														src/core/cleanenv.c \
 														src/core/clean_io_open.c \
@@ -127,6 +128,8 @@ libcore_a_SOURCES					=	\
 														src/core/count_tokens.c \
 														src/core/count_nondelim_chars.c \
 														src/core/eval.c \
+														src/core/get_i18n_errmsg.c \
+														src/core/get_i18n_errstring.c \
 														src/core/init_all.c \
 														src/core/init_io.c \
 														src/core/is_big_endian.c \

@@ -116,14 +116,15 @@ dnl ICUIO_LIBS and ICULAYOUT_LIBS
 OLY_CHECK_ICU([4.8],[],[])
 
 dnl checks for header files 
-AC_STDC_HEADERS
+AC_INCLUDES_DEFAULT
 AC_HEADER_SYS_WAIT
 
 dnl checks for ICU headers at the end; check as needed.
 dnl                  sqlite3.h \
-AC_CHECK_HEADERS([locale.h \
-                  paths.h \
-                  unicode/ustdio.h])
+AC_CHECK_HEADERS([locale.h paths.h \
+                  unicode/ustdio.h unicode/umsg.h unicode/ures.h \
+                  unicode/ubrk.h unicode/ucnv.h \
+                  unicode/ustring.h unicode/usprep.h])
 
 AC_TYPE_PID_T
 
@@ -210,8 +211,6 @@ AC_CONFIG_FILES([doc/Makefile \
 AC_SUBST(ac_aux_dir)
 AC_SUBST([OLY_RESOURCE],[oly_lang])
 AC_DEFINE([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])
-
-AC_CONFIG_COMMANDS([i18n],[$MKDIR_P i18n tests/data/i18n .i18ndeps],[])
 
 AC_OUTPUT
 

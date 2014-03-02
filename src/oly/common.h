@@ -23,15 +23,34 @@
 #if HAVE_CONFIG_H
 #  include "olyconf.h"
 #endif
+/** HEADERS */
 
 #ifdef HAVE_UNICODE_USTDIO_H
-#include <unicode/ures.h>
 #include <unicode/ustdio.h>
 typedef UChar ochar;
 #define OFILE UFILE
-#endif /* !HAVE_UNICODE_USTDIO_H */
+#endif /* HAVE_UNICODE_USTDIO_H */
 
-/** HEADERS */
+#ifdef HAVE_UNICODE_URES_H
+#include <unicode/ures.h>
+typedef UResourceBundle oly_messages;
+#endif /* HAVE_UNICODE_URES_H */
+
+#ifdef HAVE_UNICODE_USTRING_H
+#include <unicode/ustring.h>
+#endif /* HAVE_UNICODE_USTRING_H */
+
+#ifdef HAVE_UNICODE_UCNV_H
+#include <unicode/ucnv.h>
+#endif /* HAVE_UNICODE_UCNV_H */
+
+#ifdef HAVE_UNICODE_UMSG_H
+#include <unicode/umsg.h>
+#endif /* HAVE_UNICODE_UMSG_H */
+
+#ifdef HAVE_UNICODE_USPREP_H
+#include <unicode/usprep.h>
+#endif /* HAVE_UNICODE_USPREP_H */
 
 #include <stdio.h>
 #include <sys/types.h>

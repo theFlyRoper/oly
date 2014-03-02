@@ -1,4 +1,4 @@
-/* oly_state_fatal - License GPL2+ {{{
+/* get_i18n_errmsg.c - get the ochar * error string for formatting. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,4 +17,16 @@
  * MA 02110-1301, USA.
  * }}} */
 
-  liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
+#include "oly/common.h"
+#include "oly/core.h"
+#include <stdarg.h>
+
+oly_status
+get_i18n_errmsg(ochar **message, const oly_status oly_errno)
+{
+    int32_t message_len = 0;
+    oly_status return_status = OLY_OKAY;
+#ifdef HAVE_UNICODE_URES_H
+#endif
+    return return_status;
+}
