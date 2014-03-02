@@ -92,37 +92,7 @@ main( int argc, char **argv ){
   
 #ifdef OLYDEV
     list_package_locales(OLY_RESOURCE);
-    printf("OlyResources package type: ");
-    switch (ures_getType(OlyResources)) {
-    case URES_NONE:
-        printf("URES_NONE\n");
-        break;
-    case URES_STRING:
-        printf("URES_STRING\n");
-        break;
-    case URES_BINARY:
-        printf("URES_BINARY\n");
-        break;
-    case URES_TABLE:
-        printf("URES_TABLE\n");
-        break;
-    case URES_ALIAS:
-        printf("URES_ALIAS\n");
-        break;
-    case URES_INT:
-        printf("URES_INT\n");
-        break;
-    case URES_ARRAY:
-        printf("URES_ARRAY\n");
-        break;
-    case URES_INT_VECTOR:
-        printf("URES_INT_VECTOR\n");
-        break;
-    default:
-        printf("NONE OF THE ABOVE\n");
-        break;
-    }
-    list_bundle_resources(OlyResources);
+    list_bundle_resources(OlyResources, NULL, 0);
 #endif /* OLYDEV */
     get_i18n_errstring(&line, &i, OLY_CONTINUE);
   u_file_write(line, len, u_stdout);

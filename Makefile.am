@@ -41,42 +41,66 @@ EXTRA_DIST							= $(MAIN_I18N_INDEX_TXT) 	$(TEST_I18N_INDEX_TXT) \
 HEAD_CPPFLAGS						=  -I$(top_srcdir) -I$(top_srcdir)/src
 
 dist_check_DATA					= tests/TESTS \
-													tests/oly/i18n/c-alias.output \
-													tests/oly/i18n/c-el.output \
-													tests/oly/i18n/c-fallback_lang.output \
-													tests/oly/i18n/c-ja.output \
-													tests/oly/i18n/c-missing_lang.output \
-													tests/oly/i18n/c-missing_resource.output \
-													tests/oly/i18n/c-root.output \
-													tests/oly/core/c-count_nondelim_chars.output \
-													tests/oly/core/c-count_tokens.output \
-													tests/oly/core/c-token_str_to_array.output \
-													tests/oly/core/sh-oget_home.output \
-													tests/oly/core/sh-oget_user_locale.output \
-													tests/oly/core/sh-get_ochar_args.output 
+								tests/oly/i18n/c-alias.output \
+								tests/oly/i18n/c-el.output \
+								tests/oly/i18n/c-fallback_lang.output \
+								tests/oly/i18n/c-ja.output \
+								tests/oly/i18n/c-missing_lang.output \
+								tests/oly/i18n/c-missing_resource.output \
+								tests/oly/i18n/c-root.output \
+								tests/oly/core/c-count_nondelim_chars.output \
+								tests/oly/core/c-count_tokens.output \
+								tests/oly/core/c-token_str_to_array.output \
+								tests/oly/core/sh-oget_home.output \
+								tests/oly/core/sh-oget_user_locale.output \
+								tests/oly/core/sh-get_ochar_args.output 
 
 
 dist_check_SCRIPTS			= tests/tap/libtap.sh \
-													tests/oly/core.t tests/oly/i18n.t \
-													tests/oly/core/sh-oget_home \
-													tests/oly/core/sh-oget_user_locale \
-													tests/oly/core/sh-get_ochar_args
+							tests/oly/core.t tests/oly/i18n.t \
+							tests/oly/core/sh-oget_home \
+							tests/oly/core/sh-oget_user_locale \
+							tests/oly/core/sh-get_ochar_args
 													
 ## TODO: this should use nobase_ instead 
 dist_noinst_HEADERS			=	src/oly/break_rules.h src/oly/builtin.h \
-													src/oly/common.h src/oly/core.h \
-													src/oly/data_source.h  \
-													src/oly/state.h src/oly/eval.h \
-													src/oly/list.h src/oly/oly.h \
-													src/oly/oly_dev.h \
-													src/oly/output.h src/oly/syntax.h \
-													tests/tap/basic.h tests/tap/float.h \
-													tests/tap/macros.h
-AM_CFLAGS 								= -fstack-protector-all @ICU_CFLAGS@ @DEV_CFLAGS@
+								src/oly/common.h src/oly/core.h \
+								src/oly/data_source.h  \
+								src/oly/state.h src/oly/eval.h \
+								src/oly/list.h src/oly/oly.h \
+								src/oly/oly_dev.h \
+								src/oly/output.h src/oly/syntax.h \
+								tests/tap/basic.h tests/tap/float.h \
+								tests/tap/macros.h
+AM_CFLAGS 						= -fstack-protector-all @ICU_CFLAGS@ \
+							  		@DEV_CFLAGS@
 csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 														-DLOCALEDIR=\"$(localedir)\"
-bin_PROGRAMS							=	csvparse 
-noinst_LIBRARIES					=	liboly_dev.a libcore.a libhash.a
+bin_PROGRAMS							= csvparse 
+
+noinst_PROGRAMS							= resex
+
+resex_SOURCES							= tests/tools/resex.c 
+
+resex_LDADD 							= liboly_dev.a libcore.a @ICUIO_LIBS@ 
+
+resex_CPPFLAGS							= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
+										  @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
+
+csvparse_SOURCES				= src/main.c \
+									src/print_demo/print_text_range.c \
+									src/print_demo/print_each_forward.c \
+									src/print_demo/print_each_backward.c \
+									src/print_demo/print_at.c \
+									src/print_demo/print_first.c \
+									src/print_demo/print_last.c \
+									src/get_rules.c 
+
+csvparse_LDADD 						=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
+														libcore.a 
+
+
+noinst_LIBRARIES						=	liboly_dev.a libcore.a libhash.a
 
 if SHA3_64BIT
 SHA3_SRC 		= lib/sha_three/KeccakF-1600-opt64.c
@@ -107,6 +131,9 @@ libhash_a_CFLAGS					= $(SHA3_CFLAGS)
 
 liboly_dev_a_SOURCES			=	src/debug/list_icu_countries.c \
 									src/debug/list_bundle_resources.c \
+									src/debug/display_resource_type.c \
+									src/debug/ifelse_res_display.c \
+									src/debug/get_resource_type.c \
 									src/debug/list_icu_langs.c \
 									src/debug/list_package_locales.c 
 
@@ -145,17 +172,6 @@ libcore_a_SOURCES					=	\
 
 libcore_a_CPPFLAGS				= $(HEAD_CPPFLAGS)	
 
-csvparse_SOURCES					= src/main.c \
-														src/print_demo/print_text_range.c \
-														src/print_demo/print_each_forward.c \
-														src/print_demo/print_each_backward.c \
-														src/print_demo/print_at.c \
-														src/print_demo/print_first.c \
-														src/print_demo/print_last.c \
-														src/get_rules.c 
-
-csvparse_LDADD 						=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
-														libcore.a 
 
 ## tests/check starts here.
 I18N_TESTBUILDDIR				= $(abs_top_builddir)/tests/data/i18n/

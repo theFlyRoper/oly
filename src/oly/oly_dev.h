@@ -21,9 +21,24 @@
 
 BEGIN_C_DECLS
 
+typedef struct res_disp_flag_t {
+        unsigned char all;
+        unsigned char tables;
+        unsigned char arrays;
+        unsigned char strings;
+        unsigned char binaries;
+        unsigned char aliases;
+        unsigned char integers;
+        unsigned char vectors;
+    } res_disp_flag;
+
 extern void list_icu_countries(void);
 extern void list_icu_langs(void);
 extern void list_package_locales(const char *package_name);
+extern void list_bundle_resources(UResourceBundle *res, const res_disp_flag *flag, const int level);
+extern void display_resource_type(UResourceBundle *res, const int level);
+extern void ifelse_res_display(UResourceBundle *res, const res_disp_flag flag, const int level);
+char *get_resource_type(UResourceBundle *res);
 
 END_C_DECLS
 
