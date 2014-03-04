@@ -52,7 +52,7 @@ main( int argc, char **argv ){
     }
     program_name      = argv[0];
 
-    u_setDataDirectory(TEST_LOCALEDIR);
+    u_setDataDirectory(TEST_PKGDATADIR);
         
         OlyResources = ures_open(OLY_RESOURCE, locale, &u_status);
     printf("Status: %s\nStatus number: %i\nLocale: %s\n", 

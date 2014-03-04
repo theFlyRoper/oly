@@ -25,15 +25,14 @@ oly_status
 count_file_bytes(FILE *file, size_t *file_size, Oly *oly)
 {
     fpos_t pos;
-
-    set_status(oly->state, OLY_OKAY);
+    oly->status = OLY_OKAY;
     fseek(file, 0, SEEK_END);
     if (fgetpos(file, &pos) != 0) 
     {
-        set_status(oly->state, OLY_ERR_FILEIO);
+        oly->status = OLY_ERR_FILEIO;
     }
     *file_size = (size_t)ftello(file);
     fseek(file, 0, SEEK_SET);
-    return get_status(oly->state);
+    return oly->status;
 }
 

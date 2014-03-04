@@ -33,7 +33,7 @@ static char *program_name;
 /* MAIN */
 int
 main( int argc, char **argv ){
-    char            *locale = (char*)"root", *locdir=(char*)LOCALEDIR,
+    char            *locale = (char*)"root", *locdir=(char*)PKGDATADIR,
                     *filename = (char*)OLY_RESOURCE, c, *find_me = NULL;
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;

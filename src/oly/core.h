@@ -32,19 +32,12 @@ BEGIN_C_DECLS
 
 struct passwd;
 
-typedef struct oly_locale_t {
-    ochar       *locale;
-    ochar       *charset;
-    ochar       *country;
-    ochar       *language;
-    void        *object;
-} oly_locale;
-
 /* main oly structure */
 typedef struct oly_t {
     oly_resource             *messages;
     ochar                    *program_name;
-    oly_locale               *locale;
+    oly_status                status;
+    oly_locale                locale;
     struct  oly_state_t      *state;
 } Oly;
 
@@ -56,11 +49,6 @@ extern void close_oly (void);
 extern int cleanenv (void);
 
 oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
-
-/* allocates a char ** array and copies each token into it. */
-size_t count_tokens (char *s, char *delims);
-size_t count_nondelim_chars (char *s, char *delims);
-char **token_str_to_array(char *s, char *delims, oly_status *status); 
 
 int   is_big_endian (void);
 
@@ -76,7 +64,6 @@ extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;
 
-/* program name and primary resource bundle */
 /* holds the cleaned environment for use with getenv() */
 extern char **environ; 
 

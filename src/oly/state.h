@@ -53,16 +53,43 @@ typedef enum oly_status_t {
 } oly_status;
 
 typedef struct oly_state_t *state_p;
+#ifdef HAVE_UNICODE_URES_H
+typedef UErrorCode liberror_num;
+#endif /* HAVE_UNICODE_URES_H */
+
+typedef enum oly_state_behavior_t {
+    DISCARD = 0,
+    SUMMARIZE = 1
+    LOG_ERRORS = 2,
+    DISPLAY_ERRORS = 3,
+    LOG_AND_DISPLAY_ERRORS = 4,
+    LOG_ALL = 5,
+    DISPLAY_ALL = 6,
+    VERBOSE = 6
+} oly_state_behavior;
+
+typedef enum oly_state_urgency_t {
+    NO_ACTION = 0,
+    WARN_ONLY = 1,      /* only perform the state_behavior for this error/warning. */
+    HANDLE = 2,         /* send to the handler function. */
+    STOP_ROW = 3,
+    STOP_THREAD = 4,
+    STOP_PROCESS = 5,   /* kill the process/script associated with the error. */
+    FATAL_ERROR = 6    /* kills the program. */
+} oly_state_urgency;
 
 typedef struct oly_state_t {
-  oly_status  status;               /* status for instance of oly_state */
-  ochar      *message;              /* ochar holding the message */
-  int        (*handler)(void *);    /* single argument handler function */
+  oly_status     status;               /* status for instance of oly_state */
+  liberror_num   lib_status;
+  ochar         *location;             /* where state just came from. */
+  ochar         *message;              /* ochar holding the message */
+  int           (*handler)(void *);    /* single argument handler function */
 } oly_state;
 
 oly_status init_state(oly_state *s);
 oly_status set_status(oly_state *state, const oly_status status);
 oly_status get_status(oly_state *state);
+oly_status get_default_locale (char *locale, oly_status *status); 
 extern void oly_warning      (const ochar *message);
 extern void oly_error        (const ochar *message);
 extern void oly_fatal        (const ochar *message);

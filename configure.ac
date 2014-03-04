@@ -90,8 +90,10 @@ AS_IF([test "x$enable_debug" != xyes],,
 AS_IF([test "x$enable_debug" != xyes],,
       [AC_SUBST(DEV_LIB,["liboly_dev.a"])])
 
-CFG_LOCALEDIR="${CFG_LOCALEDIR-${datadir}/locale/oly}"
+AM_CONDITIONAL(DEBUG_MODE,
+               [test "x$enable_debug" == xyes])
 
+CFG_PKGDATADIR="${CFG_PKGDATADIR-${datadir}/locale/oly}"
 
 dnl Checks for programs.
 AC_PROG_CPP
@@ -220,8 +222,16 @@ AC_OUTPUT
 dnl this is a graceful way to ensure your messages end up appearing after all
 dnl the configure tests and output.
 
+dnl to get some space between end of script and here.
+AS_ECHO([])
+
+AS_ECHO([=================================])
 AS_IF([test "x$enable_debug" != xyes],
       [],
-      [AC_MSG_NOTICE([Developer debug mode enabled.])])
+      [AC_MSG_NOTICE([Developer debug mode enabled.  Not for final builds.])])
+AC_MSG_NOTICE([size_t is $ac_cv_sizeof_size_t bytes wide.])
+AS_ECHO([=================================])
+
+dnl AS_BOX(["AS_ESCAPE([$PKGCONFIG = ])AS_ESCAPE([$PKGCONFIG],[""])"])
 
 

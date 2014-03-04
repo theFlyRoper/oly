@@ -20,7 +20,7 @@
 
 SUBDIRS 								= doc lib 
 SUFFIXES								= .res .dat .txt
-ACLOCAL_AMFLAGS 				= -I ac-aux/m4
+ACLOCAL_AMFLAGS 						= -I ac-aux/m4
 
 ## first i18n files, then test files.  Uses $(addsuffix <x>) later on to transform these.
 MAIN_I18N								= en en_US root en_US_POSIX
@@ -32,11 +32,26 @@ TEST_I18N_DIR						= tests/data/i18n/
 OLY_I18N_NAME						= @OLY_RESOURCE@
 RMV 								= @RMV@
 
+I18N_TESTBUILDDIR				= $(abs_top_builddir)/tests/data/i18n/
+
+if SHA3_64BIT
+SHA3_SRC 		= lib/sha_three/KeccakF-1600-opt64.c
+SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m64 $(CFLAGS)
+else !SHA3_64BIT
+SHA3_SRC = lib/sha_three/KeccakF-1600-opt32.c
+SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
+endif !SHA3_64BIT
+
+if DEBUG_MODE
+I18N_DIR_DEF = -DPKGDATADIR=\"$(abs_top_builddir)/tests/data/i18n\"
+else !DEBUG_MODE
+I18N_DIR_DEF = -DPKGDATADIR=\"$(pkgdatadir)\"
+endif !DEBUG_MODE
 ## logic for i18n is pretty complex so it is in an included .mk file.
 include make_i18n.mk
 
 EXTRA_DIST							= $(MAIN_I18N_INDEX_TXT) 	$(TEST_I18N_INDEX_TXT) \
-													$(FULL_MAIN_I18N_TXT)  	$(FULL_TEST_I18N_TXT)
+									$(FULL_MAIN_I18N_TXT)  	$(FULL_TEST_I18N_TXT)
 
 HEAD_CPPFLAGS						=  -I$(top_srcdir) -I$(top_srcdir)/src
 
@@ -75,7 +90,7 @@ dist_noinst_HEADERS			=	src/oly/break_rules.h \
 AM_CFLAGS 						= -fstack-protector-all @ICU_CFLAGS@ \
 							  		@DEV_CFLAGS@
 csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
-														-DLOCALEDIR=\"$(localedir)\"
+								  $(I18N_DIR_DEF)
 bin_PROGRAMS							= csvparse 
 
 noinst_PROGRAMS							= resex
@@ -85,7 +100,7 @@ resex_SOURCES							= tests/tools/resex.c
 resex_LDADD 							= liboly_dev.a libcore.a @ICUIO_LIBS@ @ICU_LIBS@ 
 
 resex_CPPFLAGS							= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
-										  @DEV_DEF@ -DLOCALEDIR=\"$(localedir)\"
+										  @DEV_DEF@ $(I18N_DIR_DEF)
 
 csvparse_SOURCES		= src/main.c \
 							src/print_demo/print_text_range.c \
@@ -102,13 +117,6 @@ csvparse_LDADD 						=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
 
 noinst_LIBRARIES						=	liboly_dev.a libcore.a libhash.a
 
-if SHA3_64BIT
-SHA3_SRC 		= lib/sha_three/KeccakF-1600-opt64.c
-SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m64 $(CFLAGS)
-else !SHA3_64BIT
-SHA3_SRC = lib/sha_three/KeccakF-1600-opt32.c
-SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
-endif !SHA3_64BIT
 
 libhash_a_SOURCES			=	src/hash/char_to_size.c \
 								src/hash/write_hex_from_charhash.c \
@@ -150,16 +158,11 @@ libcore_a_SOURCES				=	\
 								src/core/cleanenv.c \
 								src/core/clean_io_open.c \
 								src/core/close_oly.c \
-								src/core/count_tokens.c \
-								src/core/count_nondelim_chars.c \
-								src/core/get_i18n_errmsg.c \
-								src/core/get_i18n_errstring.c \
 								src/core/count_file_bytes.c \
 								src/core/init_all.c \
 								src/core/init_io.c \
 								src/core/is_big_endian.c \
 								src/core/oget_home.c \
-								src/core/oget_user_locale.c \
 								src/core/token_str_to_array.c \
 								src/core/xstrdup.c \
 								src/core/xmalloc.c \
@@ -169,12 +172,10 @@ libcore_a_CPPFLAGS				= $(HEAD_CPPFLAGS)
 
 
 ## tests/check starts here.
-I18N_TESTBUILDDIR				= $(abs_top_builddir)/tests/data/i18n/
-
 CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
-													-DTEST_LOCALEDIR=\"$(I18N_TESTBUILDDIR)\" \
-													-DTESTDATADIR=\"$(abs_top_srcdir)/tests/\" \
-													-I$(top_srcdir)/src/ 
+									-DTEST_PKGDATADIR=\"$(I18N_TESTBUILDDIR)\" \
+									-DTESTDATADIR=\"$(abs_top_srcdir)/tests/\" \
+									-I$(top_srcdir)/src/ 
 
 check_PROGRAMS 		= tests/runtests \
 						tests/oly/core/c-oget_home \
@@ -241,16 +242,16 @@ tests_oly_core_c_oget_home_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oget_home_LDADD 		= tests/tap/libtap.a libcore.a \
 																			@ICUIO_LIBS@ @ICU_LIBS@
 tests_oly_core_c_get_ochar_args_SOURCES 	= tests/oly/core/c-get_ochar_args.c \
-																							src/state/error.c src/core/xmalloc.c \
-																							src/core/get_ochar_args.c
+											  src/core/xmalloc.c \
+											  src/core/get_ochar_args.c
 tests_oly_core_c_get_ochar_args_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_get_ochar_args_LDADD 		= tests/tap/libtap.a libcore.a \
-																						@ICUIO_LIBS@ @ICU_LIBS@
+											  @ICUIO_LIBS@ @ICU_LIBS@
 tests_oly_core_c_count_tokens_SOURCES 	= tests/oly/core/c-count_tokens.c \
-																					src/core/count_tokens.c
+										  src/core/count_tokens.c
 tests_oly_core_c_count_tokens_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_count_tokens_LDADD 		= tests/tap/libtap.a \
-																					@ICUIO_LIBS@ @ICU_LIBS@
+tests_oly_core_c_count_tokens_LDADD 	= tests/tap/libtap.a \
+									  @ICUIO_LIBS@ @ICU_LIBS@
 tests_oly_core_c_count_nondelim_chars_SOURCES 	= tests/oly/core/c-count_nondelim_chars.c \
 																									src/core/count_nondelim_chars.c
 tests_oly_core_c_count_nondelim_chars_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
@@ -273,7 +274,7 @@ tests_oly_i18n_c_root_LDADD 			= tests/tap/libtap.a libcore.a @ICUIO_LIBS@ @ICU_
 tests_oly_i18n_c_missing_resource_SOURCES 	= tests/oly/i18n/c-missing_resource.c 
 tests_oly_i18n_c_missing_resource_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_missing_resource_LDADD = tests/tap/libtap.a libcore.a @ICUIO_LIBS@ @ICU_LIBS@
-tests_oly_i18n_c_missing_lang_SOURCES 	= tests/oly/i18n/c-missing_lang.c src/state/error.c
+tests_oly_i18n_c_missing_lang_SOURCES 	= tests/oly/i18n/c-missing_lang.c
 tests_oly_i18n_c_missing_lang_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_missing_lang_LDADD 	= tests/tap/libtap.a libcore.a @ICUIO_LIBS@ @ICU_LIBS@
 tests_oly_i18n_c_fallback_lang_SOURCES 	= tests/oly/i18n/c-fallback_lang.c 

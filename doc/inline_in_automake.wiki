@@ -41,7 +41,7 @@ http://www.gnu.org/software/src-highlite -->
 
 <span style="color: #009900">olylibdir               =</span> <span style="color: #009900">$(top_builddir)</span>/oly<span style="color: #990000">/</span>
 
-<span style="color: #009900">DEFS                                                                    =</span> -DLOCALEDIR<span style="color: #990000">=</span>\"<span style="color: #009900">$(localedir)</span>\" <span style="color: #990000">\</span>
+<span style="color: #009900">DEFS                                                                    =</span> -DPKGDATADIR<span style="color: #990000">=</span>\"<span style="color: #009900">$(localedir)</span>\" <span style="color: #990000">\</span>
                                                                                                 <span style="font-weight: bold"><span style="color: #000080">@DEFS@ @DEV_DEF@</span></span>
 
 <span style="color: #009900">AM_CPPFLAGS                                             =</span> <span style="color: #009900">$(olycppflags)</span>

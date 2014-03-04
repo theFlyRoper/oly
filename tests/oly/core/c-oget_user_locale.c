@@ -30,7 +30,7 @@
 int
 main( void ){
   char          *locale;
-  u_setDataDirectory(TEST_LOCALEDIR);
+  u_setDataDirectory(TEST_PKGDATADIR);
   
   /* oget_user_locale should always return SOME value.
    * in ICU, the default passed back when absolutely no 

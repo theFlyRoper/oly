@@ -14,6 +14,7 @@
 
 #include "oly/core.h"
 #include "oly/state.h"
+#include "oly/globals.h"
 
 int
 main( int argc, char **argv ){

@@ -1,4 +1,4 @@
-/* token_str_to_array.c - Transforms a tokenized string into an array License GPL2+ {{{
+/* open_ofile.c - locale-aware fopen wrapper with error checking. {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,11 +16,4 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
-
-#include "oly/common.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
-#include "oly/core.h"
 

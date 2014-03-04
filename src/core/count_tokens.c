@@ -23,18 +23,3 @@
 #include <string.h>
 #include "oly/core.h"
 
-size_t
-count_tokens (char *s, char *delims)
-{
-  size_t  current_count = 0;
-
-  /* loop over s, adding 1 to current_count for each iteration. */
-  if ( delims != NULL ) {
-    while ( s != NULL && *(s += strspn(s, delims)) != '\0' ) {
-      current_count++;
-      s = strpbrk(s, delims);
-    }
-  }
-  return current_count;
-}
-

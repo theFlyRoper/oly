@@ -1,4 +1,4 @@
-/* token_str_to_array.c - Transforms a tokenized string into an array License GPL2+ {{{
+/* init_locale.c - initialize a locale object {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,8 +19,21 @@
 
 #include "oly/common.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
+#include <sys/stat.h>
 #include "oly/core.h"
+#include "oly/messages.h"
+/* if *locale_str is null, fills in the oly_locale info with a default. */
+
+oly_status
+init_locale(const char *locale_str, oly_locale *locale, oly_status *status)
+{
+    oly_status status = OLY_OKAY;
+    if (locale_str == NULL) 
+    {
+        
+    }
+#ifdef HAVE_UNICODE_URES_H
+#endif /* HAVE_UNICODE_URES_H */
+    return status;
+}
 

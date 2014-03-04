@@ -24,24 +24,3 @@
 #include <assert.h>
 #include "oly/core.h"
 
-size_t
-count_nondelim_chars (char *s, char *delims)
-{
-  size_t  current_count = 0;
-  char    *next;
-
-  /* delims should never be null. */
-  assert( delims != NULL ) ;
-  /* loop over s, adding the difference between the next and the primary */
-  while ( s != NULL && *(s += strspn(s, delims)) != '\0' ) {
-    next = strpbrk(s, delims);
-    if ( next != NULL ) {
-      current_count += ( next - s );
-    } else {
-      current_count += strlen(s);
-    }
-    s = next;
-  }
-  return current_count;
-}
-

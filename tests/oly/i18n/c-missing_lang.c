@@ -52,7 +52,7 @@ main( int argc, char **argv ){
   UErrorCode      u_status  = U_ZERO_ERROR; 
   oly_resource      *OlyResources ;
 
-  u_setDataDirectory(TEST_LOCALEDIR);
+  u_setDataDirectory(TEST_PKGDATADIR);
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
   u_init(&u_status);

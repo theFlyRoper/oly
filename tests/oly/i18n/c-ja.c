@@ -44,10 +44,10 @@ main( int argc, char **argv ){
     UErrorCode      u_status  = U_ZERO_ERROR; 
     oly_resource    *OlyResources ;
 
-    u_setDataDirectory(TEST_LOCALEDIR);
+    u_setDataDirectory(TEST_PKGDATADIR);
     if (U_FAILURE(u_status)) {
         printf("Could not open! status: %s\nlocdir: %s\nResource name: %s\n", 
-            u_errorName(u_status), TEST_LOCALEDIR, OLY_RESOURCE);
+            u_errorName(u_status), TEST_PKGDATADIR, OLY_RESOURCE);
     }
     OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 

@@ -25,6 +25,9 @@
 #endif
 /** HEADERS */
 
+#include <stdio.h>
+#include <sys/types.h>
+
 #ifdef HAVE_UNICODE_USTDIO_H
 #include <unicode/ustdio.h>
 typedef UChar ochar;
@@ -33,7 +36,7 @@ typedef UChar ochar;
 
 #ifdef HAVE_UNICODE_URES_H
 #include <unicode/ures.h>
-typedef UResourceBundle oly_resource;
+typedef UResourceBundle resource_data;
 #endif /* HAVE_UNICODE_URES_H */
 
 #ifdef HAVE_UNICODE_USTRING_H
@@ -51,9 +54,6 @@ typedef UResourceBundle oly_resource;
 #ifdef HAVE_UNICODE_USPREP_H
 #include <unicode/usprep.h>
 #endif /* HAVE_UNICODE_USPREP_H */
-
-#include <stdio.h>
-#include <sys/types.h>
 
 #if STDC_HEADERS
 #  include <stdlib.h>
