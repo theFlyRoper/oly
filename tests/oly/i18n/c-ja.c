@@ -29,40 +29,40 @@
 #include <assert.h>
 
 #include "oly/common.h"
-#include "oly/state.h"
 #include "oly/core.h"
-/* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
+
+#include "oly/globals.h"
 
 /* MAIN */
 int
 main( int argc, char **argv ){
-  int32_t         len       = 0;
-  ochar           *liner;
-  char            *locale           = "ja";
-  int             i=1;
-  UErrorCode      u_status  = U_ZERO_ERROR; 
+    int32_t         len       = 0;
+    ochar           *liner;
+    char            *locale           = "ja";
+    ochar           *program_name = (ochar *)argv[0];
+    int             i=1;
+    UErrorCode      u_status  = U_ZERO_ERROR; 
+    oly_resource    *OlyResources ;
 
-  program_name      = argv[0];
+    u_setDataDirectory(TEST_LOCALEDIR);
+    if (U_FAILURE(u_status)) {
+        printf("Could not open! status: %s\nlocdir: %s\nResource name: %s\n", 
+            u_errorName(u_status), TEST_LOCALEDIR, OLY_RESOURCE);
+    }
+    OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
 
-  u_setDataDirectory(TEST_LOCALEDIR);
-  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
-  if (U_FAILURE(u_status)) {
-    printf("Could not open! status: %s\nlocdir: %s\nResource name: %s\n", 
-        u_errorName(u_status), TEST_LOCALEDIR, OLY_RESOURCE);
-  }
+    u_init(&u_status);
+    init_io(locale, NULL);
 
-  u_init(&u_status);
-  init_io(locale, NULL);
-
-  liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
-  u_file_write(liner, len, u_stdout);
-  
-  if (U_SUCCESS(u_status)) {
-    return EXIT_SUCCESS;
-  }
-  else {
-    return EXIT_FAILURE;
-  }
+    liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
+    u_file_write(liner, len, u_stdout);
+    
+    if (U_SUCCESS(u_status)) {
+        return EXIT_SUCCESS;
+    }
+    else {
+        return EXIT_FAILURE;
+    }
 }
 
 

@@ -33,7 +33,7 @@ typedef UChar ochar;
 
 #ifdef HAVE_UNICODE_URES_H
 #include <unicode/ures.h>
-typedef UResourceBundle oly_messages;
+typedef UResourceBundle oly_resource;
 #endif /* HAVE_UNICODE_URES_H */
 
 #ifdef HAVE_UNICODE_USTRING_H

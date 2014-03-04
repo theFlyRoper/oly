@@ -1,4 +1,4 @@
-/* display_resource_type.c - debug function to show current resource type {{{
+/* list_array_resources.c - Debug function to print indexes from an icu array resource. {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,8 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
-
 #include "oly/common.h"
+
+#include <unicode/ustdio.h>
+#include <unicode/uloc.h>
+#include <unicode/ures.h>
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -26,13 +29,25 @@
 
 #define URES_TREE_DEBUG 1
 
-void display_resource_type(UResourceBundle *res, const int level)
-{
-    int i = level;
-    for ( i = level; (i > 0); --i ) 
-    {
-        printf("  ");
+void list_array_resources(UResourceBundle *res, const res_disp_flag *flag, const int level)
+{ 
+    UErrorCode      u_status = U_ZERO_ERROR;
+    int32_t         i = 0;
+    UResourceBundle *subres = NULL;
+    
+    for (i = 0; i<ures_getSize(res); i++) {
+        subres = ures_getByIndex (res, i, subres, &u_status);
+        if (U_FAILURE(u_status)) {
+            fprintf(stderr, "Err: %s\n",
+                    u_errorName(u_status));
+            exit(1);
+        }
+        if (URES_NONE != flag_check(subres, flag)) {
+            printf("%s%8i - %s: ", level_indent(level), i, get_resource_type(subres));
+            flag_res_display(subres, flag, level);
+        }
     }
-    printf("%s: %s\n", ures_getKey(res), get_resource_type(res));
+    printf("\n");
+    ures_close(subres);
 }
 

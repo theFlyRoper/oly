@@ -29,8 +29,8 @@
 #include <assert.h>
 
 #include "oly/common.h"
-#include "oly/state.h"
 #include "oly/core.h"
+#include "oly/globals.h"
 /* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
 /* MAIN */
@@ -41,8 +41,8 @@ main( int argc, char **argv ){
   char            *locale   = "QQQQETOPQIEJGF";
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 
-
-  program_name      = argv[0];
+  oly_resource      *OlyResources;
+  char *program_name      = argv[0];
 
   u_setDataDirectory(TEST_LOCALEDIR);
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 

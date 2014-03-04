@@ -17,10 +17,6 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
-
 #include "oly/common.h"
 
 #include <stdio.h>
@@ -30,79 +26,70 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include "oly/state.h"
 #include "oly/core.h"
 #include "oly/output.h"
-#include "oly/list.h"
-#include "oly/syntax.h"
-#include "oly/oly.h"
-#include "oly/builtin.h"
 #include "oly/break_rules.h"
+#include "oly/globals.h"
 
 /* MAIN */
 int
-main( int argc, char **argv ){
-  Oly             *oly      = oly_new ();
-  int32_t         len,optc  = 0;
-  char            rules_file_name[] = "./tests/data/supabreak.txt";
-  ochar           line[BUFSIZ];     /* main buffer */
-  ochar           *liner;
-  char            *optionError;     
-  char            *locale;
-  char            *dbg_var;
-  char            c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"";
-  char            c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle";
-  int             i=1;
-  oly_status      o_status  = OLY_OKAY;
-  UErrorCode      u_status  = U_ZERO_ERROR; 
-  UBreakIterator  *boundary;
-
-  atexit (close_oly);
-  program_name      = argv[0];
-
-  /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
-   * for the internal app data for ICU, which lives in a shared library. */
-  u_setDataDirectory(LOCALEDIR);
-  printf("Data directory set to : %s\n", LOCALEDIR);
-  locale = oget_user_locale(); 
-  locale = "root";
+main( int argc, char **argv )
+{
+    int32_t         len,optc  = 0, i=1;
+    char            rules_file_name[] = "./tests/data/supabreak.txt",
+                    c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"",
+                    c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle",
+                    *program_name      = argv[0], 
+                    *resource_file = (char*)OLY_RESOURCE;
+    ochar           line[BUFSIZ], *liner;     /* main buffer */
+    char            *optionError, *locale, *dbg_var;
+    oly_status      o_status  = OLY_OKAY;
+    UErrorCode      u_status  = U_ZERO_ERROR; 
+    oly_resource  *OlyResources;
+    UBreakIterator  *boundary;
 #ifdef OLYDEV
-  printf("\n-- top of program, locale is : %s\n", locale);
-#endif /* OLYDEV */
-  printf("Stuff before init all.\n");
-  init_all(oly, locale);
-  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
-  printf("Stuff after init all.\n");
-#ifdef OLYDEV
-  printf("\n-- after init --\n");
+    res_disp_flag   flag;
 #endif /* OLYDEV */
 
-  boundary = get_rules(rules_file_name, u_status);
-  if (U_FAILURE(u_status)) {
-    printf("Could not open!\n");
-  }
-  
-  printf("Examining: %s\n", c_line);
-  u_uastrcpy(line, c_line);
+    atexit (close_oly);
+    program_name      = argv[0];
 
-  ubrk_setText(boundary, line, u_strlen(line), &u_status);
-  len = NULL;
-
-  i = BUFSIZ;
-  
+    /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
+    * for the internal app data for ICU, which lives in a shared library. */
+    u_setDataDirectory(LOCALEDIR);
+    printf("Data directory set to : %s\n", LOCALEDIR);
+    locale = oget_user_locale(); 
+    locale = "root";
 #ifdef OLYDEV
+    printf("\n-- top of program, locale is : %s\n", locale);
+#endif /* OLYDEV */
+    init_all(locale);
+    OlyResources = ures_open(resource_file, locale, &u_status); 
+    if (U_FAILURE(u_status)) {
+        printf("Could not open! Errmsg: %s\n");
+    }
+    boundary = get_rules(rules_file_name, u_status);
+    if (U_FAILURE(u_status)) {
+        printf("Could not open resource %s, error %s, locale: %s\n", 
+                    resource_file, u_errorName(u_status), locale);
+    }
+    
+    printf("Examining: %s\n", c_line);
+    u_uastrcpy(line, c_line);
+
+    ubrk_setText(boundary, line, u_strlen(line), &u_status);
+#ifdef OLYDEV
+    init_res_disp_flag(&flag);
     list_package_locales(OLY_RESOURCE);
-    list_bundle_resources(OlyResources, NULL, 0);
+    list_table_resources(OlyResources, &flag, 0);
 #endif /* OLYDEV */
-    get_i18n_errstring(&line, &i, OLY_CONTINUE);
-  u_file_write(line, len, u_stdout);
 
   
-  if (U_FAILURE(u_status)) {
-    return EXIT_FAILURE;
-  } else {
-    return EXIT_SUCCESS;
-  }
+    if (U_FAILURE(u_status)) {
+        return EXIT_FAILURE;
+    } else {
+        return EXIT_SUCCESS;
+    }
 }
 
 

@@ -20,6 +20,7 @@
  * }}} */
 
 #include "oly/common.h"
+#include "oly/core.h"
 #include "oly/oly_dev.h"
 
 static void print_help(void);
@@ -27,19 +28,19 @@ static void usage(void);
 static void print_version(void);
 static void close_main(void);
 
-const char *program_name = "resex";
+static char *program_name;
+
 /* MAIN */
 int
 main( int argc, char **argv ){
-    int32_t         len = 0;
-    ochar           line[BUFSIZ];     /* main buffer */
-    char            *locale = "root", *locdir=LOCALEDIR, *opt_error = NULL,
-                    *filename = OLY_RESOURCE, c, *find_me = NULL;
-    res_disp_flag   flag = {1,0,0,0,0,0,0,0};
-    int             i=0;
+    char            *locale = (char*)"root", *locdir=(char*)LOCALEDIR,
+                    *filename = (char*)OLY_RESOURCE, c, *find_me = NULL;
+    res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
     UResourceBundle *resbund;
     atexit (close_main);
+    program_name = (const ochar *)argv[0];
+    init_res_disp_flag(&flag);
     /* a = arrays, A = Aliases, b = binaries, d = search dir, e = everything,
      * f = find this, h = help, i = integers, l = locales, n = filename, 
      * s = strings, t = tables, v = version, V = vectors
@@ -98,27 +99,27 @@ main( int argc, char **argv ){
         }
     }
 
-  /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
-   * for the internal app data for ICU, which lives in a shared library. */
-  u_setDataDirectory(locdir);
-  printf("Datadir: %s\n", locdir);
+    /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
+    * for the internal app data for ICU, which lives in a shared library. */
+    u_setDataDirectory(locdir);
+    printf("Datadir: %s\n", locdir);
 
-  if (locale == NULL) {
-    locale = oget_user_locale(); 
-  }
-  printf("locale: %s\n", locale);
+    if (locale == NULL) {
+        locale = oget_user_locale(); 
+    }
+    printf("locale: %s\n", locale);
     resbund = ures_open(filename, locale, &u_status); 
     if (U_FAILURE(u_status)) {
         printf("Could not open resource %s, error %s, locale: %s\n", 
-                filename, u_status, locale);
+                filename, u_errorName(u_status), locale);
     }
-    list_bundle_resources(resbund, &flag, 0);
+    list_table_resources(resbund, &flag, 0);
   
-  if (U_FAILURE(u_status)) {
-    exit(EXIT_FAILURE);
-  } else {
-    exit(EXIT_SUCCESS);
-  }
+    if (U_FAILURE(u_status)) {
+        exit(EXIT_FAILURE);
+    } else {
+        exit(EXIT_SUCCESS);
+    }
 }
 
 static void 
@@ -139,7 +140,7 @@ print_help(void)
 {
     usage();
     printf("%s: Tool to pry open icu .res / .dat files and browse them.\n", 
-            program_name);
+            (char *)program_name);
     printf("\tCommands:\n\t\t-d [SEARCH DIRECTORY]\n\t\t-f [THING TO FIND]\n");
     printf("\t\t-l [LOCALE TO SEARCH]\n\t\t-n [FILE NAME]\n\n\tFlags:\n\t\t");
     printf("-a\t\tshow names of arrays.\n\t\t-A\t\tshow names of Aliases.\n\t\t");
@@ -152,11 +153,13 @@ print_help(void)
 }
 
 static void usage(void){
-    printf("%s: [OPTIONS] -d [DIRECTORY TO SEARCH] -n [FILE NAME]\n", program_name);
+    printf("%s: [OPTIONS] -d [DIRECTORY TO SEARCH] -n [FILE NAME]\n", 
+            (char *)program_name);
 }
 
 static void print_version(void){
-    printf("%s: Version 1.0, 3-2-2014 - copyright (C) Oly Project\n", program_name);
+    printf("%s: Version 1.0, 3-2-2014 - copyright (C) Oly Project\n", 
+            (char *)program_name);
     printf("\tLicensed according to the MIT license, which is also the ICU license.\n");
     printf("\tThis program is provided in the hopes that it will be useful, but\n");
     printf("\tWITHOUT ANY WARRANTY, to the extent permitted by law.\n\n");

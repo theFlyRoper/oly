@@ -31,7 +31,7 @@ xmalloc (size_t num)
 {
   void *new = malloc (num);
   if (!new)
-    oly_fatal ("Memory exhausted");
+    fprintf(stderr, "Memory exhausted");
   return new;
 }
 
@@ -45,7 +45,7 @@ xrealloc (void *p, size_t num)
 
   new = realloc (p, num);
   if (!new)
-    oly_fatal ("Memory exhausted");
+    fprintf(stderr, "Memory exhausted");
 
   return new;
 }

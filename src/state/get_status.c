@@ -1,4 +1,4 @@
-/* oly_allocopt.c - calculate how many pointers and how much space is needed to store options {{{
+/* get_status.c - initialize an oly_state struct GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,8 +16,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
 
-oly_status oly_allocopt( ochar *argv, const size_t argc, OlyOptList *options ) {
+#include <ctype.h>
+#include "oly/common.h"
 
+#include "oly/core.h"
+#include "oly/state.h"
+
+oly_status
+get_status(oly_state *s){
+  return s->status;
 }
 

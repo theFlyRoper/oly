@@ -26,10 +26,6 @@
 
 #include "oly/common.h"
 #include "oly/output.h"
-#include "oly/state.h"
-#include "oly/list.h"
-#include "oly/syntax.h"
-#include "oly/oly.h"
 #include "oly/core.h"
 
 void

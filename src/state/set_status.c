@@ -1,4 +1,4 @@
-/* oly_getopt.c - get options from an ochar string. License GPL2+ {{{
+/* set_status.c - initialize an oly_state struct GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,5 +16,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
 
+#include <ctype.h>
+#include "oly/common.h"
+
+#include "oly/core.h"
+#include "oly/state.h"
+
+oly_status
+set_status(oly_state *state, const oly_status status)
+{
+    state->status = (oly_status)status;
+    return OLY_OKAY;
+}
 

@@ -28,37 +28,37 @@
 
 char *get_resource_type(UResourceBundle *res)
 { 
-    const char **types = {"URES_ALIAS", "URES_ARRAY", "URES_BINARY",
+    char *types[] = {"URES_ALIAS", "URES_ARRAY", "URES_BINARY",
         "URES_INT", "URES_INT_VECTOR", "URES_NONE", 
         "URES_STRING", "URES_TABLE"};
     char *retval;
     switch (ures_getType(res)) {
     case URES_ALIAS:
-        retval = strdup(types[0]);
+        retval = types[0];
         break;
     case URES_ARRAY:
-        retval = strdup(types[1]);
+        retval = types[1];
         break;
     case URES_BINARY:
-        retval = strdup(types[2]);
+        retval = types[2];
         break;
     case URES_INT:
-        retval = strdup(types[3]);
+        retval = types[3];
         break;
     case URES_INT_VECTOR:
-        retval = strdup(types[4]);
+        retval = types[4];
         break;
     case URES_NONE:
-        retval = strdup(types[5]);
+        retval = types[5];
         break;
     case URES_STRING:
-        retval = strdup(types[6]);
+        retval = types[6];
         break;
     case URES_TABLE:
-        retval = strdup(types[7]);
+        retval = types[7];
         break;
     default:
-        retval = strdup(types[5]);
+        retval = types[5];
         break;
     }
     return retval;

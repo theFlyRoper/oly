@@ -1,4 +1,4 @@
-/* list_bundle_resources.c - Debug function to print available locales. {{{
+/* list_table_resources.c - Debug function to print keys from an ICU table resource. {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,9 +17,6 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
 #include "oly/common.h"
 
 #include <unicode/ustdio.h>
@@ -33,26 +30,33 @@
 
 #define URES_TREE_DEBUG 1
 
-void list_bundle_resources(UResourceBundle *res, const res_disp_flag *flag, const int level)
+void list_table_resources(UResourceBundle *res, 
+        const res_disp_flag *flag, 
+        const int level)
 { 
     UErrorCode      u_status = U_ZERO_ERROR;
     char           *item = NULL;
     int32_t         len = 0;
+    res_disp_flag   *inner_flag = flag;
+    UResType        next_type;
     UResourceBundle *subres = NULL;
-        ures_resetIterator (res);
+    ures_resetIterator (res);
+
+    if (flag == NULL)
+    {
+        init_res_disp_flag(&inner_flag);
+    }
     while (ures_hasNext (res)) {
         subres = ures_getNextResource (res, subres, &u_status);
-        item = ures_getKey(subres);
-        printf("%s \n", item);
         if (U_FAILURE(u_status)) {
             fprintf(stderr, "Err: %s\n",
                     u_errorName(u_status));
             exit(1);
         }
+        printf("%s%s - %s\n", level_indent(level),
+                ures_getKey(subres),  get_resource_type(subres));
+            flag_res_display(subres, inner_flag, level);
     }
-        subres = ures_getNextResource (res, subres, &u_status);
-
-
-    printf("\n");
+    ures_close(subres);
 }
 

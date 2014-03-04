@@ -1,4 +1,4 @@
-/* check_uerror.c - check the UErrorCode and holler if it is suboptimal. License GPL2+ {{{
+/* count_file_bytes.c - retrieves file size for malloc. {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,14 +17,23 @@
  * MA 02110-1301, USA.
  * }}} */
 
-oly_status 
-check_uerror(UErrorCode *u_status){
-    oly_status status = OLY_OKAY;
-    if (U_FAILURE(u_status)) {
-        fprintf(stderr, "UErrorCode status = %s\n",
-            u_errorName(u_status));
-        status = OLY_ERR_ICU;
+#include "oly/common.h"
+#include "sys/types.h"
+#include "oly/core.h"
+
+oly_status
+count_file_bytes(FILE *file, size_t *file_size, Oly *oly)
+{
+    fpos_t pos;
+
+    set_status(oly->state, OLY_OKAY);
+    fseek(file, 0, SEEK_END);
+    if (fgetpos(file, &pos) != 0) 
+    {
+        set_status(oly->state, OLY_ERR_FILEIO);
     }
-    return status;
+    *file_size = (size_t)ftello(file);
+    fseek(file, 0, SEEK_SET);
+    return get_status(oly->state);
 }
 

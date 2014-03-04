@@ -29,9 +29,8 @@
 #include <assert.h>
 
 #include "oly/common.h"
-#include "oly/state.h"
 #include "oly/core.h"
-/* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
+#include "oly/globals.h"
 
 /* MAIN */
 int
@@ -39,6 +38,7 @@ main( int argc, char **argv ){
   int32_t         len       = 0;
   ochar           *liner;
   char            *locale   = "lkt";
+  char *program_name      = argv[0];
   /* lkt = lakota.  Language of North American indigenous peoples on the great plains.
    * Has relatively few native speakers, though enough to justify inclusion in
    * ICU.  If we do have someone translate oly into lakota, well, then, it will
@@ -50,8 +50,7 @@ main( int argc, char **argv ){
    */
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 
-
-  program_name      = argv[0];
+  oly_resource      *OlyResources ;
 
   u_setDataDirectory(TEST_LOCALEDIR);
   OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 

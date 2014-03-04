@@ -115,9 +115,12 @@ dnl ICUIO_LIBS and ICULAYOUT_LIBS
 
 OLY_CHECK_ICU([4.8],[],[])
 
+AC_CHECK_LIB([yaml], [yaml_get_version])
+
 dnl checks for header files 
-AC_INCLUDES_DEFAULT
-AC_HEADER_SYS_WAIT
+AC_INCLUDES_DEFAULT()
+
+AC_HEADER_SYS_WAIT()
 
 dnl checks for ICU headers at the end; check as needed.
 dnl                  sqlite3.h \

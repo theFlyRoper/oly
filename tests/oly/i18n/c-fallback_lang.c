@@ -29,44 +29,49 @@
 #include <assert.h>
 
 #include "oly/common.h"
-#include "oly/state.h"
 #include "oly/core.h"
+#include "oly/globals.h"
 /* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
 
 /* MAIN */
 int
 main( int argc, char **argv ){
-  int32_t         len       = 0;
-  ochar           *liner;
-  char            *locale   = "el_CY";
-  /* el_CY = Cyprus Greek
-   * The point of this test is to check ICU's fallback language functions.
-   * checks for U_USING_FALLBACK_WARNING at the end and returns 0 if it is found.
-   */
-  int             i=1;
-  UErrorCode      u_status  = U_ZERO_ERROR; 
+    int32_t         len       = 0;
+    ochar           *liner;
+    char            *locale   = "el_CY";
+    char *program_name      = argv[0];
+    oly_resource  *OlyResources;
+    /* el_CY = Cyprus Greek
+    * The point of this test is to check ICU's fallback language functions.
+    * checks for U_USING_FALLBACK_WARNING at the end and returns 0 if it is found.
+    */
+    int             i=1;
+    UErrorCode      u_status  = U_ZERO_ERROR; 
+    if (U_FAILURE(u_status)) {
+        printf("Could not open! status: %s\n", u_errorName(u_status));
+    }
+    program_name      = argv[0];
 
-  program_name      = argv[0];
+    u_setDataDirectory(TEST_LOCALEDIR);
+        
+        OlyResources = ures_open(OLY_RESOURCE, locale, &u_status);
+    printf("Status: %s\nStatus number: %i\nLocale: %s\n", 
+        u_errorName(u_status), u_status, ures_getLocale(OlyResources,&u_status));
 
-  u_setDataDirectory(TEST_LOCALEDIR);
-  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
-  printf("Status: %s\nStatus number: %i\nLocale: %s\n", 
-      u_errorName(u_status), u_status, ures_getLocale(OlyResources,&u_status));
-
-  u_init(&u_status);
-  init_io(locale, NULL);
-  if (U_FAILURE(u_status)) {
-    printf("Could not open! status: %s\n", u_errorName(u_status));
-  }
-  liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
-  u_file_write(liner, len, u_stdout);
-  
-  if ( u_status == U_USING_FALLBACK_WARNING ) {
-    return EXIT_SUCCESS;
-  }
-  else {
-    return EXIT_FAILURE;
-  }
+    u_init(&u_status);
+    init_io(locale, NULL);
+    if (U_FAILURE(u_status)) {
+        printf("Could not open! status: %s\n", u_errorName(u_status));
+    }
+    liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
+    u_file_write(liner, len, u_stdout);
+    
+    if ( u_status == U_USING_FALLBACK_WARNING ) {
+        return EXIT_SUCCESS;
+    }
+    else {
+        return EXIT_FAILURE;
+    }
 }
 
 
