@@ -49,7 +49,7 @@ main( int argc, char **argv ){
   if (argc != 2) {
     printf("Takes 1 argument, to be hashed. exiting...");
   }
-  if (OLY_OKAY != init_oly_state(&oly)) 
+  if (OLY_OKAY != init_state(&oly)) 
   {
     exit(EXIT_FAILURE);
   }

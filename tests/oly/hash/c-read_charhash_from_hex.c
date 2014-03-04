@@ -48,7 +48,7 @@ main( int argc, char **argv ){
     printf("2 args\n");
     exit(EXIT_FAILURE);
   }
-  if (OLY_OKAY != init_oly_state(&oly)) 
+  if (OLY_OKAY != init_state(&oly)) 
   {
     exit(EXIT_FAILURE);
   }

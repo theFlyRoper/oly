@@ -144,6 +144,7 @@ liboly_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)
 
 libcore_a_SOURCES				=	\
 								src/state/get_status.c \
+								src/state/init_state.c \
 								src/state/set_status.c \
 								src/core/oly_fatal.c \
 								src/core/cleanenv.c \
