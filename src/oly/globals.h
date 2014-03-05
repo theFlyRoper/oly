@@ -26,6 +26,7 @@
 OFILE *u_stderr;
 OFILE *u_stdout;
 OFILE *u_stdin;
+const ochar *program_name; 
 
 #endif /* SRC_OLY_GLOBALS_H */
 

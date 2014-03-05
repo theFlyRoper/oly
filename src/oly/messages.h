@@ -16,7 +16,7 @@
    MA 02110-1301, USA.
    }}} */
 #include "oly/common.h"
-#include "oly/state.h"
+#include "oly/errors.h"
 
 #ifndef SRC_OLY_MESSAGES_H
 #define SRC_OLY_MESSAGES_H 1
@@ -28,12 +28,6 @@ typedef enum oly_locale_type_t
     ACTUAL_LOCALE = ULOC_ACTUAL_LOCALE 	
 #endif /* HAVE_UNICODE_URES_H */
 } oly_locale_type;
-
-typedef struct oly_locale_t {
-    char            *name;
-    oly_locale_type  locale_type;
-    void            *object;
-} oly_locale;
 
 typedef enum oly_resource_type_t {
     COMPLEX_TABLE=0,
@@ -49,17 +43,18 @@ typedef struct oly_resource_t
     ochar                *name;
     oly_resource_type     type;
     int                   array_offset;
-    oly_locale            locale;
+    char                 *locale;
+    oly_locale_type       locale_type;
     resource_data        *resource;
 } oly_resource;
 
-oly_status   init_resource_api(const char *dir, oly_status *status);
-oly_status   init_locale(const char *locale_str, oly_locale *locale, 
-                oly_status *status);
-oly_status   open_resource(const oly_locale *locale, 
-                oly_resource *resource, oly_state *status);
+oly_status   get_default_locale (char *locale[], const int32_t len, 
+                oly_status *status) ;
+oly_status   get_default_charset (char *charset[], const int32_t len, 
+                oly_status *status) ;
+oly_status   open_resource(const char *locale, 
+                oly_resource *fillin_resource, oly_status *status);
 oly_status   close_resource(oly_resource *resource, oly_status *status);
-oly_status   get_default_locale (char *locale[], oly_status *status) ;
 ochar       *cstr_to_ostr(oly_status *status, const char *c);
 char        *ostr_to_cstr(oly_status *status, const ochar *c);
 

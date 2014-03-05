@@ -36,7 +36,7 @@
 
 
 oly_status
-init_all (char *locale) {
+init_all (oly_locale *locale, oly_state *state, ) {
   UErrorCode      u_status = U_ZERO_ERROR; 
   oly_status      o_status = OLY_OKAY;
   clean_io_open();
@@ -44,12 +44,15 @@ init_all (char *locale) {
   /* u_stderr, u_stdout, u_stdin */
   init_io(locale, NULL);
   
-  if ( cleanenv() != OLY_OKAY )
+  if ( cleanenv() != OLY_OKAY ) 
+  {
       abort();
+  }
 
   /* Initialize ICU */
   u_init(&u_status);
-  if (U_FAILURE(u_status)) {
+  if (U_FAILURE(u_status)) 
+  {
     printf("Could not open! status: %s. Exiting...\n", u_errorName(u_status));
   }
   return o_status;

@@ -167,18 +167,13 @@ libcore_a_SOURCES				=	\
 								src/state/set_state_message.c \
 								src/state/set_status.c \
 								src/messages/get_default_locale.c \
+								src/messages/get_default_charset.c \
 								src/messages/cstr_to_ostr.c \
 								src/messages/ostr_to_cstr.c \
 								src/core/oly_fatal.c \
-								src/core/cleanenv.c \
 								src/core/clean_io_open.c \
-								src/core/close_oly.c \
 								src/core/count_file_bytes.c \
-								src/core/init_all.c \
-								src/core/init_io.c \
 								src/core/is_big_endian.c \
-								src/core/oget_home.c \
-								src/core/token_str_to_array.c \
 								src/core/xstrdup.c \
 								src/core/xmalloc.c \
 								src/core/xstrerror.c 
@@ -193,12 +188,8 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 									-I$(top_srcdir)/src/ 
 
 check_PROGRAMS 	= tests/runtests \
-					tests/oly/core/c-oget_home \
 					tests/oly/core/c-count_file_bytes \
-					tests/oly/core/c-get_ochar_args \
-					tests/oly/core/c-count_tokens \
-					tests/oly/core/c-count_nondelim_chars \
-					tests/oly/core/c-token_str_to_array \
+					tests/oly/core/c-init_oly \
 					tests/oly/state/c-init_state \
 					tests/oly/hash/c-get_hashbits \
 					tests/oly/hash/c-get_str_hashlen \
@@ -207,6 +198,7 @@ check_PROGRAMS 	= tests/runtests \
 					tests/oly/hash/c-read_charhash_from_hex \
 					tests/oly/hash/c-read_sizehash_from_hex \
 					tests/oly/i18n/c-alias \
+					tests/oly/i18n/c-cstr_to_ostr \
 					tests/oly/i18n/c-ja \
 					tests/oly/i18n/c-el \
 					tests/oly/i18n/c-root \
@@ -223,30 +215,6 @@ tests_oly_state_c_init_state_SOURCES 	= tests/oly/state/c-init_state.c
 tests_oly_state_c_init_state_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_state_c_init_state_LDADD 		= tests/tap/libtap.a \
 										  libcore.a @ICUIO_LIBS@ @ICU_LIBS@
-tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c 
-tests_oly_hash_c_get_hashbits_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_get_hashbits_LDADD = tests/tap/libtap.a \
-									  libcore.a libhash.a
-tests_oly_hash_c_read_charhash_from_hex_SOURCES 	= tests/oly/hash/c-read_charhash_from_hex.c 
-tests_oly_hash_c_read_charhash_from_hex_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_read_charhash_from_hex_LDADD 		= tests/tap/libtap.a \
-													  libcore.a libhash.a @ICUIO_LIBS@
-tests_oly_hash_c_read_sizehash_from_hex_SOURCES 	= tests/oly/hash/c-read_sizehash_from_hex.c 
-tests_oly_hash_c_read_sizehash_from_hex_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_read_sizehash_from_hex_LDADD 		= tests/tap/libtap.a \
-													  libcore.a libhash.a @ICUIO_LIBS@
-tests_oly_hash_c_hash_char_to_hash_size_SOURCES 	= tests/oly/hash/c-hash_char_to_hash_size.c 
-tests_oly_hash_c_hash_char_to_hash_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_hash_char_to_hash_size_LDADD 		= tests/tap/libtap.a \
-													  libcore.a libhash.a @ICUIO_LIBS@
-tests_oly_hash_c_get_str_hashlen_SOURCES 	= tests/oly/hash/c-get_str_hashlen.c 
-tests_oly_hash_c_get_str_hashlen_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_get_str_hashlen_LDADD 		= tests/tap/libtap.a \
-											  libcore.a libhash.a @ICUIO_LIBS@ 
-tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
-tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_char_to_size_LDADD 		= tests/tap/libtap.a \
-											  libcore.a libhash.a
 tests_oly_core_c_count_file_bytes_SOURCES 	= tests/oly/core/c-count_file_bytes.c 
 tests_oly_core_c_count_file_bytes_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_count_file_bytes_LDADD 	= tests/tap/libtap.a \
@@ -275,10 +243,14 @@ tests_oly_core_c_token_str_to_array_SOURCES = tests/oly/core/c-token_str_to_arra
 										  src/core/xmalloc.c
 tests_oly_core_c_token_str_to_array_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_token_str_to_array_LDADD 		= tests/tap/libtap.a \
-																								libcore.a @ICUIO_LIBS@ @ICU_LIBS@
+												  libcore.a @ICUIO_LIBS@ @ICU_LIBS@
 tests_oly_i18n_c_el_SOURCES 	= tests/oly/i18n/c-el.c
 tests_oly_i18n_c_el_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS) 
 tests_oly_i18n_c_el_LDADD 		= tests/tap/libtap.a libcore.a @ICUIO_LIBS@ @ICU_LIBS@
+tests_oly_i18n_c_cstr_to_ostr_SOURCES 	= tests/oly/i18n/c-cstr_to_ostr.c
+tests_oly_i18n_c_cstr_to_ostr_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS) 
+tests_oly_i18n_c_cstr_to_ostr_LDADD = tests/tap/libtap.a libcore.a @ICUIO_LIBS@ \
+									  @ICU_LIBS@
 tests_oly_i18n_c_ja_SOURCES 	= tests/oly/i18n/c-ja.c
 tests_oly_i18n_c_ja_CPPFLAGS 			= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_ja_LDADD 				= tests/tap/libtap.a libcore.a @ICUIO_LIBS@ @ICU_LIBS@
@@ -297,6 +269,30 @@ tests_oly_i18n_c_fallback_lang_LDADD = tests/tap/libtap.a libcore.a @ICUIO_LIBS@
 tests_oly_i18n_c_alias_SOURCES 			= tests/oly/i18n/c-alias.c 
 tests_oly_i18n_c_alias_CPPFLAGS 		= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_i18n_c_alias_LDADD 				= tests/tap/libtap.a libcore.a @ICUIO_LIBS@ @ICU_LIBS@
+tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c 
+tests_oly_hash_c_get_hashbits_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_get_hashbits_LDADD = tests/tap/libtap.a \
+									  libcore.a libhash.a
+tests_oly_hash_c_read_charhash_from_hex_SOURCES 	= tests/oly/hash/c-read_charhash_from_hex.c 
+tests_oly_hash_c_read_charhash_from_hex_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_read_charhash_from_hex_LDADD 		= tests/tap/libtap.a \
+													  libcore.a libhash.a @ICUIO_LIBS@
+tests_oly_hash_c_read_sizehash_from_hex_SOURCES 	= tests/oly/hash/c-read_sizehash_from_hex.c 
+tests_oly_hash_c_read_sizehash_from_hex_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_read_sizehash_from_hex_LDADD 		= tests/tap/libtap.a \
+													  libcore.a libhash.a @ICUIO_LIBS@
+tests_oly_hash_c_hash_char_to_hash_size_SOURCES 	= tests/oly/hash/c-hash_char_to_hash_size.c 
+tests_oly_hash_c_hash_char_to_hash_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_hash_char_to_hash_size_LDADD 		= tests/tap/libtap.a \
+													  libcore.a libhash.a @ICUIO_LIBS@
+tests_oly_hash_c_get_str_hashlen_SOURCES 	= tests/oly/hash/c-get_str_hashlen.c 
+tests_oly_hash_c_get_str_hashlen_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_get_str_hashlen_LDADD 		= tests/tap/libtap.a \
+											  libcore.a libhash.a @ICUIO_LIBS@ 
+tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
+tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_char_to_size_LDADD 		= tests/tap/libtap.a \
+											  libcore.a libhash.a
 
 
 check-local: check-i18n $(check_PROGRAMS) 

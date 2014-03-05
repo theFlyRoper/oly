@@ -16,49 +16,40 @@
    MA 02110-1301, USA.
  }}} */
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
-
-#include <unicode/ustdio.h>
-#include <unicode/ubrk.h>
-#include <stdio.h>
 
 #include "oly/common.h"
+
+#include <assert.h>
+
 #include "oly/output.h"
 #include "oly/core.h"
 
 void
 init_io(const char *locale, const char *codepage) {
-  char    err_buffer[BUFSIZ];
-  int     errnum=0;
+    char    err_buffer[BUFSIZ];
+    int     errnum=0;
 
-  if ( u_stderr == NULL ) {
-      u_stderr=u_finit(stderr, locale,  NULL /*codepage */);
-      if(!u_stderr) {
-          if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
-              printf("%s", err_buffer);
-          }
-          exit(1);
-      }
-  }
-  if( u_stdout == NULL ) {
-      u_stdout = u_finit(stdout, locale,  NULL /*codepage */);
-      if(!u_stdout) {
-          if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
-              printf("%s", err_buffer);
-          }
-          exit(1);
-      }
-  }
-  if(u_stdin == NULL) {
-      u_stdin = u_finit(stdin, locale, NULL);
-      if(!u_stdin) {
-          if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
-              printf("%s", err_buffer);
-          }
-          exit(1);
-      }
-  }
+    assert((u_stderr == NULL) && (u_stdin == NULL) && (u_stdout == NULL))
+    u_stderr=u_finit(stderr, locale,  codepage);
+    if(!u_stderr) {
+        if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+            printf("%s", err_buffer);
+        }
+        exit(1);
+    }
+    u_stdout = u_finit(stdout, locale, codepage);
+    if(!u_stdout) {
+        if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+            printf("%s", err_buffer);
+        }
+        exit(1);
+    }
+    u_stdin = u_finit(stdin, locale, codepage);
+    if(!u_stdin) {
+        if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+            printf("%s", err_buffer);
+        }
+        exit(1);
+    }
 }
 

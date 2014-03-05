@@ -34,29 +34,17 @@ struct passwd;
 
 /* main oly structure */
 typedef struct oly_t {
+    char                     *locale;
+    char                     *charset;
     oly_resource             *messages;
-    ochar                    *program_name;
-    oly_status                status;
-    oly_locale                locale;
-    struct  oly_state_t      *state;
+    oly_state                *state;
 } Oly;
 
 void  clean_io_open(void);
-char *oget_home (struct passwd *pwd);
 char *oget_user_locale (void);
 oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
-extern void close_oly (void);
-extern int cleanenv (void);
-
 oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
-
 int   is_big_endian (void);
-
-oly_status get_i18n_errmsg(ochar **message, const oly_status oly_errno);
-/* the char * from liberr will always be len long, counting terminator */
-oly_status get_i18n_errstring(ochar **message, int32_t *message_len,
-        const oly_status oly_errno);
-char *get_liberror(int liberr, int *len);
 oly_status init_all (char *locale);
 
 /* OFILE IO */

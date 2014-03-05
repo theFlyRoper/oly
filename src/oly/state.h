@@ -16,44 +16,12 @@
    MA 02110-1301, USA.
    }}} */
 
+#include "oly/errors.h"
+
 #ifndef OLY_STATE_H
 #define OLY_STATE_H 1
 
 BEGIN_C_DECLS
-
-/* oly_status type:
- * Defines states for Oly.
- * 
- * Negative numbers and zero are non-error states
- * or warning states. Positive numbers are error 
- * states. Starts at lowest negative number and goes 
- * up. 
- *
- * Standard return state is OLY_OKAY, which you should
- * test for after calling most functions. Use others as
- * appropriate. OLY_OKAY is equal to zero.
- */
-typedef enum oly_status_t {
-    OLY_WARN_REINIT=-7,
-    OLY_WARN_ERROR_NOT_FOUND=-6,
-    OLY_EOF=-5,
-    OLY_EXIT=-4,
-    OLY_CONTINUE=-3,
-    OLY_BREAK=-2,
-    OLY_INCOMPLETE=-1,
-    OLY_OKAY=0,
-    OLY_ERR_UNSPECIFIED=1,
-    OLY_ERR_SYS=2,
-    OLY_ERR_LIB=3,
-    OLY_ERR_INIT=4,
-    OLY_ERR_NOMEM=5,
-    OLY_ERR_NOPWD=6,
-    OLY_ERR_NOUSER=7,
-    OLY_ERR_FILEIO=8,
-    OLY_ERR_READHEX=9,
-    OLY_ERR_BADARG=10
-} oly_status;
-
 typedef struct oly_state_t *state_p;
 #ifdef HAVE_UNICODE_URES_H
 typedef UErrorCode liberror_num;
@@ -84,15 +52,13 @@ typedef struct oly_state_t
 {
     oly_status     status;            /* status for instance of oly_state */
     liberror_num   lib_status;        /* library status for external errors. */
-    ochar         *message;              /* ochar holding the message */
-    int           (*handler)(void *);    /* single argument handler function */
+    ochar         *result;              /* ochar holding the message */
 } oly_state;
 
 oly_status init_state( oly_state *s );
 oly_status close_state( oly_state *s );
 oly_status set_status( oly_state *state, const oly_status status );
 oly_status get_status( oly_state *state );
-oly_status set_program_name(oly_state *state, char *path);
 oly_status check_liberror       (oly_state *state);
 
 /* these are not thread safe. All work with the BUFSIZ buffer in message. */

@@ -30,7 +30,7 @@ init_state(oly_state *s)
     {
         return OLY_ERR_BADARG;
     }
-    s->message = (ochar *)xcalloc(BUFSIZ, sizeof(ochar));
+    s->result = (ochar *)xcalloc(BUFSIZ, sizeof(ochar));
 #ifdef HAVE_UNICODE_URES_H
     s->lib_status = U_ZERO_ERROR ;
 #endif /* HAVE_UNICODE_URES_H */
