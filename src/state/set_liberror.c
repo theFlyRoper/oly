@@ -1,4 +1,4 @@
-/* init_state.c - initialize an oly_state struct GPL2+ {{{
+/* set_liberror.c - check the UErrorCode and holler if it is suboptimal. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,25 +16,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+
 #include "oly/common.h"
 #include <ctype.h>
 
 #include "oly/core.h"
 #include "oly/state.h"
 
-const ochar *program_name; 
-oly_status
-init_state(oly_state *s)
+oly_status 
+set_liberror(oly_state *s, int32_t err_val)
 {
-    if (s == NULL)
-    {
-        return OLY_ERR_BADARG;
-    }
-    s->message = (ochar *)xcalloc(BUFSIZ, sizeof(ochar));
-#ifdef HAVE_UNICODE_URES_H
-    s->lib_status = U_ZERO_ERROR ;
-#endif /* HAVE_UNICODE_URES_H */
-    s->status = OLY_OKAY;
+#ifdef HAVE_UNICODE_USTDIO_H
+    s->lib_status = err_val;
+    s->status = OLY_ERR_LIB;
+#endif /* HAVE_UNICODE_USTDIO_H */
     return s->status;
 }
 

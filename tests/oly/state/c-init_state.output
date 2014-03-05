@@ -1,0 +1,4 @@
+1..2
+ok 1 - state is null.
+ok 2 - with a valid value for state.
+# All 2 tests successful or skipped

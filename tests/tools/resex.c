@@ -20,6 +20,7 @@
  * }}} */
 
 #include "oly/common.h"
+#include <assert.h>
 #include "oly/core.h"
 #include "oly/oly_dev.h"
 
@@ -28,8 +29,6 @@ static void usage(void);
 static void print_version(void);
 static void close_main(void);
 
-static char *program_name;
-
 /* MAIN */
 int
 main( int argc, char **argv ){
@@ -37,14 +36,17 @@ main( int argc, char **argv ){
                     *filename = (char*)OLY_RESOURCE, c, *find_me = NULL;
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
+    oly_status      o_status;
+    oly_state       state;
     UResourceBundle *resbund;
     atexit (close_main);
-    program_name = (const ochar *)argv[0];
     init_res_disp_flag(&flag);
     /* a = arrays, A = Aliases, b = binaries, d = search dir, e = everything,
      * f = find this, h = help, i = integers, l = locales, n = filename, 
      * s = strings, t = tables, v = version, V = vectors
      */
+    assert(init_state(&state) == OLY_OKAY);
+    set_program_name(&state, argv[0]);
     while ((c = getopt(argc, argv, "aAbd:f:hil:n:stvV")) != -1) 
     {
         switch (c) 
@@ -105,7 +107,10 @@ main( int argc, char **argv ){
     printf("Datadir: %s\n", locdir);
 
     if (locale == NULL) {
-        locale = oget_user_locale(); 
+        if (get_default_locale (&locale, &o_status) != OLY_OKAY) 
+        {
+            printf("DEFAULT LOCALE: It is NOT OK.\n");
+        }
     }
     printf("locale: %s\n", locale);
     resbund = ures_open(filename, locale, &u_status); 

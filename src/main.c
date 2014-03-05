@@ -44,6 +44,7 @@ main( int argc, char **argv )
     ochar           line[BUFSIZ], *liner;     /* main buffer */
     char            *optionError, *locale, *dbg_var;
     oly_status      o_status  = OLY_OKAY;
+    oly_state       main_state;
     UErrorCode      u_status  = U_ZERO_ERROR; 
     oly_resource  *OlyResources;
     UBreakIterator  *boundary;
@@ -52,21 +53,25 @@ main( int argc, char **argv )
 #endif /* OLYDEV */
 
     atexit (close_oly);
+    if (init_state(&main_state) != OLY_OKAY) {
+        printf("Init state failed\n");
+    };
     program_name      = argv[0];
 
     /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
     * for the internal app data for ICU, which lives in a shared library. */
     u_setDataDirectory(PKGDATADIR);
     printf("Data directory set to : %s\n", PKGDATADIR);
-    locale = oget_user_locale(); 
-    locale = "root";
+    if (get_default_locale (&locale, &o_status) != OLY_OKAY) {
+        printf("DEFAULT LOCALE: %i\n", o_status);
+    }
 #ifdef OLYDEV
     printf("\n-- top of program, locale is : %s\n", locale);
 #endif /* OLYDEV */
     init_all(locale);
     OlyResources = ures_open(resource_file, locale, &u_status); 
     if (U_FAILURE(u_status)) {
-        printf("Could not open! Errmsg: %s\n");
+        printf("Could not open! Errmsg: %s\n", u_errorName(u_status));
     }
     boundary = get_rules(rules_file_name, u_status);
     if (U_FAILURE(u_status)) {

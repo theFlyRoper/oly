@@ -1,4 +1,4 @@
-/* init_state.c - initialize an oly_state struct GPL2+ {{{
+/* ostr_to_cstr.c - Convert from ostr to host charset. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,25 +16,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+
 #include "oly/common.h"
-#include <ctype.h>
 
 #include "oly/core.h"
 #include "oly/state.h"
-
-const ochar *program_name; 
-oly_status
-init_state(oly_state *s)
+#include "oly/messages.h"
+/* for messages only. */
+char        *ostr_to_cstr(oly_status *status, const ochar *c)
 {
-    if (s == NULL)
-    {
-        return OLY_ERR_BADARG;
-    }
-    s->message = (ochar *)xcalloc(BUFSIZ, sizeof(ochar));
-#ifdef HAVE_UNICODE_URES_H
-    s->lib_status = U_ZERO_ERROR ;
-#endif /* HAVE_UNICODE_URES_H */
-    s->status = OLY_OKAY;
-    return s->status;
+    *status = OLY_OKAY;
+    char   *d;
+#ifdef HAVE_UNICODE_USTDIO_H
+    return u_austrcpy(d, (UChar *)c);
+#endif /* HAVE_UNICODE_USTDIO_H */
 }
-

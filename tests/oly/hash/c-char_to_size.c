@@ -46,8 +46,8 @@ typedef union oly_hash_union {
 
 int
 main (void){
-  oly_hash    test1 = {0xEFBEADBAED0BEDFE}, test2 = {0xEDEDDE00EDADBE00},
-              test3 = {0xED0BEDFEADDEEDDE};
+  oly_hash    test1 = {{0xEFBEADBAED0BEDFE}}, test2 = {{0xEDEDDE00EDADBE00}},
+              test3 = {{0xED0BEDFEADDEEDDE}};
   size_t      result1 = {0xFEED0BEDBAADBEEF}, result2 = {0x00BEADED00DEEDED}, 
                result3 = {0xDEEDDEADFEED0BED}, output_val = 0;
   oly_status  status;

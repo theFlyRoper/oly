@@ -1,4 +1,4 @@
-/* check_uerror.c - check the UErrorCode and holler if it is suboptimal. License GPL2+ {{{
+/* check_liberror.c - check the UErrorCode and holler if it is suboptimal. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,14 +17,24 @@
  * MA 02110-1301, USA.
  * }}} */
 
+#include "oly/common.h"
+#include <ctype.h>
+
+#include "oly/core.h"
+#include "oly/state.h"
+#include "oly/messages.h"
+
 oly_status 
-check_uerror(UErrorCode *u_status){
-    oly_status status = OLY_OKAY;
-    if (U_FAILURE(u_status)) {
-        fprintf(stderr, "UErrorCode status = %s\n",
-            u_errorName(u_status));
-        status = OLY_ERR_ICU;
+check_liberror(oly_state *s){
+    ochar *errtext = NULL;
+    oly_status status;
+#ifdef HAVE_UNICODE_USTDIO_H
+    if (U_FAILURE(s->lib_status)) {
+        errtext = cstr_to_ostr( &status, (const char *)u_errorName(s->lib_status));
+        set_state_message( s, cstr_to_ostr(&status, "check_liberror: problem.\n"));
+        s->status = OLY_ERR_LIB;
     }
-    return status;
+#endif /* HAVE_UNICODE_USTDIO_H */
+    return s->status;
 }
 

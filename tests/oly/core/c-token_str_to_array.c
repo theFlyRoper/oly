@@ -28,6 +28,7 @@
 #include "oly/common.h"
 #include "oly/state.h"
 #include "oly/core.h"
+#include "src/messages/get_default_locale.c"
 
 /* MAIN */
 int

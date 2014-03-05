@@ -33,45 +33,63 @@
  * elsewhere. 
  */
 
-static size_t count_tokens (char *s, char *delims);
-static size_t count_nondelim_chars (char *s, char *delims);
+static int32_t count_tokens (char *s, char *delims);
+static int32_t count_nondelim_chars (char *s, char *delims);
 static char **token_str_to_array(char *s, char *delims, oly_status *status); 
 
-oly_status get_default_locale (char *locale, oly_status *status) 
+oly_status get_default_locale (char *locale[], oly_status *status) 
 {
-  /* sorta follows the GNU coding standards; looks at LANGUAGE 
-   * (a colon-separated list of language codes) first, then uses
-   * ICU's uloc_getName function, which sets locale to the default 
-   * if it is null.
-   */
-  const size_t    buffer_size = OLY_SMALL_BUFFER;
-  size_t          output_size = 0, len = 0;
-  UAcceptResult   acceptable;
-  UErrorCode      u_status  = U_ZERO_ERROR;
-  oly_status      status    = OLY_OKAY;
-  char           *language_val = getenv("LANGUAGE"), sep[1] = ":";
-  char          **curr = NULL, result[buffer_size], *locale = NULL;
-  
-  if ( language_val != NULL ) {
-    UEnumeration *available = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
-    curr  = token_str_to_array(language_val, sep, &status);
-    len   = count_tokens (language_val, sep);
-    output_size = (size_t)uloc_acceptLanguage(result, buffer_size, &acceptable, 
-        (const char **)curr, len, available, &u_status) ;
-  }
-
-  if ( output_size == 0 ) {
-    output_size = (size_t)uloc_getName( (const char *)locale, 
-        result, buffer_size, &u_status );
-  }
-
-  if ( output_size > 0 ) {
-    locale = (char *)xmalloc( (output_size + 1) * ( sizeof(char) ));
-    strncpy(locale, result, output_size);
-    *(locale + output_size + 1) = '\0';
-  }
-
-  return locale;
+    /* sorta follows the GNU coding standards; looks at LANGUAGE 
+    * (a colon-separated list of language codes) first, then uses
+    * ICU's uloc_getName function, which sets locale to the default 
+    * if it is null.
+    */
+    int32_t         output_size = 0, len = 0;
+    UAcceptResult   acceptable;
+    UErrorCode      u_status  = U_ZERO_ERROR;
+    char           *language_val = getenv("LANGUAGE"), sep[1] = ":";
+    char          **curr = NULL, result[OLY_SMALL_BUFFER];
+    *status             = OLY_OKAY;
+    UEnumeration    *available;
+    available       = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
+    while ( language_val != NULL ) 
+    {
+        if (U_FAILURE(u_status)) 
+        {
+            *status = OLY_ERR_LIB;
+            break;
+        }
+        curr  = token_str_to_array(language_val, sep, status);
+        len   = count_tokens (language_val, sep);
+        output_size = uloc_acceptLanguage(result, OLY_SMALL_BUFFER, &acceptable, 
+            (const char **)curr, len, available, &u_status) ;
+        language_val = NULL;
+        if (U_FAILURE(u_status)) 
+        {
+            printf("uloc_acceptLanguage failed: %s\n",  u_errorName(u_status));
+            *status = OLY_ERR_LIB;
+        }
+    }
+    if ((output_size <= 0) && (*status == OLY_OKAY))
+    {
+        output_size = uloc_getBaseName(NULL, result, OLY_SMALL_BUFFER, &u_status);
+    }
+    if (U_FAILURE(u_status)) 
+    {
+        printf("uloc_getBaseName failed: %s\n",  u_errorName(u_status));
+        *status = OLY_ERR_LIB;
+    }
+    if (( output_size > 0 ) &&  ( *status == OLY_OKAY ))
+    {
+        *locale = (char *)xmalloc( (output_size + 1) * ( sizeof(char) ));
+        strncpy(*locale, result, output_size);
+        *((*locale) + output_size) = '\0';
+    } 
+    else if (*status == OLY_OKAY) 
+    {
+            *status = OLY_ERR_INIT;
+    }
+    return *status;
 }
 
 
@@ -82,9 +100,9 @@ oly_status get_default_locale (char *locale, oly_status *status)
 char **
 token_str_to_array(char *s, char *delims, oly_status *status) 
 {
-  const size_t    arr_size = count_tokens(s,delims), 
+  const int32_t    arr_size = count_tokens(s,delims), 
                   num_chars = count_nondelim_chars(s,delims);
-  size_t          arr_ptr = 0, strsize = 0;
+  int32_t          arr_ptr = 0, strsize = 0;
   /* we need arr_size char pointers and arr_size (for the EOLs) + num_chars chars. */
   char          **result = (char **)xmalloc(
                   ((arr_size * sizeof(char *)) 
@@ -113,10 +131,10 @@ token_str_to_array(char *s, char *delims, oly_status *status)
   return result;
 }
 
-size_t
+int32_t
 count_tokens (char *s, char *delims)
 {
-  size_t  current_count = 0;
+  int32_t  current_count = 0;
 
   /* loop over s, adding 1 to current_count for each iteration. */
   if ( delims != NULL ) {
@@ -128,10 +146,10 @@ count_tokens (char *s, char *delims)
   return current_count;
 }
 
-size_t
+int32_t
 count_nondelim_chars (char *s, char *delims)
 {
-  size_t  current_count = 0;
+  int32_t  current_count = 0;
   char    *next;
 
   /* delims should never be null. */

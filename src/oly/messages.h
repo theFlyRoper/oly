@@ -53,13 +53,15 @@ typedef struct oly_resource_t
     resource_data        *resource;
 } oly_resource;
 
-oly_status init_resource_api(const char *dir, oly_status *status);
-oly_status init_locale(const char *locale_str, oly_locale *locale, oly_status *status);
-oly_status open_resource(const oly_locale *locale, oly_resource *resource, 
-        oly_status *status);
-oly_status close_resource(oly_resource *resource, oly_status *status);
-
-char *get_default_locale (oly_status *status) ;
+oly_status   init_resource_api(const char *dir, oly_status *status);
+oly_status   init_locale(const char *locale_str, oly_locale *locale, 
+                oly_status *status);
+oly_status   open_resource(const oly_locale *locale, 
+                oly_resource *resource, oly_state *status);
+oly_status   close_resource(oly_resource *resource, oly_status *status);
+oly_status   get_default_locale (char *locale[], oly_status *status) ;
+ochar       *cstr_to_ostr(oly_status *status, const char *c);
+char        *ostr_to_cstr(oly_status *status, const ochar *c);
 
 /* internal API */
 #ifdef SRC_OLY_MESSAGES_INTERNAL_H

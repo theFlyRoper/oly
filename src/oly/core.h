@@ -63,6 +63,7 @@ oly_status init_all (char *locale);
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;
+extern const ochar *program_name; 
 
 /* holds the cleaned environment for use with getenv() */
 extern char **environ; 

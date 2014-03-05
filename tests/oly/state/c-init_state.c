@@ -1,4 +1,4 @@
-/* c-count_file_bytes - tests for count_file_bytes. {{{
+/* c-init_state - tests for init_state. {{{
  * Copyright (C) 2014 Oly Project
  * Permission is hereby granted, free of charge, to any person obtaining a copy of 
  * this software and associated documentation files (the "Software"), to deal in 
@@ -24,7 +24,6 @@
 #include <assert.h>
 #include <sys/stat.h>
 #include "oly/core.h"
-#include "oly/oly_dev.h"
 #include "tests/tap/basic.h"
 
 static void close_main(void);
@@ -33,35 +32,14 @@ static void close_main(void);
 int
 main( int argc, char **argv )
 {
-    const char *tests[] = {"/data/orig_breaks.txt",
-            "/data/spawner_output.txt",
-            "/data/zh_romance_of_three_kingdoms.txt", ""},
-            *env = getenv("SOURCE");
-    char    *c;
-    struct stat sts;
-    size_t  results[] = {4255, 142803, 46838, 0}, i = 0,
-            output = 0;
-    FILE    *f;
-    Oly     *oly = (Oly *)xmalloc(sizeof(Oly));
+    oly_state state;
+    oly_status s;
     atexit (close_main);
-    c = (char *)xmalloc(BUFSIZ);
-    memset((void *)c, '\0', BUFSIZ);
+    
+    plan(2);
+    is_int(OLY_ERR_BADARG, init_state(NULL), "state is null.");
+    is_int(OLY_OKAY, init_state(&state), "with a valid value for state.");
 
-    plan(3);
-    for (i = 0; (results[i] != 0); i++) {
-        strcpy(c, env);
-        strcat(c, tests[i]);
-        if (stat(c, &sts) == -1 && errno == ENOENT)
-        {
-            printf ("The file %s doesn't exist...\n", c);
-        }
-        f = fopen(c, "r");
-        assert( count_file_bytes(f, &output, oly) == OLY_OKAY ) ;
-        is_int(results[i], output, "File: %s", tests[i]);
-        fclose(f);
-    }
-
-    free(c);
     if ( 0 != 0 ) 
     {
         exit(EXIT_FAILURE);

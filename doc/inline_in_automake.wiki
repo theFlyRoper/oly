@@ -4,8 +4,8 @@
 <h1>Using Automake With Inline Static Functions</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 5f64404ac8,
-2013-07-28
+version b20a00ea61,
+2014-03-04
 </p>
 <hr>
 <h2><a name="_the_problem"></a>1. The Problem</h2>

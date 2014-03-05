@@ -1,4 +1,4 @@
-/* init_state.c - initialize an oly_state struct GPL2+ {{{
+/* set_program_name.c - set the global constant program_name. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,25 +16,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+
 #include "oly/common.h"
-#include <ctype.h>
+#include <assert.h>
 
 #include "oly/core.h"
 #include "oly/state.h"
+#include "oly/messages.h"
 
-const ochar *program_name; 
-oly_status
-init_state(oly_state *s)
+const ochar *program_name;
+
+oly_status 
+set_program_name(oly_state *state, char *path)
 {
-    if (s == NULL)
-    {
-        return OLY_ERR_BADARG;
-    }
-    s->message = (ochar *)xcalloc(BUFSIZ, sizeof(ochar));
-#ifdef HAVE_UNICODE_URES_H
-    s->lib_status = U_ZERO_ERROR ;
-#endif /* HAVE_UNICODE_URES_H */
-    s->status = OLY_OKAY;
-    return s->status;
-}
+    char *prog_holder = xstrdup(basename(&path));
+    assert(program_name == NULL);
+    state->status = OLY_OKAY;
 
+    program_name = (const ochar *)cstr_to_ostr(state, prog_holder);
+    return state->status;
+}
