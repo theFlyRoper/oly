@@ -48,10 +48,6 @@ typedef struct oly_resource_t
     resource_data        *resource;
 } oly_resource;
 
-oly_status   get_default_locale (char *locale[], const int32_t len, 
-                oly_status *status) ;
-oly_status   get_default_charset (char *charset[], const int32_t len, 
-                oly_status *status) ;
 oly_status   open_resource(const char *locale, 
                 oly_resource *fillin_resource, oly_status *status);
 oly_status   close_resource(oly_resource *resource, oly_status *status);

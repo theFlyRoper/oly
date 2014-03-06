@@ -36,11 +36,12 @@ struct passwd;
 typedef struct oly_t {
     char                     *locale;
     char                     *charset;
-    oly_resource             *messages;
+    UResourceBundle          *messages;
     oly_state                *state;
 } Oly;
 
-void  clean_io_open(void);
+oly_status init_oly(Oly *oly, char *prog, char *datadir) ;
+oly_status   set_resource_dir(const char *dir, oly_status *status);
 char *oget_user_locale (void);
 oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
 oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);

@@ -43,7 +43,7 @@ SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
 endif !SHA3_64BIT
 
 if DEBUG_MODE
-I18N_DIR_DEF = -DPKGDATADIR=\"$(abs_top_builddir)/tests/data/i18n\"
+I18N_DIR_DEF = -DPKGDATADIR=\"$(I18N_TESTBUILDDIR)\"
 else !DEBUG_MODE
 I18N_DIR_DEF = -DPKGDATADIR=\"$(pkgdatadir)\"
 endif !DEBUG_MODE
@@ -53,7 +53,7 @@ include make_i18n.mk
 EXTRA_DIST							= $(MAIN_I18N_INDEX_TXT) 	$(TEST_I18N_INDEX_TXT) \
 									$(FULL_MAIN_I18N_TXT)  	$(FULL_TEST_I18N_TXT)
 
-HEAD_CPPFLAGS						=  -I$(top_srcdir) -I$(top_srcdir)/src
+HEAD_CPPFLAGS						=  -I$(top_srcdir) -I$(top_srcdir)/src $(I18N_DIR_DEF)
 
 dist_check_DATA				= tests/TESTS \
 								tests/data/test_config.yaml \
@@ -89,8 +89,7 @@ dist_noinst_HEADERS			=	src/oly/break_rules.h \
 								tests/tap/macros.h
 AM_CFLAGS 						= -fstack-protector-all @ICU_CFLAGS@ \
 							  		@DEV_CFLAGS@
-csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
-								  $(I18N_DIR_DEF)
+csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 
 bin_PROGRAMS							= csvparse 
 
 noinst_PROGRAMS							= resex
@@ -102,7 +101,7 @@ resex_LDADD 							= liboly_dev.a libcore.a @ICUIO_LIBS@ \
 
 
 resex_CPPFLAGS							= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
-										  @DEV_DEF@ $(I18N_DIR_DEF)
+										  @DEV_DEF@ $(HEAD_CPPFLAGS)
 
 csvparse_SOURCES		= src/main.c \
 							src/print_demo/print_text_range.c \
@@ -163,15 +162,12 @@ libcore_a_SOURCES				=	\
 								src/state/init_state.c \
 								src/state/print_state_message.c \
 								src/state/set_liberror.c \
-								src/state/set_program_name.c \
 								src/state/set_state_message.c \
 								src/state/set_status.c \
-								src/messages/get_default_locale.c \
-								src/messages/get_default_charset.c \
 								src/messages/cstr_to_ostr.c \
 								src/messages/ostr_to_cstr.c \
-								src/core/oly_fatal.c \
-								src/core/clean_io_open.c \
+								src/core/init_oly.c \
+								src/core/set_resource_dir.c \
 								src/core/count_file_bytes.c \
 								src/core/is_big_endian.c \
 								src/core/xstrdup.c \
@@ -187,9 +183,11 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 									-DTESTDATADIR=\"$(abs_top_srcdir)/tests/\" \
 									-I$(top_srcdir)/src/ 
 
+					## tests/oly/core/c-init_oly \
 check_PROGRAMS 	= tests/runtests \
+					tests/oly/core/c-count_tokens \
+					tests/oly/core/c-token_str_to_array \
 					tests/oly/core/c-count_file_bytes \
-					tests/oly/core/c-init_oly \
 					tests/oly/state/c-init_state \
 					tests/oly/hash/c-get_hashbits \
 					tests/oly/hash/c-get_str_hashlen \
@@ -197,14 +195,15 @@ check_PROGRAMS 	= tests/runtests \
 					tests/oly/hash/c-hash_char_to_hash_size \
 					tests/oly/hash/c-read_charhash_from_hex \
 					tests/oly/hash/c-read_sizehash_from_hex \
-					tests/oly/i18n/c-alias \
-					tests/oly/i18n/c-cstr_to_ostr \
-					tests/oly/i18n/c-ja \
-					tests/oly/i18n/c-el \
-					tests/oly/i18n/c-root \
-					tests/oly/i18n/c-missing_resource \
-					tests/oly/i18n/c-missing_lang \
-					tests/oly/i18n/c-fallback_lang 
+					tests/oly/i18n/c-uastrcpy 
+##					tests/oly/i18n/c-alias \
+##					tests/oly/i18n/c-cstr_to_ostr \
+##					tests/oly/i18n/c-ja \
+##					tests/oly/i18n/c-el \
+##					tests/oly/i18n/c-root \
+##					tests/oly/i18n/c-missing_resource \
+##					tests/oly/i18n/c-missing_lang \
+##					tests/oly/i18n/c-fallback_lang 
 tests_runtests_CPPFLAGS 		= $(CHECK_DEFS) 
 check_LIBRARIES 				=	tests/tap/libtap.a
 tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests
@@ -293,6 +292,10 @@ tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c
 tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_char_to_size_LDADD 		= tests/tap/libtap.a \
 											  libcore.a libhash.a
+tests_oly_i18n_c_uastrcpy_SOURCES 	= tests/oly/i18n/c-uastrcpy.c 
+tests_oly_i18n_c_uastrcpy_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_i18n_c_uastrcpy_LDADD 	= tests/tap/libtap.a libcore.a @ICUIO_LIBS@ \
+									  @ICU_LIBS@
 
 
 check-local: check-i18n $(check_PROGRAMS) 
@@ -303,7 +306,7 @@ i18n: i18n/oly_lang.dat
 	
 check-i18n:	tests/data/i18n/oly_lang.dat
 
-all-local: i18n
+all-local: i18n check-i18n
 
 ## end of tests/check stuff.
 

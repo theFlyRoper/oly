@@ -31,32 +31,36 @@
 
 #include "oly/core.h"
 
+const ochar *program_name;
+
 static void         close_oly(void);
 static void         init_io(const char *locale, const char *codepage);
 static int          open_devnull(int fd);
 static void         clean_io_open(void);
-static void         set_program_name(char *path);
 static oly_status   cleanenv(void);
-static oly_status   set_resource_dir(const char *dir, oly_status *status);
-static oly_status   init_resource_api(const char *dir, oly_status *status);
-static oly_status   get_default_charset (char *charset[], const int32_t len, 
-                        oly_status *status);
-static oly_status get_default_locale (char *locale[], const int32_t len, 
-                        oly_status *status);
+static oly_status   get_default_charset (char *charset[], oly_status *status);
+static oly_status   get_default_locale (char *locale[], oly_status *status);
+static char *get_home (struct passwd *pwd);
 static int32_t count_tokens (char *s, char *delims);
 static int32_t count_nondelim_chars (char *s, char *delims);
-static char **token_str_to_array(char *s, char *delims, oly_status *status); 
+static char **token_str_to_array(char *s, char *delims, int *count_chars, 
+        int *count_tokens, oly_status *status) ;
+
+/* static token functions. */
+#include "core/token_functions.c"
+
 
 oly_status
-init_oly(Oly *oly, char *prog) {
+init_oly(Oly *oly, char *prog, char *datadir) 
+{
     oly_status       status = OLY_OKAY;
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
-    char             buf[BUFSIZ], *loc = NULL, *charset = NULL; 
-    ochar           *program_mover = NULL;
+    char            *locale , *charset = NULL; 
+    UChar           *program_mover = NULL;
     int32_t          len = 0;
-    oly_resource    *oly_init_resource = NULL;
+    UResourceBundle *oly_init_resource = NULL;
     atexit (close_oly);
     assert(program_name == NULL && prog != NULL);
     clean_io_open();
@@ -65,25 +69,6 @@ init_oly(Oly *oly, char *prog) {
         abort();
     }
 
-    /* program name get. */
-    len = (strlen(basename(prog)) * sizeof(ochar));
-    if (len == 0)
-    {
-        printf("Program name not found. input: %s, basename: %s. Exiting...\n"
-                prog, basename(prog));
-        exit(EXIT_FAILURE);
-    }
-    program_mover = (ochar *)xcalloc(len);
-#ifdef HAVE_UNICODE_USTDIO_H
-    program_mover = (ochar *)u_uastrcpy((UChar *)program_mover, prog);
-#endif /* HAVE_UNICODE_USTDIO_H */
-    program_name = (const ochar *)program_mover;
-    if (set_resource_dir(const char *dir, oly_status *status) != OLY_OKAY)
-    {
-        printf("Could not set resource dir, error: %i\n", status);
-        exit(EXIT_FAILURE);
-    }
-#ifdef HAVE_UNICODE_USTDIO_H
     /* Initialize ICU */
     u_init(&u_status);
     if (U_FAILURE(u_status)) {
@@ -91,44 +76,54 @@ init_oly(Oly *oly, char *prog) {
                 u_errorName(u_status));
         exit(EXIT_FAILURE);
     }
+    /* program name get. */
+    len = strlen(basename(prog));
+    if (len == 0)
+    {
+        printf("Program name not found. input: %s, basename: %s. Exiting...\n",
+                prog, basename(prog));
+        exit(EXIT_FAILURE);
+    }
+    program_mover = (UChar *)xcalloc(strlen(basename(prog)), sizeof(ochar));
+#ifdef HAVE_UNICODE_USTDIO_H
+    u_uastrncpy(program_mover, basename(prog), len);
 #endif /* HAVE_UNICODE_USTDIO_H */
+    program_name = (const ochar *)program_mover;
+    if (set_resource_dir(datadir, &status) != OLY_OKAY)
+    {
+        printf("Could not set resource dir, error: %i\n", status);
+        exit(EXIT_FAILURE);
+    }
     if (get_default_locale (&locale, &status) != OLY_OKAY) 
     {
         printf("Init: get_default_locale failed. Err: %i\n", status);
         exit(EXIT_FAILURE);
     }
+    if (get_default_charset (&charset, &status) != OLY_OKAY) 
+    {
+        printf("Init: get_default_charset failed. Err: %i\n", status);
+        exit(EXIT_FAILURE);
+    }
+
 #ifdef HAVE_UNICODE_USTDIO_H
-    oly_init_resource = (oly_resource *)ures_open(OLY_RESOURCE, locale, &u_status); 
+    /* oly_init_resource = (resource_data *)ures_open(OLY_RESOURCE, locale, &u_status); */
+    oly_init_resource = ures_open(OLY_RESOURCE, locale, &u_status);
     if (U_FAILURE(u_status)) {
         printf("Main resource file error. Status: %s. Exiting...\n",
                 u_errorName(u_status));
         exit(EXIT_FAILURE);
     }
 #endif /* HAVE_UNICODE_USTDIO_H */
-    
-    /*get_default_charset (char *fillin_charset[], const int32_t len, 
-                oly_status *status) ; */
 
     /* u_stderr, u_stdout, u_stdin */
     init_io(locale, NULL);
-
     oly->messages   = oly_init_resource;
     oly->locale     = locale;
     oly->charset    = charset;
+    return status;
 }
 
 
-oly_status   set_resource_dir(const char *dir, oly_status *status)
-{
-    *status = OLY_OKAY;
-#ifdef HAVE_UNICODE_USTDIO_H
-    /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
-    * for the internal app data for ICU, which lives in a shared library. 
-    */
-    u_setDataDirectory(dir);
-#endif /* HAVE_UNICODE_USTDIO_H */
-    return *status;
-}
 /* open_devnull, get_home, clean_io_open and cleanenv 
  * are adapted from the Secure Programming 
  * Cookbook, John Viega and Matt Messier.
@@ -136,17 +131,18 @@ oly_status   set_resource_dir(const char *dir, oly_status *status)
  * ISBN: 0-596-00394-3
  */
 
-/* These arrays are both null-terminated. 
- * was thinking of recording current user, but, enh.
- */
-
 char *
-oget_home (struct passwd *pwd) {
+get_home (struct passwd *pwd) {
     char *home = (char *)xmalloc((strlen(pwd->pw_dir)) + sizeof("HOME=") - 1);
     strcpy(home, "HOME=");
     strcat(home, pwd->pw_dir);
     return home;
 }
+
+
+/* These arrays are both null-terminated. 
+ * was thinking of recording current user, but, enh.
+ */
 
 const char *
 spc_restricted_environ[  ] = {
@@ -294,7 +290,7 @@ init_io(const char *locale, const char *codepage)
     char    err_buffer[BUFSIZ];
     int     errnum=0;
 
-    assert((u_stderr == NULL) && (u_stdin == NULL) && (u_stdout == NULL))
+    assert((u_stderr == NULL) && (u_stdin == NULL) && (u_stdout == NULL));
     u_stderr=u_finit(stderr, locale,  codepage);
     if(!u_stderr) {
         if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
@@ -329,25 +325,19 @@ void close_oly (void) {
     }
 }
 
-oly_status get_default_charset (char *charset[], const int32_t len, 
-                oly_status *status)
+oly_status get_default_charset (char *charset[], oly_status *status)
 {
     int32_t         output_size = 0;
     UErrorCode      u_status  = U_ZERO_ERROR;
-    char            result[OLY_SMALL_BUFFER], *result_ptr;
+    char            *result_ptr;
     *status         = OLY_OKAY;
     
-    result_ptr = ucnv_open(NULL, &u_status);
-    if (U_FAILURE(u_status)) 
-    {
-        printf("ucnv_open failed: %s\n",  u_errorName(u_status));
-        *status = OLY_ERR_LIB;
-    }
+    result_ptr = ucnv_getDefaultName();
     output_size = strlen(result_ptr);
     if (( output_size > 0 ) &&  ( *status == OLY_OKAY ))
     {
         *charset = (char *)xmalloc( (output_size) * ( sizeof(char) ));
-        strncpy(*charset, result, output_size);
+        strncpy(*charset, result_ptr, output_size);
         *((*charset) + output_size) = '\0';
     } 
     else if (*status == OLY_OKAY) 
@@ -357,7 +347,7 @@ oly_status get_default_charset (char *charset[], const int32_t len,
     return *status;
 }
 
-oly_status get_default_locale (char *locale[], const int32_t len, 
+oly_status get_default_locale (char *locale[],
                 oly_status *status)
 {
     /* sorta follows the GNU coding standards; looks at LANGUAGE 
@@ -365,14 +355,19 @@ oly_status get_default_locale (char *locale[], const int32_t len,
     * ICU's uloc_getName function, which sets locale to the default 
     * if it is null.
     */
-    int32_t         output_size = 0, tokens = 0;
+    int32_t         output_size = 0, tokens = 0, characters = 0;
     UAcceptResult   acceptable;
     UErrorCode      u_status  = U_ZERO_ERROR;
     char           *language_val = getenv("LANGUAGE"), sep[1] = ":";
     char          **curr = NULL, result[OLY_SMALL_BUFFER];
-    *status             = OLY_OKAY;
     UEnumeration    *available;
     available       = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
+    status             = OLY_OKAY;
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ures_openAvailableLocales failed: %s\n",  u_errorName(u_status));
+        *status = OLY_ERR_LIB;
+    }
     while ( language_val != NULL ) 
     {
         if (U_FAILURE(u_status)) 
@@ -380,7 +375,7 @@ oly_status get_default_locale (char *locale[], const int32_t len,
             *status = OLY_ERR_LIB;
             break;
         }
-        curr  = token_str_to_array(language_val, sep, status);
+        curr  = token_str_to_array(language_val, sep, &characters, &tokens, status);
         tokens   = count_tokens (language_val, sep);
         output_size = uloc_acceptLanguage(result, OLY_SMALL_BUFFER, &acceptable, 
             (const char **)curr, tokens, available, &u_status) ;
@@ -411,81 +406,6 @@ oly_status get_default_locale (char *locale[], const int32_t len,
             *status = OLY_ERR_INIT;
     }
     return *status;
-}
-
-
-/* allocates a char ** array and copies each token into it. 
- * will always return a (char **) where there is at least one string with 
- * an empty value.
- */
-char **
-token_str_to_array(char *s, char *delims, oly_status *status) 
-{
-  const int32_t    arr_size = count_tokens(s,delims), 
-                  num_chars = count_nondelim_chars(s,delims);
-  int32_t          arr_ptr = 0, strsize = 0;
-  /* we need arr_size char pointers and arr_size (for the EOLs) + num_chars chars. */
-  char          **result = (char **)xmalloc(
-                  ((arr_size * sizeof(char *)) 
-                   + ((arr_size + num_chars) * sizeof(char)))),
-                 *next, *result_position;
-
-  assert(result != NULL);
-
-  *status = OLY_OKAY;
-  result_position = (char *)(result + (arr_size * sizeof(char *)));
-  if ( delims != NULL ) {
-    while ( s != NULL && *(s += strspn(s, delims)) != '\0' ) {
-      next = strpbrk(s, delims);
-      if (next != NULL) {
-        strsize = (next - s);
-      } else {
-        strsize = strlen(s);
-      };
-      strncpy(result_position, s, strsize);
-      *(result_position + strsize) = '\0';
-      result[arr_ptr++] = result_position;
-      result_position += (strsize +1);
-      s = next;
-    }
-  }
-  return result;
-}
-
-int32_t
-count_tokens (char *s, char *delims)
-{
-  int32_t  current_count = 0;
-
-  /* loop over s, adding 1 to current_count for each iteration. */
-  if ( delims != NULL ) {
-    while ( s != NULL && *(s += strspn(s, delims)) != '\0' ) {
-      current_count++;
-      s = strpbrk(s, delims);
-    }
-  }
-  return current_count;
-}
-
-int32_t
-count_nondelim_chars (char *s, char *delims)
-{
-  int32_t  current_count = 0;
-  char    *next;
-
-  /* delims should never be null. */
-  assert( delims != NULL ) ;
-  /* loop over s, adding the difference between the next and the primary */
-  while ( s != NULL && *(s += strspn(s, delims)) != '\0' ) {
-    next = strpbrk(s, delims);
-    if ( next != NULL ) {
-      current_count += ( next - s );
-    } else {
-      current_count += strlen(s);
-    }
-    s = next;
-  }
-  return current_count;
 }
 
 

@@ -20,10 +20,11 @@
  * }}} */
 
 #include "oly/common.h"
-#include <assert.h>
 #include "oly/core.h"
 #include "oly/oly_dev.h"
+#include "oly/globals.h"
 
+const UChar *program_name;
 static void print_help(void);
 static void usage(void);
 static void print_version(void);
@@ -33,20 +34,21 @@ static void close_main(void);
 int
 main( int argc, char **argv ){
     char            *locale = (char*)"root", *locdir=(char*)PKGDATADIR,
-                    *filename = (char*)OLY_RESOURCE, c, *find_me = NULL;
+                    *filename = (char*)OLY_RESOURCE, c, *find_me = NULL,
+                    *progval = xstrdup(argv[0]);
+    int32_t         len;
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
-    oly_status      o_status;
-    oly_state       state;
+    oly_status      status  =   OLY_OKAY;
+    Oly             *oly=(Oly *)xmalloc(sizeof(Oly));
     UResourceBundle *resbund;
     atexit (close_main);
     init_res_disp_flag(&flag);
+
     /* a = arrays, A = Aliases, b = binaries, d = search dir, e = everything,
      * f = find this, h = help, i = integers, l = locales, n = filename, 
      * s = strings, t = tables, v = version, V = vectors
      */
-    assert(init_state(&state) == OLY_OKAY);
-    set_program_name(&state, argv[0]);
     while ((c = getopt(argc, argv, "aAbd:f:hil:n:stvV")) != -1) 
     {
         switch (c) 
@@ -100,20 +102,18 @@ main( int argc, char **argv ){
             break;
         }
     }
-
+    
+    if (init_oly(oly, progval, locdir) != OLY_OKAY) {
+        perror("Initialization failed\n");
+    };
+    
     /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
     * for the internal app data for ICU, which lives in a shared library. */
-    u_setDataDirectory(locdir);
     printf("Datadir: %s\n", locdir);
 
-    if (locale == NULL) {
-        if (get_default_locale (&locale, &o_status) != OLY_OKAY) 
-        {
-            printf("DEFAULT LOCALE: It is NOT OK.\n");
-        }
-    }
-    printf("locale: %s\n", locale);
-    resbund = ures_open(filename, locale, &u_status); 
+    printf("locale: %s\n", oly->locale);
+
+    resbund = ures_open(filename, oly->locale, &u_status); 
     if (U_FAILURE(u_status)) {
         printf("Could not open resource %s, error %s, locale: %s\n", 
                 filename, u_errorName(u_status), locale);
@@ -130,14 +130,8 @@ main( int argc, char **argv ){
 static void 
 close_main (void) 
 {
-    if (fclose (stdout) != EXIT_SUCCESS) {
-        perror ("resex: write error");
-        exit (EXIT_FAILURE);
-    }
-    if (fclose (stdin) != EXIT_SUCCESS) {
-        perror ("resex: read error on close");
-        exit (EXIT_FAILURE);
-    }
+    fclose (stdout); 
+    fclose (stdin); 
 }
 
 static void 

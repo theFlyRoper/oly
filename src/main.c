@@ -30,64 +30,25 @@
 #include "oly/output.h"
 #include "oly/break_rules.h"
 #include "oly/globals.h"
-
 /* MAIN */
 int
 main( int argc, char **argv )
 {
-    int32_t         len,optc  = 0, i=1;
-    char            rules_file_name[] = "./tests/data/supabreak.txt",
-                    c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"",
-                    c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle",
-                    *program_name      = argv[0], 
-                    *resource_file = (char*)OLY_RESOURCE;
-    ochar           line[BUFSIZ], *liner;     /* main buffer */
-    char            *optionError, *locale, *dbg_var;
-    oly_status      o_status  = OLY_OKAY;
-    oly_state       main_state;
-    UErrorCode      u_status  = U_ZERO_ERROR; 
-    oly_resource    *OlyResources;
-    UBreakIterator  *boundary;
+    Oly             *oly=(Oly *)xmalloc(sizeof(Oly));
+    oly_status      status  = OLY_OKAY;
 #ifdef OLYDEV
     res_disp_flag   flag;
 #endif /* OLYDEV */
-
-    atexit (close_oly);
-    if (init_state(&main_state, &o_status) != OLY_OKAY) {
-        printf("Init state failed\n");
+    if (init_oly(&oly, argv[0], PKGDATADIR) != OLY_OKAY) {
+        perror("Initialization failed\n");
     };
-    program_name      = argv[0];
-    
-    printf("Data directory set to : %s\n", PKGDATADIR);
-    if (get_default_locale (&locale, &o_status) != OLY_OKAY) {
-        printf("DEFAULT LOCALE: %i\n", o_status);
-    }
-#ifdef OLYDEV
-    printf("\n-- top of program, locale is : %s\n", locale);
-#endif /* OLYDEV */
-    init_all(locale);
-    OlyResources = ures_open(resource_file, locale, &u_status); 
-    if (U_FAILURE(u_status)) {
-        printf("Could not open! Errmsg: %s\n", u_errorName(u_status));
-    }
-    boundary = get_rules(rules_file_name, u_status);
-    if (U_FAILURE(u_status)) {
-        printf("Could not open resource %s, error %s, locale: %s\n", 
-                    resource_file, u_errorName(u_status), locale);
-    }
-    
-    printf("Examining: %s\n", c_line);
-    u_uastrcpy(line, c_line);
-
-    ubrk_setText(boundary, line, u_strlen(line), &u_status);
 #ifdef OLYDEV
     init_res_disp_flag(&flag);
-    list_package_locales(OLY_RESOURCE);
-    list_table_resources(OlyResources, &flag, 0);
+/*    list_package_locales(OLY_RESOURCE); */
+    list_table_resources(oly->messages, &flag, 0);
 #endif /* OLYDEV */
-
   
-    if (U_FAILURE(u_status)) {
+    if (status != OLY_OKAY) {
         return EXIT_FAILURE;
     } else {
         return EXIT_SUCCESS;

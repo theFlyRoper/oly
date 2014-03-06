@@ -28,13 +28,16 @@
 #include "oly/common.h"
 #include "oly/state.h"
 #include "oly/core.h"
-#include "src/messages/get_default_locale.c"
+
+static char **token_str_to_array(char *s, char *delims, int *count_chars, 
+        int *count_tokens, oly_status *status) ;
+#include "src/core/token_functions.c"
 
 /* MAIN */
 int
 main( int argc, char **argv ){
   const size_t    test1_size = 4;
-  size_t          i = 0;
+  size_t          i = 0, characters = 0, tokens = 0;
   char            *program_name = argv[0];
   char            delim1234[] = ":", delim5678[] = ":|";
   char            test1[] = ":ten:chars:!!:3120",
@@ -45,7 +48,7 @@ main( int argc, char **argv ){
 
  
   plan(test1_size);
-  result = token_str_to_array(test1, delim1234, &status);
+  result = token_str_to_array(test1, delim1234, &characters, &tokens, &status);
   for ( i=0; i < test1_size; i++ ) {
     is_string(result[i], output[i], "result[%i](%s) = output[%i](%s)", i, result[i], i, output[i] );
   }

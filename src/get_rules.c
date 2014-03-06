@@ -53,12 +53,14 @@ get_rules(const char *ruleFileName, UErrorCode status) {
     const char*    encoding = ucnv_detectUnicodeSignature(
                            ruleSourceC, ruleFileSize, &signatureLength, &status);
     /* fprintf(stderr, "DetectUnicodeSig: \"%s\"\n", encoding); */
-    if (U_FAILURE(status)) {
+    if (U_FAILURE(status)) 
+    {
         fprintf(stderr, "\nCan not initialize ICU.  status = %s\n",
             u_errorName(status));
         exit(1);
     }
-    if(encoding!=NULL ){
+    if(encoding!=NULL )
+    {
         ruleSourceC  += signatureLength;
         ruleFileSize -= signatureLength;
     }
@@ -71,7 +73,6 @@ get_rules(const char *ruleFileName, UErrorCode status) {
         fprintf(stderr, "ucnv_open: ICU Error \"%s\"\n", u_errorName(status));
         exit(1);
     }
-
 
     ufile = u_finit(file, NULL, NULL);
     u_frewind(ufile);

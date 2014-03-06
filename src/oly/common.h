@@ -45,6 +45,7 @@ typedef UResourceBundle resource_data;
 
 #ifdef HAVE_UNICODE_UCNV_H
 #include <unicode/ucnv.h>
+typedef UConverter oly_converter;
 #endif /* HAVE_UNICODE_UCNV_H */
 
 #ifdef HAVE_UNICODE_UMSG_H

@@ -27,8 +27,13 @@
 
 #include "oly/common.h"
 #include "oly/core.h"
-#include "src/messages/get_default_locale.c"
 
+static int32_t count_tokens (char *s, char *delims);
+static int32_t count_nondelim_chars (char *s, char *delims);
+static char **token_str_to_array(char *s, char *delims, int *count_chars, 
+        int *count_tokens, oly_status *status) ;
+
+#include "core/token_functions.c"
 /* MAIN */
 int
 main( int argc, char **argv ){
