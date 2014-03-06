@@ -166,10 +166,10 @@ libcore_a_SOURCES				=	\
 								src/state/set_status.c \
 								src/messages/cstr_to_ostr.c \
 								src/messages/ostr_to_cstr.c \
-								src/core/init_oly.c \
-								src/core/set_resource_dir.c \
 								src/core/count_file_bytes.c \
+								src/core/init_oly.c \
 								src/core/is_big_endian.c \
+								src/core/set_resource_dir.c \
 								src/core/xstrdup.c \
 								src/core/xmalloc.c \
 								src/core/xstrerror.c 
