@@ -35,27 +35,19 @@
 /* MAIN */
 int
 main( int argc, char **argv ){
-    int32_t            len        = 0;
-    ochar             *liner;
-    char              *locale     = "root";
-    char *program_name      = argv[0];
-    int                i=1;
-    UErrorCode         u_status   = U_ZERO_ERROR; 
-    oly_resource      *OlyResources;
+    int32_t              len        = 0;
+    ochar               *liner;
+    Oly                 *oly=new_oly();
+    char                *locale     = "root";
+    char                *program_name      = argv[0];
+    int                  i=1;
+    UErrorCode           u_status   = U_ZERO_ERROR; 
+    set_oly_locale(oly, locale);
+    if (init_oly(oly, argv[0], TEST_PKGDATADIR) != OLY_OKAY) {
+        perror("Initialization failed\n");
+    };
     
-    if (U_FAILURE(u_status)) {
-        printf("Could not open! status: %s\n", u_errorName(u_status));
-    }
-
-
-    u_setDataDirectory(TEST_PKGDATADIR);
-    OlyResources = ures_open(OLY_RESOURCE, locale, &u_status);
-    u_init(&u_status);
-    init_io(locale, NULL);
-    if (U_FAILURE(u_status)) {
-        printf("Could not open! status: %s\n", u_errorName(u_status));
-    }
-    liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
+    liner = ures_getStringByKey(oly->messages, "OlyUsage", &len, &u_status );
     u_file_write(liner, len, u_stdout);
     
     if (U_SUCCESS(u_status)) {

@@ -102,7 +102,7 @@ main( int argc, char **argv ){
             break;
         }
     }
-    
+    set_oly_locale(oly, locale);
     if (init_oly(oly, progval, locdir) != OLY_OKAY) {
         perror("Initialization failed\n");
     };

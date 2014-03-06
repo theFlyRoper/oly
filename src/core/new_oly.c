@@ -1,4 +1,4 @@
-/* main for csv importer. License GPL2+ {{{
+/* new_oly.c - allocates an Oly object and returns a pointer to it.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,41 +18,15 @@
  * }}} */
 
 #include "oly/common.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pwd.h>
-#include <unistd.h>
-#include <assert.h>
-
 #include "oly/core.h"
-#include "oly/output.h"
-#include "oly/break_rules.h"
-#include "oly/globals.h"
-/* MAIN */
-int
-main( int argc, char **argv )
+
+Oly *
+new_oly(void)
 {
-    Oly             *oly=new_oly();
-    oly_status      status  = OLY_OKAY;
-#ifdef OLYDEV
-    res_disp_flag   flag;
-#endif /* OLYDEV */
-    if (init_oly(oly, argv[0], PKGDATADIR) != OLY_OKAY) {
-        perror("Initialization failed\n");
-    };
-#ifdef OLYDEV
-    init_res_disp_flag(&flag);
-    list_package_locales(OLY_RESOURCE);
-    list_table_resources(oly->messages, &flag, 0);
-#endif /* OLYDEV */
-  
-    if (status != OLY_OKAY) {
-        return EXIT_FAILURE;
-    } else {
-        return EXIT_SUCCESS;
-    }
+    Oly *oly = (Oly *)xmalloc(sizeof(Oly));
+    oly->locale = NULL;
+    oly->charset = NULL;
+    oly->messages = NULL;
+    oly->state = NULL;
+    return oly; 
 }
-
-

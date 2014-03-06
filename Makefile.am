@@ -24,7 +24,7 @@ ACLOCAL_AMFLAGS 						= -I ac-aux/m4
 
 ## first i18n files, then test files.  Uses $(addsuffix <x>) later on to transform these.
 MAIN_I18N								= en en_US root en_US_POSIX
-TEST_I18N								= en root el ja zh
+TEST_I18N								= en root el ja zh en_US en_US_POSIX
 
 MAIN_I18N_DIR						= i18n/
 TEST_I18N_DIR						= tests/data/i18n/
@@ -161,7 +161,9 @@ libcore_a_SOURCES				=	\
 								src/messages/cstr_to_ostr.c \
 								src/messages/ostr_to_cstr.c \
 								src/core/count_file_bytes.c \
+								src/core/set_oly_locale.c \
 								src/core/init_oly.c \
+								src/core/new_oly.c \
 								src/core/is_big_endian.c \
 								src/core/set_resource_dir.c \
 								src/core/xstrdup.c \
@@ -188,12 +190,12 @@ check_PROGRAMS 	= tests/runtests \
 					tests/oly/hash/c-hash_char_to_hash_size \
 					tests/oly/hash/c-read_charhash_from_hex \
 					tests/oly/hash/c-read_sizehash_from_hex \
+					tests/oly/i18n/c-root \
 					tests/oly/i18n/c-uastrcpy 
 ##					tests/oly/i18n/c-alias \
 ##					tests/oly/i18n/c-cstr_to_ostr \
 ##					tests/oly/i18n/c-ja \
 ##					tests/oly/i18n/c-el \
-##					tests/oly/i18n/c-root \
 ##					tests/oly/i18n/c-missing_resource \
 ##					tests/oly/i18n/c-missing_lang \
 ##					tests/oly/i18n/c-fallback_lang 
@@ -306,9 +308,9 @@ all-local: i18n check-i18n
 ## maint and cleaning
 CLEANFILES 					= $(MAIN_I18N_CLEAN) \
 							$(TEST_I18N_CLEAN) \
-							$(i18n_DATA) 
+							$(i18n_DATA) tests/data/i18n/oly_lang.dat
 
-DISTCLEANFILES 			= tests/atconfig $(ALL_I18N_CLEAN)
+DISTCLEANFILES 			= tests/atconfig 
 
 distclean-local:
 	test -z "$(MAIN_I18N_CLEAN)" || rm -f $(MAIN_I18N_CLEAN);

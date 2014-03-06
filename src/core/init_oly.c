@@ -47,7 +47,8 @@ token_str_to_array(char *s, char *delims, unsigned int *count_chars,
 
 /* static token functions. */
 #include "core/token_str_to_array.c"
-
+/* get_default_locale function. */
+#include "core/get_default_locale.c"
 
 oly_status
 init_oly(Oly *oly, char *prog, char *datadir) 
@@ -56,12 +57,13 @@ init_oly(Oly *oly, char *prog, char *datadir)
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
-    char            *locale , *charset = NULL; 
+    char            *locale = (oly->locale), *charset = oly->charset; 
     UChar           *program_mover = NULL;
     int32_t          len = 0;
     UResourceBundle *oly_init_resource = NULL;
     atexit (close_oly);
     assert(program_name == NULL && prog != NULL);
+    printf("TOP OF init_oly\nlocale: %s, charset: %s\n", locale, charset);
     clean_io_open();
     if ( cleanenv() != OLY_OKAY )
     {
@@ -106,8 +108,10 @@ init_oly(Oly *oly, char *prog, char *datadir)
 
 #ifdef HAVE_UNICODE_USTDIO_H
     /* oly_init_resource = (resource_data *)ures_open(OLY_RESOURCE, locale, &u_status); */
+    printf("About to load resource. locale val: %s. charset val: %s\nresource name: %s\n", locale, charset, OLY_RESOURCE);
     oly_init_resource = ures_open(OLY_RESOURCE, locale, &u_status);
-    if (U_FAILURE(u_status)) {
+    if (U_FAILURE(u_status)) 
+    {
         printf("Main resource file error. Status: %s. Exiting...\n",
                 u_errorName(u_status));
         exit(EXIT_FAILURE);
@@ -115,7 +119,7 @@ init_oly(Oly *oly, char *prog, char *datadir)
 #endif /* HAVE_UNICODE_USTDIO_H */
 
     /* u_stderr, u_stdout, u_stdin */
-    init_io(locale, NULL);
+    init_io(locale, charset);
     oly->messages   = oly_init_resource;
     oly->locale     = locale;
     oly->charset    = charset;
@@ -346,64 +350,5 @@ oly_status get_default_charset (char *charset[], oly_status *status)
     return *status;
 }
 
-oly_status get_default_locale (char *locale[],
-                oly_status *status)
-{
-    /* sorta follows the GNU coding standards; looks at LANGUAGE 
-    * (a colon-separated list of language codes) first, then uses
-    * ICU's uloc_getName function, which sets locale to the default 
-    * if it is null.
-    */
-    int32_t         output_size = 0, tokens = 0, characters = 0;
-    UAcceptResult   acceptable;
-    UErrorCode      u_status  = U_ZERO_ERROR;
-    char           *language_val = getenv("LANGUAGE"), sep[1] = ":";
-    char          **curr = NULL, result[OLY_SMALL_BUFFER];
-    UEnumeration    *available;
-    available       = ures_openAvailableLocales(OLY_RESOURCE, &u_status);
-    status             = OLY_OKAY;
-    if (U_FAILURE(u_status)) 
-    {
-        printf("ures_openAvailableLocales failed: %s\n",  u_errorName(u_status));
-        *status = OLY_ERR_LIB;
-    }
-    while ( language_val != NULL ) 
-    {
-        if (U_FAILURE(u_status)) 
-        {
-            *status = OLY_ERR_LIB;
-            break;
-        }
-        curr  = token_str_to_array(language_val, sep, &characters, &tokens, status);
-        output_size = uloc_acceptLanguage(result, OLY_SMALL_BUFFER, &acceptable, 
-            (const char **)curr, tokens, available, &u_status) ;
-        language_val = NULL;
-        if (U_FAILURE(u_status)) 
-        {
-            printf("uloc_acceptLanguage failed: %s\n",  u_errorName(u_status));
-            *status = OLY_ERR_LIB;
-        }
-    }
-    if ((output_size <= 0) && (*status == OLY_OKAY))
-    {
-        output_size = uloc_getBaseName(NULL, result, OLY_SMALL_BUFFER, &u_status);
-    }
-    if (U_FAILURE(u_status)) 
-    {
-        printf("uloc_getBaseName failed: %s\n",  u_errorName(u_status));
-        *status = OLY_ERR_LIB;
-    }
-    if (( output_size > 0 ) &&  ( *status == OLY_OKAY ))
-    {
-        *locale = (char *)xmalloc( (output_size + 1) * ( sizeof(char) ));
-        strncpy(*locale, result, output_size);
-        *((*locale) + output_size) = '\0';
-    } 
-    else if (*status == OLY_OKAY) 
-    {
-            *status = OLY_ERR_INIT;
-    }
-    return *status;
-}
 
 

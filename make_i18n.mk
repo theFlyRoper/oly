@@ -8,13 +8,13 @@ I18N_MODE								= common
 
 OLY_I18N_DAT						= $(OLY_I18N_NAME).dat
 I18N_DEPSDIR						= .i18ndeps
-MAIN_I18N_OUTPUT				= i18n/$(OLY_I18N_DAT)
-TEST_I18N_OUTPUT				= tests/data/$(MAIN_I18N_OUTPUT)
+MAIN_I18N_OUTPUT					= i18n/$(OLY_I18N_DAT)
+TEST_I18N_OUTPUT					= tests/data/$(MAIN_I18N_OUTPUT)
 INDEX_NAME							=	res_index
-INDEX_TXT								= $(addsuffix .txt,$(INDEX_NAME))
-INDEX_RES								= $(addsuffix .res,$(INDEX_NAME))
+INDEX_TXT							= $(addsuffix .txt,$(INDEX_NAME))
+INDEX_RES							= $(addsuffix .res,$(INDEX_NAME))
 ROOT_RES_NAME						=	root.res
-LIST_NAME								=	res_list.txt
+LIST_NAME							=	res_list.txt
 
 MAIN_OUTDIR							= $(abs_top_builddir)/i18n/
 TEST_OUTDIR							= $(abs_top_builddir)/tests/data/i18n/
@@ -47,9 +47,8 @@ TEST_I18N_CLEAN					= $(addprefix $(TEST_OUTDIR),$(TEST_I18N_RES)) \
 													$(TEST_I18N_BUILT)
 
 # pkgdata version.
-PKGDATAOPTS							=	--name $(OLY_I18N_NAME) --mode $(I18N_MODE) \
-													-e $(OLY_I18N_NAME) -v -d . --tempdir $(I18N_DEPSDIR) \
-													-s . $(LIST_NAME)
+PKGDATAOPTS		=	--name $(OLY_I18N_NAME) --mode $(I18N_MODE) \
+				-e $(OLY_I18N_NAME) -v -d . --tempdir $(I18N_DEPSDIR) -s . $(LIST_NAME)
 
 GENRBOPT								= --bundle-name $(OLY_I18N_NAME) -d .
 

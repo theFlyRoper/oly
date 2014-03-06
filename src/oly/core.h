@@ -41,12 +41,15 @@ typedef struct oly_t {
 } Oly;
 
 oly_status init_oly(Oly *oly, char *prog, char *datadir) ;
-oly_status   set_resource_dir(const char *dir, oly_status *status);
-char *oget_user_locale (void);
-oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
+Oly *new_oly(void);
+oly_status set_resource_dir(const char *dir, oly_status *status);
+oly_status set_oly_locale(Oly *oly, char *locale);
+oly_status set_oly_charset(Oly *oly, char *charset);
+oly_status set_oly_charset(Oly *oly, char *charset);
 oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 int   is_big_endian (void);
-oly_status init_all (char *locale);
+
+oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
 
 /* OFILE IO */
 extern OFILE *u_stderr;
