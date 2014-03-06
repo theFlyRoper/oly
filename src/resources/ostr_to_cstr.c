@@ -21,7 +21,7 @@
 
 #include "oly/core.h"
 #include "oly/state.h"
-#include "oly/messages.h"
+#include "oly/resources.h"
 /* for messages only. */
 char        *ostr_to_cstr(oly_status *status, const ochar *c)
 {

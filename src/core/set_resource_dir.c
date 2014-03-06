@@ -17,8 +17,7 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#include "oly/common.h"
-#include "oly/core.h"
+/* intended to be included in init_oly. */
 
 oly_status   set_resource_dir(const char *dir, oly_status *status)
 {

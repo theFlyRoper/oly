@@ -21,7 +21,7 @@
 
 #include <sys/stat.h>
 #include "oly/core.h"
-#include "oly/messages.h"
+#include "oly/resources.h"
 /* if *locale_str is null, fills in the oly_locale info with a default. */
 
 oly_status

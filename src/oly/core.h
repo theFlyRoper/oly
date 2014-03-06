@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include "oly/state.h"
-#include "oly/messages.h"
+#include "oly/resources.h"
 
 #ifndef SRC_OLY_CORE_H
 #define SRC_OLY_CORE_H 1
@@ -34,9 +34,9 @@ struct passwd;
 
 /* main oly structure */
 typedef struct oly_t {
-    char                     *locale;
-    char                     *charset;
-    UResourceBundle          *messages;
+    /* resource dir is set in initialization, this would mostly be for reference. */
+    char                     *resource_dir;
+    oly_resource             *data;
     oly_state                *state;
 } Oly;
 

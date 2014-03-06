@@ -34,6 +34,9 @@
 void init_res_disp_flag(res_disp_flag *flag)
 {
     flag->all = 1;
+    flag->help = 0;
+    flag->version = 0;
+    flag->badopt = 0;
     flag->tables = 0;
     flag->arrays = 0;
     flag->strings = 0;

@@ -1,4 +1,4 @@
-/* cstr_to_ostr.c - set the global constant program_name. License GPL2+ {{{
+/* set_oly_charset.c - set the default charset for the Oly complex data type. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,17 +18,11 @@
  * }}} */
 
 #include "oly/common.h"
-
 #include "oly/core.h"
-#include "oly/state.h"
-#include "oly/messages.h"
 
-/* for messages only. */
-ochar *cstr_to_ostr(oly_status *status, const char *c)
+oly_status set_oly_charset(Oly *oly, char *charset)
 {
-    *status = OLY_OKAY;
-    ochar *d;
-#ifdef HAVE_UNICODE_USTDIO_H
-    return (ochar *)u_uastrcpy((UChar *)d, c);
-#endif /* HAVE_UNICODE_USTDIO_H */
+    oly_status status = OLY_OKAY;
+    oly->charset = charset;
+    return status;
 }

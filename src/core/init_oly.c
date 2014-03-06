@@ -33,22 +33,25 @@
 
 const ochar *program_name;
 
-static void         close_oly(void);
-static void         init_io(const char *locale, const char *codepage);
-static int          open_devnull(int fd);
-static void         clean_io_open(void);
-static oly_status   cleanenv(void);
-static oly_status   get_default_charset (char *charset[], oly_status *status);
-static oly_status   get_default_locale (char *locale[], oly_status *status);
-static char *get_home (struct passwd *pwd);
-static char **
-token_str_to_array(char *s, char *delims, unsigned int *count_chars, 
-        unsigned int *count_tokens, oly_status *status) ;
+static void           close_oly(void);
+static void           init_io(const char *locale, const char *codepage);
+static int            open_devnull(int fd);
+static void           clean_io_open(void);
+static oly_status     cleanenv(void);
+static oly_status     get_default_charset (char *charset[], oly_status *status);
+static oly_status     get_default_locale (char *locale[], oly_status *status);
+static char          *get_home (struct passwd *pwd);
+static char         **token_str_to_array(char *s, char *delims,
+                        unsigned int *count_chars, unsigned int *count_tokens,
+                        oly_status *status) ;
+static oly_status     set_resource_dir(const char *dir, oly_status *status);
 
-/* static token functions. */
+/* token_str_to_array function */
 #include "core/token_str_to_array.c"
 /* get_default_locale function. */
 #include "core/get_default_locale.c"
+/* set_resource_dir function. */
+#include "core/set_resource_dir.c"
 
 oly_status
 init_oly(Oly *oly, char *prog, char *datadir) 
@@ -60,10 +63,9 @@ init_oly(Oly *oly, char *prog, char *datadir)
     char            *locale = (oly->locale), *charset = oly->charset; 
     UChar           *program_mover = NULL;
     int32_t          len = 0;
-    UResourceBundle *oly_init_resource = NULL;
+    oly_resource    *oly_init_resource = NULL;
     atexit (close_oly);
-    assert(program_name == NULL && prog != NULL);
-    printf("TOP OF init_oly\nlocale: %s, charset: %s\n", locale, charset);
+    assert(program_name == NULL && prog != NULL && datadir != NULL);
     clean_io_open();
     if ( cleanenv() != OLY_OKAY )
     {
@@ -120,9 +122,8 @@ init_oly(Oly *oly, char *prog, char *datadir)
 
     /* u_stderr, u_stdout, u_stdin */
     init_io(locale, charset);
-    oly->messages   = oly_init_resource;
-    oly->locale     = locale;
-    oly->charset    = charset;
+    oly->resource_dir   = datadir;
+    oly->data           = oly_init_resource;
     return status;
 }
 

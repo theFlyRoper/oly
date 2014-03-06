@@ -35,7 +35,7 @@ void flag_res_display(UResourceBundle *res, const res_disp_flag *flag, const int
     UResType type = flag_check(res, flag);
     switch (type) {
     case URES_ALIAS:
-        hold_ptr = ures_getUTF8String(res, &holder, &len, TRUE, &u_status);
+        hold_ptr = ures_getUTF8String(res, &holder, &len, FALSE, &u_status);
         if (U_FAILURE(u_status)) {
             fprintf(stderr, "Err in flag_res_display, URES_ALIAS: %s\n",
                     u_errorName(u_status));
@@ -62,7 +62,7 @@ void flag_res_display(UResourceBundle *res, const res_disp_flag *flag, const int
         printf("Size: %i\n", ures_getSize(res));
         break;
     case URES_STRING:
-        hold_ptr = ures_getUTF8String(res, &holder, &len, TRUE, &u_status);
+        hold_ptr = ures_getUTF8String(res, &holder, &len, FALSE, &u_status);
         if (U_FAILURE(u_status)) {
             fprintf(stderr, "Err in flag_res_display, URES_STRING: %s\n",
                     u_errorName(u_status));

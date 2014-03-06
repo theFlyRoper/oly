@@ -22,7 +22,7 @@
 
 #include "oly/core.h"
 #include "oly/state.h"
-#include "oly/messages.h"
+#include "oly/resources.h"
 
 oly_status 
 check_liberror(oly_state *s){

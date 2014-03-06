@@ -23,6 +23,9 @@ BEGIN_C_DECLS
 
 typedef struct res_disp_flag_t {
         unsigned int all;
+        unsigned int help;
+        unsigned int version;
+        unsigned int badopt;
         unsigned int tables;
         unsigned int arrays;
         unsigned int strings;

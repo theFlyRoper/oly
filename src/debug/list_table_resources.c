@@ -35,16 +35,13 @@ void list_table_resources(UResourceBundle *res,
         const int level)
 { 
     UErrorCode      u_status = U_ZERO_ERROR;
-    char           *item = NULL;
-    int32_t         len = 0;
     res_disp_flag   *inner_flag = flag;
-    UResType        next_type;
     UResourceBundle *subres = NULL;
     ures_resetIterator (res);
 
     if (flag == NULL)
     {
-        init_res_disp_flag(&inner_flag);
+        init_res_disp_flag(inner_flag);
     }
     while (ures_hasNext (res)) {
         subres = ures_getNextResource (res, subres, &u_status);

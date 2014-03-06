@@ -158,10 +158,10 @@ libcore_a_SOURCES				=	\
 								src/state/set_liberror.c \
 								src/state/set_state_message.c \
 								src/state/set_status.c \
-								src/messages/cstr_to_ostr.c \
-								src/messages/ostr_to_cstr.c \
+								src/resources/cstr_to_ostr.c \
+								src/resources/ostr_to_cstr.c \
+								src/resources/set_locale.c \
 								src/core/count_file_bytes.c \
-								src/core/set_oly_locale.c \
 								src/core/init_oly.c \
 								src/core/new_oly.c \
 								src/core/is_big_endian.c \
@@ -297,9 +297,9 @@ check-local: check-i18n $(check_PROGRAMS)
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
 	    -b '$(abs_top_builddir)/tests' -l '$(abs_top_srcdir)/tests/TESTS'
 
-i18n: i18n/oly_lang.dat
+i18n: i18n/$(OLY_I18N_NAME).dat
 	
-check-i18n:	tests/data/i18n/oly_lang.dat
+check-i18n:	tests/data/i18n/$(OLY_I18N_NAME).dat
 
 all-local: i18n check-i18n
 
@@ -308,7 +308,7 @@ all-local: i18n check-i18n
 ## maint and cleaning
 CLEANFILES 					= $(MAIN_I18N_CLEAN) \
 							$(TEST_I18N_CLEAN) \
-							$(i18n_DATA) tests/data/i18n/oly_lang.dat
+							$(i18n_DATA) tests/data/i18n/@OLY_RESOURCE@.dat
 
 DISTCLEANFILES 			= tests/atconfig 
 
