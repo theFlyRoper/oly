@@ -1,5 +1,5 @@
-/* oget_user_locale test License GPL2+ {{{
- * Copyright (C) 2014 Oly Project
+/* set_resource_dir.c -- set application i18n resource directory License GPL2+ {{{
+ * Copyright (C) 2012 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,17 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
-
-#include <stdio.h>
-#include <assert.h>
-
 #include "oly/common.h"
 #include "oly/core.h"
 
-int
-main( void ){
-  char          *locale;
-  u_setDataDirectory(TEST_PKGDATADIR);
-  
-  /* oget_user_locale should always return SOME value.
-   * in ICU, the default passed back when absolutely no 
-   * language value is available on a Unix system is en_US_POSIX,
-   * which is a good default.
-   */
-  assert((locale = oget_user_locale()) != NULL);
-  
-  printf("Locale: %s\n", locale);
-  return EXIT_SUCCESS;
+oly_status   set_resource_dir(const char *dir, oly_status *status)
+{
+    *status = OLY_OKAY;
+#ifdef HAVE_UNICODE_USTDIO_H
+    /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
+    * for the internal app data for ICU, which lives in a shared library. 
+    */
+    u_setDataDirectory(dir);
+#endif /* HAVE_UNICODE_USTDIO_H */
+    return *status;
 }
-
-

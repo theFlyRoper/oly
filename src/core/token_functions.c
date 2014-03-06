@@ -1,87 +1,40 @@
 /* modifies a 
  * will always return a (char **) where there is at least one string with 
- * an empty value. 
+ * an empty value. the two counters may be null but status, string and delims are required.
  */
 char **
-token_str_to_array(char *s, char *delims, int *count_chars, int *count_tokens,
-        oly_status *status) 
+token_str_to_array(char *s, char *delims, unsigned int *count_chars, 
+        unsigned int *count_tokens, oly_status *status) 
 {
-    int32_t    arr_ptr = 0, strsize = 0, token_flag = 0;
+    int32_t             num_chars = 0, num_tokens = 0;
     /* we need arr_size char pointers and arr_size (for the EOLs) + num_chars chars. */
-    char          **result, *c = s, *r;
-
-    assert(count_chars != NULL && count_tokens != NULL && s != NULL && delims != NULL);
-    *count_chars = 0;
-    *count_tokens = 1;
-        
-    for (c; (*c != '\0'); c++) 
-    {
-        printf("firstloop!\n");
-        r = strchr(delims, *c);
-        if ( r == NULL )
-        {
-            token_flag = 0;
-            *count_chars++;
-        } else if ((r != NULL) && (token_flag == 0) && ((r+strspn(r, delims))!='\0'))
-        {
-            token_flag = 1;
-            *count_tokens++;
-        }
+    char          **result, *c = xstrdup(s), *r, *rest;
+    
+    assert(s != NULL && delims != NULL && status != NULL);
+    num_chars = 0;
+    r = strtok_r(c, delims, &rest);
+    while((r) = strtok_r(NULL, delims, &rest)) {
+        (num_tokens)++;
     }
-    result = (char **)xmalloc(((int)count_tokens*(sizeof(char *))));
-    result[arr_ptr] = s;
-    *status = OLY_OKAY;
-    token_flag = 0;
-    for (c = s; (*c != '\0'); c++) 
+    result = (char **)xmalloc((num_tokens)*sizeof(char *));
+    XFREE(c);
+    num_tokens = 0;
+    c = xstrdup(s);
+    r = strtok_r(c, delims, &rest);
+    result[(num_tokens)++] = r;
+    (num_chars) += strlen(r);
+    while(r = strtok_r(NULL, delims, &rest))
     {
-        printf("nextloop!\n");
-        r = strchr(delims, *c);
-        if ( r == NULL )
-        {
-            token_flag = 0;
-        } else if ((r != NULL) && (token_flag == 0) && ((r+strspn(r, delims))!='\0'))
-        {
-            result[++arr_ptr] = (r+strspn(r,delims));
-            *r = '\0';
-            token_flag = 1;
-        }
+        result[(num_tokens)++] = r;
+        (num_chars)+=strlen(r);
+    }
+    
+    if (count_tokens != NULL) {
+        *count_tokens = num_tokens;
+    }
+    if (count_chars != NULL) {
+        *count_chars = num_chars;
     }
     return result;
-}
-
-int32_t
-count_tokens (char *s, char *delims)
-{
-  int32_t  current_count = 0;
-
-  /* loop over s, adding 1 to current_count for each iteration. */
-  if ( delims != NULL ) {
-    while ( s != NULL && *(s += strspn(s, delims)) != '\0' ) {
-      current_count++;
-      s = strpbrk(s, delims);
-    }
-  }
-  return current_count;
-}
-
-int32_t
-count_nondelim_chars (char *s, char *delims)
-{
-    int32_t  current_count = 0;
-    char    *next;
-
-    /* delims should never be null. */
-    assert( delims != NULL ) ;
-    /* loop over s, adding the difference between the next and the primary */
-    while ( s != NULL && *(s += strspn(s, delims)) != '\0' ) {
-        next = strpbrk(s, delims);
-        if ( next != NULL ) {
-        current_count += ( next - s );
-        } else {
-        current_count += strlen(s);
-        }
-        s = next;
-    }
-    return current_count;
 }
 

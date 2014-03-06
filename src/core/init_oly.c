@@ -41,10 +41,9 @@ static oly_status   cleanenv(void);
 static oly_status   get_default_charset (char *charset[], oly_status *status);
 static oly_status   get_default_locale (char *locale[], oly_status *status);
 static char *get_home (struct passwd *pwd);
-static int32_t count_tokens (char *s, char *delims);
-static int32_t count_nondelim_chars (char *s, char *delims);
-static char **token_str_to_array(char *s, char *delims, int *count_chars, 
-        int *count_tokens, oly_status *status) ;
+static char **
+token_str_to_array(char *s, char *delims, unsigned int *count_chars, 
+        unsigned int *count_tokens, oly_status *status) ;
 
 /* static token functions. */
 #include "core/token_functions.c"
@@ -376,7 +375,6 @@ oly_status get_default_locale (char *locale[],
             break;
         }
         curr  = token_str_to_array(language_val, sep, &characters, &tokens, status);
-        tokens   = count_tokens (language_val, sep);
         output_size = uloc_acceptLanguage(result, OLY_SMALL_BUFFER, &acceptable, 
             (const char **)curr, tokens, available, &u_status) ;
         language_val = NULL;

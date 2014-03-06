@@ -185,7 +185,6 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 
 					## tests/oly/core/c-init_oly \
 check_PROGRAMS 	= tests/runtests \
-					tests/oly/core/c-count_tokens \
 					tests/oly/core/c-token_str_to_array \
 					tests/oly/core/c-count_file_bytes \
 					tests/oly/state/c-init_state \
