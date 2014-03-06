@@ -46,7 +46,7 @@ token_str_to_array(char *s, char *delims, unsigned int *count_chars,
         unsigned int *count_tokens, oly_status *status) ;
 
 /* static token functions. */
-#include "core/token_functions.c"
+#include "core/token_str_to_array.c"
 
 
 oly_status

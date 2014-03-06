@@ -64,18 +64,12 @@ dist_check_DATA				= tests/TESTS \
 								tests/oly/i18n/c-missing_lang.output \
 								tests/oly/i18n/c-missing_resource.output \
 								tests/oly/i18n/c-root.output \
-								tests/oly/core/c-count_nondelim_chars.output \
-								tests/oly/core/c-count_tokens.output \
 								tests/oly/core/c-token_str_to_array.output \
-								tests/oly/core/sh-oget_home.output \
-								tests/oly/core/sh-oget_user_locale.output \
 								tests/oly/core/sh-get_ochar_args.output 
 
 
 dist_check_SCRIPTS			= tests/tap/libtap.sh \
 							tests/oly/core.t tests/oly/i18n.t \
-							tests/oly/core/sh-oget_home \
-							tests/oly/core/sh-oget_user_locale \
 							tests/oly/core/sh-get_ochar_args
 													
 ## TODO: this should use nobase_ instead 

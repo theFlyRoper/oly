@@ -32,7 +32,7 @@
 static char **
 token_str_to_array(char *s, char *delims, unsigned int *count_chars, 
         unsigned int *count_tokens, oly_status *status) ;
-#include "src/core/token_functions.c"
+#include "src/core/token_str_to_array.c"
 
 /* MAIN */
 int
