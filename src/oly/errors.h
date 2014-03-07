@@ -31,6 +31,11 @@
  * appropriate. OLY_OKAY is equal to zero.
  */
 typedef enum oly_status_t {
+    OLY_MINIMUM_ERR=-7, /* update this if adding more warnings.
+                           ICU's message array starts from zero, so use the 
+                           absolute value of this number to figure out which 
+                           error the call refers to.
+                           */
     OLY_WARN_REINIT=-7,
     OLY_WARN_ERROR_NOT_FOUND=-6,
     OLY_EOF=-5,

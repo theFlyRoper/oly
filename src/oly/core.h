@@ -19,7 +19,6 @@
 
 #include "oly/common.h"
 #include "oly/state.h"
-#include "oly/resources.h"
 
 #ifndef SRC_OLY_CORE_H
 #define SRC_OLY_CORE_H 1
@@ -31,15 +30,10 @@
 BEGIN_C_DECLS
 
 struct passwd;
-
-#ifndef OLY_TOP_RESOURCE
-#define OLY_TOP_RESOURCE "primary"
-#endif /* OLY_TOP_RESOURCE */
 /* main oly structure */
 typedef struct oly_t {
     /* resource dir is set in initialization, this would mostly be for reference. */
     char                     *resource_dir;
-    oly_resource             *data;
     oly_state                *state;
 } Oly;
 

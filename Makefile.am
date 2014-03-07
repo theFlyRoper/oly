@@ -154,16 +154,14 @@ libcore_a_SOURCES				=	\
 								src/state/close_state.c \
 								src/state/get_state_message.c \
 								src/state/get_status.c \
-								src/state/init_state.c \
+								src/state/new_state.c \
+								src/state/open_state_resource.c \
 								src/state/print_state_message.c \
 								src/state/set_liberror.c \
 								src/state/set_state_message.c \
 								src/state/set_status.c \
-								src/resources/cstr_to_ostr.c \
-								src/resources/ostr_to_cstr.c \
-								src/resources/new_resource.c \
-								src/resources/open_resource.c \
-								src/resources/close_resource.c \
+								src/state/cstr_to_ostr.c \
+								src/state/ostr_to_cstr.c \
 								src/core/count_file_bytes.c \
 								src/core/init_oly.c \
 								src/core/new_oly.c \

@@ -1,4 +1,4 @@
-/* close_resource.c - Close a resource object License GPL2+ {{{
+/* ostr_to_cstr.c - Convert from ostr to host charset. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,32 +18,15 @@
  * }}} */
 
 #include "oly/common.h"
+
 #include "oly/core.h"
-#include "oly/resources.h"
-
-void
-close_resource(oly_resource *res)
+#include "oly/state.h"
+/* for messages only. */
+char        *ostr_to_cstr(oly_status *status, const ochar *c)
 {
-    assert( res != NULL );
-    if (res->resource != NULL) 
-    {
+    *status = OLY_OKAY;
+    char   *d;
 #ifdef HAVE_UNICODE_USTDIO_H
-        ures_close((UResourceBundle *)(res->resource));
+    return u_austrcpy(d, (UChar *)c);
 #endif /* HAVE_UNICODE_USTDIO_H */
-    }
-    if (res->name != NULL) 
-    {
-        XFREE(res->name);
-    }
-    if (res->locale != NULL) 
-    {
-        XFREE(res->locale);
-    }
-    if (res->charset != NULL) 
-    {
-        XFREE(res->charset);
-    }
-    XFREE(res);
-
-    return OLY_OKAY; 
 }
