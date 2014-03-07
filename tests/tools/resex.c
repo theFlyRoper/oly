@@ -33,13 +33,16 @@ static void close_main(void);
 int
 main( int argc, char **argv ){
     char            *locale = NULL, *locdir=(char*)PKGDATADIR,
-                    c, *find_me = NULL, *filename = OLY_RESOURCE, 
+                    c, *find_me = NULL, *filename = OLY_RESOURCE,
                     *progval = xstrdup(argv[0]);
+    ochar           pbuf[BUFSIZ], *pbuf_ptr;
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
     Oly             *oly=(Oly *)xmalloc(sizeof(Oly));
     atexit (close_main);
     init_res_disp_flag(&flag);
+
+    pbuf_ptr = pbuf;
 
     /* a = arrays, A = Aliases, b = binaries, d = search dir, e = everything,
      * f = find this, h = help, i = integers, l = locales, -L show only locale
@@ -129,13 +132,13 @@ main( int argc, char **argv ){
     }
     else if (flag.only_locale == 1)
     {
-        printf("selected locale: %s\n", oly->data->locale);
+        u_fprintf(u_stdout, "locale: %s\n", oly->state->locale);
         exit(EXIT_SUCCESS);
     }
 
     if (find_me == NULL) 
     {
-        list_table_resources(oly->data->resource, &flag, 0);
+        list_table_resources(get_resource(oly->state), &flag, 0);
     }
   
     if (U_FAILURE(u_status)) {

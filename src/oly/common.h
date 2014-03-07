@@ -222,7 +222,6 @@ extern size_t strspn    (const char *string, const char *reject);
 extern pid_t waitpid    (pid_t pid, int *pstatus, int options);
 #endif
 */
-
 END_C_DECLS
 
 #if WITH_DMALLOC

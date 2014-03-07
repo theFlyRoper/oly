@@ -1,4 +1,4 @@
-/* close_resource.c - Close a resource object License GPL2+ {{{
+/* close_state.c - Close a resource object License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,10 +19,9 @@
 
 #include "oly/common.h"
 #include "oly/core.h"
-#include "oly/resources.h"
 
 void
-close_resource(oly_resource *res)
+close_state(oly_state *res)
 {
     assert( res != NULL );
     if (res->resource != NULL) 
@@ -31,10 +30,6 @@ close_resource(oly_resource *res)
         ures_close((UResourceBundle *)(res->resource));
 #endif /* HAVE_UNICODE_USTDIO_H */
     }
-    if (res->name != NULL) 
-    {
-        XFREE(res->name);
-    }
     if (res->locale != NULL) 
     {
         XFREE(res->locale);
@@ -42,6 +37,10 @@ close_resource(oly_resource *res)
     if (res->charset != NULL) 
     {
         XFREE(res->charset);
+    }
+    if (res->message != NULL) 
+    {
+        XFREE(res->message);
     }
     XFREE(res);
 

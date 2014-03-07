@@ -62,15 +62,18 @@ typedef struct oly_state_t
     char            *locale;
     char            *charset;
     resource_data   *resource;
+    resource_data   *errors;
 } oly_state;
 
 extern oly_state *new_state(const char *locale, const char *charset);
 extern oly_status open_state_resource( oly_state *res,
         char *res_dir);
-extern oly_status close_state( oly_state *s );
-oly_status set_status( oly_state *state, const oly_status status );
-oly_status get_status( oly_state *state );
-oly_status check_liberror       (oly_state *state);
+extern void close_state(oly_state *res);
+extern oly_status set_status( oly_state *state, const oly_status status );
+extern oly_status get_status( oly_state *state );
+extern oly_status check_liberror(oly_state *state);
+extern resource_data *get_resource( oly_state *state );
+extern ochar *get_state_metadata( oly_state *state );
 
 /* these are not thread safe. All work with the BUFSIZ buffer in message. */
 oly_status set_state_message    ( oly_state *state, const ochar *message, ... );

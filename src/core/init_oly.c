@@ -23,7 +23,7 @@
 #include <assert.h>
 #include <sys/types.h>
 #include <limits.h>
-#include <sys/state.h>
+#include <sys/resource.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <paths.h>
@@ -44,14 +44,14 @@ static char          *get_home (struct passwd *pwd);
 static char         **token_str_to_array(char *s, char *delims,
                         unsigned int *count_chars, unsigned int *count_tokens,
                         oly_status *status) ;
-static oly_status     set_state_dir(const char *dir, oly_status *status);
+static oly_status     set_resource_dir(const char *dir, oly_status *status);
 
 /* token_str_to_array function */
 #include "core/token_str_to_array.c"
 /* get_default_locale function. */
 #include "core/get_default_locale.c"
-/* set_state_dir function. */
-#include "core/set_state_dir.c"
+/* set_resource_dir function. */
+#include "core/set_resource_dir.c"
 
 oly_status
 init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
@@ -93,7 +93,7 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
     u_uastrncpy(program_mover, basename(prog), len);
 #endif /* HAVE_UNICODE_USTDIO_H */
     program_name = (const ochar *)program_mover;
-    if (set_state_dir(datadir, &status) != OLY_OKAY)
+    if (set_resource_dir(datadir, &status) != OLY_OKAY)
     {
         printf("Could not set state dir, error: %i\n", status);
         exit(EXIT_FAILURE);

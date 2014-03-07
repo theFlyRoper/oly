@@ -47,7 +47,7 @@ main( int argc, char **argv )
 #ifdef OLYDEV
     init_res_disp_flag(&flag);
     list_package_locales(OLY_RESOURCE);
-    list_table_resources(oly->data->resource, &flag, 0);
+    list_table_resources(get_resource(oly->state), &flag, 0);
 #endif /* OLYDEV */
   
     if (status != OLY_OKAY) {
