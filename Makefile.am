@@ -167,7 +167,6 @@ libcore_a_SOURCES				=	\
 								src/core/init_oly.c \
 								src/core/new_oly.c \
 								src/core/is_big_endian.c \
-								src/core/defaults.c \
 								src/core/xstrdup.c \
 								src/core/xmalloc.c \
 								src/core/xstrerror.c 

@@ -37,7 +37,7 @@ typedef struct oly_resource_t
  * http://userguide.icu-project.org/icudata#TOC-How-Data-Loading-Works
  */
 extern oly_resource *new_resource(const char *name, const char *locale, const char *charset);
-extern oly_status    open_resource(oly_resource *res, oly_status *status);
+extern oly_status   open_resource(oly_resource *res, char *res_dir, oly_status *status);
 extern void close_resource(oly_resource *res);
 extern ochar       *cstr_to_ostr(oly_status *status, const char *c);
 extern char        *ostr_to_cstr(oly_status *status, const ochar *c);

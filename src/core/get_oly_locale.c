@@ -1,4 +1,4 @@
-/* set_oly_charset.c - set the default charset for the Oly complex data type. License GPL2+ {{{
+/* default_locale_and_charset.c - set defaults for oly main.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,9 +20,12 @@
 #include "oly/common.h"
 #include "oly/core.h"
 
-oly_status set_oly_charset(Oly *oly, char *charset)
+char *get_oly_charset(Oly *oly)
 {
-    oly_status status = OLY_OKAY;
-    oly->charset = charset;
-    return status;
+    return oly->default_charset; 
+}
+
+char *get_oly_locale(Oly *oly)
+{
+    return oly->default_locale; 
 }
