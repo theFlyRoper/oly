@@ -38,15 +38,15 @@ main( int argc, char **argv ){
     int32_t              len        = 0;
     ochar               *liner;
     Oly                 *oly=new_oly();
-    char                *locale     = "root";
+    char                *locale     = "root", *locdir=(char*)TEST_PKGDATADIR;
     char                *program_name      = argv[0];
     int                  i=1;
     UErrorCode           u_status   = U_ZERO_ERROR; 
-    if (init_oly(oly, progval, locdir, NULL, locale) != OLY_OKAY) {
+    if (init_oly(oly, argv[0], locdir, NULL, locale) != OLY_OKAY) {
         perror("Initialization failed\n");
     };
     
-    liner = ures_getStringByKey(oly->messages, "OlyUsage", &len, &u_status );
+    liner = ures_getStringByKey(oly->data->resource, "OlyUsage", &len, &u_status );
     u_file_write(liner, len, u_stdout);
     
     if (U_SUCCESS(u_status)) {

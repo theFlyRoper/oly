@@ -36,16 +36,18 @@ main( int argc, char **argv )
 {
     Oly             *oly=new_oly();
     oly_status      status  = OLY_OKAY;
+    char            *locale = NULL;
 #ifdef OLYDEV
     res_disp_flag   flag;
 #endif /* OLYDEV */
-    if (init_oly(oly, progval, locdir, NULL, locale) != OLY_OKAY) {
+    if (init_oly(oly, argv[0], PKGDATADIR, NULL, locale) != OLY_OKAY) {
         perror("Initialization failed\n");
     };
+
 #ifdef OLYDEV
     init_res_disp_flag(&flag);
     list_package_locales(OLY_RESOURCE);
-    list_table_resources(oly->data, &flag, 0);
+    list_table_resources(oly->data->resource, &flag, 0);
 #endif /* OLYDEV */
   
     if (status != OLY_OKAY) {

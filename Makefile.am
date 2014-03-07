@@ -70,6 +70,7 @@ dist_check_DATA				= tests/TESTS \
 
 dist_check_SCRIPTS			= tests/tap/libtap.sh \
 							tests/oly/core.t tests/oly/i18n.t \
+				  			tests/oly/core/sh-resex \
 							tests/oly/core/sh-get_ochar_args
 													
 ## TODO: this should use nobase_ instead 
@@ -180,19 +181,17 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 									-DTESTDATADIR=\"$(abs_top_srcdir)/tests/\" \
 									-I$(top_srcdir)/src/ 
 
-					## tests/oly/core/c-init_oly \
 check_PROGRAMS 	= tests/runtests \
-					tests/oly/core/c-token_str_to_array \
-					tests/oly/core/c-count_file_bytes \
-					tests/oly/state/c-init_state \
+				  tests/oly/state/c-init_state \
 					tests/oly/hash/c-get_hashbits \
 					tests/oly/hash/c-get_str_hashlen \
 					tests/oly/hash/c-char_to_size \
 					tests/oly/hash/c-hash_char_to_hash_size \
 					tests/oly/hash/c-read_charhash_from_hex \
 					tests/oly/hash/c-read_sizehash_from_hex \
-					tests/oly/i18n/c-root \
 					tests/oly/i18n/c-uastrcpy 
+
+## 					tests/oly/core/c-init_oly \
 ##					tests/oly/i18n/c-alias \
 ##					tests/oly/i18n/c-cstr_to_ostr \
 ##					tests/oly/i18n/c-ja \

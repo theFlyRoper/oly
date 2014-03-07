@@ -1,4 +1,4 @@
-/* default_locale_and_charset.c - set defaults for oly main.  License GPL2+ {{{
+/* set_oly_resource_file.c - set the name of the resource file in Oly. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,12 +20,9 @@
 #include "oly/common.h"
 #include "oly/core.h"
 
-char *get_oly_charset(Oly *oly)
+oly_status set_oly_resource_file(Oly *oly, char *resource_file)
 {
-    return oly->default_charset; 
-}
-
-char *get_oly_locale(Oly *oly)
-{
-    return oly->default_locale; 
+    oly_status status = OLY_OKAY;
+    oly->resource_file = resource_file;
+    return status;
 }

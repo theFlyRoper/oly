@@ -43,8 +43,8 @@ typedef struct oly_t {
     oly_state                *state;
 } Oly;
 
-Oly *new_oly(void);
-extern oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
+Oly     *new_oly(void);
+extern   oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 
 extern int   is_big_endian (void);
 extern oly_status init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);

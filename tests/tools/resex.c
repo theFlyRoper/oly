@@ -32,7 +32,7 @@ static void close_main(void);
 /* MAIN */
 int
 main( int argc, char **argv ){
-    char            *locale = (char*)"root", *locdir=(char*)PKGDATADIR,
+    char            *locale = NULL, *locdir=(char*)PKGDATADIR,
                     c, *find_me = NULL, *filename = OLY_RESOURCE, 
                     *progval = xstrdup(argv[0]);
     res_disp_flag   flag;
@@ -42,10 +42,10 @@ main( int argc, char **argv ){
     init_res_disp_flag(&flag);
 
     /* a = arrays, A = Aliases, b = binaries, d = search dir, e = everything,
-     * f = find this, h = help, i = integers, l = locales,
+     * f = find this, h = help, i = integers, l = locales, -L show only locale
      * s = strings, t = tables, v = version, V = vectors
      */
-    while ((c = getopt(argc, argv, "aAbd:hil:n:stvV")) != -1) 
+    while ((c = getopt(argc, argv, "aAbd:hil:Ln:stvV")) != -1) 
     {
         switch (c) 
         {
@@ -56,6 +56,10 @@ main( int argc, char **argv ){
         case ('v'):
             flag.all = 0;
             flag.version = 1;
+            break;
+        case ('L'):
+            flag.all = 0;
+            flag.only_locale = 1;
             break;
         case ('l'):
             locale = optarg;
@@ -123,6 +127,11 @@ main( int argc, char **argv ){
         print_version();
         exit(EXIT_SUCCESS);
     }
+    else if (flag.only_locale == 1)
+    {
+        printf("selected locale: %s\n", oly->data->locale);
+        exit(EXIT_SUCCESS);
+    }
 
     if (find_me == NULL) 
     {
@@ -153,8 +162,9 @@ print_help(void)
     u_fprintf(u_stdout,"-a\t\tshow names of arrays.\n\t\t-A\t\tshow names of Aliases.\n\t\t");
     u_fprintf(u_stdout,"-b\t\tbinaries\n\t\t");
     u_fprintf(u_stdout,"-i\t\tshow integer values.\n\t\t");
-    u_fprintf(u_stdout,"-s\t\tshow string values\n\t\t-t\t\tshow table names.\n\t\t");
-    u_fprintf(u_stdout,"-V\t\tshow vectors\n\n\tHelp and version:\n\t\t-h\t\t");
+    u_fprintf(u_stdout,"-s\t\tshow string values\n\t\t-t\t\tshow table names\n\t\t");
+    u_fprintf(u_stdout,"-V\t\tshow vectors\n\n\t-L\t\tshow selected locale\n\n\t");
+    u_fprintf(u_stdout,"Help and version:\n\t\t-h\t\t");
     u_fprintf(u_stdout,"show help\n\t\t-v\t\tshow version.\n\n");
     exit(EXIT_SUCCESS);
 }
