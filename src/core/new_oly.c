@@ -24,9 +24,10 @@ Oly *
 new_oly(void)
 {
     Oly *oly = (Oly *)xmalloc(sizeof(Oly));
-    oly->locale = NULL;
-    oly->charset = NULL;
-    oly->messages = NULL;
+    oly->default_charset = NULL;
+    oly->default_locale = NULL;
+    oly->data = NULL;
     oly->state = NULL;
+    oly->resource_dir = NULL;
     return oly; 
 }

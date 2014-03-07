@@ -54,14 +54,13 @@ static oly_status     set_resource_dir(const char *dir, oly_status *status);
 #include "core/set_resource_dir.c"
 
 oly_status
-init_oly(Oly *oly, char *prog, char *datadir) 
+init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 {
     oly_status       status = OLY_OKAY;
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
-    char            *locale = (oly->locale), *charset = oly->charset; 
-    UChar           *program_mover = NULL;
+    ochar           *program_mover = NULL;
     int32_t          len = 0;
     oly_resource    *oly_init_resource = NULL;
     atexit (close_oly);
@@ -72,6 +71,7 @@ init_oly(Oly *oly, char *prog, char *datadir)
         abort();
     }
 
+#ifdef HAVE_UNICODE_USTDIO_H
     /* Initialize ICU */
     u_init(&u_status);
     if (U_FAILURE(u_status)) {
@@ -79,6 +79,7 @@ init_oly(Oly *oly, char *prog, char *datadir)
                 u_errorName(u_status));
         exit(EXIT_FAILURE);
     }
+#endif /* HAVE_UNICODE_USTDIO_H */
     /* program name get. */
     len = strlen(basename(prog));
     if (len == 0)
@@ -108,18 +109,13 @@ init_oly(Oly *oly, char *prog, char *datadir)
         exit(EXIT_FAILURE);
     }
 
-#ifdef HAVE_UNICODE_USTDIO_H
-    /* oly_init_resource = (resource_data *)ures_open(OLY_RESOURCE, locale, &u_status); */
-    printf("About to load resource. locale val: %s. charset val: %s\nresource name: %s\n", locale, charset, OLY_RESOURCE);
-    oly_init_resource = ures_open(OLY_RESOURCE, locale, &u_status);
-    if (U_FAILURE(u_status)) 
+    oly_init_resource = new_resource( OLY_TOP_RESOURCE, locale, charset);
+
+    if (open_resource(oly_init_resource, datadir, &status) != OLY_OKAY) 
     {
-        printf("Main resource file error. Status: %s. Exiting...\n",
-                u_errorName(u_status));
+        printf("Init: could not open resource.  %i\n", status);
         exit(EXIT_FAILURE);
     }
-#endif /* HAVE_UNICODE_USTDIO_H */
-
     /* u_stderr, u_stdout, u_stdin */
     init_io(locale, charset);
     oly->resource_dir   = datadir;

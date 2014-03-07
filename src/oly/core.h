@@ -32,6 +32,9 @@ BEGIN_C_DECLS
 
 struct passwd;
 
+#ifndef OLY_TOP_RESOURCE
+#define OLY_TOP_RESOURCE "primary"
+#endif /* OLY_TOP_RESOURCE */
 /* main oly structure */
 typedef struct oly_t {
     /* resource dir is set in initialization, this would mostly be for reference. */
@@ -40,16 +43,15 @@ typedef struct oly_t {
     oly_state                *state;
 } Oly;
 
-oly_status init_oly(Oly *oly, char *prog, char *datadir) ;
 Oly *new_oly(void);
-oly_status set_resource_dir(const char *dir, oly_status *status);
-oly_status set_oly_locale(Oly *oly, char *locale);
-oly_status set_oly_charset(Oly *oly, char *charset);
-oly_status set_oly_charset(Oly *oly, char *charset);
-oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
-int   is_big_endian (void);
+extern oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 
-oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
+extern int   is_big_endian (void);
+extern oly_status init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);
+
+extern char *get_oly_charset(Oly *oly);
+extern char *get_oly_locale(Oly *oly);
+extern oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
 
 /* OFILE IO */
 extern OFILE *u_stderr;

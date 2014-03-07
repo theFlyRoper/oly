@@ -42,8 +42,7 @@ main( int argc, char **argv ){
     char                *program_name      = argv[0];
     int                  i=1;
     UErrorCode           u_status   = U_ZERO_ERROR; 
-    set_oly_locale(oly, locale);
-    if (init_oly(oly, argv[0], TEST_PKGDATADIR) != OLY_OKAY) {
+    if (init_oly(oly, progval, locdir, NULL, locale) != OLY_OKAY) {
         perror("Initialization failed\n");
     };
     

@@ -1,4 +1,4 @@
-/* get_default_locale.c - Oly function to retrieve user locale. License GPL2+ {{{
+/* close_resource.c - Close a resource object License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,23 +16,34 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+
 #include "oly/common.h"
-
-#include <unicode/ustdio.h>
-#include <unicode/uloc.h>
-#include <unicode/ures.h>
-
-#include <sys/types.h>
-#include <unistd.h>
-#include <assert.h>
-
-#include "oly/state.h"
 #include "oly/core.h"
+#include "oly/resources.h"
 
-/* these used to be public but enh, why?  Not going to use them
- * elsewhere. 
- */
+void
+close_resource(oly_resource *res)
+{
+    assert( res != NULL );
+    if (res->resource != NULL) 
+    {
+#ifdef HAVE_UNICODE_USTDIO_H
+        ures_close((UResourceBundle *)(res->resource));
+#endif /* HAVE_UNICODE_USTDIO_H */
+    }
+    if (res->name != NULL) 
+    {
+        XFREE(res->name);
+    }
+    if (res->locale != NULL) 
+    {
+        XFREE(res->locale);
+    }
+    if (res->charset != NULL) 
+    {
+        XFREE(res->charset);
+    }
+    XFREE(res);
 
-static int32_t count_tokens (char *s, char *delims);
-static int32_t count_nondelim_chars (char *s, char *delims);
-static char **token_str_to_array(char *s, char *delims, oly_status *status); 
+    return OLY_OKAY; 
+}

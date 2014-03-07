@@ -160,12 +160,14 @@ libcore_a_SOURCES				=	\
 								src/state/set_status.c \
 								src/resources/cstr_to_ostr.c \
 								src/resources/ostr_to_cstr.c \
-								src/resources/set_locale.c \
+								src/resources/new_resource.c \
+								src/resources/open_resource.c \
+								src/resources/close_resource.c \
 								src/core/count_file_bytes.c \
 								src/core/init_oly.c \
 								src/core/new_oly.c \
 								src/core/is_big_endian.c \
-								src/core/set_resource_dir.c \
+								src/core/defaults.c \
 								src/core/xstrdup.c \
 								src/core/xmalloc.c \
 								src/core/xstrerror.c 
@@ -306,8 +308,8 @@ all-local: i18n check-i18n
 ## end of tests/check stuff.
 
 ## maint and cleaning
-CLEANFILES 					= $(MAIN_I18N_CLEAN) \
-							$(TEST_I18N_CLEAN) \
+CLEANFILES 					= $(MAIN_I18N_CLEAN) $(TEST_I18N_CLEAN) \
+							  $(MAIN_I18N_CLEAN) $(TEST_I18N_CLEAN) \
 							$(i18n_DATA) tests/data/i18n/@OLY_RESOURCE@.dat
 
 DISTCLEANFILES 			= tests/atconfig 

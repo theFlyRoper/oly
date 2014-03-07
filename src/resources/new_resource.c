@@ -1,4 +1,4 @@
-/* init_locale.c - initialize a locale object {{{
+/* new_resource.c - allocates an Oly object and returns a pointer to it.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,22 +18,16 @@
  * }}} */
 
 #include "oly/common.h"
-
-#include <sys/stat.h>
 #include "oly/core.h"
 #include "oly/resources.h"
-/* if *locale_str is null, fills in the oly_locale info with a default. */
 
-oly_status
-init_locale(const char *locale_str, oly_locale *locale, oly_status *status)
+oly_resource *
+new_resource(const char *name, const char *locale, const char *charset)
 {
-    oly_status status = OLY_OKAY;
-    if (locale_str == NULL) 
-    {
-        
-    }
-#ifdef HAVE_UNICODE_URES_H
-#endif /* HAVE_UNICODE_URES_H */
-    return status;
+    assert( name != NULL );
+    oly_resource *res = (oly_resource *)xmalloc(sizeof(oly_resource));
+    res->name = (char *)name;
+    res->locale = (char *)locale;
+    res->charset = (char *)charset;
+    return res; 
 }
-

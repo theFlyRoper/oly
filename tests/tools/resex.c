@@ -103,8 +103,7 @@ main( int argc, char **argv ){
             break;
         }
     }
-    set_oly_locale(oly, locale);
-    if (init_oly(oly, progval, locdir) != OLY_OKAY) {
+    if (init_oly(oly, progval, locdir, NULL, locale) != OLY_OKAY) {
         perror("Initialization failed\n");
     };
     if (flag.badopt == 1) 
@@ -125,11 +124,9 @@ main( int argc, char **argv ){
         exit(EXIT_SUCCESS);
     }
 
-    printf("locale: %s\n", oly->locale);
-
     if (find_me == NULL) 
     {
-        list_table_resources(oly->messages, &flag, 0);
+        list_table_resources(oly->data->resource, &flag, 0);
     }
   
     if (U_FAILURE(u_status)) {

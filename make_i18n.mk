@@ -41,10 +41,10 @@ TEST_I18N_RESLIST				= $(addprefix $(TEST_OUTDIR),$(LIST_NAME))
 
 MAIN_I18N_BUILT					= $(MAIN_I18N_INDEX_TXT) $(MAIN_I18N_INDEX) $(MAIN_I18N_RESLIST)
 TEST_I18N_BUILT					= $(TEST_I18N_INDEX_TXT) $(TEST_I18N_INDEX) $(TEST_I18N_RESLIST)
-MAIN_I18N_CLEAN					= $(addprefix $(MAIN_OUTDIR),$(MAIN_I18N_RES)) \
-													$(MAIN_I18N_BUILT)
+MAIN_I18N_CLEAN		= $(addprefix $(MAIN_OUTDIR),$(MAIN_I18N_RES)) \
+			$(MAIN_I18N_BUILT)
 TEST_I18N_CLEAN					= $(addprefix $(TEST_OUTDIR),$(TEST_I18N_RES)) \
-													$(TEST_I18N_BUILT)
+			$(TEST_I18N_BUILT) 
 
 # pkgdata version.
 PKGDATAOPTS		=	--name $(OLY_I18N_NAME) --mode $(I18N_MODE) \
@@ -116,24 +116,24 @@ tests/data/i18n/$(LIST_NAME): $(TEST_I18N_INDEX)
 	cd $(TEST_OUTDIR); \
 	ls *.res > $(LIST_NAME)
 
-i18n-links: $(MAIN_I18N_INDEX) $(MAIN_I18N_RES) i18n/$(LIST_NAME)
-	@echo "Creating file system links so ICU can find the resource files."
-	cd $(MAIN_OUTDIR); \
-	for item in `ls *.res`; do $(LN_S) $$item $(OLY_I18N_NAME)_$$item; done;
+## i18n-links: $(MAIN_I18N_INDEX) $(MAIN_ROOT) i18n/$(LIST_NAME)
+## 	@echo "Creating file system links so ICU can find the resource files."
+## 	cd $(MAIN_OUTDIR); \
+## 	for item in `ls *.res`; do $(LN_S) $$item $(OLY_I18N_NAME)_$$item; done;
+## 
+## test-i18n-links: $(TEST_I18N_INDEX) $(TEST_ROOT) i18n/$(LIST_NAME)
+## 	@echo "Creating file system links so ICU can find the resource files."
+## 	cd $(TEST_OUTDIR); \
+## 	for item in `ls *.res`; do $(LN_S) $$item $(OLY_I18N_NAME)_$$item; done;
 
-test-i18n-links: $(TEST_I18N_INDEX) $(MAIN_I18N_RES) test/data/i18n/$(LIST_NAME)
-	@echo "Creating file system links so ICU can find the resource files."
-	cd $(TEST_OUTDIR); \
-	for item in `ls *.res`; do $(LN_S) $$item $(OLY_I18N_NAME)_$$item; done;
-
-i18n/@OLY_RESOURCE@.dat: i18n/$(LIST_NAME) i18n-links
+i18n/@OLY_RESOURCE@.dat: i18n/$(LIST_NAME) 
 	@echo "Running pkgdata on primary resources."
 	cd $(MAIN_OUTDIR); \
 	$(MKDIR_P) $(I18N_DEPSDIR); \
 	$(PKGDATA) $(PKGDATAOPTS); \
 	$(RMV) -rf $(I18N_DEPSDIR); 
 
-tests/data/i18n/@OLY_RESOURCE@.dat: tests/data/i18n/$(LIST_NAME) test-i18n-links
+tests/data/i18n/@OLY_RESOURCE@.dat: tests/data/i18n/$(LIST_NAME) 
 	@echo "Running pkgdata on test resources."
 	cd $(TEST_OUTDIR); \
 	$(MKDIR_P) $(I18N_DEPSDIR); \

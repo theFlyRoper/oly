@@ -36,12 +36,11 @@ typedef struct oly_resource_t
  * hard to implement here.  Read about them here:
  * http://userguide.icu-project.org/icudata#TOC-How-Data-Loading-Works
  */
-oly_resource *new_resource(const char *name, const char *locale, const char *charset);
-oly_status    open_resource(oly_resource *fillin_resource, 
-                oly_status *status);
-oly_status   close_resource(oly_resource *resource, oly_status *status);
-ochar       *cstr_to_ostr(oly_status *status, const char *c);
-char        *ostr_to_cstr(oly_status *status, const ochar *c);
+extern oly_resource *new_resource(const char *name, const char *locale, const char *charset);
+extern oly_status    open_resource(oly_resource *res, oly_status *status);
+extern void close_resource(oly_resource *res);
+extern ochar       *cstr_to_ostr(oly_status *status, const char *c);
+extern char        *ostr_to_cstr(oly_status *status, const ochar *c);
 
 /* internal API */
 #ifdef SRC_OLY_MESSAGES_INTERNAL_H
