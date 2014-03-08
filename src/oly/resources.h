@@ -21,16 +21,8 @@
 #ifndef SRC_OLY_MESSAGES_H
 #define SRC_OLY_MESSAGES_H 1
 
-struct OlyResource;
-
-typedef struct OlyResource_t 
-{
-    char                    *name;
-    char                    *locale;
-    char                    *charset;
-    int                      array_offset;
-    resource_data           *resource;
-} OlyResource;
+struct OlyResource_struct;
+typedef struct OlyResource_struct OlyResource;
 /* TODO: 
  * ICU has some really cool data loading capabilities, which should not be
  * hard to implement here.  Read about them here:

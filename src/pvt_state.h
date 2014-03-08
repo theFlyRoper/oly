@@ -25,7 +25,7 @@ BEGIN_C_DECLS
 struct OlyState_struct
 {
     OlyStatus     status;          /* status for instance of OlyState */
-    liberror_num   lib_status;      /* library status for external errors. */
+    LibErrorNum   lib_status;      /* library status for external errors. */
     OChar         *message;         /* OChar holding the message */
 };
 

@@ -32,15 +32,12 @@ BEGIN_C_DECLS
 
 struct passwd;
 
-#ifndef OLY_TOP_RESOURCE
-#define OLY_TOP_RESOURCE "primary"
-#endif /* OLY_TOP_RESOURCE */
 /* main oly structure */
-struct oly_struct; 
+struct  oly_struct; 
 typedef struct oly_struct Oly;
 
-size_t memory_left_now(void);
-size_t getMemorySize( );
+size_t   memory_left_now(void);
+size_t   getMemorySize( );
 Oly     *new_oly(void);
 extern   OlyStatus count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 
