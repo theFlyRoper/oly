@@ -37,7 +37,7 @@
 int
 main( int argc, char **argv ){
     int32_t         len       = 0;
-    ochar           *liner;
+    OChar           *liner;
     char            *locale   = "el_CY";
     char *program_name      = argv[0];
     oly_resource  *OlyResources;

@@ -28,11 +28,11 @@
 int
 main( int argc, char **argv ){
     int32_t         len       = 0;
-    ochar           *liner;
+    OChar           *liner;
     char            *locale   = "en_US_POSIX";
     int             i=1;
     UErrorCode      u_status  = U_ZERO_ERROR; 
-    ochar           *program_name = (ochar *)argv[0];
+    OChar           *program_name = (OChar *)argv[0];
     Oly             *oly;
     init_oly(oly);
     

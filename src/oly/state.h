@@ -56,17 +56,17 @@ oly_status get_status( oly_state *state );
 oly_status check_liberror       (oly_state *state);
 
 /* these are not thread safe. All work with the BUFSIZ buffer in message. */
-oly_status set_state_message    ( oly_state *state, const ochar *message, ... );
-oly_status append_state_message ( oly_state *state, const ochar *message, ... );
+oly_status set_state_message    ( oly_state *state, const OChar *message, ... );
+oly_status append_state_message ( oly_state *state, const OChar *message, ... );
 oly_status clear_state_message  ( oly_state *state );
 oly_status print_state_message  ( oly_state *state );
-oly_status get_state_message    ( oly_state *state, ochar *msg );
+oly_status get_state_message    ( oly_state *state, OChar *msg );
 oly_status clear_liberror(oly_state *s);
 oly_status set_liberror(oly_state *s, int32_t err_val);
 oly_status check_liberror(oly_state *s);
-extern void oly_warning      (const ochar *message);
-extern void oly_error        (const ochar *message);
-extern void oly_fatal        (const ochar *message);
+extern void oly_warning      (const OChar *message);
+extern void oly_error        (const OChar *message);
+extern void oly_fatal        (const OChar *message);
 
 END_C_DECLS
 

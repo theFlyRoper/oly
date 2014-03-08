@@ -21,7 +21,7 @@
 #include <assert.h>
 #include "oly/core.h"
 
-ochar *
+OChar *
 get_state_metadata( oly_state *state)
 {
 #ifdef HAVE_UNICODE_UMSG_H

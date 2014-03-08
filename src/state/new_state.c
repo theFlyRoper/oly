@@ -31,7 +31,7 @@ new_state( oly_resource *master )
     ures_resetIterator (master);
     assert( master != NULL );
     oly_state *state = (oly_state *)xmalloc(sizeof(oly_state));
-    state->output = (ochar *)xcalloc(BUFSIZ, sizeof(ochar));
+    state->output = (OChar *)xcalloc(BUFSIZ, sizeof(OChar));
     state->status = OLY_OKAY;
 #ifdef HAVE_UNICODE_URES_H
     state->messages = ures_getByKey((UResourceBundle *)get_resource_data(master), 

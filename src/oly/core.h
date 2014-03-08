@@ -49,13 +49,13 @@ extern oly_status init_oly(Oly *oly, char *prog, char *datadir, char *charset, c
 
 extern char *get_oly_charset(Oly *oly);
 extern char *get_oly_locale(Oly *oly);
-extern oly_status get_ochar_args(ochar ***result, char **source, int32_t argc);
+extern oly_status get_OChar_args(OChar ***result, char **source, int32_t argc);
 
 /* OFILE IO */
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;
-extern const ochar *program_name; 
+extern const OChar *program_name; 
 
 /* holds the cleaned environment for use with getenv() */
 extern char **environ; 

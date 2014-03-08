@@ -36,7 +36,7 @@
 int
 main( int argc, char **argv ){
     int32_t              len        = 0;
-    ochar               *liner;
+    OChar               *liner;
     Oly                 *oly=new_oly();
     char                *locale     = "root", *locdir=(char*)TEST_PKGDATADIR;
     char                *program_name      = argv[0];

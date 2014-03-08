@@ -65,13 +65,13 @@ dist_check_DATA				= tests/TESTS \
 								tests/oly/i18n/c-missing_resource.output \
 								tests/oly/i18n/c-root.output \
 								tests/oly/core/c-token_str_to_array.output \
-								tests/oly/core/sh-get_ochar_args.output 
+								tests/oly/core/sh-get_OChar_args.output 
 
 
 dist_check_SCRIPTS			= tests/tap/libtap.sh \
 							tests/oly/core.t tests/oly/i18n.t \
 				  			tests/oly/core/sh-resex \
-							tests/oly/core/sh-get_ochar_args
+							tests/oly/core/sh-get_OChar_args
 													
 ## TODO: this should use nobase_ instead 
 dist_noinst_HEADERS			=	src/oly/break_rules.h \
@@ -217,11 +217,11 @@ tests_oly_core_c_oget_home_SOURCES 	= tests/oly/core/c-oget_home.c
 tests_oly_core_c_oget_home_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oget_home_LDADD 		= tests/tap/libtap.a libcore.a \
 										  @ICUIO_LIBS@ @ICU_LIBS@
-tests_oly_core_c_get_ochar_args_SOURCES 	= tests/oly/core/c-get_ochar_args.c \
+tests_oly_core_c_get_OChar_args_SOURCES 	= tests/oly/core/c-get_OChar_args.c \
 											  src/core/xmalloc.c \
-											  src/core/get_ochar_args.c
-tests_oly_core_c_get_ochar_args_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_get_ochar_args_LDADD 		= tests/tap/libtap.a libcore.a \
+											  src/core/get_OChar_args.c
+tests_oly_core_c_get_OChar_args_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_get_OChar_args_LDADD 		= tests/tap/libtap.a libcore.a \
 											  @ICUIO_LIBS@ @ICU_LIBS@
 tests_oly_core_c_count_tokens_SOURCES 	= tests/oly/core/c-count_tokens.c \
 										  src/core/xmalloc.c

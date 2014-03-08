@@ -26,7 +26,7 @@
 
 oly_status 
 check_liberror(oly_state *s){
-    ochar *errtext = NULL;
+    OChar *errtext = NULL;
     oly_status status;
 #ifdef HAVE_UNICODE_USTDIO_H
     if (U_FAILURE(s->lib_status)) {

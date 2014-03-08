@@ -21,10 +21,10 @@
 #include <assert.h>
 #include "oly/core.h"
 
-ochar *
+OChar *
 get_error_message( oly_state *state, oly_status *err_status )
 {   
-    ochar *message = NULL;
+    OChar *message = NULL;
     int32_t len = 0;
 #ifdef HAVE_UNICODE_UMSG_H
     message = ures_getStringByIndex(errors, 

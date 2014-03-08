@@ -28,7 +28,7 @@ plan 8
 # Run the individual tests.
 ok_result c-token_str_to_array "$BUILD"  0
 ok_result sh-resex "$SOURCE"  0
-ok_result sh-get_ochar_args "$SOURCE"  0
+ok_result sh-get_OChar_args "$SOURCE"  0
 ok_result c-count_file_bytes "$BUILD"  0
 
 

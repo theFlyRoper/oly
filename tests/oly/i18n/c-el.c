@@ -36,11 +36,11 @@
 int
 main( int argc, char **argv ){
     int32_t         len       = 0;
-    ochar           *liner;
+    OChar           *liner;
     char            *locale           = "el";
     int             i=1;
     UErrorCode      u_status  = U_ZERO_ERROR; 
-    ochar           *program_name = (ochar *)argv[0];
+    OChar           *program_name = (OChar *)argv[0];
     oly_resource      *OlyResources ;
     if (U_FAILURE(u_status)) {
         printf("Could not open! status: %s\n", u_errorName(u_status));

@@ -27,7 +27,7 @@ struct oly_resource_struct
     char                    *locale;
     char                    *charset;
     int                      array_offset;
-    resource_data           *resource;
+    ResourceData            *resource;
 };
 END_C_DECLS
 #endif /* SRC_PVT_RESOURCES_H */

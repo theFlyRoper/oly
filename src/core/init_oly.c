@@ -31,7 +31,7 @@
 
 #include "oly/core.h"
 
-const ochar *program_name;
+const OChar *program_name;
 
 static void           close_oly(void);
 static void           init_io(const char *locale, const char *codepage);
@@ -60,7 +60,7 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
-    ochar           *program_mover = NULL;
+    OChar           *program_mover = NULL;
     int32_t          len = 0;
     oly_resource    *oly_init_resource = NULL;
     atexit (close_oly);
@@ -88,11 +88,11 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
                 prog, basename(prog));
         exit(EXIT_FAILURE);
     }
-    program_mover = (UChar *)xcalloc(strlen(basename(prog)), sizeof(ochar));
+    program_mover = (UChar *)xcalloc(strlen(basename(prog)), sizeof(OChar));
 #ifdef HAVE_UNICODE_USTDIO_H
     u_uastrncpy(program_mover, basename(prog), len);
 #endif /* HAVE_UNICODE_USTDIO_H */
-    program_name = (const ochar *)program_mover;
+    program_name = (const OChar *)program_mover;
     if (set_resource_dir(datadir, &status) != OLY_OKAY)
     {
         printf("Could not set resource dir, error: %i\n", status);

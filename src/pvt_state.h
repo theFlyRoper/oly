@@ -26,7 +26,7 @@ struct oly_state_struct
 {
     oly_status     status;          /* status for instance of oly_state */
     liberror_num   lib_status;      /* library status for external errors. */
-    ochar         *message;         /* ochar holding the message */
+    OChar         *message;         /* OChar holding the message */
 };
 
 oly_status reset_liberror(oly_state *s);

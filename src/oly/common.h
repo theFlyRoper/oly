@@ -30,14 +30,14 @@
 
 #ifdef HAVE_UNICODE_USTDIO_H
 #include <unicode/ustdio.h>
-typedef UChar ochar;
-typedef UErrorCode liberror_num;
+typedef UChar OChar;
+typedef UErrorCode LibErrorNum;
 #define OFILE UFILE
 #endif /* HAVE_UNICODE_USTDIO_H */
 
 #ifdef HAVE_UNICODE_URES_H
 #include <unicode/ures.h>
-typedef UResourceBundle resource_data;
+typedef UResourceBundle ResourceData;
 #endif /* HAVE_UNICODE_URES_H */
 
 #ifdef HAVE_UNICODE_USTRING_H
