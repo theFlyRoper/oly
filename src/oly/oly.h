@@ -1,4 +1,4 @@
-/* core.h - Basic functions, IO and other stuff. License GPL2+ {{{
+/* oly/oly.h - Basic functions, IO and other stuff. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,12 +17,12 @@
  * MA 02110-1301, USA.
  * }}} */
 
+#ifndef SRC_OLY_CORE_H
+#define SRC_OLY_CORE_H 1
+
 #include "oly/common.h"
 #include "oly/state.h"
 #include "oly/resources.h"
-
-#ifndef SRC_OLY_CORE_H
-#define SRC_OLY_CORE_H 1
 
 #ifndef OLY_SMALL_BUFFER
 #define OLY_SMALL_BUFFER 256

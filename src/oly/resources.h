@@ -1,4 +1,4 @@
-/* resources.h -- user message storage and delivery GPL2+ {{{
+/* oly/resources.h -- user message storage and delivery GPL2+ {{{
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -15,11 +15,12 @@
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
    MA 02110-1301, USA.
    }}} */
-#include "oly/common.h"
-#include "oly/errors.h"
 
 #ifndef SRC_OLY_MESSAGES_H
 #define SRC_OLY_MESSAGES_H 1
+
+#include "oly/common.h"
+#include "oly/errors.h"
 
 struct OlyResource_struct;
 typedef struct OlyResource_struct OlyResource;
@@ -29,14 +30,10 @@ typedef struct OlyResource_struct OlyResource;
  * http://userguide.icu-project.org/icudata#TOC-How-Data-Loading-Works
  */
 extern OlyResource *new_resource(const char *name, const char *locale, const char *charset);
-extern OlyStatus   open_resource(OlyResource *res, char *res_dir, OlyStatus *status);
-extern void close_resource(OlyResource *res);
-extern ochar       *cstr_to_ostr(OlyStatus *status, const char *c);
-extern char        *ostr_to_cstr(OlyStatus *status, const ochar *c);
+extern OlyStatus    open_resource(OlyResource *res, char *res_dir, OlyStatus *status);
+extern void         close_resource(OlyResource *res);
+extern OChar       *cstr_to_ostr(OChar *o, const char *c, OlyStatus *status);
+extern char        *ostr_to_cstr(char *c, const OChar *o, OlyStatus *status);
 
-/* internal API */
-#ifdef SRC_OLY_MESSAGES_INTERNAL_H
-
-#endif /* SRC_OLY_MESSAGES_INTERNAL_H */
 #endif /* SRC_OLY_MESSAGES_H */
 

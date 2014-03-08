@@ -23,12 +23,16 @@
 BEGIN_C_DECLS
 struct OlyResource_struct
 {
-    char                    *name;
-    char                    *locale;
-    char                    *charset;
+    ochar                   *locale;
+    ochar                   *charset;
     int                      array_offset;
     ResourceData            *resource;
 };
+
+ochar *get_name     (OlyResource *res, OlyStatus *status);
+ochar *get_locale   (OlyResource *res, OlyStatus *status);
+ochar *get_charset  (OlyResource *res, OlyStatus *status);
+
 END_C_DECLS
 #endif /* SRC_PVT_RESOURCES_H */
 

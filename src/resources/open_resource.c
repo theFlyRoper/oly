@@ -19,8 +19,7 @@
 
 #include "oly/common.h"
 #include <assert.h>
-#include "oly/oly.h"
-#include "oly/resources.h"
+#include "pvt_resources.h"
 
 OlyStatus 
 open_resource(OlyResource *res, char *res_dir, OlyStatus *status)

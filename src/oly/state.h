@@ -1,4 +1,4 @@
-/* state.h -- Success-failure tracking and dispatching GPL2+ {{{
+/* oly/state.h -- Success-failure tracking and dispatching GPL2+ {{{
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -16,10 +16,9 @@
    MA 02110-1301, USA.
    }}} */
 
-#include "oly/errors.h"
-
 #ifndef OLY_STATE_H
 #define OLY_STATE_H 1
+#include "oly/errors.h"
 
 BEGIN_C_DECLS
 
@@ -27,7 +26,7 @@ struct OlyState_struct;
 typedef struct OlyState_struct OlyState;
 
 /* right now behavior and urgency do not do anything but I would like it if they did. */
-typedef enum OlyState_behavior_t {
+typedef enum OlyStateBehavior_enum {
     DISCARD = 0,
     SUMMARIZE = 1,
     LOG_ERRORS = 2,
@@ -36,9 +35,9 @@ typedef enum OlyState_behavior_t {
     LOG_ALL = 5,
     DISPLAY_ALL = 6,
     VERBOSE = 6
-} OlyState_behavior;
+} OlyStateBehavior;
 
-typedef enum OlyState_urgency_t {
+typedef enum OlyStateUrgency_enum {
     NO_ACTION = 0,
     WARN_ONLY = 1,      /* only perform the state_behavior for this error/warning. */
     HANDLE = 2,         /* send to the handler function. */
@@ -46,7 +45,7 @@ typedef enum OlyState_urgency_t {
     STOP_THREAD = 4,
     STOP_PROCESS = 5,   /* kill the process/script associated with the error. */
     FATAL_ERROR = 6    /* kills the program. */
-} OlyState_urgency;
+} OlyStateUrgency;
 
 
 OlyStatus init_state( OlyState *s );
