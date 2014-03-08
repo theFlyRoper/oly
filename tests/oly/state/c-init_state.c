@@ -33,7 +33,7 @@ int
 main( int argc, char **argv )
 {
     oly_state state;
-    oly_status s;
+    OlyStatus s;
     atexit (close_main);
     
     plan(2);

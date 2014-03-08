@@ -26,7 +26,7 @@
 #include "oly/hash.h"
 
 /* only writes the hash itself.  Does not follow with anything else. */
-oly_status
+OlyStatus
 write_hex_from_charhash (FILE *f, const charhash c, oly_state state)
 {
   int       i=0;
@@ -39,7 +39,7 @@ write_hex_from_charhash (FILE *f, const charhash c, oly_state state)
   return OLY_OKAY;
 }
 
-oly_status
+OlyStatus
 print_hex_from_charhash (const charhash c, oly_state state)
 {
   return write_hex_from_charhash(stdout, c, state);

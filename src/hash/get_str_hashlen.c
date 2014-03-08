@@ -27,9 +27,9 @@
 #include "oly/state.h"
   
 
-oly_status 
+OlyStatus 
 get_str_hashlen(const unsigned char *c, data_length *result){
-  oly_status      status = OLY_OKAY;
+  OlyStatus      status = OLY_OKAY;
   *result = (data_length)(strlen(c)*CHAR_BIT);
   return status;
 }

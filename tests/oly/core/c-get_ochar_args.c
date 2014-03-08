@@ -22,7 +22,7 @@ main( int argc, char **argv ){
   char            *locale           = NULL;
   UErrorCode      u_status  = U_ZERO_ERROR; 
   OChar           **result, *curr;
-  oly_status      status;
+  OlyStatus      status;
 
   u_init(&u_status);
   init_io(locale, NULL);

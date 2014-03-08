@@ -25,7 +25,7 @@
 #include "oly/core.h"
 #include "oly/hash.h"
 
-oly_status 
+OlyStatus 
 read_sizehash_from_hex  (const char *s, sizehash c, oly_state state)
 {
   int   i = 0;

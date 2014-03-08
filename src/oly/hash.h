@@ -48,21 +48,21 @@ typedef HashReturn hash_return;
 typedef BitSequence bit_sequence;
 typedef DataLength data_length;
 
-oly_status get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
-oly_status get_str_hashlen(const unsigned char *c, data_length *result);
+OlyStatus get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
+OlyStatus get_str_hashlen(const unsigned char *c, data_length *result);
 
 /* print_<x> is a wrapper around write_<x> and can be found
  * in the write_<x> files. */
-oly_status print_hex_from_sizehash (const sizehash c, oly_state state);
-oly_status print_hex_from_charhash (const charhash c, oly_state state);
+OlyStatus print_hex_from_sizehash (const sizehash c, oly_state state);
+OlyStatus print_hex_from_charhash (const charhash c, oly_state state);
 
-oly_status write_hex_from_sizehash (FILE *f, const sizehash c, oly_state state);
-oly_status write_hex_from_charhash (FILE *f, const charhash c, oly_state state);
-oly_status read_sizehash_from_hex  (const char *s, sizehash c, oly_state state);
-oly_status read_charhash_from_hex  (const char *s, charhash c, oly_state state);
+OlyStatus write_hex_from_sizehash (FILE *f, const sizehash c, oly_state state);
+OlyStatus write_hex_from_charhash (FILE *f, const charhash c, oly_state state);
+OlyStatus read_sizehash_from_hex  (const char *s, sizehash c, oly_state state);
+OlyStatus read_charhash_from_hex  (const char *s, charhash c, oly_state state);
 
-oly_status char_to_size(const unsigned char *c, size_t *res);
-oly_status hash_char_to_hash_size(const unsigned char *c, size_t result[]);
+OlyStatus char_to_size(const unsigned char *c, size_t *res);
+OlyStatus hash_char_to_hash_size(const unsigned char *c, size_t result[]);
 
 #endif /* OLY_OLY_HASH_H */
 

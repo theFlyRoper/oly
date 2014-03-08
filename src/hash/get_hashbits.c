@@ -25,7 +25,7 @@
 
 #include "oly/hash.h"
 
-oly_status 
+OlyStatus 
 get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) 
 {
   if (Hash(OLY_HASH_BITS, data, len, hash) != SUCCESS) {

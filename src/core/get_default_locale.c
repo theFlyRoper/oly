@@ -19,8 +19,8 @@
 
 /* intended to be included in init_oly. */
 
-oly_status get_default_locale (char *locale[],
-                oly_status *status)
+OlyStatus get_default_locale (char *locale[],
+                OlyStatus *status)
 {
     /* sorta follows the GNU coding standards; looks at LANGUAGE 
      * (a colon-separated list of language codes) first, then uses

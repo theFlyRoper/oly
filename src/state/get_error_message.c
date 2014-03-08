@@ -22,7 +22,7 @@
 #include "oly/core.h"
 
 OChar *
-get_error_message( oly_state *state, oly_status *err_status )
+get_error_message( oly_state *state, OlyStatus *err_status )
 {   
     OChar *message = NULL;
     int32_t len = 0;

@@ -1,4 +1,4 @@
-/* errors.h -- typedef for oly_status enum License GPL2+ {{{
+/* errors.h -- typedef for OlyStatus enum License GPL2+ {{{
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation; either version 2, or (at your option)
@@ -18,7 +18,7 @@
 #ifndef OLY_ERRORS_H
 #define OLY_ERRORS_H 1
 
-/* oly_status type:
+/* OlyStatus type:
  * Defines states for Oly.
  * 
  * Negative numbers and zero are non-error states
@@ -30,7 +30,7 @@
  * test for after calling most functions. Use others as
  * appropriate. OLY_OKAY is equal to zero.
  */
-typedef enum oly_status_t {
+typedef enum OlyStatus_t {
     /* OLY_STATUS_OFFSET helps map these internal codes into the external i18n resource
      * files.
      */
@@ -53,7 +53,7 @@ typedef enum oly_status_t {
     OLY_ERR_FILEIO=8,
     OLY_ERR_READHEX=9,
     OLY_ERR_BADARG=10
-} oly_status;
+} OlyStatus;
 
 #endif /* !OLY_ERRORS_H */
 

@@ -29,9 +29,9 @@
 /* because this counts through an array, this should work on any platform. 
  * we will find out later. For now I assume it will.  */
 
-oly_status char_to_size(const unsigned char *c, size_t *res){
+OlyStatus char_to_size(const unsigned char *c, size_t *res){
   size_t        i = 0, j = (sizeof(size_t)-1);
-  oly_status    status = OLY_OKAY;
+  OlyStatus    status = OLY_OKAY;
   *res = 0;
   for (i = 0; (i <= j); i++) {
     *res |= ((size_t)c[i] << (CHAR_BIT * (j - i)));
@@ -39,9 +39,9 @@ oly_status char_to_size(const unsigned char *c, size_t *res){
   return status;
 }
   
-oly_status hash_char_to_hash_size(const unsigned char *c, size_t result[]){
+OlyStatus hash_char_to_hash_size(const unsigned char *c, size_t result[]){
   size_t        i = 0, j = 0;
-  oly_status    status = OLY_OKAY;
+  OlyStatus    status = OLY_OKAY;
   
   for (i = 0, j = 0; (j < SIZE_HASH); i += sizeof(size_t), j++) {
     status = char_to_size(&c[i], &result[j]);

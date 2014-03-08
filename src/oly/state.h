@@ -49,21 +49,21 @@ typedef enum oly_state_urgency_t {
 } oly_state_urgency;
 
 
-oly_status init_state( oly_state *s );
-oly_status close_state( oly_state *s );
-oly_status set_status( oly_state *state, const oly_status status );
-oly_status get_status( oly_state *state );
-oly_status check_liberror       (oly_state *state);
+OlyStatus init_state( oly_state *s );
+OlyStatus close_state( oly_state *s );
+OlyStatus set_status( oly_state *state, const OlyStatus status );
+OlyStatus get_status( oly_state *state );
+OlyStatus check_liberror       (oly_state *state);
 
 /* these are not thread safe. All work with the BUFSIZ buffer in message. */
-oly_status set_state_message    ( oly_state *state, const OChar *message, ... );
-oly_status append_state_message ( oly_state *state, const OChar *message, ... );
-oly_status clear_state_message  ( oly_state *state );
-oly_status print_state_message  ( oly_state *state );
-oly_status get_state_message    ( oly_state *state, OChar *msg );
-oly_status clear_liberror(oly_state *s);
-oly_status set_liberror(oly_state *s, int32_t err_val);
-oly_status check_liberror(oly_state *s);
+OlyStatus set_state_message    ( oly_state *state, const OChar *message, ... );
+OlyStatus append_state_message ( oly_state *state, const OChar *message, ... );
+OlyStatus clear_state_message  ( oly_state *state );
+OlyStatus print_state_message  ( oly_state *state );
+OlyStatus get_state_message    ( oly_state *state, OChar *msg );
+OlyStatus clear_liberror(oly_state *s);
+OlyStatus set_liberror(oly_state *s, int32_t err_val);
+OlyStatus check_liberror(oly_state *s);
 extern void oly_warning      (const OChar *message);
 extern void oly_error        (const OChar *message);
 extern void oly_fatal        (const OChar *message);

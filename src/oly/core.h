@@ -42,14 +42,14 @@ typedef struct oly_struct Oly;
 size_t memory_left_now(void);
 size_t getMemorySize( );
 Oly     *new_oly(void);
-extern   oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
+extern   OlyStatus count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 
 extern int   is_big_endian (void);
-extern oly_status init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);
+extern OlyStatus init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);
 
 extern char *get_oly_charset(Oly *oly);
 extern char *get_oly_locale(Oly *oly);
-extern oly_status get_OChar_args(OChar ***result, char **source, int32_t argc);
+extern OlyStatus get_OChar_args(OChar ***result, char **source, int32_t argc);
 
 /* OFILE IO */
 extern OFILE *u_stderr;

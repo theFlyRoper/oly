@@ -100,11 +100,11 @@ Error handling
 ~~~~~~~~~~~~~~
 Oly was designed using http://site.icu-project.org/[ICU], and Oly's state.handling uses ICU's localization systems.  So, when you check for errors, follow this process:
 
-. Define a local variable of type +oly_status_t+. 
+. Define a local variable of type +OlyStatus_t+. 
 .. A value less than zero indicates a warning state.
 .. +OLY_OKAY+ = 0.  Zero indicates everything is fine.
 .. A value greater than zero indicates an error and should either be handled or displayed.
-. Try to find an error that describes what problem you have found.  If you cannot find one, add a new +OLY_ERR_<whatever>+ to +src/oly/oly_status_t.h+.
+. Try to find an error that describes what problem you have found.  If you cannot find one, add a new +OLY_ERR_<whatever>+ to +src/oly/OlyStatus_t.h+.
 . These special error states indicate an external problem:
 .. +OLY_ERR_SYSTEM+: Check system error status and display any messages from it.
 .. +OLY_ERR_LIB+: Check Oly's primary build library error status and display any messages.  Currently, Oly builds against ICU only, so this displays ICU errors.

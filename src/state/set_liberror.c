@@ -23,7 +23,7 @@
 #include "oly/core.h"
 #include "oly/state.h"
 
-oly_status 
+OlyStatus 
 set_liberror(oly_state *s, int32_t err_val)
 {
 #ifdef HAVE_UNICODE_USTDIO_H

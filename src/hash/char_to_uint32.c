@@ -37,11 +37,11 @@ char_to_uint32(const charhash c)
   return res;
 };
 
-oly_status 
+OlyStatus 
 hash_char_to_hash_uint32(const unsigned char *c, uint32_t *result[])
 {
   uint32_t        i = 0;
-  oly_status      status = OLY_OKAY;
+  OlyStatus      status = OLY_OKAY;
   for (i = 0; (i < CHAR_HASH); i += sizeof(uint32_t)) {
     *result[i] = char_to_uint32((const unsigned char *)&c[i]);
   }

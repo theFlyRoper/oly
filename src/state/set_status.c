@@ -26,10 +26,10 @@
 #include "oly/core.h"
 #include "oly/state.h"
 
-oly_status
-set_status(oly_state *state, const oly_status status)
+OlyStatus
+set_status(oly_state *state, const OlyStatus status)
 {
-    state->status = (oly_status)status;
+    state->status = (OlyStatus)status;
     return OLY_OKAY;
 }
 

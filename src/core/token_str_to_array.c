@@ -21,7 +21,7 @@
  */
 char **
 token_str_to_array(char *s, char *delims, unsigned int *count_chars, 
-        unsigned int *count_tokens, oly_status *status) 
+        unsigned int *count_tokens, OlyStatus *status) 
 {
     int32_t             num_chars = 0, num_tokens = 0;
     /* we need arr_size char pointers and arr_size (for the EOLs) + num_chars chars. */

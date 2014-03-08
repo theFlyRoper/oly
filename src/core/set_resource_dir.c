@@ -19,7 +19,7 @@
 
 /* intended to be included in init_oly. */
 
-oly_status   set_resource_dir(const char *dir, oly_status *status)
+OlyStatus   set_resource_dir(const char *dir, OlyStatus *status)
 {
     *status = OLY_OKAY;
 #ifdef HAVE_UNICODE_USTDIO_H

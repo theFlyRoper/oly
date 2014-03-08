@@ -21,7 +21,7 @@
 #include "sys/types.h"
 #include "oly/core.h"
 
-oly_status
+OlyStatus
 count_file_bytes(FILE *file, size_t *file_size, Oly *oly)
 {
     fpos_t pos;

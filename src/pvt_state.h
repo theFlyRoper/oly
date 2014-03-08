@@ -24,12 +24,12 @@ BEGIN_C_DECLS
 
 struct oly_state_struct
 {
-    oly_status     status;          /* status for instance of oly_state */
+    OlyStatus     status;          /* status for instance of oly_state */
     liberror_num   lib_status;      /* library status for external errors. */
     OChar         *message;         /* OChar holding the message */
 };
 
-oly_status reset_liberror(oly_state *s);
+OlyStatus reset_liberror(oly_state *s);
 
 END_C_DECLS
 #endif /* SRC_PVT_STATE_H */

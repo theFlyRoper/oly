@@ -43,7 +43,7 @@ main (void){
     FILE         *test2file;
     size_t        test_data_dir_len = strlen(TESTDATADIR), result;
     data_length   hash_length ;
-    oly_status    ostatus = OLY_OKAY;
+    OlyStatus    ostatus = OLY_OKAY;
 
     assert((test_data_dir_len + strlen((char *)fileloc) + 1 ) < BUFSIZ);
     

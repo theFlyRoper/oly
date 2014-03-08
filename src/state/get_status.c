@@ -26,7 +26,7 @@
 #include "oly/core.h"
 #include "oly/state.h"
 
-oly_status
+OlyStatus
 get_status(oly_state *s){
   return s->status;
 }

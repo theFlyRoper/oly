@@ -37,14 +37,14 @@ static void           close_oly(void);
 static void           init_io(const char *locale, const char *codepage);
 static int            open_devnull(int fd);
 static void           clean_io_open(void);
-static oly_status     cleanenv(void);
-static oly_status     get_default_charset (char *charset[], oly_status *status);
-static oly_status     get_default_locale (char *locale[], oly_status *status);
+static OlyStatus     cleanenv(void);
+static OlyStatus     get_default_charset (char *charset[], OlyStatus *status);
+static OlyStatus     get_default_locale (char *locale[], OlyStatus *status);
 static char          *get_home (struct passwd *pwd);
 static char         **token_str_to_array(char *s, char *delims,
                         unsigned int *count_chars, unsigned int *count_tokens,
-                        oly_status *status) ;
-static oly_status     set_resource_dir(const char *dir, oly_status *status);
+                        OlyStatus *status) ;
+static OlyStatus     set_resource_dir(const char *dir, OlyStatus *status);
 
 /* token_str_to_array function */
 #include "core/token_str_to_array.c"
@@ -53,10 +53,10 @@ static oly_status     set_resource_dir(const char *dir, oly_status *status);
 /* set_resource_dir function. */
 #include "core/set_resource_dir.c"
 
-oly_status
+OlyStatus
 init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 {
-    oly_status       status = OLY_OKAY;
+    OlyStatus       status = OLY_OKAY;
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
@@ -164,7 +164,7 @@ spc_preserve_environ[  ] = {
 };
 
 
-oly_status
+OlyStatus
 cleanenv (void) {
     int         i,status=OLY_OKAY;
     char        **new_environ, *ptr;
@@ -325,7 +325,7 @@ void close_oly (void) {
     }
 }
 
-oly_status get_default_charset (char *charset[], oly_status *status)
+OlyStatus get_default_charset (char *charset[], OlyStatus *status)
 {
     int32_t         output_size = 0;
     UErrorCode      u_status  = U_ZERO_ERROR;

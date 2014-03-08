@@ -20,9 +20,9 @@
 #include "oly/common.h"
 #include "oly/core.h"
 
-oly_status set_oly_resource_file(Oly *oly, char *resource_file)
+OlyStatus set_oly_resource_file(Oly *oly, char *resource_file)
 {
-    oly_status status = OLY_OKAY;
+    OlyStatus status = OLY_OKAY;
     oly->resource_file = resource_file;
     return status;
 }

@@ -21,7 +21,7 @@
 #include <assert.h>
 #include "oly/core.h"
 
-oly_status 
+OlyStatus 
 open_state_resource( oly_state *res, resource_data *master)
 {
 #ifdef HAVE_UNICODE_URES_H

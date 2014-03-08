@@ -31,7 +31,7 @@
 
 static char **
 token_str_to_array(char *s, char *delims, unsigned int *count_chars, 
-        unsigned int *count_tokens, oly_status *status) ;
+        unsigned int *count_tokens, OlyStatus *status) ;
 #include "src/core/token_str_to_array.c"
 
 /* MAIN */
@@ -58,7 +58,7 @@ main( int argc, char **argv ){
                     *output6[] = { "one, no end." },
                     *output7[] = { "seven", "seven", "seven" },
                     *output8[] = { "ate", "nine" };
-    oly_status      status;
+    OlyStatus      status;
 
     
     plan(32);

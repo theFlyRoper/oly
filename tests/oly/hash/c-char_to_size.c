@@ -50,7 +50,7 @@ main (void){
               test3 = {{0xED0BEDFEADDEEDDE}};
   size_t      result1 = {0xFEED0BEDBAADBEEF}, result2 = {0x00BEADED00DEEDED}, 
                result3 = {0xDEEDDEADFEED0BED}, output_val = 0;
-  oly_status  status;
+  OlyStatus  status;
   diag("TODO: rearrange this to add a bigendian chunk.");
   plan(3);
   status = char_to_size(test1.cval,&output_val);

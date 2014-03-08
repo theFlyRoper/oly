@@ -26,9 +26,9 @@
 #include "oly/core.h"
 #include "oly/state.h"
 
-oly_status
+OlyStatus
 init_state(oly_state *s){
-  oly_status ostatus = OLY_OKAY;
+  OlyStatus ostatus = OLY_OKAY;
   oly_state *new = (oly_state *)xcalloc(1,sizeof(oly_state));
   *s = *new;
   return ostatus;

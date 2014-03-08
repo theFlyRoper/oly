@@ -24,10 +24,10 @@
 #include "oly/state.h"
 #include "oly/resources.h"
 
-oly_status 
+OlyStatus 
 check_liberror(oly_state *s){
     OChar *errtext = NULL;
-    oly_status status;
+    OlyStatus status;
 #ifdef HAVE_UNICODE_USTDIO_H
     if (U_FAILURE(s->lib_status)) {
         errtext = cstr_to_ostr( &status, (const char *)u_errorName(s->lib_status));
