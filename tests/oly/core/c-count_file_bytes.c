@@ -23,7 +23,7 @@
 
 #include <assert.h>
 #include <sys/stat.h>
-#include "oly/core.h"
+#include "oly/oly.h"
 #include "oly/oly_dev.h"
 #include "tests/tap/basic.h"
 

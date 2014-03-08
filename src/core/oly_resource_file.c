@@ -18,7 +18,7 @@
  * }}} */
 
 #include "oly/common.h"
-#include "oly/core.h"
+#include "oly/oly.h"
 
 OlyStatus set_OlyResource_file(Oly *oly, char *resource_file)
 {

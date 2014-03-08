@@ -23,7 +23,7 @@
 #include "oly/common.h"
 #include <limits.h>
 
-#include "oly/core.h"
+#include "oly/oly.h"
 #include "oly/hash.h"
 
 /* because this counts through an array, this should work on any platform. 

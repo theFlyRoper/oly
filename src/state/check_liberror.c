@@ -20,7 +20,7 @@
 #include "oly/common.h"
 #include <ctype.h>
 
-#include "oly/core.h"
+#include "oly/oly.h"
 #include "oly/state.h"
 #include "oly/resources.h"
 

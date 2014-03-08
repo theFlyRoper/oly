@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include "sys/types.h"
-#include "oly/core.h"
+#include "oly/oly.h"
 
 OlyStatus
 count_file_bytes(FILE *file, size_t *file_size, Oly *oly)

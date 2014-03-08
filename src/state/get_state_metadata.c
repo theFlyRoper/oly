@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include <assert.h>
-#include "oly/core.h"
+#include "oly/oly.h"
 
 OChar *
 get_state_metadata( OlyState *state)

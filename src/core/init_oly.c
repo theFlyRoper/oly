@@ -29,7 +29,7 @@
 #include <paths.h>
 #include <libgen.h>
 
-#include "oly/core.h"
+#include "oly/oly.h"
 
 const OChar *program_name;
 

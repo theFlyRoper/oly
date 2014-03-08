@@ -29,7 +29,7 @@
 #include <assert.h>
 
 #include "oly/common.h"
-#include "oly/core.h"
+#include "oly/oly.h"
 #include "oly/globals.h"
 
 /* MAIN */

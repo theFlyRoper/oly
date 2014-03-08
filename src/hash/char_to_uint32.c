@@ -23,7 +23,7 @@
 #include "oly/common.h"
 #include <limits.h>
 
-#include "oly/core.h"
+#include "oly/oly.h"
 #include "oly/hash.h"
 #include "oly/state.h"
 static uint32_t 

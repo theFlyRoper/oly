@@ -21,7 +21,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "oly/core.h"
+#include "oly/oly.h"
 #include "oly/globals.h"
 
 /* MAIN */

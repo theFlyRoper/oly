@@ -18,7 +18,7 @@
  * }}} */
 
 #include "oly/common.h"
-#include "oly/core.h"
+#include "oly/oly.h"
 
 Oly *
 new_oly(void)

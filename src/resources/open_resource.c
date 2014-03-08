@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include <assert.h>
-#include "oly/core.h"
+#include "oly/oly.h"
 #include "oly/resources.h"
 
 OlyStatus 

@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include <assert.h>
-#include "oly/core.h"
+#include "oly/oly.h"
 
 OlyStatus 
 open_state_resource( OlyState *res, resource_data *master)

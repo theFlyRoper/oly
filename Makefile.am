@@ -75,7 +75,7 @@ dist_check_SCRIPTS			= tests/tap/libtap.sh \
 													
 ## TODO: this should use nobase_ instead 
 dist_noinst_HEADERS			=	src/oly/break_rules.h \
-								src/oly/common.h src/oly/core.h \
+								src/oly/common.h src/oly/oly.h \
 								src/oly/data_source.h  \
 								src/oly/state.h \
 								src/oly/oly_dev.h \
