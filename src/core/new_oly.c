@@ -24,6 +24,7 @@ Oly *
 new_oly(void)
 {
     Oly *oly = (Oly *)xmalloc(sizeof(Oly));
+    oly->data = NULL;
     oly->state = NULL;
     oly->resource_dir = NULL;
     return oly; 

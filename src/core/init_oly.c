@@ -62,7 +62,7 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 #endif /* HAVE_UNICODE_USTDIO_H */
     ochar           *program_mover = NULL;
     int32_t          len = 0;
-    oly_state       *oly_init_state = NULL;
+    oly_resource    *oly_init_resource = NULL;
     atexit (close_oly);
     assert(program_name == NULL && prog != NULL && datadir != NULL);
     clean_io_open();
@@ -95,7 +95,7 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
     program_name = (const ochar *)program_mover;
     if (set_resource_dir(datadir, &status) != OLY_OKAY)
     {
-        printf("Could not set state dir, error: %i\n", status);
+        printf("Could not set resource dir, error: %i\n", status);
         exit(EXIT_FAILURE);
     }
     if (get_default_locale (&locale, &status) != OLY_OKAY) 
@@ -109,18 +109,17 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
         exit(EXIT_FAILURE);
     }
 
-    oly_init_state = new_state( locale, charset);
-    
-    oly->resource_dir  = datadir;
-    if (open_state_resource(oly_init_state, datadir) != OLY_OKAY) 
+    oly_init_resource = new_resource( OLY_TOP_RESOURCE, locale, charset);
+
+    if (open_resource(oly_init_resource, datadir, &status) != OLY_OKAY) 
     {
-        printf("Init: could not open state. Err: %i, resource_dir: %s\n", 
-                status, datadir);
+        printf("Init: could not open resource.  %i\n", status);
         exit(EXIT_FAILURE);
     }
     /* u_stderr, u_stdout, u_stdin */
     init_io(locale, charset);
-    oly->state      = oly_init_state;
+    oly->resource_dir   = datadir;
+    oly->data           = oly_init_resource;
     return status;
 }
 
