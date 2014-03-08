@@ -27,6 +27,10 @@ struct oly_struct {
     OlyResource             *data;
     OlyState                *state;
 };
+
+/* holds the cleaned environment for use with getenv() */
+extern char **environ; 
+
 END_C_DECLS
 #endif /* SRC_PVT_OLY_H */
 

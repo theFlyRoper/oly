@@ -54,9 +54,6 @@ extern OFILE *u_stdout;
 extern OFILE *u_stdin;
 extern const OChar *program_name; 
 
-/* holds the cleaned environment for use with getenv() */
-extern char **environ; 
-
 END_C_DECLS
 
 #endif /* SRC_OLY_CORE_H */
