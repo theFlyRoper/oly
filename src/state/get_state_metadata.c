@@ -22,7 +22,7 @@
 #include "oly/core.h"
 
 OChar *
-get_state_metadata( oly_state *state)
+get_state_metadata( OlyState *state)
 {
 #ifdef HAVE_UNICODE_UMSG_H
     u_uastrncpy(program_mover, basename(prog), len);

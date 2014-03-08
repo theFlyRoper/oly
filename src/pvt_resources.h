@@ -21,7 +21,7 @@
 #ifndef SRC_PVT_RESOURCES_H
 #define SRC_PVT_RESOURCES_H 1
 BEGIN_C_DECLS
-struct oly_resource_struct
+struct OlyResource_struct
 {
     char                    *name;
     char                    *locale;

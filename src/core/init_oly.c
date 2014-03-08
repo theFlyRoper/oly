@@ -62,7 +62,7 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 #endif /* HAVE_UNICODE_USTDIO_H */
     OChar           *program_mover = NULL;
     int32_t          len = 0;
-    oly_resource    *oly_init_resource = NULL;
+    OlyResource    *oly_init_resource = NULL;
     atexit (close_oly);
     assert(program_name == NULL && prog != NULL && datadir != NULL);
     clean_io_open();

@@ -22,14 +22,14 @@
 #define SRC_PVT_STATE_H 1
 BEGIN_C_DECLS
 
-struct oly_state_struct
+struct OlyState_struct
 {
-    OlyStatus     status;          /* status for instance of oly_state */
+    OlyStatus     status;          /* status for instance of OlyState */
     liberror_num   lib_status;      /* library status for external errors. */
     OChar         *message;         /* OChar holding the message */
 };
 
-OlyStatus reset_liberror(oly_state *s);
+OlyStatus reset_liberror(OlyState *s);
 
 END_C_DECLS
 #endif /* SRC_PVT_STATE_H */

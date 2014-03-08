@@ -205,9 +205,9 @@ tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests
 tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 								  tests/tap/float.c tests/tap/float.h \
 								  tests/tap/macros.h
-tests_oly_state_c_init_state_SOURCES 	= tests/oly/state/c-init_state.c 
-tests_oly_state_c_init_state_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_state_c_init_state_LDADD 		= tests/tap/libtap.a \
+tests_OlyState_c_init_state_SOURCES 	= tests/oly/state/c-init_state.c 
+tests_OlyState_c_init_state_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_OlyState_c_init_state_LDADD 		= tests/tap/libtap.a \
 										  libcore.a @ICUIO_LIBS@ @ICU_LIBS@
 tests_oly_core_c_count_file_bytes_SOURCES 	= tests/oly/core/c-count_file_bytes.c 
 tests_oly_core_c_count_file_bytes_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)

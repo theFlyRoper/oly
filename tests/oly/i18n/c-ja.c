@@ -42,7 +42,7 @@ main( int argc, char **argv ){
     OChar           *program_name = (OChar *)argv[0];
     int             i=1;
     UErrorCode      u_status  = U_ZERO_ERROR; 
-    oly_resource    *OlyResources ;
+    OlyResource    *OlyResources ;
 
     u_setDataDirectory(TEST_PKGDATADIR);
     if (U_FAILURE(u_status)) {

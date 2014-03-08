@@ -32,7 +32,7 @@ static void close_main(void);
 int
 main( int argc, char **argv )
 {
-    oly_state state;
+    OlyState state;
     OlyStatus s;
     atexit (close_main);
     

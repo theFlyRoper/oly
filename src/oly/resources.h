@@ -21,24 +21,24 @@
 #ifndef SRC_OLY_MESSAGES_H
 #define SRC_OLY_MESSAGES_H 1
 
-struct oly_resource;
+struct OlyResource;
 
-typedef struct oly_resource_t 
+typedef struct OlyResource_t 
 {
     char                    *name;
     char                    *locale;
     char                    *charset;
     int                      array_offset;
     resource_data           *resource;
-} oly_resource;
+} OlyResource;
 /* TODO: 
  * ICU has some really cool data loading capabilities, which should not be
  * hard to implement here.  Read about them here:
  * http://userguide.icu-project.org/icudata#TOC-How-Data-Loading-Works
  */
-extern oly_resource *new_resource(const char *name, const char *locale, const char *charset);
-extern oly_status   open_resource(oly_resource *res, char *res_dir, oly_status *status);
-extern void close_resource(oly_resource *res);
+extern OlyResource *new_resource(const char *name, const char *locale, const char *charset);
+extern oly_status   open_resource(OlyResource *res, char *res_dir, oly_status *status);
+extern void close_resource(OlyResource *res);
 extern ochar       *cstr_to_ostr(oly_status *status, const char *c);
 extern char        *ostr_to_cstr(oly_status *status, const ochar *c);
 

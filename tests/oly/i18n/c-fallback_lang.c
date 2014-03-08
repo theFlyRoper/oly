@@ -40,7 +40,7 @@ main( int argc, char **argv ){
     OChar           *liner;
     char            *locale   = "el_CY";
     char *program_name      = argv[0];
-    oly_resource  *OlyResources;
+    OlyResource  *OlyResources;
     /* el_CY = Cyprus Greek
     * The point of this test is to check ICU's fallback language functions.
     * checks for U_USING_FALLBACK_WARNING at the end and returns 0 if it is found.

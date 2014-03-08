@@ -22,11 +22,11 @@
 #include "oly/core.h"
 #include "oly/resources.h"
 
-oly_resource *
+OlyResource *
 new_resource(const char *name, const char *locale, const char *charset)
 {
     assert( name != NULL );
-    oly_resource *res = (oly_resource *)xmalloc(sizeof(oly_resource));
+    OlyResource *res = (OlyResource *)xmalloc(sizeof(OlyResource));
     res->name = (char *)name;
     res->locale = (char *)locale;
     res->charset = (char *)charset;

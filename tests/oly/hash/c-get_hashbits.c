@@ -44,7 +44,7 @@ main( int argc, char **argv ){
   char                *hash_me = argv[1];
   charhash            corned_beef;
   data_length         hash_length = 0;
-  oly_state           ostate;
+  OlyState           ostate;
   
   if (argc != 2) {
     printf("Please provide exactly 1 argument.  Exiting...\n");

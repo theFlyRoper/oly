@@ -22,15 +22,15 @@
 #include "oly/core.h"
 #include "oly/state.h"
 
-oly_state *
-new_state( oly_resource *master )
+OlyState *
+new_state( OlyResource *master )
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
 #endif /* HAVE_UNICODE_URES_H */
     ures_resetIterator (master);
     assert( master != NULL );
-    oly_state *state = (oly_state *)xmalloc(sizeof(oly_state));
+    OlyState *state = (OlyState *)xmalloc(sizeof(OlyState));
     state->output = (OChar *)xcalloc(BUFSIZ, sizeof(OChar));
     state->status = OLY_OKAY;
 #ifdef HAVE_UNICODE_URES_H

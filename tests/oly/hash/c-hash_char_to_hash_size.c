@@ -44,7 +44,7 @@ main( int argc, char **argv ){
   const unsigned char  *hash_me = (const unsigned char *)argv[1];
   sizehash              result;
   data_length           hash_length ;
-  oly_state             oly; 
+  OlyState             oly; 
   
   if (argc != 2) {
     printf("Takes 1 argument, to be hashed. exiting...");

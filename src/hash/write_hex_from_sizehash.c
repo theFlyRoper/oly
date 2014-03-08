@@ -26,7 +26,7 @@
 #include "oly/hash.h"
 
 OlyStatus 
-write_hex_from_sizehash (FILE *f, const sizehash c, oly_state state){
+write_hex_from_sizehash (FILE *f, const sizehash c, OlyState state){
   int       i=0;
   for (i = 0; (i < SIZE_HASH ); i++) {
 #if SIZEOF_SIZE_T == 8
@@ -42,7 +42,7 @@ write_hex_from_sizehash (FILE *f, const sizehash c, oly_state state){
 };
 
 OlyStatus
-print_hex_from_sizehash (const sizehash c, oly_state state)
+print_hex_from_sizehash (const sizehash c, OlyState state)
 {
   return write_hex_from_sizehash (stdout, c, state);
 }

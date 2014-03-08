@@ -41,7 +41,7 @@ main( int argc, char **argv ){
   char            *locale   = "QQQQETOPQIEJGF";
   int             i=1;
   UErrorCode      u_status  = U_ZERO_ERROR; 
-  oly_resource      *OlyResources;
+  OlyResource      *OlyResources;
   char *program_name      = argv[0];
 
   u_setDataDirectory(TEST_PKGDATADIR);

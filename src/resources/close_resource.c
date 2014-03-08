@@ -22,7 +22,7 @@
 #include "oly/resources.h"
 
 void
-close_resource(oly_resource *res)
+close_resource(OlyResource *res)
 {
     assert( res != NULL );
     if (res->resource != NULL) 

@@ -25,7 +25,7 @@
 #include "oly/resources.h"
 
 OlyStatus 
-check_liberror(oly_state *s){
+check_liberror(OlyState *s){
     OChar *errtext = NULL;
     OlyStatus status;
 #ifdef HAVE_UNICODE_USTDIO_H

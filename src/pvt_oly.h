@@ -24,8 +24,8 @@ BEGIN_C_DECLS
 struct oly_struct {
     /* resource dir is set in initialization, this would mostly be for reference. */
     char                     *resource_dir;
-    oly_resource             *data;
-    oly_state                *state;
+    OlyResource             *data;
+    OlyState                *state;
 };
 END_C_DECLS
 #endif /* SRC_PVT_OLY_H */

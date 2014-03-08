@@ -22,7 +22,7 @@
 #include "oly/core.h"
 
 resource_data *
-get_resource( oly_state *state)
+get_resource( OlyState *state)
 {
     return state->resource; 
 }

@@ -26,7 +26,7 @@
 #include "oly/hash.h"
 
 OlyStatus 
-read_sizehash_from_hex  (const char *s, sizehash c, oly_state state)
+read_sizehash_from_hex  (const char *s, sizehash c, OlyState state)
 {
   int   i = 0;
   if (strlen(s) < ((OLY_HASH_BITS/(CHAR_BIT/2))))

@@ -23,7 +23,7 @@
 #include "oly/resources.h"
 
 OlyStatus 
-open_resource(oly_resource *res, char *res_dir, OlyStatus *status)
+open_resource(OlyResource *res, char *res_dir, OlyStatus *status)
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode  u_status;

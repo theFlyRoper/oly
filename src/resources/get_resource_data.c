@@ -21,7 +21,7 @@
 #include "resources_internal.h"
 
 resource_data *
-get_resource_data(oly_resource *res)
+get_resource_data(OlyResource *res)
 { 
     return res->resource;
 }

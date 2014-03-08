@@ -22,7 +22,7 @@
 #include "oly/core.h"
 
 OlyStatus 
-open_state_resource( oly_state *res, resource_data *master)
+open_state_resource( OlyState *res, resource_data *master)
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode  u_status;

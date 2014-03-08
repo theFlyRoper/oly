@@ -41,7 +41,7 @@ main( int argc, char **argv ){
     int             i=1;
     UErrorCode      u_status  = U_ZERO_ERROR; 
     OChar           *program_name = (OChar *)argv[0];
-    oly_resource      *OlyResources ;
+    OlyResource      *OlyResources ;
     if (U_FAILURE(u_status)) {
         printf("Could not open! status: %s\n", u_errorName(u_status));
     }

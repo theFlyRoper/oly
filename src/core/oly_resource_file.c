@@ -1,4 +1,4 @@
-/* set_oly_resource_file.c - set the name of the resource file in Oly. License GPL2+ {{{
+/* set_OlyResource_file.c - set the name of the resource file in Oly. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #include "oly/common.h"
 #include "oly/core.h"
 
-OlyStatus set_oly_resource_file(Oly *oly, char *resource_file)
+OlyStatus set_OlyResource_file(Oly *oly, char *resource_file)
 {
     OlyStatus status = OLY_OKAY;
     oly->resource_file = resource_file;

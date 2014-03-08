@@ -1,4 +1,4 @@
-/* set_status.c - initialize an oly_state struct GPL2+ {{{
+/* set_status.c - initialize an OlyState struct GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 #include "oly/state.h"
 
 OlyStatus
-set_status(oly_state *state, const OlyStatus status)
+set_status(OlyState *state, const OlyStatus status)
 {
     state->status = (OlyStatus)status;
     return OLY_OKAY;

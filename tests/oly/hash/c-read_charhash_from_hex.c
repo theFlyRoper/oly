@@ -41,7 +41,7 @@ main( int argc, char **argv ){
   const unsigned char *read_me = (const unsigned char *)argv[2];
   data_length         hash_length ;
   int                 strcmp_val;
-  oly_state           oly; 
+  OlyState           oly; 
   
   if (argc != 3) 
   {

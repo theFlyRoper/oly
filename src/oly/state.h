@@ -23,11 +23,11 @@
 
 BEGIN_C_DECLS
 
-struct oly_state_struct;
-typedef struct oly_state_struct oly_state;
+struct OlyState_struct;
+typedef struct OlyState_struct OlyState;
 
 /* right now behavior and urgency do not do anything but I would like it if they did. */
-typedef enum oly_state_behavior_t {
+typedef enum OlyState_behavior_t {
     DISCARD = 0,
     SUMMARIZE = 1,
     LOG_ERRORS = 2,
@@ -36,9 +36,9 @@ typedef enum oly_state_behavior_t {
     LOG_ALL = 5,
     DISPLAY_ALL = 6,
     VERBOSE = 6
-} oly_state_behavior;
+} OlyState_behavior;
 
-typedef enum oly_state_urgency_t {
+typedef enum OlyState_urgency_t {
     NO_ACTION = 0,
     WARN_ONLY = 1,      /* only perform the state_behavior for this error/warning. */
     HANDLE = 2,         /* send to the handler function. */
@@ -46,24 +46,24 @@ typedef enum oly_state_urgency_t {
     STOP_THREAD = 4,
     STOP_PROCESS = 5,   /* kill the process/script associated with the error. */
     FATAL_ERROR = 6    /* kills the program. */
-} oly_state_urgency;
+} OlyState_urgency;
 
 
-OlyStatus init_state( oly_state *s );
-OlyStatus close_state( oly_state *s );
-OlyStatus set_status( oly_state *state, const OlyStatus status );
-OlyStatus get_status( oly_state *state );
-OlyStatus check_liberror       (oly_state *state);
+OlyStatus init_state( OlyState *s );
+OlyStatus close_state( OlyState *s );
+OlyStatus set_status( OlyState *state, const OlyStatus status );
+OlyStatus get_status( OlyState *state );
+OlyStatus check_liberror       (OlyState *state);
 
 /* these are not thread safe. All work with the BUFSIZ buffer in message. */
-OlyStatus set_state_message    ( oly_state *state, const OChar *message, ... );
-OlyStatus append_state_message ( oly_state *state, const OChar *message, ... );
-OlyStatus clear_state_message  ( oly_state *state );
-OlyStatus print_state_message  ( oly_state *state );
-OlyStatus get_state_message    ( oly_state *state, OChar *msg );
-OlyStatus clear_liberror(oly_state *s);
-OlyStatus set_liberror(oly_state *s, int32_t err_val);
-OlyStatus check_liberror(oly_state *s);
+OlyStatus set_state_message    ( OlyState *state, const OChar *message, ... );
+OlyStatus append_state_message ( OlyState *state, const OChar *message, ... );
+OlyStatus clear_state_message  ( OlyState *state );
+OlyStatus print_state_message  ( OlyState *state );
+OlyStatus get_state_message    ( OlyState *state, OChar *msg );
+OlyStatus clear_liberror(OlyState *s);
+OlyStatus set_liberror(OlyState *s, int32_t err_val);
+OlyStatus check_liberror(OlyState *s);
 extern void oly_warning      (const OChar *message);
 extern void oly_error        (const OChar *message);
 extern void oly_fatal        (const OChar *message);

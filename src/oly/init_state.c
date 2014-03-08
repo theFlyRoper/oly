@@ -1,4 +1,4 @@
-/* init_state.c - initialize an oly_state struct GPL2+ {{{
+/* init_state.c - initialize an OlyState struct GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,9 +27,9 @@
 #include "oly/state.h"
 
 OlyStatus
-init_state(oly_state *s){
+init_state(OlyState *s){
   OlyStatus ostatus = OLY_OKAY;
-  oly_state *new = (oly_state *)xcalloc(1,sizeof(oly_state));
+  OlyState *new = (OlyState *)xcalloc(1,sizeof(OlyState));
   *s = *new;
   return ostatus;
 }

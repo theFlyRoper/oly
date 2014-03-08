@@ -24,7 +24,7 @@
 #include "oly/state.h"
 
 OlyStatus 
-clear_liberror(oly_state *s)
+clear_liberror(OlyState *s)
 {
 #ifdef HAVE_UNICODE_USTDIO_H
     s->lib_status = U_ZERO_ERROR ;

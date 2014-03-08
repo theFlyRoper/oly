@@ -53,13 +53,13 @@ OlyStatus get_str_hashlen(const unsigned char *c, data_length *result);
 
 /* print_<x> is a wrapper around write_<x> and can be found
  * in the write_<x> files. */
-OlyStatus print_hex_from_sizehash (const sizehash c, oly_state state);
-OlyStatus print_hex_from_charhash (const charhash c, oly_state state);
+OlyStatus print_hex_from_sizehash (const sizehash c, OlyState state);
+OlyStatus print_hex_from_charhash (const charhash c, OlyState state);
 
-OlyStatus write_hex_from_sizehash (FILE *f, const sizehash c, oly_state state);
-OlyStatus write_hex_from_charhash (FILE *f, const charhash c, oly_state state);
-OlyStatus read_sizehash_from_hex  (const char *s, sizehash c, oly_state state);
-OlyStatus read_charhash_from_hex  (const char *s, charhash c, oly_state state);
+OlyStatus write_hex_from_sizehash (FILE *f, const sizehash c, OlyState state);
+OlyStatus write_hex_from_charhash (FILE *f, const charhash c, OlyState state);
+OlyStatus read_sizehash_from_hex  (const char *s, sizehash c, OlyState state);
+OlyStatus read_charhash_from_hex  (const char *s, charhash c, OlyState state);
 
 OlyStatus char_to_size(const unsigned char *c, size_t *res);
 OlyStatus hash_char_to_hash_size(const unsigned char *c, size_t result[]);
