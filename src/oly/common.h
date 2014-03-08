@@ -28,6 +28,26 @@
 #include <stdio.h>
 #include <sys/types.h>
 
+#if STDC_HEADERS
+#  include <stdlib.h>
+#  include <string.h>
+#  include <errno.h>
+#elif HAVE_STRINGS_H
+#  include <strings.h>
+#endif /*STDC_HEADERS*/
+
+#if HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
+
+#if HAVE_SYS_WAIT_H
+#  include <sys/wait.h>
+#endif
+
+/* might as well.  Assert is a valuable function. */
+#include <assert.h>
+#include <limits.h>
+
 #ifdef HAVE_UNICODE_USTDIO_H
 #include <unicode/ustdio.h>
 typedef UChar OChar;
@@ -57,21 +77,6 @@ typedef UConverter OlyConverter;
 #include <unicode/usprep.h>
 #endif /* HAVE_UNICODE_USPREP_H */
 
-#if STDC_HEADERS
-#  include <stdlib.h>
-#  include <string.h>
-#  include <errno.h>
-#elif HAVE_STRINGS_H
-#  include <strings.h>
-#endif /*STDC_HEADERS*/
-
-#if HAVE_UNISTD_H
-#  include <unistd.h>
-#endif
-
-#if HAVE_SYS_WAIT_H
-#  include <sys/wait.h>
-#endif
 #ifndef WIFEXITED
 #  define WIFEXITED(stat)       (((stat) & 0xff) == 0)
 #endif

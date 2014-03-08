@@ -23,13 +23,19 @@
 BEGIN_C_DECLS
 struct oly_struct {
     /* resource dir is set in initialization, this would mostly be for reference. */
-    char                     *resource_dir;
+    OChar                   *resource_dir;
     OlyResource             *data;
     OlyState                *state;
 };
 
 /* holds the cleaned environment for use with getenv() */
 extern char **environ; 
+
+extern OlyStatus      cleanenv(void);
+extern void           close_oly(void);
+extern OlyStatus      get_init_charset(char *charset[], OlyStatus *status);
+extern OlyStatus      get_init_locale(char *locale[], OlyStatus *status);
+extern void           init_io(const char *locale, const char *codepage);
 
 END_C_DECLS
 #endif /* SRC_PVT_OLY_H */

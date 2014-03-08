@@ -1,0 +1,118 @@
+/* init_io.c - cleans and returns the u_std* global streams. License GPL2+ {{{
+ * Copyright (C) 2014 Oly Project
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301, USA.
+ * }}} */
+
+#include "oly/common.h"
+
+#include <pwd.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <paths.h>
+#include <libgen.h>
+
+#include "oly/core.h"
+#include "pvt_core.h"
+
+/* open_devnull and clean_io_open
+ * are adapted from the Secure Programming 
+ * Cookbook, John Viega and Matt Messier.
+ * 2003, O'Reilly Press, 
+ * ISBN: 0-596-00394-3
+ */
+
+static int open_devnull(int fd);
+static void clean_io_open(void);
+
+void
+init_io(const char *locale, const char *codepage) 
+{
+    char    err_buffer[BUFSIZ];
+    int     errnum=0;
+
+    assert((u_stderr == NULL) && (u_stdin == NULL) && (u_stdout == NULL));
+    u_stderr=u_finit(stderr, locale,  codepage);
+    if(!u_stderr) {
+        if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+            printf("%s", err_buffer);
+        }
+        exit(1);
+    }
+    u_stdout = u_finit(stdout, locale, codepage);
+    if(!u_stdout) {
+        if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+            printf("%s", err_buffer);
+        }
+        exit(1);
+    }
+    u_stdin = u_finit(stdin, locale, codepage);
+    if(!u_stdin) {
+        if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
+            printf("%s", err_buffer);
+        }
+        exit(1);
+    }
+}
+
+void 
+clean_io_open(void) {
+  int           fd, fds;
+  struct rlimit lim;
+  struct stat   st;
+  int           status;
+  /* posix provides these macros, so why not use them? */
+  int         std_fileno[] = {
+                STDIN_FILENO, 
+                STDOUT_FILENO,
+                STDERR_FILENO };
+  /* make sure all open descriptors other than the standard ones are closed */
+  status = getrlimit(RLIMIT_NOFILE, &lim);
+  if (status != 0) {
+      abort();
+  }
+  if ((fds = (int)lim.rlim_max) == -1) {
+    fds = OPEN_MAX;
+  }
+  for (fd = 3; fd < fds; fd++) {
+    close(fd);
+  }
+  /* Verify std descriptors are open.  If no, attempt open with dev/null.
+   * if unsuccessful, abort.
+   */
+  for (fd = 0; fd < 3; fd++) {
+    if (fstat(std_fileno[fd], &st) == -1 && 
+        (errno != EBADF || !open_devnull(std_fileno[fd]))) {
+      abort();
+    }
+  }
+}
+
+int 
+open_devnull(int fd) {
+  FILE *f = 0;
+
+  if ( fd == STDIN_FILENO ) {
+    f = freopen(_PATH_DEVNULL, "rb", stdin);
+  } else if ( fd == STDOUT_FILENO ) {
+    f = freopen(_PATH_DEVNULL, "wb", stdout);
+  } else if ( fd == STDERR_FILENO ) {
+    f = freopen(_PATH_DEVNULL, "wb", stderr);
+  }
+  return ( f && fileno(f) == fd );
+}
+

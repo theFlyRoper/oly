@@ -1,4 +1,5 @@
-/* pvt_state.h -- internals for state GPL2+ {{{
+
+/* globals.h -- constants header. GPL2+ {{{
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -16,20 +17,18 @@
    MA 02110-1301, USA.
    }}} */
 
-#include "oly/state.h"
-/* internal API */
-#ifndef SRC_PVT_STATE_H
-#define SRC_PVT_STATE_H 1
-BEGIN_C_DECLS
+#include "oly/core.h"
+#include "pvt_core.h"
 
-struct OlyState_struct{
-    OlyStatus      status;          /* status for instance of OlyState */
-    LibErrorNum    lib_status;      /* library status for external errors. */
-    OChar         *message;         /* OChar holding the message */
-};
 
-OlyStatus reset_liberror(OlyState *s);
-
-END_C_DECLS
-#endif /* SRC_PVT_STATE_H */
+void close_oly (void) {
+    if (fclose (stdout) != EXIT_SUCCESS) {
+        perror ("oly: write error");
+        exit (EXIT_FAILURE);
+    }
+    if (fclose (stdin) != EXIT_SUCCESS) {
+        perror ("oly: read error on close");
+        exit (EXIT_FAILURE);
+    }
+}
 
