@@ -31,6 +31,10 @@
  * appropriate. OLY_OKAY is equal to zero.
  */
 typedef enum oly_status_t {
+    /* OLY_STATUS_OFFSET helps map these internal codes into the external i18n resource
+     * files.
+     */
+    OLY_STATUS_OFFSET=7,
     OLY_WARN_REINIT=-7,
     OLY_WARN_ERROR_NOT_FOUND=-6,
     OLY_EOF=-5,

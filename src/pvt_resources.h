@@ -1,4 +1,4 @@
-/* resources_internal.h -- user message storage and delivery GPL2+ {{{
+/* pvt_resources.h -- Internals for resources.  GPL2+ {{{
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -18,8 +18,9 @@
 
 #include "oly/resources.h"
 /* internal API */
-#ifndef SRC_RESOURCES_INTERNAL_H
-#define SRC_RESOURCES_INTERNAL_H 1
+#ifndef SRC_PVT_RESOURCES_H
+#define SRC_PVT_RESOURCES_H 1
+BEGIN_C_DECLS
 struct oly_resource_struct
 {
     char                    *name;
@@ -28,5 +29,6 @@ struct oly_resource_struct
     int                      array_offset;
     resource_data           *resource;
 };
-#endif /* SRC_RESOURCES_INTERNAL_H */
+END_C_DECLS
+#endif /* SRC_PVT_RESOURCES_H */
 

@@ -36,13 +36,11 @@ struct passwd;
 #define OLY_TOP_RESOURCE "primary"
 #endif /* OLY_TOP_RESOURCE */
 /* main oly structure */
-typedef struct oly_t {
-    /* resource dir is set in initialization, this would mostly be for reference. */
-    char                     *resource_dir;
-    oly_resource             *data;
-    oly_state                *state;
-} Oly;
+struct oly_struct; 
+typedef struct oly_struct Oly;
 
+size_t memory_left_now(void);
+size_t getMemorySize( );
 Oly     *new_oly(void);
 extern   oly_status count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 

@@ -51,12 +51,6 @@ typedef DataLength data_length;
 oly_status get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
 oly_status get_str_hashlen(const unsigned char *c, data_length *result);
 
-oly_status nchar_bitnot(const char *s,  char *not_s, size_t len);
-oly_status nchar_bitor (const char *s1, const char *s2, char *out, size_t len);
-oly_status nchar_bitand(const char *s1, const char *s2, char *out, size_t len);
-
-size_t memory_left_now(void);
-size_t getMemorySize( );
 /* print_<x> is a wrapper around write_<x> and can be found
  * in the write_<x> files. */
 oly_status print_hex_from_sizehash (const sizehash c, oly_state state);

@@ -1,4 +1,4 @@
-/* state.h -- Check current state and display formatted warnings, errors GPL2+ {{{
+/* state.h -- Success-failure tracking and dispatching GPL2+ {{{
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@
 #define OLY_STATE_H 1
 
 BEGIN_C_DECLS
-typedef struct oly_state_t *state_p;
-#ifdef HAVE_UNICODE_URES_H
-typedef UErrorCode liberror_num;
-#endif /* HAVE_UNICODE_URES_H */
+
+struct oly_state_struct;
+typedef struct oly_state_struct oly_state;
+
 /* right now behavior and urgency do not do anything but I would like it if they did. */
 typedef enum oly_state_behavior_t {
     DISCARD = 0,
@@ -48,12 +48,6 @@ typedef enum oly_state_urgency_t {
     FATAL_ERROR = 6    /* kills the program. */
 } oly_state_urgency;
 
-typedef struct oly_state_t 
-{
-    oly_status     status;            /* status for instance of oly_state */
-    liberror_num   lib_status;        /* library status for external errors. */
-    ochar         *result;              /* ochar holding the message */
-} oly_state;
 
 oly_status init_state( oly_state *s );
 oly_status close_state( oly_state *s );
@@ -73,10 +67,6 @@ oly_status check_liberror(oly_state *s);
 extern void oly_warning      (const ochar *message);
 extern void oly_error        (const ochar *message);
 extern void oly_fatal        (const ochar *message);
-
-#ifdef SRC_OLY_STATE_INTERNAL_H
-oly_status set_liberror_zero(oly_state *s);
-#endif /* SRC_OLY_STATE_INTERNAL_H */
 
 END_C_DECLS
 

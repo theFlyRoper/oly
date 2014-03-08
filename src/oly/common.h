@@ -31,6 +31,7 @@
 #ifdef HAVE_UNICODE_USTDIO_H
 #include <unicode/ustdio.h>
 typedef UChar ochar;
+typedef UErrorCode liberror_num;
 #define OFILE UFILE
 #endif /* HAVE_UNICODE_USTDIO_H */
 
