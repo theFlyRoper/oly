@@ -29,10 +29,10 @@ typedef struct OlyResource_struct OlyResource;
  * http://userguide.icu-project.org/icudata#TOC-How-Data-Loading-Works
  */
 extern OlyResource *new_resource(const char *name, const char *locale, const char *charset);
-extern oly_status   open_resource(OlyResource *res, char *res_dir, oly_status *status);
+extern OlyStatus   open_resource(OlyResource *res, char *res_dir, OlyStatus *status);
 extern void close_resource(OlyResource *res);
-extern ochar       *cstr_to_ostr(oly_status *status, const char *c);
-extern char        *ostr_to_cstr(oly_status *status, const ochar *c);
+extern ochar       *cstr_to_ostr(OlyStatus *status, const char *c);
+extern char        *ostr_to_cstr(OlyStatus *status, const ochar *c);
 
 /* internal API */
 #ifdef SRC_OLY_MESSAGES_INTERNAL_H

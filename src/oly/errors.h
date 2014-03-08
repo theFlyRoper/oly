@@ -30,7 +30,7 @@
  * test for after calling most functions. Use others as
  * appropriate. OLY_OKAY is equal to zero.
  */
-typedef enum OlyStatus_t {
+typedef enum OlyStatus_enum {
     /* OLY_STATUS_OFFSET helps map these internal codes into the external i18n resource
      * files.
      */
