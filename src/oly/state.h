@@ -48,32 +48,18 @@ typedef enum oly_state_urgency_t {
     FATAL_ERROR = 6    /* kills the program. */
 } oly_state_urgency;
 
-/* TODO: 
- * ICU has some really cool data loading capabilities, which should not be
- * hard to implement here.  Read about them here:
- * http://userguide.icu-project.org/icudata#TOC-How-Data-Loading-Works
- */
-
 typedef struct oly_state_t 
 {
-    oly_status       status;                /* status for instance of oly_state */
-    liberror_num     lib_status;            /* library status for external errors. */
-    ochar           *message;                /* ochar holding the message */
-    char            *locale;
-    char            *charset;
-    resource_data   *resource;
-    resource_data   *errors;
+    oly_status     status;            /* status for instance of oly_state */
+    liberror_num   lib_status;        /* library status for external errors. */
+    ochar         *result;              /* ochar holding the message */
 } oly_state;
 
-extern oly_state *new_state(const char *locale, const char *charset);
-extern oly_status open_state_resource( oly_state *res,
-        char *res_dir);
-extern void close_state(oly_state *res);
-extern oly_status set_status( oly_state *state, const oly_status status );
-extern oly_status get_status( oly_state *state );
-extern oly_status check_liberror(oly_state *state);
-extern resource_data *get_resource( oly_state *state );
-extern ochar *get_state_metadata( oly_state *state );
+oly_status init_state( oly_state *s );
+oly_status close_state( oly_state *s );
+oly_status set_status( oly_state *state, const oly_status status );
+oly_status get_status( oly_state *state );
+oly_status check_liberror       (oly_state *state);
 
 /* these are not thread safe. All work with the BUFSIZ buffer in message. */
 oly_status set_state_message    ( oly_state *state, const ochar *message, ... );
@@ -84,8 +70,9 @@ oly_status get_state_message    ( oly_state *state, ochar *msg );
 oly_status clear_liberror(oly_state *s);
 oly_status set_liberror(oly_state *s, int32_t err_val);
 oly_status check_liberror(oly_state *s);
-extern char *ostr_to_cstr(oly_status *status, const ochar *c);
-extern ochar *cstr_to_ostr(oly_status *status, const char *c);
+extern void oly_warning      (const ochar *message);
+extern void oly_error        (const ochar *message);
+extern void oly_fatal        (const ochar *message);
 
 #ifdef SRC_OLY_STATE_INTERNAL_H
 oly_status set_liberror_zero(oly_state *s);

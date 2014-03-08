@@ -49,7 +49,8 @@ After this research I have decided I will fish up the "LANGUAGE" environment var
 Names
 -----
 . No spaces in filenames.
-. Lower case only, except for macros.
+. functions and variables are lower case only.
+. typedefs are CamelCased, with a leading capital.
 . Words separated by underscores.
 . Prefix with "oly_" if risk of confusing with system function.
 . After prefix, lead with verb appropriate to action.
@@ -116,9 +117,7 @@ For designing structures, go read Eric S. Raymond's essay on http://www.catb.org
 
 Names
 ~~~~~
-Types should use lower case exclusively.
-
-If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "+io.h+", but rather "oly_io.h".
+Typedefs shall be CamelCased, with leading capitals.
 
 Error handling
 --------------

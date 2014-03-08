@@ -1,4 +1,4 @@
-/* check_liberror.c - check the UErrorCode and holler if it is suboptimal. License GPL2+ {{{
+/* get_error_message.c - get info about state.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,23 +18,22 @@
  * }}} */
 
 #include "oly/common.h"
-#include <ctype.h>
-
+#include <assert.h>
 #include "oly/core.h"
-#include "oly/state.h"
-#include "oly/resources.h"
 
-oly_status 
-check_liberror(oly_state *s){
-    ochar *errtext = NULL;
-    oly_status status;
-#ifdef HAVE_UNICODE_USTDIO_H
-    if (U_FAILURE(s->lib_status)) {
-        errtext = cstr_to_ostr( &status, (const char *)u_errorName(s->lib_status));
-        set_state_message( s, cstr_to_ostr(&status, "check_liberror: problem.\n"));
-        s->status = OLY_ERR_LIB;
+ochar *
+get_error_message( oly_state *state, oly_status *err_status )
+{   
+    ochar *message = NULL;
+    int32_t len = 0;
+#ifdef HAVE_UNICODE_UMSG_H
+    message = ures_getStringByIndex(errors, 
+            ((*err_status) + OLY_ERR_OFFSET), &len, &u_status);
+    if (U_FAILURE(u_status)) {
+        printf("Could not load error %i, offset %i, status: %s\n",
+                *err_status, OLY_ERR_OFFSET, u_errorName(u_status));
+        return NULL;
     }
-#endif /* HAVE_UNICODE_USTDIO_H */
-    return s->status;
+#endif /* HAVE_UNICODE_UMSG_H */
+    return message; 
 }
-

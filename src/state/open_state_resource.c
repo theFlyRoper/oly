@@ -1,4 +1,4 @@
-/* cstr_to_ostr.c - set the global constant program_name. License GPL2+ {{{
+/* open_state_resource.c - allocates an Oly object and returns a pointer to it.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,16 +18,25 @@
  * }}} */
 
 #include "oly/common.h"
-
+#include <assert.h>
 #include "oly/core.h"
-#include "oly/state.h"
 
-/* for messages only. */
-ochar *cstr_to_ostr(oly_status *status, const char *c)
+oly_status 
+open_state_resource( oly_state *res, resource_data *master)
 {
-    *status = OLY_OKAY;
-    ochar *d;
-#ifdef HAVE_UNICODE_USTDIO_H
-    return (ochar *)u_uastrcpy((UChar *)d, c);
-#endif /* HAVE_UNICODE_USTDIO_H */
+#ifdef HAVE_UNICODE_URES_H
+    UErrorCode  u_status;
+#endif /* HAVE_UNICODE_URES_H */
+    assert( res != NULL && res_dir != NULL );
+    res->status = OLY_OKAY;
+#ifdef HAVE_UNICODE_URES_H
+    res->resource = (resource_data *)ures_open(res_dir, res->locale, &u_status);
+    if (U_FAILURE(u_status))
+    {
+        printf("Resource file error. Status: %s.\n",
+                u_errorName(u_status));
+        res->status = OLY_ERR_LIB;
+    }
+#endif /* HAVE_UNICODE_URES_H */
+    return res->status; 
 }
