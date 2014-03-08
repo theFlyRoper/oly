@@ -16,7 +16,7 @@
    MA 02110-1301, USA.
    }}} */
 
-#include "oly/oly.h"
+#include "oly/core.h"
 /* internal API */
 #ifndef SRC_PVT_OLY_H
 #define SRC_PVT_OLY_H 1

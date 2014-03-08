@@ -22,7 +22,7 @@
 
 #include "oly/common.h"
 
-#include "oly/oly.h"
+#include "oly/core.h"
 #include "oly/hash.h"
 
 /* only writes the hash itself.  Does not follow with anything else. */

@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "oly/oly.h"
+#include "oly/core.h"
 #include "oly/state.h"
 #include "oly/globals.h"
 

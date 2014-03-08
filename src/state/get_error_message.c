@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include <assert.h>
-#include "oly/oly.h"
+#include "oly/core.h"
 
 OChar *
 get_error_message( OlyState *state, OlyStatus *err_status )

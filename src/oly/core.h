@@ -1,4 +1,4 @@
-/* oly/oly.h - Basic functions, IO and other stuff. License GPL2+ {{{
+/* oly/core.h - Basic functions, IO and other stuff. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify

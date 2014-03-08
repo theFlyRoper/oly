@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include <assert.h>
-#include "oly/oly.h"
+#include "oly/core.h"
 
 resource_data *
 get_resource( OlyState *state)

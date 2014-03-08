@@ -3,7 +3,7 @@
  */
 
 #include "oly/common.h"
-#include "oly/oly.h"
+#include "oly/core.h"
 
 #include "stdint.h"
 

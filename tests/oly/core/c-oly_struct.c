@@ -20,7 +20,7 @@
  * }}} */
 
 #include "oly/common.h"
-#include "oly/oly.h"
+#include "oly/core.h"
 #include "oly/oly_dev.h"
 
 static void close_main(void);

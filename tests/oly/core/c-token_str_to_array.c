@@ -27,7 +27,7 @@
 
 #include "oly/common.h"
 #include "oly/state.h"
-#include "oly/oly.h"
+#include "oly/core.h"
 
 static char **
 token_str_to_array(char *s, char *delims, unsigned int *count_chars, 

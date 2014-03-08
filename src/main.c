@@ -26,7 +26,7 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include "oly/oly.h"
+#include "oly/core.h"
 #include "oly/output.h"
 #include "oly/break_rules.h"
 #include "oly/globals.h"

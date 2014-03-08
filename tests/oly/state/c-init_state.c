@@ -23,7 +23,7 @@
 
 #include <assert.h>
 #include <sys/stat.h>
-#include "oly/oly.h"
+#include "oly/core.h"
 #include "tests/tap/basic.h"
 
 static void close_main(void);
