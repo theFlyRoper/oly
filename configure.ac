@@ -117,6 +117,9 @@ dnl ICUIO_LIBS and ICULAYOUT_LIBS
 
 OLY_CHECK_ICU([4.8],[],[])
 
+dnl time checks.
+AC_SEARCH_LIBS([clock_gettime],[rt posix4])
+
 AC_CHECK_LIB([yaml], [yaml_get_version])
 
 dnl checks for header files 
@@ -126,7 +129,7 @@ AC_HEADER_SYS_WAIT()
 
 dnl checks for ICU headers at the end; check as needed.
 dnl                  sqlite3.h \
-AC_CHECK_HEADERS([locale.h paths.h \
+AC_CHECK_HEADERS([locale.h paths.h sys/stat.h time.h \
                   unicode/ustdio.h unicode/umsg.h unicode/ures.h \
                   unicode/ubrk.h unicode/ucnv.h \
                   unicode/ustring.h unicode/usprep.h])
@@ -148,6 +151,7 @@ AC_CHECK_FUNCS([calloc \
                 setlocale])
 
 AC_REPLACE_FUNCS([basename \
+                  gettimeofday \
                   strsignal \
                   strtok_r \
                   waitpid])

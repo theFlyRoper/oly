@@ -1,4 +1,4 @@
-/* pvt_oly.h -- Internals for oly.  GPL2+ {{{
+/* pvt_core.h -- Internals for oly.  GPL2+ {{{
   
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by

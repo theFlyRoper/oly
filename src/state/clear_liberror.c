@@ -22,6 +22,7 @@
 
 #include "oly/core.h"
 #include "oly/state.h"
+#include "pvt_state.h"
 
 OlyStatus 
 clear_liberror(OlyState *s)

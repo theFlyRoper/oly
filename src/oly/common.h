@@ -44,6 +44,8 @@
 #  include <sys/wait.h>
 #endif
 
+#include <time.h>
+
 /* might as well.  Assert is a valuable function. */
 #include <assert.h>
 #include <limits.h>

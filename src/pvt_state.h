@@ -23,12 +23,19 @@
 BEGIN_C_DECLS
 
 struct OlyState_struct{
-    OlyStatus      status;          /* status for instance of OlyState */
-    LibErrorNum    lib_status;      /* library status for external errors. */
-    OChar         *message;         /* OChar holding the message */
+    OlyStatus        status;          /* status for instance of OlyState */
+    LibErrorNum      lib_status;      /* library status for external
+                                         errors. */
+    size_t           msgbuf_size;     /* How big is the message buffer */
+    OlyStateErrorAction     error_action; /* what to do with an error. */
+    OlyStateWarningAction   warning_action;  /* what to do with a warning */
+    OChar           *msgbuf_start;  /* OChar holding the message */
+    OChar           *msgbuf_end;    /* Where the current buffer ends */
+    OlyResource     *messages;      /* resource holding messages for state.*/
 };
 
-OlyStatus reset_liberror(OlyState *s);
+extern OlyStatus reset_liberror(OlyState *s);
+extern OlyBoolean message_buffer_has_room(OlyState *s);
 
 END_C_DECLS
 #endif /* SRC_PVT_STATE_H */

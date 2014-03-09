@@ -20,19 +20,34 @@
 #include "oly/common.h"
 #include <ctype.h>
 
-#include "oly/core.h"
 #include "oly/state.h"
 #include "oly/resources.h"
+#include "pvt_state.h"
 
 OlyStatus 
 check_liberror(OlyState *s){
-    OChar *errtext = NULL;
-    OlyStatus status;
+    OChar       *errtext;
+    size_t       errtext_size;
+    OlyStatus    status;
+
+    /* s->status = OLY_OKAY; */
 #ifdef HAVE_UNICODE_USTDIO_H
-    if (U_FAILURE(s->lib_status)) {
-        errtext = cstr_to_ostr( &status, (const char *)u_errorName(s->lib_status));
-        set_state_message( s, cstr_to_ostr(&status, "check_liberror: problem.\n"));
+    errtext_size = strlen(u_errorName(s->lib_status));
+    if ((s->lib_status != U_ZERO_ERROR) && (U_FAILURE(s->lib_status))) 
+    {
+        buffer_message( s, ERROR_ACTION , cstr_to_ostr( errtext,
+                (const char *)u_errorName(s->lib_status), &status) );
         s->status = OLY_ERR_LIB;
+    }
+    else if ((s->lib_status != U_ZERO_ERROR) && (U_SUCCESS(s->lib_status)))
+    {
+        buffer_message( s, WARNING_ACTION, cstr_to_ostr( errtext,
+                (const char *)u_errorName(s->lib_status), &status) );
+        s->status = OLY_WARN_LIB;
+    }
+    else
+    {
+        s->status = OLY_OKAY;
     }
 #endif /* HAVE_UNICODE_USTDIO_H */
     return s->status;

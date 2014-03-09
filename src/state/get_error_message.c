@@ -19,7 +19,8 @@
 
 #include "oly/common.h"
 #include <assert.h>
-#include "oly/core.h"
+#include "oly/state.h"
+#include "pvt_state.h"
 
 OChar *
 get_error_message( OlyState *state, OlyStatus *err_status )
@@ -27,8 +28,8 @@ get_error_message( OlyState *state, OlyStatus *err_status )
     OChar *message = NULL;
     int32_t len = 0;
 #ifdef HAVE_UNICODE_UMSG_H
-    message = ures_getStringByIndex(errors, 
-            ((*err_status) + OLY_ERR_OFFSET), &len, &u_status);
+    message = ures_getStringByIndex( state->messages, 
+            ((*err_status) + OLY_STATUS_OFFSET), &len, &u_status);
     if (U_FAILURE(u_status)) {
         printf("Could not load error %i, offset %i, status: %s\n",
                 *err_status, OLY_ERR_OFFSET, u_errorName(u_status));

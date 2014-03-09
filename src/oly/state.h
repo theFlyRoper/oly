@@ -18,33 +18,42 @@
 
 #ifndef OLY_STATE_H
 #define OLY_STATE_H 1
-#include "oly/errors.h"
+#include "oly/olytypes.h"
 
 BEGIN_C_DECLS
 
 struct OlyState_struct;
 typedef struct OlyState_struct OlyState;
 
-/* right now behavior and urgency do not do anything but I would like it if they did. */
-typedef enum OlyStateBehavior_enum {
+/* this struct is in use but as of 3-8-2014 only display is implemented. */
+typedef enum OlyStateWarningAction_enum {
     DISCARD = 0,
-    SUMMARIZE = 1,
-    LOG_ERRORS = 2,
-    DISPLAY_ERRORS = 3,
-    LOG_AND_DISPLAY_ERRORS = 4,
-    LOG_ALL = 5,
-    DISPLAY_ALL = 6,
-    VERBOSE = 6
-} OlyStateBehavior;
+    HANDLE_OR_DISCARD = 1,
+    WARNING_SUMMARIZE = 2,
+    WARNING_LOG_ONLY = 3,
+    WARNING_DISPLAY_ONLY = 4,
+    WARNING_LOG_AND_DISPLAY = 5
+} OlyStateWarningAction;
+
+/* Oly will always try to handle errors once an error handler exists.
+ * If this is set higher, it will do other things as well. */
+typedef enum OlyStateErrorAction_enum {
+    HANDLE_ONLY = 0,
+    ERROR_SUMMARIZE = 1,
+    ERROR_LOG_ONLY = 2,
+    ERROR_DISPLAY_ONLY = 3,
+    ERROR_LOG_AND_DISPLAY = 4
+} OlyStateErrorAction;
 
 typedef enum OlyStateUrgency_enum {
     NO_ACTION = 0,
-    WARN_ONLY = 1,      /* only perform the state_behavior for this error/warning. */
-    HANDLE = 2,         /* send to the handler function. */
-    STOP_ROW = 3,
-    STOP_THREAD = 4,
-    STOP_PROCESS = 5,   /* kill the process/script associated with the error. */
-    FATAL_ERROR = 6    /* kills the program. */
+    WARNING_ACTION = 1, /* only do the action for this warning. */
+    ERROR_ACTION = 2,   /* only do the action for this error. */
+    /* OLY_HANDLE = 2,       send to the handler function. Will do later. */
+    STOP_ROW = 4,
+    STOP_THREAD = 5,
+    STOP_PROCESS = 6,   /* kill the process/script associated with the error. */
+    FATAL_ERROR = 7   /* kills the program. */
 } OlyStateUrgency;
 
 
@@ -54,12 +63,10 @@ OlyStatus set_status( OlyState *state, const OlyStatus status );
 OlyStatus get_status( OlyState *state );
 OlyStatus check_liberror       (OlyState *state);
 
-/* these are not thread safe. All work with the BUFSIZ buffer in message. */
-OlyStatus set_state_message    ( OlyState *state, const OChar *message, ... );
-OlyStatus append_state_message ( OlyState *state, const OChar *message, ... );
-OlyStatus clear_state_message  ( OlyState *state );
-OlyStatus print_state_message  ( OlyState *state );
-OlyStatus get_state_message    ( OlyState *state, OChar *msg );
+OChar *get_error_message( OlyState *state, OlyStatus *err_status );
+OlyStatus buffer_message ( OlyState *state, OlyStateUrgency *urgency, 
+        const OChar *message, ... );
+OlyStatus flush_message_buffer ( OlyState *state );
 OlyStatus clear_liberror(OlyState *s);
 OlyStatus set_liberror(OlyState *s, int32_t err_val);
 OlyStatus check_liberror(OlyState *s);

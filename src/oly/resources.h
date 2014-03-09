@@ -20,7 +20,7 @@
 #define SRC_OLY_MESSAGES_H 1
 
 #include "oly/common.h"
-#include "oly/errors.h"
+#include "oly/olytypes.h"
 
 struct OlyResource_struct;
 typedef struct OlyResource_struct OlyResource;

@@ -41,9 +41,10 @@ size_t   getMemorySize( );
 Oly     *new_oly(void);
 extern   OlyStatus count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 
-extern int   is_big_endian (void);
-extern OlyStatus init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);
+extern int          is_big_endian (void);
+extern OlyStatus    init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);
 
+extern double oly_timestamp( OlyState *state );
 extern char *get_oly_charset(Oly *oly);
 extern char *get_oly_locale(Oly *oly);
 extern OlyStatus get_OChar_args(OChar ***result, char **source, int32_t argc);

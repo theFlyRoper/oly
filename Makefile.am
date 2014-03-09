@@ -136,7 +136,19 @@ libhash_a_CFLAGS				= $(SHA3_CFLAGS)
 
 ## libhash_a_LIBADD					= lib/sha_three/libo64_hash.a
 
+libcore_dev_a_SOURCES		=	src/debug/list_icu_countries.c \
+								src/debug/list_table_resources.c \
+								src/debug/list_array_resources.c \
+								src/debug/level_indent.c \
+								src/debug/flag_res_display.c \
+								src/debug/init_res_disp_flag.c \
+								src/debug/flag_check.c \
+								src/debug/get_resource_type.c \
+								src/debug/list_icu_langs.c \
+								src/debug/list_package_locales.c 
+
 libcore_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
+
 
 libcore_a_SOURCES				=	\
 								src/state/append_state_message.c \
@@ -179,6 +191,7 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 									-I$(top_srcdir)/src/ 
 
 check_PROGRAMS 	= 	tests/runtests \
+					tests/oly/core/c-oly_gettime \
 					tests/oly/state/c-init_state \
 					tests/oly/hash/c-get_hashbits \
 					tests/oly/hash/c-get_str_hashlen \
@@ -214,8 +227,12 @@ tests_oly_hash_c_get_str_hashlen_LDADD 		= tests/tap/libtap.a \
 											  libcore.a libhash.a @ICUIO_LIBS@ 
 tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
 tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_char_to_size_LDADD 		= tests/tap/libtap.a \
+tests_oly_hash_c_char_to_size_LDADD = tests/tap/libtap.a \
 											  libcore.a libhash.a
+tests_oly_core_c_oly_gettime_SOURCES = tests/oly/hash/c-char_to_size.c 
+tests_oly_core_c_oly_gettime_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_oly_gettime_LDADD 	= tests/tap/libtap.a \
+									  libcore.a libhash.a
 
 
 check-local: check-i18n $(check_PROGRAMS) 
