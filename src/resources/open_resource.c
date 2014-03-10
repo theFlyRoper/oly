@@ -30,7 +30,7 @@ open_resource(OlyResource *res, char *res_dir, OlyStatus *status)
     *status = OLY_OKAY;
     assert( res != NULL );
 #ifdef HAVE_UNICODE_URES_H
-    res->resource = (resource_data *)ures_open(res_dir, res->locale, &u_status);
+    res->resource = (ResourceData *)ures_open(res_dir, res->locale, &u_status);
     if (U_FAILURE(u_status)) 
     {
         printf("Resource file error. Status: %s.\n",

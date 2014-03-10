@@ -27,7 +27,7 @@
 
 /* only writes the hash itself.  Does not follow with anything else. */
 OlyStatus
-write_hex_from_charhash (FILE *f, const charhash c, OlyState state)
+write_hex_from_charhash (FILE *f, const charhash c, OlyState *state)
 {
   int       i=0;
   for (i = 0; (i<(OLY_HASH_BITS/CHAR_BIT)); i += sizeof(char)) 
@@ -40,7 +40,7 @@ write_hex_from_charhash (FILE *f, const charhash c, OlyState state)
 }
 
 OlyStatus
-print_hex_from_charhash (const charhash c, OlyState state)
+print_hex_from_charhash (const charhash c, OlyState *state)
 {
   return write_hex_from_charhash(stdout, c, state);
 }

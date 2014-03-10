@@ -20,19 +20,20 @@
 #include "oly/common.h"
 #include "sys/types.h"
 #include "oly/core.h"
+#include "pvt_core.h"
 
 OlyStatus
 count_file_bytes(FILE *file, size_t *file_size, Oly *oly)
 {
     fpos_t pos;
-    oly->state->status = OLY_OKAY;
+    set_status(oly->state, OLY_OKAY);
     fseek(file, 0, SEEK_END);
     if (fgetpos(file, &pos) != 0) 
     {
-        oly->state->status = OLY_ERR_FILEIO;
+        set_status(oly->state, OLY_ERR_FILEIO);
     }
     *file_size = (size_t)ftello(file);
     fseek(file, 0, SEEK_SET);
-    return oly->state->status;
+    return get_status(oly->state);
 }
 

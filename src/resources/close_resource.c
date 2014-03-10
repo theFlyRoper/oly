@@ -31,17 +31,13 @@ close_resource(OlyResource *res)
         ures_close((UResourceBundle *)(res->resource));
 #endif /* HAVE_UNICODE_USTDIO_H */
     }
-    if (res->name != NULL) 
-    {
-        XFREE(res->name);
-    }
     if (res->locale != NULL) 
     {
-        XFREE(res->locale);
+        close_metastring(res->locale);
     }
     if (res->charset != NULL) 
     {
-        XFREE(res->charset);
+        close_metastring(res->charset);
     }
     XFREE(res);
 

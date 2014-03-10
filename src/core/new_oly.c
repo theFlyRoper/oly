@@ -19,6 +19,7 @@
 
 #include "oly/common.h"
 #include "oly/core.h"
+#include "pvt_core.h"
 
 Oly *
 new_oly(void)

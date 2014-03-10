@@ -1,4 +1,4 @@
-/* get_resource.c - retrieve the resource from state.  License GPL2+ {{{
+/* new_metastring.c - Constructor for a metastring struct. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,11 +18,16 @@
  * }}} */
 
 #include "oly/common.h"
-#include <assert.h>
 #include "oly/core.h"
+#include "oly/resources.h"
 
-resource_data *
-get_resource( OlyState *state)
+OlyMetastring *
+new_metastring(const char *input)
 {
-    return state->resource; 
+    size_t           len    = (strlen(input)+1);
+    OlyMetastring   *retval = (OlyMetastring *)xmalloc(sizeof(OlyMetastring));
+    OChar           *o = xmalloc(sizeof(OChar)*len);
+    retval->internal = xstrdup(input);
+    retval->display = u_uastrncpy((UChar *)o, (const char *)input, len);
+    return retval; 
 }

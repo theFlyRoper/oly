@@ -35,14 +35,15 @@ check_liberror(OlyState *s){
     errtext_size = strlen(u_errorName(s->lib_status));
     if ((s->lib_status != U_ZERO_ERROR) && (U_FAILURE(s->lib_status))) 
     {
-        buffer_message( s, ERROR_ACTION , cstr_to_ostr( errtext,
+        buffer_message( s, ERROR_ACTION , cstr_to_ostr( errtext, errtext_size,
                 (const char *)u_errorName(s->lib_status), &status) );
         s->status = OLY_ERR_LIB;
     }
     else if ((s->lib_status != U_ZERO_ERROR) && (U_SUCCESS(s->lib_status)))
     {
-        buffer_message( s, WARNING_ACTION, cstr_to_ostr( errtext,
-                (const char *)u_errorName(s->lib_status), &status) );
+        buffer_message( s, WARNING_ACTION , cstr_to_ostr( errtext, 
+                    errtext_size, (const char *)u_errorName(s->lib_status),
+                    &status) );
         s->status = OLY_WARN_LIB;
     }
     else

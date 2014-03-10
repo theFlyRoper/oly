@@ -1,5 +1,5 @@
-/* get_init_locale.c - returns the best match locale for the user. License GPL2+ {{{
- * Copyright (C) 2014 Oly Project
+/* init_charset.c -- License GPL2+ {{{
+ * Copyright (C) 2012 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,24 +20,20 @@
 #include "oly/core.h"
 #include "pvt_core.h"
 
-OlyStatus get_init_charset (char *charset[], OlyStatus *status)
+OlyStatus init_charset (char *charset[], OlyStatus *status)
 {
     int32_t         output_size = 0;
     UErrorCode      u_status  = U_ZERO_ERROR;
-    char            *r;
+    char            *result_ptr;
     *status         = OLY_OKAY;
     
-    output_size = uloc_getBaseName(NULL, r, OLY_SMALL_BUFFER, &u_status);
-    if (U_FAILURE(u_status)) 
-    {
-        printf("uloc_getBaseName failed: %s\n",  u_errorName(u_status));
-        *status = OLY_ERR_LIB;
-    }
+    result_ptr = ucnv_getDefaultName();
+    output_size = strlen(result_ptr);
     if (( output_size > 0 ) &&  ( *status == OLY_OKAY ))
     {
-        *locale = (char *)xmalloc( (output_size + 1) * ( sizeof(char) ));
-        strncpy(*locale, result, output_size);
-        *((*locale) + output_size) = '\0';
+        *charset = (char *)xmalloc( (output_size) * ( sizeof(char) ));
+        strncpy(*charset, result_ptr, output_size);
+        *((*charset) + output_size) = '\0';
     } 
     else if (*status == OLY_OKAY) 
     {

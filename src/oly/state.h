@@ -19,6 +19,7 @@
 #ifndef OLY_STATE_H
 #define OLY_STATE_H 1
 #include "oly/olytypes.h"
+#include "oly/resources.h"
 
 BEGIN_C_DECLS
 
@@ -57,12 +58,14 @@ typedef enum OlyStateUrgency_enum {
 } OlyStateUrgency;
 
 
+OlyState *new_state( OlyResource *master );
 OlyStatus init_state( OlyState *s );
 OlyStatus close_state( OlyState *s );
 OlyStatus set_status( OlyState *state, const OlyStatus status );
 OlyStatus get_status( OlyState *state );
 OlyStatus check_liberror       (OlyState *state);
 
+ResourceData *get_message_data( OlyState *state);
 OChar *get_error_message( OlyState *state, OlyStatus *err_status );
 OlyStatus buffer_message ( OlyState *state, OlyStateUrgency *urgency, 
         const OChar *message, ... );

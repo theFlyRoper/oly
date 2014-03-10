@@ -30,6 +30,7 @@
 #include "oly/output.h"
 #include "oly/break_rules.h"
 #include "oly/globals.h"
+#include "pvt_core.h"
 /* MAIN */
 int
 main( int argc, char **argv )
@@ -47,7 +48,7 @@ main( int argc, char **argv )
 #ifdef OLYDEV
     init_res_disp_flag(&flag);
     list_package_locales(OLY_RESOURCE);
-    list_table_resources(oly->data->resource, &flag, 0);
+    list_table_resources(get_resource_data(oly->data), &flag, 0);
 #endif /* OLYDEV */
   
     if (status != OLY_OKAY) {

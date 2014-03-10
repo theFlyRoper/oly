@@ -17,7 +17,8 @@
  * MA 02110-1301, USA.
  * }}} */
 
-/* intended to be included in init_oly. */
+#include "oly/core.h"
+#include "pvt_core.h"
 
 OlyStatus   set_resource_dir(const char *dir, OlyStatus *status)
 {

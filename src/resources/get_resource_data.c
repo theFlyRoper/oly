@@ -1,4 +1,4 @@
-/* get_resource_data.c - Debug function to print keys from an ICU table resource. {{{
+/* get_resource_data.c - retrieve ResourceData object from resource. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,9 +18,9 @@
  * }}} */
 
 #include "oly/common.h"
-#include "resources_internal.h"
+#include "pvt_resources.h"
 
-resource_data *
+ResourceData *
 get_resource_data(OlyResource *res)
 { 
     return res->resource;

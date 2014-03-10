@@ -23,6 +23,7 @@
 #include "oly/core.h"
 #include "oly/oly_dev.h"
 #include "oly/globals.h"
+#include "pvt_core.h"
 
 static void print_help(void);
 static void usage(void);
@@ -129,13 +130,16 @@ main( int argc, char **argv ){
     }
     else if (flag.only_locale == 1)
     {
-        printf("selected locale: %s\n", oly->data->locale);
+        u_fprintf(u_stdout, "selected locale display: %S\n",
+                DISP_META(OlyResource, locale, oly->data));
+        printf( "selected locale internal: %s\n",((meta_OlyResource_locale(oly->data))->internal));
+
         exit(EXIT_SUCCESS);
     }
 
     if (find_me == NULL) 
     {
-        list_table_resources(oly->data->resource, &flag, 0);
+        list_table_resources(get_resource_data(oly->data), &flag, 0);
     }
   
     if (U_FAILURE(u_status)) {

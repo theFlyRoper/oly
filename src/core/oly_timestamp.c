@@ -1,4 +1,4 @@
-/* oly_gettime.c - get currrent timestamp to the finest grain possible. License GPL2+ {{{
+/* oly_timestamp.c - get currrent timestamp to the finest grain possible. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,13 +21,18 @@
  * these top two require linking with realtime:
  * -lrt
  *
+ * This returns milliseconds as a double since midnight, jan 1 1970 (unix epoch)
  *  keep the postgres port dir in mind for replacements:
- *http://doxygen.postgresql.org/dir_fd8b95245ffcce776715f180c056b450.html
+ * http://doxygen.postgresql.org/dir_fd8b95245ffcce776715f180c056b450.html
  * */
+#include "oly/common.h"
+#include "oly/state.h"
+#include "oly/core.h"
 
-#define ONE_BILLION_NANOSECONDS (double)1000000000.0
-#define ONE_MILLION_MICROSECONDS (double)1000000.0
-double oly_timestamp( OlyState *state ) 
+#define SECONDS_TO_MILLISECONDS(time) ((double)time * 1000)
+#define MICROSECONDS_TO_MILLISECONDS(time) ((double)time * 0.001)
+#define NANOSECONDS_TO_MILLISECONDS(time) ((double)time * 0.000001)
+double oly_timestamp( void ) 
 {
 #if _POSIX_TIMERS > 0
     struct timespec olytime;
@@ -35,23 +40,21 @@ double oly_timestamp( OlyState *state )
     struct timeval olytime;
 #endif
 
-#ifdef _POSIX_MONOTONIC_CLOCK
-    if (clock_gettime(CLOCK_MONOTONIC_COARSE, olytime) != 0)
-#elif _POSIX_TIMERS > 0
-    if (clock_gettime(CLOCK_REALTIME, olytime) != 0)
+#if _POSIX_TIMERS > 0
+    if (clock_gettime(CLOCK_REALTIME_COARSE, &olytime) != 0)
 #else
-    if (gettimeofday(olytime, NULL) != 0) 
+    if (gettimeofday(&olytime, NULL) != 0) 
 #endif
     {
-        printf(strerror(errno));
+        perror(strerror(errno));
         exit(EXIT_FAILURE);
     }
 #if _POSIX_TIMERS > 0
-    return (((double)olytime.tv_sec) + 
-            (((double)olytime.tv_nsec)/ONE_BILLION_NANOSECONDS));
+    return (SECONDS_TO_MILLISECONDS(olytime.tv_sec) + 
+            NANOSECONDS_TO_MILLISECONDS(olytime.tv_nsec));
 #else
-    return ((double)olytime.tv_sec + 
-            (((double)olytime.tv_usec)/ONE_MILLION_MICROSECONDS));
+    return (SECONDS_TO_MILLISECONDS(olytime.tv_sec) + 
+            MICROSECONDS_TO_MILLISECONDS(olytime.tv_usec));
 #endif
 /* another good block for windows, but later, later. 
  * from here

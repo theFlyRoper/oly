@@ -16,15 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
 
-#include <ctype.h>
 #include "oly/common.h"
+#include <ctype.h>
 
 #include "oly/core.h"
 #include "oly/state.h"
+#include "pvt_state.h"
 
 OlyStatus
 set_status(OlyState *state, const OlyStatus status)

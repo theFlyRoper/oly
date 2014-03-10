@@ -21,6 +21,7 @@
 
 #include "oly/common.h"
 #include "oly/olytypes.h"
+#include "oly/metastring.h"
 
 struct OlyResource_struct;
 typedef struct OlyResource_struct OlyResource;
@@ -29,11 +30,18 @@ typedef struct OlyResource_struct OlyResource;
  * hard to implement here.  Read about them here:
  * http://userguide.icu-project.org/icudata#TOC-How-Data-Loading-Works
  */
-extern OlyResource *new_resource(const char *name, const char *locale, const char *charset);
+OlyResource *new_resource(const char *locale, const char *charset);
 extern OlyStatus    open_resource(OlyResource *res, char *res_dir, OlyStatus *status);
+extern ResourceData *get_resource_data(OlyResource *res);
 extern void         close_resource(OlyResource *res);
-extern OChar       *cstr_to_ostr(OChar *o, const char *c, OlyStatus *status);
-extern char        *ostr_to_cstr(char *c, const OChar *o, OlyStatus *status);
+
+METASTRING_FACTORY(OlyResource, locale); 
+METASTRING_FACTORY(OlyResource, charset); 
+
+extern OChar *cstr_to_ostr(OChar *o, size_t buffer_size, 
+        const char *c, OlyStatus *status);
+extern char  *ostr_to_cstr(char *c, size_t buffer_size,
+        const OChar *o, OlyStatus *status);
 
 #endif /* SRC_OLY_MESSAGES_H */
 

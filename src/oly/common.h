@@ -46,9 +46,12 @@
 
 #include <time.h>
 
+#ifndef CLOCK_REALTIME_COARSE
+#define CLOCK_REALTIME CLOCK_REALTIME_COARSE
+#endif
+
 /* might as well.  Assert is a valuable function. */
 #include <assert.h>
-#include <limits.h>
 
 #ifdef HAVE_UNICODE_USTDIO_H
 #include <unicode/ustdio.h>

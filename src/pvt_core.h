@@ -33,8 +33,8 @@ extern char **environ;
 
 extern OlyStatus      cleanenv(void);
 extern void           close_oly(void);
-extern OlyStatus      get_init_charset(char *charset[], OlyStatus *status);
-extern OlyStatus      get_init_locale(char *locale[], OlyStatus *status);
+extern OlyStatus      init_charset(char *charset[], OlyStatus *status);
+extern OlyStatus      init_locale(char *locale[], OlyStatus *status);
 extern void           init_io(const char *locale, const char *codepage);
 
 END_C_DECLS

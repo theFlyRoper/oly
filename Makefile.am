@@ -67,9 +67,8 @@ dist_check_DATA		= tests/TESTS \
 
 
 dist_check_SCRIPTS	= tests/tap/libtap.sh \
-						tests/oly/oly.t tests/oly/i18n.t \
-						tests/oly/core/sh-resex \
-						tests/oly/core/sh-get_OChar_args
+						tests/oly/core.t \
+						tests/oly/core/sh-resex 
 													
 ## TODO: this should use nobase_ instead 
 dist_noinst_HEADERS			=	src/oly/break_rules.h \
@@ -80,7 +79,7 @@ dist_noinst_HEADERS			=	src/oly/break_rules.h \
 								src/oly/oly_dev.h \
 								src/oly/output.h \
 								src/pvt_hash.h \
-								src/pvt_oly.h \
+								src/pvt_core.h \
 								src/pvt_resources.h \
 								src/pvt_state.h \
 								tests/tap/basic.h tests/tap/float.h \
@@ -94,7 +93,7 @@ noinst_PROGRAMS							= resex
 
 resex_SOURCES							= tests/tools/resex.c 
 
-resex_LDADD 							= libcore_dev.a libcore.a \
+resex_LDADD 							= liboly_dev.a libcore.a \
 										  @ICUIO_LIBS@ \
 										  @ICU_LIBS@ 
 
@@ -114,7 +113,7 @@ csvparse_SOURCES		= src/main.c \
 csvparse_LDADD 				=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
 								libcore.a 
 
-noinst_LIBRARIES			=	libcore_dev.a libcore.a libhash.a 
+noinst_LIBRARIES			=	liboly_dev.a libcore.a libhash.a 
 
 
 libhash_a_SOURCES			=	src/hash/char_to_size.c \
@@ -136,7 +135,7 @@ libhash_a_CFLAGS				= $(SHA3_CFLAGS)
 
 ## libhash_a_LIBADD					= lib/sha_three/libo64_hash.a
 
-libcore_dev_a_SOURCES		=	src/debug/list_icu_countries.c \
+liboly_dev_a_SOURCES		=	src/debug/list_icu_countries.c \
 								src/debug/list_table_resources.c \
 								src/debug/list_array_resources.c \
 								src/debug/level_indent.c \
@@ -147,39 +146,46 @@ libcore_dev_a_SOURCES		=	src/debug/list_icu_countries.c \
 								src/debug/list_icu_langs.c \
 								src/debug/list_package_locales.c 
 
-libcore_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
-
+liboly_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 
 libcore_a_SOURCES				=	\
+								src/resources/get_resource_data.c \
+								src/resources/open_resource.c \
+								src/resources/new_resource.c \
 								src/state/append_state_message.c \
 								src/state/check_liberror.c \
 								src/state/clear_liberror.c \
 								src/state/clear_state_message.c \
 								src/state/get_error_message.c \
 								src/state/close_state.c \
-								src/state/cstr_to_ostr.c \
-								src/state/get_resource.c \
+								src/state/get_message_data.c \
 								src/state/get_state_message.c \
 								src/state/get_status.c \
 								src/state/new_state.c \
-								src/state/ostr_to_cstr.c \
-								src/state/open_state_resource.c \
 								src/state/print_state_message.c \
 								src/state/set_liberror.c \
 								src/state/set_state_message.c \
 								src/state/set_status.c \
-								src/oly/cleanenv.c \
-								src/oly/close_oly.c \
-								src/oly/count_file_bytes.c \
-								src/oly/init_io.c \
-								src/oly/init_oly.c \
-								src/oly/new_oly.c \
-								src/oly/get_init_charset.c \
-								src/oly/get_init_locale.c \
-								src/oly/is_big_endian.c \
-								src/oly/xstrdup.c \
-								src/oly/xmalloc.c \
-								src/oly/xstrerror.c 
+								src/core/cleanenv.c \
+								src/core/close_oly.c \
+								src/core/close_metastring.c \
+								src/core/count_file_bytes.c \
+								src/core/cstr_to_ostr.c \
+								src/core/get_default_charset.c \
+								src/core/get_default_locale.c \
+								src/core/init_io.c \
+								src/core/init_oly.c \
+								src/core/init_charset.c \
+								src/core/init_locale.c \
+								src/core/is_big_endian.c \
+								src/core/new_oly.c \
+								src/core/new_metastring.c \
+								src/core/oly_timestamp.c \
+								src/core/ostr_to_cstr.c \
+								src/core/set_resource_dir.c \
+								src/core/xstrdup.c \
+								src/core/xmalloc.c \
+								src/core/xstrerror.c 
 
 libcore_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 
@@ -191,14 +197,14 @@ CHECK_DEFS							= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 									-I$(top_srcdir)/src/ 
 
 check_PROGRAMS 	= 	tests/runtests \
-					tests/oly/core/c-oly_gettime \
-					tests/oly/state/c-init_state \
-					tests/oly/hash/c-get_hashbits \
-					tests/oly/hash/c-get_str_hashlen \
-					tests/oly/hash/c-char_to_size \
-					tests/oly/hash/c-hash_char_to_hash_size \
-					tests/oly/hash/c-read_charhash_from_hex \
-					tests/oly/hash/c-read_sizehash_from_hex 
+					tests/oly/core/c-oly_timestamp 
+##					tests/oly/hash/c-read_sizehash_from_hex 
+##					tests/oly/hash/c-get_hashbits \
+## 					tests/oly/hash/c-get_str_hashlen \
+## 					tests/oly/hash/c-char_to_size \
+## 					tests/oly/hash/c-hash_char_to_hash_size \
+## 					tests/oly/hash/c-read_charhash_from_hex \
+## tests/oly/state/c-init_state 
 tests_runtests_CPPFLAGS 		= $(CHECK_DEFS) 
 check_LIBRARIES 				=	tests/tap/libtap.a
 tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests
@@ -229,10 +235,10 @@ tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c
 tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_char_to_size_LDADD = tests/tap/libtap.a \
 											  libcore.a libhash.a
-tests_oly_core_c_oly_gettime_SOURCES = tests/oly/hash/c-char_to_size.c 
-tests_oly_core_c_oly_gettime_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_oly_gettime_LDADD 	= tests/tap/libtap.a \
-									  libcore.a libhash.a
+tests_oly_core_c_oly_timestamp_SOURCES = tests/oly/core/c-oly_timestamp.c 
+tests_oly_core_c_oly_timestamp_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_oly_timestamp_LDADD 	= tests/tap/libtap.a \
+									  libcore.a libhash.a @ICUIO_LIBS@ @ICU_LIBS@ 
 
 
 check-local: check-i18n $(check_PROGRAMS) 

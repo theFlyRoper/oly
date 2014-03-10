@@ -1,4 +1,4 @@
-/* set_OlyResource_file.c - set the name of the resource file in Oly. License GPL2+ {{{
+/* close_metastring.c - destructor for metastring objects.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,11 +18,11 @@
  * }}} */
 
 #include "oly/common.h"
-#include "oly/core.h"
+#include "oly/metastring.h"
 
-OlyStatus set_OlyResource_file(Oly *oly, char *resource_file)
+void close_metastring(OlyMetastring *close_me)
 {
-    OlyStatus status = OLY_OKAY;
-    oly->resource_file = resource_file;
-    return status;
+    XFREE(close_me->display);
+    XFREE(close_me->internal);
+    XFREE(close_me);
 }

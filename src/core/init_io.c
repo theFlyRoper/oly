@@ -19,12 +19,11 @@
 
 #include "oly/common.h"
 
-#include <pwd.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <paths.h>
-#include <libgen.h>
+#include <limits.h>
 
 #include "oly/core.h"
 #include "pvt_core.h"
@@ -37,7 +36,7 @@
  */
 
 static int open_devnull(int fd);
-static void clean_io_open(void);
+void clean_io_open(void);
 
 void
 init_io(const char *locale, const char *codepage) 
@@ -45,6 +44,7 @@ init_io(const char *locale, const char *codepage)
     char    err_buffer[BUFSIZ];
     int     errnum=0;
 
+    clean_io_open();
     assert((u_stderr == NULL) && (u_stdin == NULL) && (u_stdout == NULL));
     u_stderr=u_finit(stderr, locale,  codepage);
     if(!u_stderr) {
@@ -86,7 +86,11 @@ clean_io_open(void) {
       abort();
   }
   if ((fds = (int)lim.rlim_max) == -1) {
+#ifndef OPEN_MAX
+    fds = sysconf(_SC_OPEN_MAX);
+#else
     fds = OPEN_MAX;
+#endif
   }
   for (fd = 3; fd < fds; fd++) {
     close(fd);

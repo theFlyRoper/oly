@@ -21,6 +21,7 @@
 #include <assert.h>
 #include "oly/core.h"
 #include "oly/state.h"
+#include "pvt_state.h"
 
 OlyState *
 new_state( OlyResource *master )
@@ -28,13 +29,14 @@ new_state( OlyResource *master )
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
 #endif /* HAVE_UNICODE_URES_H */
-    ures_resetIterator (master);
     assert( master != NULL );
     OlyState *state = (OlyState *)xmalloc(sizeof(OlyState));
-    state->output = (OChar *)xcalloc(BUFSIZ, sizeof(OChar));
+    state->msgbuf_start = (OChar *)xcalloc(BUFSIZ, sizeof(OChar));
+    state->msgbuf_end = state->msgbuf_start;
     state->status = OLY_OKAY;
 #ifdef HAVE_UNICODE_URES_H
-    state->messages = ures_getByKey((UResourceBundle *)get_resource_data(master), 
+    state->messages = ures_getByKey(
+            (UResourceBundle *)get_resource_data(master), 
             "OlyErrors", NULL, &u_status);
     state->lib_status = u_status ;
     if (U_FAILURE(u_status)) 

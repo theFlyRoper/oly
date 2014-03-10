@@ -18,6 +18,14 @@
  * }}} */
 
 #include "oly/common.h"
+
+#include <pwd.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
+#include <errno.h>
+#include <paths.h>
+#include <libgen.h>
+
 #include "oly/core.h"
 #include "pvt_core.h"
 
@@ -33,7 +41,6 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
     OlyResource     *oly_init_resource = NULL;
     atexit (close_oly);
     assert(program_name == NULL && prog != NULL && datadir != NULL);
-    clean_io_open();
     if ( cleanenv() != OLY_OKAY )
     {
         abort();
@@ -66,18 +73,18 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
         printf("Could not set resource dir, error: %i\n", status);
         exit(EXIT_FAILURE);
     }
-    if (get_init_locale (&locale, &status) != OLY_OKAY) 
+    if (init_locale (&locale, &status) != OLY_OKAY) 
     {
-        printf("Init: get_init_locale failed. Err: %i\n", status);
+        printf("Init: init_locale failed. Err: %i\n", status);
         exit(EXIT_FAILURE);
     }
-    if (get_init_charset (&charset, &status) != OLY_OKAY) 
+    if (init_charset (&charset, &status) != OLY_OKAY) 
     {
-        printf("Init: get_init_charset failed. Err: %i\n", status);
+        printf("Init: init_charset failed. Err: %i\n", status);
         exit(EXIT_FAILURE);
     }
 
-    oly_init_resource = new_resource( OLY_TOP_RESOURCE, locale, charset);
+    oly_init_resource = new_resource( locale, charset );
 
     if (open_resource(oly_init_resource, datadir, &status) != OLY_OKAY) 
     {

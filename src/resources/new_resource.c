@@ -21,14 +21,16 @@
 #include <assert.h>
 #include "oly/core.h"
 #include "oly/resources.h"
+#include "pvt_resources.h"
+
+METASTRING_FUNCTION(OlyResource, locale); 
+METASTRING_FUNCTION(OlyResource, charset); 
 
 OlyResource *
-new_resource(const char *name, const char *locale, const char *charset)
+new_resource(const char *locale, const char *charset)
 {
-    assert( name != NULL );
     OlyResource *res = (OlyResource *)xmalloc(sizeof(OlyResource));
-    res->name = (char *)name;
-    res->locale = (char *)locale;
-    res->charset = (char *)charset;
+    res->locale =  new_metastring(locale);
+    res->charset = new_metastring(charset);
     return res; 
 }

@@ -25,6 +25,7 @@
 
 #include "oly/core.h"
 #include "oly/state.h"
+#include "pvt_state.h"
 
 OlyStatus
 get_status(OlyState *s){

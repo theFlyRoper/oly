@@ -16,7 +16,7 @@ root:table {
       {"OPTIONAL_ARGUMENT"}
       {"REQUIRED_ARGUMENT"}
     }
-    OlyMetadata:table {
+    OlyMetastring:table {
         state:string{"Current status = {1}\nCurrent locale = {2}\nCurrent charset = {3}\n"}
     }
     OlyOptions:table {

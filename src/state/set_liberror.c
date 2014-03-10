@@ -22,6 +22,7 @@
 
 #include "oly/core.h"
 #include "oly/state.h"
+#include "pvt_state.h"
 
 OlyStatus 
 set_liberror(OlyState *s, int32_t err_val)

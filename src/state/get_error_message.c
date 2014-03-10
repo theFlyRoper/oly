@@ -28,11 +28,12 @@ get_error_message( OlyState *state, OlyStatus *err_status )
     OChar *message = NULL;
     int32_t len = 0;
 #ifdef HAVE_UNICODE_UMSG_H
-    message = ures_getStringByIndex( state->messages, 
+    UErrorCode u_status = U_ZERO_ERROR;
+    message = ures_getStringByIndex( get_resource_data(state->messages), 
             ((*err_status) + OLY_STATUS_OFFSET), &len, &u_status);
     if (U_FAILURE(u_status)) {
         printf("Could not load error %i, offset %i, status: %s\n",
-                *err_status, OLY_ERR_OFFSET, u_errorName(u_status));
+                *err_status,  OLY_STATUS_OFFSET, u_errorName(u_status));
         return NULL;
     }
 #endif /* HAVE_UNICODE_UMSG_H */

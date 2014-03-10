@@ -2,7 +2,7 @@
 // See LICENSE file for details
 en_US:table {
     OlyUsage:alias{"/oly_lang/root/OlyUsage\n"}
-    OlyMetadata:table {
+    OlyMetastring:table {
         state:string{"Current status = {1}\nCurrent locale = {2}\nCurrent charset = {3}\n"}
     }
     OlyErrors:array {

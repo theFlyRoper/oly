@@ -1,5 +1,5 @@
-/* get_init_charset.c -- License GPL2+ {{{
- * Copyright (C) 2012 Oly Project
+/* get_message_data.c - retrieve the resource from state.  License GPL2+ {{{
+ * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,27 +17,13 @@
  * MA 02110-1301, USA.
  * }}} */
 
+#include "oly/common.h"
+#include <assert.h>
 #include "oly/core.h"
-#include "pvt_core.h"
+#include "pvt_state.h"
 
-OlyStatus get_init_charset (char *charset[], OlyStatus *status)
+ResourceData *
+get_message_data( OlyState *state)
 {
-    int32_t         output_size = 0;
-    UErrorCode      u_status  = U_ZERO_ERROR;
-    char            *result_ptr;
-    *status         = OLY_OKAY;
-    
-    result_ptr = ucnv_getDefaultName();
-    output_size = strlen(result_ptr);
-    if (( output_size > 0 ) &&  ( *status == OLY_OKAY ))
-    {
-        *charset = (char *)xmalloc( (output_size) * ( sizeof(char) ));
-        strncpy(*charset, result_ptr, output_size);
-        *((*charset) + output_size) = '\0';
-    } 
-    else if (*status == OLY_OKAY) 
-    {
-            *status = OLY_ERR_INIT;
-    }
-    return *status;
+    return get_resource_data( state->messages ); 
 }
