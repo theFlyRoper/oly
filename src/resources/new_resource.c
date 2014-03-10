@@ -23,14 +23,14 @@
 #include "oly/resources.h"
 #include "pvt_resources.h"
 
-METASTRING_FUNCTION(OlyResource, locale); 
+
 METASTRING_FUNCTION(OlyResource, charset); 
 
 OlyResource *
 new_resource(const char *locale, const char *charset)
 {
     OlyResource *res = (OlyResource *)xmalloc(sizeof(OlyResource));
-    res->locale =  new_metastring(locale);
+    res->locale  = new_metastring(locale);
     res->charset = new_metastring(charset);
     return res; 
 }

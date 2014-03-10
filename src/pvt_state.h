@@ -27,8 +27,8 @@ struct OlyState_struct{
     LibErrorNum      lib_status;      /* library status for external
                                          errors. */
     size_t           msgbuf_size;     /* How big is the message buffer */
-    OlyStateErrorAction     error_action; /* what to do with an error. */
-    OlyStateWarningAction   warning_action;  /* what to do with a warning */
+    OlyStateErrorAction     error_action;       /* what to do with an error. */
+    OlyStateWarningAction   warning_action;     /* what to do with a warning */
     OChar           *msgbuf_start;  /* OChar holding the message */
     OChar           *msgbuf_end;    /* Where the current buffer ends */
     OlyResource     *messages;      /* resource holding messages for state.*/

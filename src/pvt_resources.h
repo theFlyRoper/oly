@@ -23,8 +23,8 @@
 BEGIN_C_DECLS
 struct OlyResource_struct
 {
-    OlyMetastring           *locale;
-    OlyMetastring           *charset;
+    OChar                   *locale;
+    OChar                   *charset;
     int                      array_offset;
     ResourceData            *resource;
 };

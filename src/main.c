@@ -36,7 +36,7 @@ int
 main( int argc, char **argv )
 {
     Oly             *oly=new_oly();
-    OlyStatus      status  = OLY_OKAY;
+    OlyStatus        status  = OLY_OKAY;
     char            *locale = NULL;
 #ifdef OLYDEV
     res_disp_flag   flag;
