@@ -33,13 +33,13 @@ close_resource(OlyResource *res)
     }
     if (res->locale != NULL) 
     {
-        XFREE(res->locale);
+        OFREE(res->locale);
     }
     if (res->charset != NULL) 
     {
-        XFREE(res->charset);
+        OFREE(res->charset);
     }
-    XFREE(res);
+    OFREE(res);
 
     return OLY_OKAY; 
 }

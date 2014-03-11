@@ -176,6 +176,8 @@ BEGIN_C_DECLS
 
 #define OMALLOC(type, num) \
         ((type *) xmalloc ((num) * sizeof(type)))
+#define OREALLOC(type, p, num) \
+        ((type *) xrealloc ((p), (num) * sizeof(type)))
 #define OFREE(stale) do { \
         if (stale) { free (stale);  stale = 0; } \
         } while (0)

@@ -28,9 +28,9 @@ OlyResource *
 new_resource(const char *locale, const char *charset)
 {
     OlyResource *res = (OlyResource *)xmalloc(sizeof(OlyResource));
-    OChar       *n = XCALLOC(OChar, (strlen(locale)+1));
+    OChar       *n = OCALLOC(OChar, (strlen(locale)+1));
     res->locale  = u_uastrcpy(n, locale);
-    n = XCALLOC(OChar, (strlen(charset)+1));
+    n = OCALLOC(OChar, (strlen(charset)+1));
     res->charset = u_uastrcpy(n, charset);
     return res; 
 }

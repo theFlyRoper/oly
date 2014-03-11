@@ -34,7 +34,7 @@ token_str_to_array(char *s, char *delims, unsigned int *count_chars,
         (num_tokens)++;
     }
     result = (char **)xmalloc((num_tokens)*sizeof(char *));
-    XFREE(c);
+    OFREE(c);
     num_tokens = 0;
     c = xstrdup(s);
     r = strtok_r(c, delims, &rest);
