@@ -171,14 +171,12 @@ extern int errno;
 /** MALLOC MACROS */
 BEGIN_C_DECLS
 
-#define XCALLOC(type, num) \
+#define OCALLOC(type, num) \
         ((type *) xcalloc ((num), sizeof(type)))
 
-#define XMALLOC(type, num) \
+#define OMALLOC(type, num) \
         ((type *) xmalloc ((num) * sizeof(type)))
-#define XREALLOC(type, p, num) \
-        ((type *) xrealloc ((p), (num) * sizeof(type)))
-#define XFREE(stale) do { \
+#define OFREE(stale) do { \
         if (stale) { free (stale);  stale = 0; } \
         } while (0)
 

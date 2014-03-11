@@ -35,15 +35,13 @@
 int
 main( int argc, char **argv )
 {
-    Oly             *oly=new_oly();
     OlyStatus        status  = OLY_OKAY;
-    char            *locale = NULL;
+    char            *locale = NULL, *charset = NULL;
 #ifdef OLYDEV
     res_disp_flag   flag;
 #endif /* OLYDEV */
-    if (init_oly(oly, argv[0], PKGDATADIR, NULL, locale) != OLY_OKAY) {
-        perror("Initialization failed\n");
-    };
+
+    oly = init_oly(argv[0], PKGDATADIR, charset, locale);
 
 #ifdef OLYDEV
     init_res_disp_flag(&flag);

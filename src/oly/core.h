@@ -42,18 +42,13 @@ Oly     *new_oly(void);
 extern   OlyStatus count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
 
 extern int          is_big_endian (void);
-extern OlyStatus    init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);
+extern OlyStatus    init_oly(Oly *oly, char *prog, char *datadir, 
+        char *charset, char *locale);
 
 extern double oly_timestamp( void ) ;
 extern OChar *get_default_charset(Oly *oly);
 extern OChar *get_default_locale(Oly *oly);
 extern OlyStatus get_OChar_args(OChar ***result, char **source, int32_t argc);
-
-/* OFILE IO */
-extern OFILE *u_stderr;
-extern OFILE *u_stdout;
-extern OFILE *u_stdin;
-extern const OChar *program_name; 
 
 END_C_DECLS
 

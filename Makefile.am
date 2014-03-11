@@ -168,6 +168,7 @@ libcore_a_SOURCES				=	\
 								src/state/set_state_message.c \
 								src/state/set_status.c \
 								src/core/cleanenv.c \
+								src/core/clean_io_open.c \
 								src/core/close_oly.c \
 								src/core/count_file_bytes.c \
 								src/core/cstr_to_ostr.c \
@@ -175,13 +176,9 @@ libcore_a_SOURCES				=	\
 								src/core/get_default_locale.c \
 								src/core/init_io.c \
 								src/core/init_oly.c \
-								src/core/init_charset.c \
-								src/core/init_locale.c \
 								src/core/is_big_endian.c \
-								src/core/new_oly.c \
 								src/core/oly_timestamp.c \
 								src/core/ostr_to_cstr.c \
-								src/core/set_resource_dir.c \
 								src/core/xstrdup.c \
 								src/core/xmalloc.c \
 								src/core/xstrerror.c 

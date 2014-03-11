@@ -57,6 +57,15 @@ typedef enum OlyBoolean_enum {
     OLY_FALSE=-1
 } OlyBoolean;
 
+/* OFILE IO */
+extern OFILE *u_stderr;
+extern OFILE *u_stdout;
+extern OFILE *u_stdin;
+
+/* globals */
+extern const OChar *program_name; 
+extern char **environ; 
+extern Oly *oly;
 
 #endif /* !OLY_OLYTYPES_H */
 

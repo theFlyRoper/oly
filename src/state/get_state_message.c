@@ -36,7 +36,7 @@ get_state_message( OlyState *state)
     state->lib_status = u_status ;
     if (U_FAILURE(u_status)) 
     {
-        printf("New state error.  Status: %s.\n",
+        printf("Unable to get state message.  Status: %s.\n",
                 u_errorName(u_status));
         state->status = OLY_ERR_LIB;
     }
