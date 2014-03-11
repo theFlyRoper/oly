@@ -33,11 +33,11 @@ close_resource(OlyResource *res)
     }
     if (res->locale != NULL) 
     {
-        close_metastring(res->locale);
+        XFREE(res->locale);
     }
     if (res->charset != NULL) 
     {
-        close_metastring(res->charset);
+        XFREE(res->charset);
     }
     XFREE(res);
 

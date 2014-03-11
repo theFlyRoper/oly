@@ -1,4 +1,4 @@
-/* get_state_message.c - Retrieve the message for this state.  License GPL2+ {{{
+/* get_default_charset.c - get the charset for an oly object {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,29 +17,13 @@
  * MA 02110-1301, USA.
  * }}} */
 
+/* The resource data charset for oly serves as the default charset throughout,
+ * since the Oly object is the primary object throughout the program. */
 #include "oly/common.h"
-#include <assert.h>
+#include "sys/types.h"
 #include "oly/core.h"
-#include "oly/state.h"
-#include "pvt_state.h"
-
-/* this function retrieves the message pointer.  It does not copy or allocate any space. */
-OChar *
-get_state_message( OlyState *state)
+#include "pvt_core.h"
+OChar *get_default_charset( Oly *oly )
 {
-#ifdef HAVE_UNICODE_URES_H
-    UErrorCode u_status = U_ZERO_ERROR;
-    int len = 0;
-    OChar* result = (OChar *)ures_getStringByIndex( state->messages, 
-            (state->status + OLY_STATUS_OFFSET), &len, &u_status );
-        
-    state->lib_status = u_status ;
-    if (U_FAILURE(u_status)) 
-    {
-        printf("New state error.  Status: %s.\n",
-                u_errorName(u_status));
-        state->status = OLY_ERR_LIB;
-    }
-#endif /* HAVE_UNICODE_URES_H */
-    return result; 
+    return get_charset(oly->data);
 }

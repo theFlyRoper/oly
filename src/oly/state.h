@@ -66,7 +66,8 @@ OlyStatus get_status( OlyState *state );
 OlyStatus check_liberror       (OlyState *state);
 
 ResourceData *get_message_data( OlyState *state);
-OChar *get_error_message( OlyState *state, OlyStatus *err_status );
+OChar   *get_state_message( OlyState *state );
+OChar   *get_error_message( OlyState *state, OlyStatus *err_status );
 OlyStatus buffer_message ( OlyState *state, OlyStateUrgency *urgency, 
         const OChar *message, ... );
 OlyStatus flush_message_buffer ( OlyState *state );

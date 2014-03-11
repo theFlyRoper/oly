@@ -39,7 +39,7 @@ main( int argc, char **argv ){
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
     Oly             *oly=(Oly *)xmalloc(sizeof(Oly));
-    atexit (close_main);
+    
     init_res_disp_flag(&flag);
 
     /* a = arrays, A = Aliases, b = binaries, d = search dir, e = everything,
@@ -108,6 +108,7 @@ main( int argc, char **argv ){
             break;
         }
     }
+    
     if (init_oly(oly, progval, locdir, NULL, locale) != OLY_OKAY) {
         perror("Initialization failed\n");
     };
@@ -130,9 +131,10 @@ main( int argc, char **argv ){
     }
     else if (flag.only_locale == 1)
     {
-        u_fprintf(u_stdout, "selected locale display: %S\n",
-                DISP_META(OlyResource, locale, oly->data));
-        printf( "selected locale internal: %s\n",((meta_OlyResource_locale(oly->data))->internal));
+        u_fprintf(u_stdout, "𝄞𝄞𝄞𝄞Default IO locale: %S\n",
+                   get_default_locale(oly) );
+        u_fprintf(u_stdout, "Default IO encoding: %S\n",
+                   get_default_charset(oly) );
 
         exit(EXIT_SUCCESS);
     }
@@ -140,6 +142,10 @@ main( int argc, char **argv ){
     if (find_me == NULL) 
     {
         list_table_resources(get_resource_data(oly->data), &flag, 0);
+        
+        set_status(oly->state, OLY_OKAY);
+        u_fprintf(u_stdout, "Show an error: %S\n",
+                   get_state_message(oly->state) );
     }
   
     if (U_FAILURE(u_status)) {
@@ -147,13 +153,6 @@ main( int argc, char **argv ){
     } else {
         exit(EXIT_SUCCESS);
     }
-}
-
-static void 
-close_main (void) 
-{
-    fclose (stdout); 
-    fclose (stdin); 
 }
 
 static void 

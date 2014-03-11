@@ -31,6 +31,7 @@ struct oly_struct {
 /* holds the cleaned environment for use with getenv() */
 extern char **environ; 
 
+extern void clean_io_open(void);
 extern OlyStatus      cleanenv(void);
 extern void           close_oly(void);
 extern OlyStatus      init_charset(char *charset[], OlyStatus *status);

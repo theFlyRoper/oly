@@ -23,7 +23,6 @@
 #include "oly/common.h"
 #include "oly/state.h"
 #include "oly/resources.h"
-#include "oly/metastring.h"
 
 #ifndef OLY_SMALL_BUFFER
 #define OLY_SMALL_BUFFER 256
@@ -46,8 +45,8 @@ extern int          is_big_endian (void);
 extern OlyStatus    init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale);
 
 extern double oly_timestamp( void ) ;
-extern char *get_default_charset(Oly *oly);
-extern char *get_default_locale(Oly *oly);
+extern OChar *get_default_charset(Oly *oly);
+extern OChar *get_default_locale(Oly *oly);
 extern OlyStatus get_OChar_args(OChar ***result, char **source, int32_t argc);
 
 /* OFILE IO */

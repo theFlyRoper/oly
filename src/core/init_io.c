@@ -18,25 +18,9 @@
  * }}} */
 
 #include "oly/common.h"
-
-#include <sys/resource.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <paths.h>
-#include <limits.h>
-
 #include "oly/core.h"
 #include "pvt_core.h"
 
-/* open_devnull and clean_io_open
- * are adapted from the Secure Programming 
- * Cookbook, John Viega and Matt Messier.
- * 2003, O'Reilly Press, 
- * ISBN: 0-596-00394-3
- */
-
-static int open_devnull(int fd);
-void clean_io_open(void);
 
 void
 init_io(const char *locale, const char *codepage) 
@@ -44,7 +28,6 @@ init_io(const char *locale, const char *codepage)
     char    err_buffer[BUFSIZ];
     int     errnum=0;
 
-    clean_io_open();
     assert((u_stderr == NULL) && (u_stdin == NULL) && (u_stdout == NULL));
     u_stderr=u_finit(stderr, locale,  codepage);
     if(!u_stderr) {
@@ -67,56 +50,5 @@ init_io(const char *locale, const char *codepage)
         }
         exit(1);
     }
-}
-
-void 
-clean_io_open(void) {
-  int           fd, fds;
-  struct rlimit lim;
-  struct stat   st;
-  int           status;
-  /* posix provides these macros, so why not use them? */
-  int         std_fileno[] = {
-                STDIN_FILENO, 
-                STDOUT_FILENO,
-                STDERR_FILENO };
-  /* make sure all open descriptors other than the standard ones are closed */
-  status = getrlimit(RLIMIT_NOFILE, &lim);
-  if (status != 0) {
-      abort();
-  }
-  if ((fds = (int)lim.rlim_max) == -1) {
-#ifndef OPEN_MAX
-    fds = sysconf(_SC_OPEN_MAX);
-#else
-    fds = OPEN_MAX;
-#endif
-  }
-  for (fd = 3; fd < fds; fd++) {
-    close(fd);
-  }
-  /* Verify std descriptors are open.  If no, attempt open with dev/null.
-   * if unsuccessful, abort.
-   */
-  for (fd = 0; fd < 3; fd++) {
-    if (fstat(std_fileno[fd], &st) == -1 && 
-        (errno != EBADF || !open_devnull(std_fileno[fd]))) {
-      abort();
-    }
-  }
-}
-
-int 
-open_devnull(int fd) {
-  FILE *f = 0;
-
-  if ( fd == STDIN_FILENO ) {
-    f = freopen(_PATH_DEVNULL, "rb", stdin);
-  } else if ( fd == STDOUT_FILENO ) {
-    f = freopen(_PATH_DEVNULL, "wb", stdout);
-  } else if ( fd == STDERR_FILENO ) {
-    f = freopen(_PATH_DEVNULL, "wb", stderr);
-  }
-  return ( f && fileno(f) == fd );
 }
 

@@ -32,7 +32,7 @@ TEST_I18N_DIR						= tests/data/i18n/
 OLY_I18N_NAME						= @OLY_RESOURCE@
 RMV 								= @RMV@
 
-I18N_TESTBUILDDIR				= $(abs_top_builddir)/tests/data/i18n/
+I18N_TESTBUILDDIR					= $(abs_top_builddir)/tests/data/i18n/
 
 if SHA3_64BIT
 SHA3_SRC 		= lib/sha_three/KeccakF-1600-opt64.c
@@ -152,11 +152,12 @@ libcore_a_SOURCES				=	\
 								src/resources/get_resource_data.c \
 								src/resources/open_resource.c \
 								src/resources/new_resource.c \
+								src/resources/get_charset.c \
+								src/resources/get_locale.c \
 								src/state/append_state_message.c \
 								src/state/check_liberror.c \
 								src/state/clear_liberror.c \
 								src/state/clear_state_message.c \
-								src/state/get_error_message.c \
 								src/state/close_state.c \
 								src/state/get_message_data.c \
 								src/state/get_state_message.c \
@@ -168,7 +169,6 @@ libcore_a_SOURCES				=	\
 								src/state/set_status.c \
 								src/core/cleanenv.c \
 								src/core/close_oly.c \
-								src/core/close_metastring.c \
 								src/core/count_file_bytes.c \
 								src/core/cstr_to_ostr.c \
 								src/core/get_default_charset.c \
@@ -179,7 +179,6 @@ libcore_a_SOURCES				=	\
 								src/core/init_locale.c \
 								src/core/is_big_endian.c \
 								src/core/new_oly.c \
-								src/core/new_metastring.c \
 								src/core/oly_timestamp.c \
 								src/core/ostr_to_cstr.c \
 								src/core/set_resource_dir.c \
@@ -204,7 +203,6 @@ check_PROGRAMS 	= 	tests/runtests \
 ## 					tests/oly/hash/c-char_to_size \
 ## 					tests/oly/hash/c-hash_char_to_hash_size \
 ## 					tests/oly/hash/c-read_charhash_from_hex \
-## tests/oly/state/c-init_state 
 tests_runtests_CPPFLAGS 		= $(CHECK_DEFS) 
 check_LIBRARIES 				=	tests/tap/libtap.a
 tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests
@@ -239,6 +237,10 @@ tests_oly_core_c_oly_timestamp_SOURCES = tests/oly/core/c-oly_timestamp.c
 tests_oly_core_c_oly_timestamp_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oly_timestamp_LDADD 	= tests/tap/libtap.a \
 									  libcore.a libhash.a @ICUIO_LIBS@ @ICU_LIBS@ 
+tests_oly_state_c_new_state_SOURCES = tests/oly/state/c-new_state.c 
+tests_oly_state_c_new_state_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_state_c_new_state_LDADD 	= tests/tap/libtap.a \
+									  libcore.a @ICUIO_LIBS@ @ICU_LIBS@ 
 
 
 check-local: check-i18n $(check_PROGRAMS) 

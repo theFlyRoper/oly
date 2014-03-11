@@ -36,11 +36,16 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
-    OChar           *program_mover = NULL;
+    OChar           *program_mover = NULL, *resource_dir = XCALLOC(OChar,
+                     (strlen(datadir)+1));
     int32_t          len = 0;
     OlyResource     *oly_init_resource = NULL;
-    atexit (close_oly);
+    OlyState        *oly_init_state = NULL;
+    
     assert(program_name == NULL && prog != NULL && datadir != NULL);
+    /* aborts if encounters unusual states or unclosable files */
+    clean_io_open();
+    
     if ( cleanenv() != OLY_OKAY )
     {
         abort();
@@ -49,7 +54,8 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 #ifdef HAVE_UNICODE_USTDIO_H
     /* Initialize ICU */
     u_init(&u_status);
-    if (U_FAILURE(u_status)) {
+    if (U_FAILURE(u_status)) 
+    {
         printf("Could not initialize ICU, error: %s. Exiting...\n",
                 u_errorName(u_status));
         exit(EXIT_FAILURE);
@@ -73,7 +79,7 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
         printf("Could not set resource dir, error: %i\n", status);
         exit(EXIT_FAILURE);
     }
-    if (init_locale (&locale, &status) != OLY_OKAY) 
+    if ( init_locale(&locale, &status) != OLY_OKAY )
     {
         printf("Init: init_locale failed. Err: %i\n", status);
         exit(EXIT_FAILURE);
@@ -86,15 +92,22 @@ init_oly(Oly *oly, char *prog, char *datadir, char *charset, char *locale)
 
     oly_init_resource = new_resource( locale, charset );
 
-    if (open_resource(oly_init_resource, datadir, &status) != OLY_OKAY) 
+    if ( open_resource(oly_init_resource, datadir, &status) != OLY_OKAY) 
     {
         printf("Init: could not open resource.  %i\n", status);
         exit(EXIT_FAILURE);
     }
+
+    oly_init_state = new_state( oly_init_resource );
     /* u_stderr, u_stdout, u_stdin */
     init_io(locale, charset);
-    oly->resource_dir   = datadir;
+    
+    atexit (close_oly);
+    
+    oly->resource_dir   = u_uastrcpy(resource_dir, locale);
     oly->data           = oly_init_resource;
+    oly->state          = oly_init_state;
+
     return status;
 }
 

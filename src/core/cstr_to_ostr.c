@@ -1,4 +1,4 @@
-/* get_state_message.c - Retrieve the message for this state.  License GPL2+ {{{
+/* cstr_to_ostr.c - set the global constant program_name. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,28 +18,15 @@
  * }}} */
 
 #include "oly/common.h"
-#include <assert.h>
+
 #include "oly/core.h"
 #include "oly/state.h"
-#include "pvt_state.h"
 
-/* this function retrieves the message pointer.  It does not copy or allocate any space. */
-OChar *
-get_state_message( OlyState *state)
+/* for messages only. */
+OChar *cstr_to_ostr(OChar *o, size_t buffer_size, const char *c, OlyStatus *status)
 {
-#ifdef HAVE_UNICODE_URES_H
-    UErrorCode u_status = U_ZERO_ERROR;
-    int len = 0;
-    OChar* result = (OChar *)ures_getStringByIndex( state->messages, 
-            (state->status + OLY_STATUS_OFFSET), &len, &u_status );
-        
-    state->lib_status = u_status ;
-    if (U_FAILURE(u_status)) 
-    {
-        printf("New state error.  Status: %s.\n",
-                u_errorName(u_status));
-        state->status = OLY_ERR_LIB;
-    }
-#endif /* HAVE_UNICODE_URES_H */
-    return result; 
+    *status = OLY_OKAY;
+#ifdef HAVE_UNICODE_USTDIO_H
+    return (OChar *)u_uastrncpy((UChar *)o, c, buffer_size);
+#endif /* HAVE_UNICODE_USTDIO_H */
 }

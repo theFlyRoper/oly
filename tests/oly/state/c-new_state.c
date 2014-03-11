@@ -1,4 +1,4 @@
-/* c-init_state - tests for init_state. {{{
+/* c-new_state - tests for init_state. {{{
  * Copyright (C) 2014 Oly Project
  * Permission is hereby granted, free of charge, to any person obtaining a copy of 
  * this software and associated documentation files (the "Software"), to deal in 
@@ -32,13 +32,12 @@ static void close_main(void);
 int
 main( int argc, char **argv )
 {
-    OlyState state;
-    OlyStatus s;
+    OlyState *state;
     atexit (close_main);
     
     plan(2);
-    is_int(OLY_ERR_BADARG, init_state(NULL), "state is null.");
-    is_int(OLY_OKAY, init_state(&state), "with a valid value for state.");
+    is_int(OLY_ERR_BADARG, new_state(NULL), "state is null.");
+    is_int(OLY_OKAY, new_state(state), "with a valid value for state.");
 
     if ( 0 != 0 ) 
     {

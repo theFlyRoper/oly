@@ -1,4 +1,4 @@
-/* get_state_metadata.c - get info about state.  License GPL2+ {{{
+/* get_default_locale.c - get the locale for an oly object {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,15 +17,13 @@
  * MA 02110-1301, USA.
  * }}} */
 
+/* The resource data locale for oly serves as the default locale throughout,
+ * since the Oly object is the primary object throughout the program. */
 #include "oly/common.h"
-#include <assert.h>
+#include "sys/types.h"
 #include "oly/core.h"
-
-OChar *
-get_state_metadata( OlyState *state)
+#include "pvt_core.h"
+OChar *get_default_locale( Oly *oly )
 {
-#ifdef HAVE_UNICODE_UMSG_H
-    u_uastrncpy(program_mover, basename(prog), len);
-#endif /* HAVE_UNICODE_UMSG_H */
-    return state->resource; 
+    return get_locale(oly->data);
 }

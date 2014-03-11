@@ -24,13 +24,13 @@
 #include "pvt_resources.h"
 
 
-METASTRING_FUNCTION(OlyResource, charset); 
-
 OlyResource *
 new_resource(const char *locale, const char *charset)
 {
     OlyResource *res = (OlyResource *)xmalloc(sizeof(OlyResource));
-    res->locale  = new_metastring(locale);
-    res->charset = new_metastring(charset);
+    OChar       *n = XCALLOC(OChar, (strlen(locale)+1));
+    res->locale  = u_uastrcpy(n, locale);
+    n = XCALLOC(OChar, (strlen(charset)+1));
+    res->charset = u_uastrcpy(n, charset);
     return res; 
 }

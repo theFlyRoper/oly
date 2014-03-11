@@ -27,7 +27,7 @@
 OlyStatus
 set_status(OlyState *state, const OlyStatus status)
 {
-    state->status = (OlyStatus)status;
+    state->status = status;
     return OLY_OKAY;
 }
 

@@ -1,0 +1,22 @@
+#! /bin/sh
+#
+# Copyright 2014 Oly Project
+#
+# See LICENSE for licensing terms.
+
+# Load the test library.
+. "$SOURCE/tap/libtap.sh"
+
+# Plan test.
+plan 12
+ok_program 'Resex prints all with no args. we use -L to show selected locale only.' \
+    0 'selected locale: el' "$BUILD/../resex" "-L" "-l :el:ja"
+ok_program 'Resex prints all with no args. we use -L to show selected locale only.' \
+    0 'selected locale: el' "$BUILD/../resex" "-L" "-l :::::el:ja:el"
+##ok_program 'check no args but one colon' \
+##    0 'selected locale: en_US' "$BUILD/../resex" "-l :" -L
+##ok_program 'verifying locale switch.' \
+##    0 'selected locale: el' "$BUILD/../resex" "-L" "-l \":el:ja:zh\""
+##
+## ok_program 'continue locale switch.' \
+##    0 'selected locale: el' "$BUILD/../resex" "-l :el:ja:zh" -L
