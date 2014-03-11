@@ -34,6 +34,7 @@ static void *imalloc (size_t num);
 static void *icalloc (size_t num, size_t size);
 static OlyStatus init_locale (char *locale[], OlyStatus *status);
 static char *init_charset (char * preset);
+static char *istrdup (const char *string)
 
 
 /* TODO:
@@ -52,17 +53,17 @@ Oly *init_oly(char *prog, char *datadir, char *charset, char *locale)
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
-    OChar           *program_mover = NULL, *resource_dir = XCALLOC(OChar,
-                     (strlen(datadir)+1));
+    OChar           *program_mover = NULL;
     int32_t          len = 0;
     OlyResource     *oly_init_resource = NULL;
     OlyState        *oly_init_state = NULL;
-    Oly *oly_init = (Oly *)xmalloc(sizeof(Oly));
-    oly->data = NULL;
-    oly->state = NULL;
-    oly->resource_dir = NULL;
+    Oly             *oly_init = (Oly *)xmalloc(sizeof(Oly));
     
     assert(program_name == NULL && prog != NULL && datadir != NULL);
+    
+    oly->resource_dir = istrdup(datadir);
+    oly->data = NULL;
+    oly->state = NULL;
     /* aborts if encounters unusual states or unclosable files */
     clean_io_open();
     
@@ -70,7 +71,6 @@ Oly *init_oly(char *prog, char *datadir, char *charset, char *locale)
     {
         abort();
     }
-
 #ifdef HAVE_UNICODE_USTDIO_H
     /* Initialize ICU */
     u_init(&u_status);
@@ -96,8 +96,8 @@ Oly *init_oly(char *prog, char *datadir, char *charset, char *locale)
     program_name = (const OChar *)program_mover;
 #ifdef HAVE_UNICODE_USTDIO_H
     /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
-    * for the internal app data for ICU, which lives in a shared library. 
-    */
+     * for the internal app data for ICU, which lives in a shared library. 
+     */
     u_setDataDirectory(dir);
 #endif /* HAVE_UNICODE_USTDIO_H */
     if ( init_locale(&locale, &status) != OLY_OKAY )
@@ -125,7 +125,6 @@ Oly *init_oly(char *prog, char *datadir, char *charset, char *locale)
     
     atexit (close_oly);
     
-    oly->resource_dir   = u_uastrcpy(resource_dir, locale);
     oly->data           = oly_init_resource;
     oly->state          = oly_init_state;
 
@@ -186,4 +185,10 @@ char *init_charset (char * preset)
 #endif /* HAVE_UNICODE_UCNV_H */
 }
 
+#ifndef WITH_DMALLOC
+char *istrdup (const char *string)
+{
+  return string ? strcpy (imalloc((strlen (string) + 1)*sizeof(char)), string) : NULL;
+}
+#endif /* !WITH_DMALLOC */
 

@@ -32,10 +32,6 @@ BEGIN_C_DECLS
 
 struct passwd;
 
-/* main oly structure */
-struct  oly_struct; 
-typedef struct oly_struct Oly;
-
 size_t   memory_left_now(void);
 size_t   getMemorySize( );
 Oly     *new_oly(void);

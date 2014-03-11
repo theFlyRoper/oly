@@ -18,6 +18,10 @@
 #ifndef OLY_OLYTYPES_H
 #define OLY_OLYTYPES_H 1
 
+/* main oly structure. details in src/pvt_core.h */
+struct  oly_struct; 
+typedef struct oly_struct Oly;
+
 /* OlyStatus type:
  * Defines states for Oly.
  * 
