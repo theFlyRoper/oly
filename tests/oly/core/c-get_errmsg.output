@@ -26,7 +26,7 @@ ok 21 - Number: -1,419,857
 # Letters and inappropriate hex digits YES MWAHAHAHAHAHA
 ok 22 - Number: 97, submitted: a
 ok 23 - Number: 57, submitted: 9
-ok 24 - Number: 32, submitted:  
+ok 24 - Number: 32, submitted:   (space)
 ok 25 - Number: 43,690, submitted: �
 ok 26 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
 # All 26 tests successful or skipped

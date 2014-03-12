@@ -96,10 +96,10 @@ main( int argc, char **argv ){
             get_errmsg(i), "Number: %i, submitted: %c", i, i);
     i = ' ';
     is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c", i, i);
+            get_errmsg(i), "Number: %i, submitted: %c (space)", i, i);
     i = 0xAAAA;
     is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c (space)", i, i);
+            get_errmsg(i), "Number: %i, submitted: %c", i, i);
     i = 0xABBA;
     is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
             get_errmsg(i), "AND ONE SWEDISH DANCING QUEEN (hex: %X)",
