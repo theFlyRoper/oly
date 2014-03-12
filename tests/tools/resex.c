@@ -39,7 +39,6 @@ main( int argc, char **argv ){
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
     OlyStatus        status  = OLY_OKAY;
-    char            *locale = NULL, 
     
     init_res_disp_flag(&flag);
 
@@ -130,7 +129,7 @@ main( int argc, char **argv ){
     }
     else if (flag.only_locale == 1)
     {
-        u_fprintf(u_stdout, "𝄞𝄞𝄞𝄞Default IO locale: %S\n",
+        u_fprintf(u_stdout, "Default IO locale: %S\n",
                    get_default_locale(oly) );
         u_fprintf(u_stdout, "Default IO encoding: %S\n",
                    get_default_charset(oly) );
@@ -140,11 +139,17 @@ main( int argc, char **argv ){
 
     if (find_me == NULL) 
     {
-        list_table_resources(get_resource_data(oly->data), &flag, 0);
         
         set_status(oly->state, OLY_OKAY);
-        u_fprintf(u_stdout, "Show an error: %S\n",
-                   get_state_message(oly->state) );
+        u_fprintf(u_stdout, "Show two (should be OLY_ERR_SYS): %S\n",
+                   get_errmsg(OLY_ERR_SYS));
+        u_fprintf(u_stdout, "Show an error (OLY_ERR_NOMEM): %S\n",
+                   get_errmsg(OLY_ERR_NOMEM));
+        u_fprintf(u_stdout, "Show an unfound error (not in the set): %S\n",
+                   get_errmsg(122));
+        u_fprintf(u_stdout, "Show an error (OLY_ERR_NOMEM): %S\n",
+                   get_errmsg(OLY_ERR_NOMEM));
+        list_table_resources(get_resource_data(oly->data), &flag, 0);
     }
   
     if (U_FAILURE(u_status)) {
@@ -173,12 +178,12 @@ print_help(void)
 
 static void usage(void){
     u_fprintf(u_stdout,"%S: [OPTIONS] -d [DIRECTORY TO SEARCH] -n [FILE NAME]\n", 
-            program_name);
+           oly->program_name);
 }
 
 static void print_version(void){
     u_fprintf(u_stdout,"%S: Version 1.0, 3-2-2014 - copyright (C) Oly Project\n", 
-            program_name);
+           oly->program_name);
     u_fprintf(u_stdout,"\tLicensed according to the MIT license, which is also the ICU license.\n");
     u_fprintf(u_stdout,"\tThis program is provided in the hopes that it will be useful, but\n");
     u_fprintf(u_stdout,"\tWITHOUT ANY WARRANTY, to the extent permitted by law.\n\n");

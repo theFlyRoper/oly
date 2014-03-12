@@ -31,7 +31,7 @@ get_state_message( OlyState *state)
     UErrorCode u_status = U_ZERO_ERROR;
     int len = 0;
     OChar* result = (OChar *)ures_getStringByIndex( state->messages, 
-            (state->status + OLY_STATUS_OFFSET), &len, &u_status );
+            (state->status + abs(OLY_STATUS_MIN)), &len, &u_status );
         
     state->lib_status = u_status ;
     if (U_FAILURE(u_status)) 

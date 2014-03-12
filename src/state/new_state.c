@@ -35,9 +35,6 @@ new_state( OlyResource *master )
     state->msgbuf_end = state->msgbuf_start;
     state->status = OLY_OKAY;
 #ifdef HAVE_UNICODE_URES_H
-    state->messages = ures_getByKey(
-            (UResourceBundle *)get_resource_data(master), 
-            "OlyErrors", NULL, &u_status);
     state->lib_status = u_status ;
     if (U_FAILURE(u_status)) 
     {

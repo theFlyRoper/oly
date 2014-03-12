@@ -35,16 +35,16 @@ typedef struct oly_struct Oly;
  * appropriate. OLY_OKAY is equal to zero.
  */
 typedef enum OlyStatus_enum {
-    /* OLY_STATUS_OFFSET helps map these internal codes into the external i18n resource
+    /* OLY_STATUS_MIN helps map these internal codes into the external i18n resource
      * files.
      */
-    OLY_STATUS_OFFSET=4,
-    OLY_WARN_REINIT=-4,
-    OLY_WARN_ERROR_NOT_FOUND=-3,
+    OLY_WARN_REINIT=-3,
+    OLY_STATUS_MIN=-3,
+    OLY_STATUS_OFFSET=3,
     OLY_WARN_LIB=-2,
     OLY_WARN_EXIT=-1,
     OLY_OKAY=0,
-    OLY_ERR_UNSPECIFIED=1,
+    OLY_ERR_UNKNOWN=1,
     OLY_ERR_SYS=2,
     OLY_ERR_LIB=3,
     OLY_ERR_INIT=4,
@@ -53,7 +53,9 @@ typedef enum OlyStatus_enum {
     OLY_ERR_NOUSER=7,
     OLY_ERR_FILEIO=8,
     OLY_ERR_READHEX=9,
-    OLY_ERR_BADARG=10
+    OLY_ERR_HASH=10,
+    OLY_ERR_BADARG=11,
+    OLY_STATUS_MAX=11
 } OlyStatus;
 
 typedef enum OlyBoolean_enum {
@@ -66,8 +68,8 @@ extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;
 
-/* globals */
-extern const OChar *program_name; 
+/* globals 
+extern const OChar *program_name; */
 extern char **environ; 
 extern Oly *oly;
 

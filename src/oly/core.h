@@ -21,6 +21,7 @@
 #define SRC_OLY_CORE_H 1
 
 #include "oly/common.h"
+#include "oly/load_config.h"
 #include "oly/state.h"
 #include "oly/resources.h"
 
@@ -32,19 +33,24 @@ BEGIN_C_DECLS
 
 struct passwd;
 
+/* constructor */
+extern Oly *init_oly(const char *prog, 
+        const char *datadir, const char *charset, const char *locale);
+
+OChar *get_errmsg( OlyStatus status );
 size_t   memory_left_now(void);
-size_t   getMemorySize( );
-Oly     *new_oly(void);
-extern   OlyStatus count_file_bytes(FILE *file, size_t *file_size, Oly *oly);
+size_t   getMemorySize( void );
+
 
 extern int          is_big_endian (void);
-extern OlyStatus    init_oly(Oly *oly, char *prog, char *datadir, 
-        char *charset, char *locale);
+extern OlyStatus    count_file_bytes(FILE *file, size_t *file_size, 
+                        Oly *oly);
 
 extern double oly_timestamp( void ) ;
 extern OChar *get_default_charset(Oly *oly);
 extern OChar *get_default_locale(Oly *oly);
-extern OlyStatus get_OChar_args(OChar ***result, char **source, int32_t argc);
+extern OlyStatus get_OChar_args(OChar ***result, char **source, 
+        int32_t argc);
 
 END_C_DECLS
 

@@ -49,6 +49,7 @@
 #include <unistd.h>
 
 #include <tests/tap/basic.h>
+#include <tests/tap/is_unicode_string.h>
 
 /* Windows provides mkdir and rmdir under different names. */
 #ifdef _WIN32
@@ -829,4 +830,72 @@ test_cleanup_register(test_cleanup_func func)
     while (*last != NULL)
         last = &(*last)->next;
     *last = cleanup;
+}
+
+#define UPRINT_DESC(prefix, format)              \
+    do {                                        \
+        if (format != NULL) {                   \
+            va_list args;                       \
+            if (prefix != NULL)                 \
+                fprintf(stdout, "%s", prefix);           \
+            va_start(args, format);             \
+            u_vfprintf(u_stdout, format, args);              \
+            va_end(args);                       \
+        }                                       \
+    } while (0)
+
+void
+u_diag(const char *format, ...)
+{
+    va_list args;
+
+    u_fflush(u_stderr);
+    check_diag_files();
+    u_fflush(u_stdout);
+    u_fprintf(u_stdout, "# ");
+    va_start(args, format);
+    u_vfprintf(u_stdout, format, args);
+    va_end(args);
+    u_fprintf(u_stdout, "\n");
+}
+
+UChar *char_to_utf8(char *input)
+{
+    int32_t     dest_measured = 0;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    UChar *str ;
+    /* preflight */
+    str = (UChar *)bcalloc(strlen(input)+1, sizeof(UChar));
+    str = u_strFromUTF8(str, strlen(input), &dest_measured, input, 
+            strlen(input), &u_status);
+    u_fprintf(u_stdout, "String is %i chars long.  Utf8 string: %S, dest measured: %i\n", strlen(input), str, dest_measured);
+    if ( U_FAILURE(u_status) )
+    {
+        u_diag("ICU error: %S", u_errorName(u_status));
+        return NULL;
+    }
+    return str;
+}
+
+void
+is_unicode_string(const UChar *wanted, const UChar *seen, 
+        const char *format, ...)
+{
+    if (wanted == NULL)
+        wanted = char_to_utf8("(null)");
+    if (seen == NULL)
+        seen = char_to_utf8("(null)");
+
+    u_fflush(u_stderr);
+    check_diag_files();
+    if (u_strcmp(wanted, seen) == 0)
+        u_fprintf(u_stdout, "ok %lu", testnum++);
+    else {
+        u_diag("wanted: %S", wanted);
+        u_diag("  seen: %S", seen);
+        u_fprintf(u_stdout, "not ok %lu", testnum++);
+        _failed++;
+    }
+    UPRINT_DESC(" - ", format);
+    putchar('\n');
 }

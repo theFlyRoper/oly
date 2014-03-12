@@ -33,11 +33,10 @@ root:table {
     }
     OlyErrors:array {
         {"OLY_WARN_REINIT"},
-        {"OLY_WARN_ERROR_NOT_FOUND"},
         {"OLY_WARN_LIB"},
         {"OLY_WARN_EXIT"},
         {"OLY_OKAY"},
-        {"OLY_ERR_UNSPECIFIED"},
+        {"OLY_ERR_UNKNOWN"},
         {"OLY_ERR_SYS"},
         {"OLY_ERR_LIB"},
         {"OLY_ERR_INIT"},
@@ -46,6 +45,7 @@ root:table {
         {"OLY_ERR_NOUSER"},
         {"OLY_ERR_FILEIO"},
         {"OLY_ERR_READHEX"},
+        {"OLY_ERR_HASH"},
         {"OLY_ERR_BADARG"},
     }
     OlyHelpTopics:table {

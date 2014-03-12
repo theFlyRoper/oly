@@ -29,8 +29,10 @@ new_resource(const char *locale, const char *charset)
 {
     OlyResource *res = (OlyResource *)xmalloc(sizeof(OlyResource));
     OChar       *n = OCALLOC(OChar, (strlen(locale)+1));
+#ifdef HAVE_UNICODE_URES_H
     res->locale  = u_uastrcpy(n, locale);
     n = OCALLOC(OChar, (strlen(charset)+1));
     res->charset = u_uastrcpy(n, charset);
+#endif /* HAVE_UNICODE_URES_H */
     return res; 
 }

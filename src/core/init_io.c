@@ -32,21 +32,22 @@ init_io(const char *locale, const char *codepage)
     u_stderr=u_finit(stderr, locale,  codepage);
     if(!u_stderr) {
         if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
-            printf("%s", err_buffer);
+            printf("Err: u_stderr, %s, locale: %s, codepage %s\n", err_buffer, locale, codepage);
+
         }
         exit(1);
     }
     u_stdout = u_finit(stdout, locale, codepage);
     if(!u_stdout) {
         if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
-            printf("%s", err_buffer);
+            printf("Err: u_stdout, %s\n", err_buffer);
         }
         exit(1);
     }
     u_stdin = u_finit(stdin, locale, codepage);
     if(!u_stdin) {
         if ( strerror_r( errnum, err_buffer, BUFSIZ ) == 0 ) {
-            printf("%s", err_buffer);
+            printf("Err: u_stdin, %s\n", err_buffer);
         }
         exit(1);
     }

@@ -26,7 +26,6 @@
 OFILE *u_stderr;
 OFILE *u_stdout;
 OFILE *u_stdin;
-const OChar *program_name; 
 char **environ; 
 Oly *oly;
 

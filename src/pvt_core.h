@@ -22,18 +22,18 @@
 #define SRC_PVT_OLY_H 1
 BEGIN_C_DECLS
 struct oly_struct {
-    /* resource dir is set in initialization, this would mostly be for reference. */
-    OChar                   *resource_dir;
+    const OChar             *resource_dir;
+    const OChar             *program_name;
     OlyResource             *data;
     OlyState                *state;
+    OlyConfig               *config;
 };
 
 /* holds the cleaned environment for use with getenv() */
-extern void clean_io_open(void);
-extern OlyStatus      cleanenv(void);
-extern void           close_oly(void);
-extern OlyStatus      init_locale(char *locale[], OlyStatus *status);
-extern void           init_io(const char *locale, const char *codepage);
+extern void         clean_io_open(void);
+extern OlyStatus    cleanenv(void);
+extern void         close_oly(void);
+extern void         init_io(const char *locale, const char *codepage);
 
 END_C_DECLS
 #endif /* SRC_PVT_OLY_H */
