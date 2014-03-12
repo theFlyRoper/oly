@@ -44,6 +44,5 @@ void init_res_disp_flag(res_disp_flag *flag)
     flag->aliases = 0;
     flag->integers = 0;
     flag->vectors = 0;
-    return OLY_OKAY;
 }
 

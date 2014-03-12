@@ -42,9 +42,10 @@ extern void list_package_locales(const char *package_name);
 extern void list_table_resources(UResourceBundle *res, const res_disp_flag *flag, const int level);
 extern void list_array_resources(UResourceBundle *res, const res_disp_flag *flag, const int level);
 extern void flag_res_display(UResourceBundle *res, const res_disp_flag *flag, const int level);
-extern char *level_indent(const int level);
-void init_res_disp_flag(res_disp_flag *flag);
-char *get_resource_type(UResourceBundle *res);
+extern char *level_indent(char *indent, size_t size, const int level);
+extern void init_res_disp_flag(res_disp_flag *flag);
+extern const char *get_resource_type(UResourceBundle *res);
+extern UResType flag_check(UResourceBundle *res, const res_disp_flag *flag);
 
 END_C_DECLS
 

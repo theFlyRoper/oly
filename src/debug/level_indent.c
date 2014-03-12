@@ -24,16 +24,16 @@
 
 #include "oly/oly_dev.h"
 
-char *level_indent(const int level)
+char *level_indent(char *indent, size_t size, const int level)
 {
     int i = 0, j = 0;
     const int tabsize = 2;
-    char indent[BUFSIZ],
-         *indent_ptr;
+    char *indent_ptr;
     indent_ptr = indent;
-    for ( i = 0; (i < level && (i*tabsize) < BUFSIZ); i++) 
+    for ( i = 0; (i < level && (i*tabsize) < size); i++) 
     {
-        for (j = 0; (j < tabsize); j++, indent_ptr++) {
+        for (j = 0; (j < tabsize); j++, indent_ptr++) 
+        {
             *indent_ptr = ' ';
         }
     }

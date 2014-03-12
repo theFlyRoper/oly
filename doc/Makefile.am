@@ -37,12 +37,12 @@ wiki: wikirebuild $(WIKIPAGES)
 htmlrebuild:
 	rm -f $(HTMLPAGES)
 
-html: htmlrebuild $(HTMLPAGES)
+html-local: htmlrebuild $(HTMLPAGES)
 
 
 maintainer-clean-local: wiki 
 
-distclean-local: html
+distclean-local: html-local
 
 atool-clean: 
 		rm -rf Makefile.in Makefile

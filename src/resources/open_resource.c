@@ -27,10 +27,13 @@ open_resource(OlyResource *res, char *res_dir, OlyStatus *status)
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode  u_status;
 #endif /* HAVE_UNICODE_URES_H */
+    char *locale_char = OCALLOC(char, (u_strlen(res->locale)+1)) ;
     *status = OLY_OKAY;
     assert( res != NULL );
 #ifdef HAVE_UNICODE_URES_H
-    res->resource = (ResourceData *)ures_open(res_dir, res->locale, &u_status);
+    locale_char = u_austrcpy(locale_char, res->locale);
+    res->resource = (ResourceData *)ures_open(res_dir, locale_char,
+            &u_status);
     if (U_FAILURE(u_status)) 
     {
         printf("Resource file error. Status: %s.\n",
@@ -38,5 +41,6 @@ open_resource(OlyResource *res, char *res_dir, OlyStatus *status)
         *status = OLY_ERR_LIB;
     }
 #endif /* HAVE_UNICODE_URES_H */
+    OFREE(locale_char);
     return *status; 
 }

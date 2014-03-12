@@ -33,9 +33,10 @@ void flag_res_display(UResourceBundle *res, const res_disp_flag *flag, const int
     int32_t len = BUFSIZ;
     UErrorCode u_status = U_ZERO_ERROR;
     UResType type = flag_check(res, flag);
+    hold_ptr = holder;
     switch (type) {
     case URES_ALIAS:
-        hold_ptr = ures_getUTF8String(res, &holder, &len, FALSE, &u_status);
+        hold_ptr = (char *)ures_getUTF8String(res, hold_ptr, &len, FALSE, &u_status);
         if (U_FAILURE(u_status)) {
             fprintf(stderr, "Err in flag_res_display, URES_ALIAS: %s\n",
                     u_errorName(u_status));
@@ -62,7 +63,7 @@ void flag_res_display(UResourceBundle *res, const res_disp_flag *flag, const int
         printf("Size: %i\n", ures_getSize(res));
         break;
     case URES_STRING:
-        hold_ptr = ures_getUTF8String(res, &holder, &len, FALSE, &u_status);
+        hold_ptr = (char *)ures_getUTF8String(res, hold_ptr, &len, FALSE, &u_status);
         if (U_FAILURE(u_status)) {
             fprintf(stderr, "Err in flag_res_display, URES_STRING: %s\n",
                     u_errorName(u_status));

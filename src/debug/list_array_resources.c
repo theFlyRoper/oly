@@ -34,6 +34,7 @@ void list_array_resources(UResourceBundle *res, const res_disp_flag *flag, const
     UErrorCode      u_status = U_ZERO_ERROR;
     int32_t         i = 0;
     UResourceBundle *subres = NULL;
+    char            indent_buffer[BUFSIZ];
     
     for (i = 0; i<ures_getSize(res); i++) {
         subres = ures_getByIndex (res, i, subres, &u_status);
@@ -43,7 +44,9 @@ void list_array_resources(UResourceBundle *res, const res_disp_flag *flag, const
             exit(1);
         }
         if (URES_NONE != flag_check(subres, flag)) {
-            printf("%s%8i - %s: ", level_indent(level), i, get_resource_type(subres));
+            printf("%s%8i - %s: ", 
+                    level_indent(indent_buffer, BUFSIZ, level), i, 
+                    get_resource_type(subres));
             flag_res_display(subres, flag, level);
         }
     }

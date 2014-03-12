@@ -26,12 +26,12 @@
 
 #define URES_TREE_DEBUG 1
 
-char *get_resource_type(UResourceBundle *res)
+const char *get_resource_type(UResourceBundle *res)
 { 
-    char *types[] = {"URES_ALIAS", "URES_ARRAY", "URES_BINARY",
+    const char *types[] = {"URES_ALIAS", "URES_ARRAY", "URES_BINARY",
         "URES_INT", "URES_INT_VECTOR", "URES_NONE", 
         "URES_STRING", "URES_TABLE"};
-    char *retval;
+    const char *retval;
     switch (ures_getType(res)) {
     case URES_ALIAS:
         retval = types[0];

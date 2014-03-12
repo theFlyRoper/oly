@@ -35,8 +35,9 @@ void list_table_resources(UResourceBundle *res,
         const int level)
 { 
     UErrorCode      u_status = U_ZERO_ERROR;
-    res_disp_flag   *inner_flag = flag;
+    res_disp_flag   *inner_flag = (res_disp_flag *)flag;
     UResourceBundle *subres = NULL;
+    char            indent_buffer[BUFSIZ];
     ures_resetIterator (res);
 
     if (flag == NULL)
@@ -50,7 +51,8 @@ void list_table_resources(UResourceBundle *res,
                     u_errorName(u_status));
             exit(1);
         }
-        printf("%s%s - %s\n", level_indent(level),
+        printf("%s%s - %s\n",
+                level_indent(indent_buffer, BUFSIZ, level), 
                 ures_getKey(subres),  get_resource_type(subres));
             flag_res_display(subres, inner_flag, level);
     }

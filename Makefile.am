@@ -85,7 +85,7 @@ dist_noinst_HEADERS			=	src/oly/break_rules.h \
 								tests/tap/basic.h tests/tap/float.h \
 								tests/tap/macros.h
 AM_CFLAGS 						= -fstack-protector-all @ICU_CFLAGS@ \
-							  		@DEV_CFLAGS@
+								@DEV_CFLAGS@ -Wall -Werror
 csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 
 bin_PROGRAMS							= csvparse 
 
@@ -148,13 +148,14 @@ liboly_dev_a_SOURCES		=	src/debug/list_icu_countries.c \
 
 liboly_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 
+## todo stack:
+## 								src/state/append_state_message.c \
 libcore_a_SOURCES				=	\
 								src/resources/get_resource_data.c \
 								src/resources/open_resource.c \
 								src/resources/new_resource.c \
 								src/resources/get_charset.c \
 								src/resources/get_locale.c \
-								src/state/append_state_message.c \
 								src/state/check_liberror.c \
 								src/state/clear_liberror.c \
 								src/state/clear_state_message.c \
