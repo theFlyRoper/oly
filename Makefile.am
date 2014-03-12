@@ -98,36 +98,36 @@ resex_LDADD 							= liboly_dev.a libcore.a \
 										  @ICU_LIBS@ 
 
 
-resex_CPPFLAGS							= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
-										  @DEV_DEF@ $(HEAD_CPPFLAGS)
+resex_CPPFLAGS			= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
+						@DEV_DEF@ $(HEAD_CPPFLAGS)
 
 csvparse_SOURCES		= src/main.c \
-							src/print_demo/print_text_range.c \
-							src/print_demo/print_each_forward.c \
-							src/print_demo/print_each_backward.c \
-							src/print_demo/print_at.c \
-							src/print_demo/print_first.c \
-							src/print_demo/print_last.c \
-							src/get_rules.c 
+						src/print_demo/print_text_range.c \
+						src/print_demo/print_each_forward.c \
+						src/print_demo/print_each_backward.c \
+						src/print_demo/print_at.c \
+						src/print_demo/print_first.c \
+						src/print_demo/print_last.c \
+						src/get_rules.c 
 
-csvparse_LDADD 				=	@ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
-								libcore.a 
+csvparse_LDADD 			= @ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
+						libcore.a 
 
-noinst_LIBRARIES			=	liboly_dev.a libcore.a libhash.a 
+noinst_LIBRARIES		=	liboly_dev.a libcore.a libhash.a 
 
 
-libhash_a_SOURCES			=	src/hash/char_to_size.c \
-								src/hash/write_hex_from_charhash.c \
-								src/hash/write_hex_from_sizehash.c \
-								src/hash/read_charhash_from_hex.c \
-								src/hash/read_sizehash_from_hex.c \
-								src/hash/get_str_hashlen.c \
-								src/hash/get_hashbits.c \
-								lib/sha_three/genKAT.c \
-								lib/sha_three/KeccakDuplex.c \
-								lib/sha_three/KeccakNISTInterface.c \
-								lib/sha_three/KeccakSponge.c \
-								$(SHA3_SRC)
+libhash_a_SOURCES		=	src/hash/char_to_size.c \
+						src/hash/write_hex_from_charhash.c \
+						src/hash/write_hex_from_sizehash.c \
+						src/hash/read_charhash_from_hex.c \
+						src/hash/read_sizehash_from_hex.c \
+						src/hash/get_str_hashlen.c \
+						src/hash/get_hashbits.c \
+						lib/sha_three/genKAT.c \
+						lib/sha_three/KeccakDuplex.c \
+						lib/sha_three/KeccakNISTInterface.c \
+						lib/sha_three/KeccakSponge.c \
+						$(SHA3_SRC)
 
 
 libhash_a_CPPFLAGS				= $(HEAD_CPPFLAGS)
@@ -195,21 +195,24 @@ CHECK_DEFS	= @DEFS@ @DEV_DEF@ -D_FORTIFY_SOURCE=2 \
 
 check_PROGRAMS 	= 	tests/runtests \
 					tests/oly/core/c-oly_timestamp \
-					tests/oly/core/c-get_errmsg 
-##					tests/oly/hash/c-read_sizehash_from_hex 
-##					tests/oly/hash/c-get_hashbits \
-## 					tests/oly/hash/c-get_str_hashlen \
-## 					tests/oly/hash/c-char_to_size \
-## 					tests/oly/hash/c-hash_char_to_hash_size \
-## 					tests/oly/hash/c-read_charhash_from_hex \
+					tests/oly/core/c-get_errmsg \
+					tests/oly/hash/c-read_sizehash_from_hex \
+					tests/oly/hash/c-get_hashbits \
+ 					tests/oly/hash/c-get_str_hashlen \
+ 					tests/oly/hash/c-char_to_size \
+ 					tests/oly/hash/c-hash_char_to_hash_size \
+ 					tests/oly/hash/c-read_charhash_from_hex 
 tests_runtests_CPPFLAGS 		= $(CHECK_DEFS) 
 check_LIBRARIES 				=	tests/tap/libtap.a
-tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests
+tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests 
 ## modifications to tap - added is_unicode_string.
 tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 								  tests/tap/is_unicode_string.h \
 								  tests/tap/float.c tests/tap/float.h \
 								  tests/tap/macros.h
+
+tests_tap_libtap_a_LDFLAGS 		= 
+
 tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c 
 tests_oly_hash_c_get_hashbits_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_get_hashbits_LDADD = tests/tap/libtap.a \
@@ -233,7 +236,7 @@ tests_oly_hash_c_get_str_hashlen_LDADD 		= tests/tap/libtap.a \
 tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
 tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_char_to_size_LDADD = tests/tap/libtap.a \
-											  libcore.a libhash.a
+									libcore.a libhash.a @ICUIO_LIBS@
 tests_oly_core_c_get_errmsg_SOURCES = tests/oly/core/c-get_errmsg.c 
 tests_oly_core_c_get_errmsg_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_get_errmsg_LDADD 	= tests/tap/libtap.a \

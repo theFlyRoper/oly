@@ -859,18 +859,18 @@ u_diag(const char *format, ...)
     u_fprintf(u_stdout, "\n");
 }
 
-UChar *char_to_utf8(char *input)
+UChar *char_to_utf8(const char *input)
 {
     int32_t     dest_measured = 0;
     UErrorCode  u_status = U_ZERO_ERROR;
-    UChar *str, strbuf[BUFSIZ];
-    str =  strbuf;
-    str = u_strFromUTF8(str, BUFSIZ, &dest_measured, input, 
+    UChar *str ;
+    /* preflight */
+    str = (UChar *)bcalloc(strlen(input)+1, sizeof(UChar));
+    str = u_strFromUTF8(str, strlen(input), &dest_measured, input, 
             strlen(input), &u_status);
-    u_fprintf(u_stdout, "String is %i chars long.  Utf8 string: %S, dest measured: %i\n", strlen(input), str, dest_measured);
     if ( U_FAILURE(u_status) )
     {
-        u_diag("ICU error: %S", u_errorName(u_status));
+        diag("ICU error: %s", u_errorName(u_status));
         return NULL;
     }
     return str;

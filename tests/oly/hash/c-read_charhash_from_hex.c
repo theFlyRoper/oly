@@ -31,25 +31,22 @@
 
 #include "oly/state.h"
 #include "oly/hash.h"
+#include "oly/globals.h"
 #include "tests/tap/basic.h"
 
 int
 main( int argc, char **argv ){
-  charhash            input;
-  charhash            read;
-  const unsigned char *hash_me = (const unsigned char *)argv[1];
-  const unsigned char *read_me = (const unsigned char *)argv[2];
-  data_length         hash_length ;
-  int                 strcmp_val;
-  OlyState           oly; 
-  
+    charhash            input;
+    charhash            read;
+    const unsigned char *hash_me = (const unsigned char *)argv[1];
+    const unsigned char *read_me = (const unsigned char *)argv[2];
+    data_length         hash_length ;
+    int                 strcmp_val;
+    char            *locale = (char *)"root",  *charset = NULL;
+    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
   if (argc != 3) 
   {
     printf("2 args\n");
-    exit(EXIT_FAILURE);
-  }
-  if (OLY_OKAY != init_state(&oly)) 
-  {
     exit(EXIT_FAILURE);
   }
   if (OLY_OKAY != read_charhash_from_hex (read_me, read, oly))

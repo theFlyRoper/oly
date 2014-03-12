@@ -31,6 +31,7 @@
 
 #include "oly/state.h"
 #include "oly/hash.h"
+#include "oly/globals.h"
 #include "tests/tap/basic.h"
 
 int

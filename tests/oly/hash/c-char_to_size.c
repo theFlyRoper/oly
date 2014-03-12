@@ -31,7 +31,9 @@
 
 #include "oly/state.h"
 #include "oly/hash.h"
+#include "oly/globals.h"
 #include "tests/tap/basic.h"
+#include "pvt_core.h"
 
 /* HashReturn Init(hashState *state, int hashbitlen);
 HashReturn Update(hashState *state, const BitSequence *data, 
@@ -46,20 +48,23 @@ typedef union oly_hash_union {
 
 int
 main (void){
-  oly_hash    test1 = {{0xEFBEADBAED0BEDFE}}, test2 = {{0xEDEDDE00EDADBE00}},
-              test3 = {{0xED0BEDFEADDEEDDE}};
-  size_t      result1 = {0xFEED0BEDBAADBEEF}, result2 = {0x00BEADED00DEEDED}, 
-               result3 = {0xDEEDDEADFEED0BED}, output_val = 0;
-  OlyStatus  status;
-  diag("TODO: rearrange this to add a bigendian chunk.");
-  plan(3);
-  status = char_to_size(test1.cval,&output_val);
-  is_hex(result1, output_val, "%016lX: Probably mad cow disease.", output_val);
-  status = char_to_size(test2.cval,&output_val);
-  is_hex(result2, output_val, "%016lX: That was how he rolled, man.", output_val);
-  status = char_to_size(test3.cval,&output_val);
-  is_hex(result3, output_val, "%016lX: A feedbed without deeds is dead.", output_val);
-  return EXIT_SUCCESS;
+    char            *locale = (char *)"root",  *charset = NULL;
+    oly_hash    test1 = {{0xEFBEADBAED0BEDFE}}, 
+                test2 = {{0xEDEDDE00EDADBE00}},
+                test3 = {{0xED0BEDFEADDEEDDE}};
+    size_t      result1 = {0xFEED0BEDBAADBEEF}, 
+                result2 = {0x00BEADED00DEEDED}, 
+                result3 = {0xDEEDDEADFEED0BED}, output_val = 0;
+    OlyStatus  status;
+    diag("TODO: rearrange this to add a bigendian chunk.");
+    plan(3);
+    status = char_to_size(test1.cval,&output_val);
+    is_hex(result1, output_val, "%016lX: Probably mad cow disease.", output_val);
+    status = char_to_size(test2.cval,&output_val);
+    is_hex(result2, output_val, "%016lX: That was how he rolled, man.", output_val);
+    status = char_to_size(test3.cval,&output_val);
+    is_hex(result3, output_val, "%016lX: A feedbed without deeds is dead.", output_val);
+    return EXIT_SUCCESS;
   
 }
 

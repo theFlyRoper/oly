@@ -31,7 +31,9 @@
 
 #include "oly/state.h"
 #include "oly/hash.h"
+#include "oly/globals.h"
 #include "tests/tap/basic.h"
+#include "pvt_core.h"
 
 typedef union oly_hash_union {
   size_t        sval[SIZE_HASH];
@@ -40,46 +42,43 @@ typedef union oly_hash_union {
 
 int
 main( int argc, char **argv ){
-  charhash              input;
-  const unsigned char  *hash_me = (const unsigned char *)argv[1];
-  sizehash              result;
-  data_length           hash_length ;
-  OlyState             oly; 
+    charhash              input;
+    const unsigned char  *hash_me = (const unsigned char *)argv[1];
+    sizehash              result;
+    char            *locale = (char *)"root",  *charset = NULL;
+    data_length           hash_length ;
+    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
   
-  if (argc != 2) {
-    printf("Takes 1 argument, to be hashed. exiting...");
-  }
-  if (OLY_OKAY != init_state(&oly)) 
-  {
-    exit(EXIT_FAILURE);
-  }
-  
-  if (OLY_OKAY != get_str_hashlen(hash_me, &hash_length)) 
-  {
-    exit(EXIT_FAILURE);
-  }
+    if (argc != 2) {
+        printf("Takes 1 argument, to be hashed. exiting...");
+    }
+    
+    if (OLY_OKAY != get_str_hashlen(hash_me, &hash_length)) 
+    {
+        exit(EXIT_FAILURE);
+    }
 
-  if (OLY_OKAY != get_hashbits((const bit_sequence *)hash_me,
-        hash_length, (bit_sequence *)&input)) 
-  {
-    exit(EXIT_FAILURE);
-  }
-  if (OLY_OKAY != print_hex_from_charhash((const charhash *)&input, oly)) {
-    exit(EXIT_FAILURE);
-  }
-  printf("\n");
-  if (OLY_OKAY != hash_char_to_hash_size(
-        (const unsigned char *)input, (size_t **)&result)) 
-  {
-    exit(EXIT_FAILURE);
-  }
-  if (OLY_OKAY != print_hex_from_sizehash((const sizehash *)result, oly)) 
-  {
-      fprintf(stderr, "Test 2 failed.\n");
-      exit (EXIT_FAILURE);
-  }
-  printf("\n");
-  return EXIT_SUCCESS;
-  
+    if (OLY_OKAY != get_hashbits((const bit_sequence *)hash_me,
+            hash_length, (bit_sequence *)&input)) 
+    {
+        exit(EXIT_FAILURE);
+    }
+    if (OLY_OKAY != print_hex_from_charhash((const charhash *)&input, oly)) {
+        exit(EXIT_FAILURE);
+    }
+    printf("\n");
+    if (OLY_OKAY != hash_char_to_hash_size(
+            (const unsigned char *)input, (size_t **)&result)) 
+    {
+        exit(EXIT_FAILURE);
+    }
+    if (OLY_OKAY != print_hex_from_sizehash((const sizehash *)result, oly)) 
+    {
+        fprintf(stderr, "Test 2 failed.\n");
+        exit (EXIT_FAILURE);
+    }
+    printf("\n");
+    return EXIT_SUCCESS;
+    
 }
 

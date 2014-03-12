@@ -31,7 +31,9 @@
 
 #include "oly/state.h"
 #include "oly/hash.h"
+#include "oly/globals.h"
 #include "tests/tap/basic.h"
+#include "pvt_core.h"
 
 /* HashReturn Init(hashState *state, int hashbitlen);
 HashReturn Update(hashState *state, const BitSequence *data, 
@@ -44,7 +46,6 @@ main( int argc, char **argv ){
   char                *hash_me = argv[1];
   charhash            corned_beef;
   data_length         hash_length = 0;
-  OlyState           ostate;
   
   if (argc != 2) {
     printf("Please provide exactly 1 argument.  Exiting...\n");
@@ -60,7 +61,7 @@ main( int argc, char **argv ){
     exit(EXIT_FAILURE);
   }
 
-  if ( OLY_OKAY == print_hex_from_charhash(corned_beef, ostate)) 
+  if ( OLY_OKAY == print_hex_from_charhash(corned_beef, oly->state)) 
   {
     exit(EXIT_SUCCESS);
   }
