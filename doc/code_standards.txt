@@ -64,9 +64,8 @@ All files should be named after what they contain.  Headers should group functio
 
 Code
 ~~~~
-. Files for functions should be named after the function they contain.
-Ideally, one function per file.
-. Code should be in a subdirectory of +src/+ named after the header holding its details.  Thus, all wrapper functions are in +src/wrapper/+.
+. Group functions in files as needed.
+. Code should be in a subdirectory of +src/+ named after the header holding its details.  Thus, all core functions are in src/core
 . Tests are an exception.  C tests for functions should be prefixed with +c-+, 
   so a test for a function called +char_to_OChar+ would be in a file called +c-char_to_OChar.c+.  See +tests/oly/+ subdirs for examples.
 . See naming rules for <<_names_2,functions>> and <<_names_3,types>>, also.
@@ -125,7 +124,7 @@ For core and internal functions, Oly uses asserts to ensure the function always 
 
 Do not use strerror or perror.  Use strerror_r only.
 
-Oly initializes language as early as it can, as it is essential to state.handling.
+Oly initializes language as early as it can, as it is essential to healthy error handling.
 
 References:
 

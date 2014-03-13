@@ -96,13 +96,12 @@ Also look at naming rules for <a href="#_names_2">functions</a> and <a href="#_n
 <ol type="1">
 <li>
 <p>
-Files for functions should be named after the function they contain.
-Ideally, one function per file.
+Group functions in files as needed.
 </p>
 </li>
 <li>
 <p>
-Code should be in a subdirectory of <code>src/</code> named after the header holding its details.  Thus, all wrapper functions are in <code>src/wrapper/</code>.
+Code should be in a subdirectory of <code>src/</code> named after the header holding its details.  Thus, all core functions are in src/core
 </p>
 </li>
 <li>
@@ -259,7 +258,7 @@ See function <code>set_err</code>, <code>append_err_arg</code>, <code>log_err</c
 <h2><a name="_error_handling_2"></a>Error handling</h2>
 <p>For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs.</p>
 <p>Do not use strerror or perror.  Use strerror_r only.</p>
-<p>Oly initializes language as early as it can, as it is essential to state.handling.</p>
+<p>Oly initializes language as early as it can, as it is essential to healthy error handling.</p>
 <p>References:</p>
 <blockquote>
 <p>If the only possible errors are programmer errors, don&#8217;t return an error code, use asserts inside the function.</p>

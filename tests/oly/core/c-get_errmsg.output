@@ -1,4 +1,4 @@
-1..26
+1..25
 # From the smallest to the biggest error number.
 ok 1 - Item: -3, err: OLY_WARN_REINIT
 ok 2 - Item: -2, err: OLY_WARN_LIB
@@ -15,18 +15,17 @@ ok 12 - Item: 8, err: OLY_ERR_FILEIO
 ok 13 - Item: 9, err: OLY_ERR_READHEX
 ok 14 - Item: 10, err: OLY_ERR_HASH
 ok 15 - Item: 11, err: OLY_ERR_BADARG
-# One smaller than the smallest number.
+# One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.
 ok 16 - Number: 12
 # A few wildly outlandish numbers.  Powers of -17!
-ok 17 - Number: -17
-ok 18 - Number: 289
-ok 19 - Number: -4,913
-ok 20 - Number: 83,521
-ok 21 - Number: -1,419,857
+ok 17 - Number: 289
+ok 18 - Number: -4,913
+ok 19 - Number: 83,521
+ok 20 - Number: -1,419,857
 # Letters and inappropriate hex digits YES MWAHAHAHAHAHA
-ok 22 - Number: 97, submitted: a
-ok 23 - Number: 57, submitted: 9
-ok 24 - Number: 32, submitted:   (space)
-ok 25 - Number: 43,690, submitted: �
-ok 26 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
-# All 26 tests successful or skipped
+ok 21 - Number: 97, submitted: a
+ok 22 - Number: 57, submitted: 9
+ok 23 - Number: 32, submitted:   (space)
+ok 24 - Number: 43,690, submitted: �
+ok 25 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
+# All 25 tests successful or skipped

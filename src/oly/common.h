@@ -172,23 +172,23 @@ extern int errno;
 BEGIN_C_DECLS
 
 #define OCALLOC(type, num) \
-        ((type *) xcalloc ((num), sizeof(type)))
+        ((type *) ocalloc ((num), sizeof(type)))
 
 #define OMALLOC(type, num) \
-        ((type *) xmalloc ((num) * sizeof(type)))
+        ((type *) omalloc ((num) * sizeof(type)))
 #define OREALLOC(type, p, num) \
-        ((type *) xrealloc ((p), (num) * sizeof(type)))
+        ((type *) orealloc ((p), (num) * sizeof(type)))
 #define OFREE(stale) do { \
         if (stale) { free (stale);  stale = 0; } \
         } while (0)
 
 
-extern void *xcalloc    (size_t num, size_t size);
-extern void *xmalloc    (size_t num);
-extern void *xrealloc   (void *p, size_t num);
-extern char *xstrdup    (const char *string);
-extern char *xstrcat    (const char *string);
-extern char *xstrerror  (int errnum);
+extern void *ocalloc    (size_t num, size_t size);
+extern void *omalloc    (size_t num);
+extern void *orealloc   (void *p, size_t num);
+extern char *ostrdup    (const char *string);
+extern char *ostrcat    (const char *string);
+extern char *ostrerror  (int errnum);
 
 #if !HAVE_BASENAME
 extern char *basename   (const char *path);

@@ -36,10 +36,10 @@ I18N_TESTBUILDDIR					= $(abs_top_builddir)/tests/data/i18n/
 
 if SHA3_64BIT
 SHA3_SRC 		= lib/sha_three/KeccakF-1600-opt64.c
-SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m64 $(CFLAGS)
+SHA3_CFLAGS 	= -fomit-frame-pointer -O3 -g0 -m64 $(CFLAGS)
 else !SHA3_64BIT
-SHA3_SRC = lib/sha_three/KeccakF-1600-opt32.c
-SHA3_CFLAGS = -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
+SHA3_SRC 		= lib/sha_three/KeccakF-1600-opt32.c
+SHA3_CFLAGS 	= -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
 endif !SHA3_64BIT
 
 if DEBUG_MODE
@@ -84,18 +84,17 @@ dist_noinst_HEADERS			=	src/oly/break_rules.h \
 								src/pvt_state.h \
 								tests/tap/basic.h tests/tap/float.h \
 								tests/tap/macros.h
-AM_CFLAGS 						= -fstack-protector-all @ICU_CFLAGS@ \
-								@DEV_CFLAGS@ -Wall -Werror
+AM_CFLAGS 						= 	-fstack-protector-all @ICU_CFLAGS@ \
+									@DEV_CFLAGS@ -Wall 
 csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 
-bin_PROGRAMS							= csvparse 
+bin_PROGRAMS					= csvparse 
 
-noinst_PROGRAMS							= resex
+noinst_PROGRAMS					= resex
 
-resex_SOURCES							= tests/tools/resex.c 
+resex_SOURCES					= tests/tools/resex.c 
 
-resex_LDADD 							= liboly_dev.a libcore.a \
-										  @ICUIO_LIBS@ \
-										  @ICU_LIBS@ 
+resex_LDADD 					= liboly_dev.a libcore.a \
+									@ICUIO_LIBS@ @ICU_LIBS@ 
 
 
 resex_CPPFLAGS			= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
@@ -156,34 +155,10 @@ libcore_a_SOURCES				=	\
 								src/resources/new_resource.c \
 								src/resources/get_charset.c \
 								src/resources/get_locale.c \
-								src/state/check_liberror.c \
-								src/state/clear_liberror.c \
-								src/state/clear_state_message.c \
-								src/state/close_state.c \
-								src/state/get_message_data.c \
-								src/state/get_state_message.c \
-								src/state/get_status.c \
-								src/state/new_state.c \
-								src/state/print_state_message.c \
-								src/state/set_liberror.c \
-								src/state/set_state_message.c \
-								src/state/set_status.c \
-								src/core/cleanenv.c \
-								src/core/clean_io_open.c \
-								src/core/close_oly.c \
-								src/core/count_file_bytes.c \
-								src/core/cstr_to_ostr.c \
-								src/core/get_default_charset.c \
-								src/core/get_default_locale.c \
+								src/core/basic_functions.c \
 								src/core/get_errmsg.c \
-								src/core/init_io.c \
 								src/core/init_oly.c \
-								src/core/is_big_endian.c \
-								src/core/oly_timestamp.c \
-								src/core/ostr_to_cstr.c \
-								src/core/xstrdup.c \
-								src/core/xmalloc.c \
-								src/core/xstrerror.c 
+								src/core/oly_mem_string.c 
 
 libcore_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 

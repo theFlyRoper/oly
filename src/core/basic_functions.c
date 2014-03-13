@@ -1,4 +1,4 @@
-/* oly_timestamp.c - get currrent timestamp to the finest grain possible. License GPL2+ {{{
+/* basic_functions.c - core functionality that is used throughout oly. License GPL 2+{{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,62 @@
  * MA 02110-1301, USA.
  * }}} */
 
+#include "oly/common.h"
+#include "sys/types.h"
+#include "oly/core.h"
+#include "pvt_core.h"
+
+/* count_file_bytes.c - retrieves file size for malloc. */
+OlyStatus
+count_file_bytes(FILE *file, size_t *file_size)
+{
+    fpos_t pos;
+    set_status(oly->state, OLY_OKAY);
+    fseek(file, 0, SEEK_END);
+    if (fgetpos(file, &pos) != 0) 
+    {
+        set_status(oly->state, OLY_ERR_FILEIO);
+    }
+    *file_size = (size_t)ftello(file);
+    fseek(file, 0, SEEK_SET);
+    return get_status(oly->state);
+}
+
+/* transforms a c string to an OChar string. always null terminated. */
+OChar *
+cstr_to_ostr(OChar *o, size_t buffer_size, const char *c, OlyStatus *status)
+{
+    *status = OLY_OKAY;
+    c+buffer_size = '\0';
+#ifdef HAVE_UNICODE_USTDIO_H
+    return (OChar *)u_uastrncpy((UChar *)o, c, (buffer_size-1));
+#endif /* HAVE_UNICODE_USTDIO_H */
+}
+
+/* back the other way. */
+char  *ostr_to_cstr(char *c, size_t buffer_size, const OChar *o,
+        OlyStatus *status)
+{
+    *status = OLY_OKAY;
+    c+buffer_size = '\0';
+#ifdef HAVE_UNICODE_USTDIO_H
+    return u_austrncpy(c, (UChar *)o, (buffer_size-1));
+#endif /* HAVE_UNICODE_USTDIO_H */
+}
+
+
+/* The resource data charset for oly serves as the default charset throughout,
+ * since the Oly object is the primary object throughout the program. */
+OChar *get_default_charset( Oly *oly )
+{
+    return get_charset(oly->data);
+}
+
+OChar *get_default_locale( Oly *oly )
+{
+    return get_locale(oly->data);
+}
+
 /* http://linux.die.net/man/2/clock_gettime 
  * these top two require linking with realtime:
  * -lrt
@@ -25,9 +81,6 @@
  *  keep the postgres port dir in mind for replacements:
  * http://doxygen.postgresql.org/dir_fd8b95245ffcce776715f180c056b450.html
  * */
-#include "oly/common.h"
-#include "oly/state.h"
-#include "oly/core.h"
 
 #define SECONDS_TO_MILLISECONDS(time) ((double)time * 1000)
 #define MICROSECONDS_TO_MILLISECONDS(time) ((double)time * 0.001)

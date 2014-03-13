@@ -37,14 +37,11 @@ struct passwd;
 extern Oly *init_oly(const char *prog, 
         const char *datadir, const char *charset, const char *locale);
 
-OChar *get_errmsg( OlyStatus status );
-size_t   memory_left_now(void);
-size_t   getMemorySize( void );
+extern OChar *get_errmsg( OlyStatus status );
+extern size_t   memory_left_now(void);
+extern size_t   getMemorySize( void );
 
-
-extern int          is_big_endian (void);
-extern OlyStatus    count_file_bytes(FILE *file, size_t *file_size, 
-                        Oly *oly);
+extern OlyStatus count_file_bytes(FILE *file, size_t *file_size);
 
 extern double oly_timestamp( void ) ;
 extern OChar *get_default_charset(Oly *oly);

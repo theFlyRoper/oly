@@ -21,6 +21,17 @@
 #ifndef SRC_PVT_OLY_H
 #define SRC_PVT_OLY_H 1
 BEGIN_C_DECLS
+/* I tinkered with one-function-per-file for a while, perhaps much too long,
+ * and several points became clear.
+ *
+ * 1) makefile maintenance is a mess.
+ * 2) it requires private headers, such as this one, to enforce even a moderate level
+ *      of separation.  These are a pain to understand, IMHO.
+ * 3) static functions are p nice and not to be taken lightly.  Ditto static extern vars.
+ * 4) most of the successful libraries I looked at actually had many functions per file.
+ *
+ * Thus, I have decided Oly shall have sensible groups of functions in a single file.
+ */
 struct oly_struct {
     const OChar             *resource_dir;
     const OChar             *program_name;
@@ -28,12 +39,6 @@ struct oly_struct {
     OlyState                *state;
     OlyConfig               *config;
 };
-
-/* holds the cleaned environment for use with getenv() */
-extern void         clean_io_open(void);
-extern OlyStatus    cleanenv(void);
-extern void         close_oly(void);
-extern void         init_io(const char *locale, const char *codepage);
 
 END_C_DECLS
 #endif /* SRC_PVT_OLY_H */

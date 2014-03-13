@@ -20,20 +20,24 @@
 #include "oly/common.h"
 #include "oly/core.h"
 #include "pvt_core.h"
+/* the error handler stays separate to minimize the risk of errors
+ * within it.  Also, no other part of Oly needs access to the message
+ * data.
+ */
+static const ResourceData * const init_messages(void);
 
-static ResourceData *init_messages(void);
+static const ResourceData * message_data;
 /* do not call before initializing main oly structure. 
- * I do not see why this would be a problem unless 
+ * This seems unlikely unless the
  * main oly structure has been destroyed and if that
  * happened, there are bigger problems.
  */
 OChar *get_errmsg( OlyStatus status )
 {
-    static ResourceData *message_data = NULL;
     int len = 0;
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
-    OChar* result ;
+    OChar* result = NULL;
     if (message_data == NULL) 
     {
         message_data = init_messages();
@@ -64,7 +68,7 @@ OChar *get_errmsg( OlyStatus status )
     return result; 
 }
 
-ResourceData *init_messages(void)
+static const ResourceData * const init_messages(void)
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;

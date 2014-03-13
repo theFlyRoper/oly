@@ -39,7 +39,7 @@ get_rules(const char *ruleFileName, UErrorCode status) {
     ruleFileSize = ftell(file);
     fseek(file, 0, SEEK_SET);
     
-    char *ruleBufferC = (char *) xmalloc (ruleFileSize + 1);
+    char *ruleBufferC = (char *) omalloc (ruleFileSize + 1);
     ruleBufferC[ruleFileSize] = '\0';
     result = (long)fread(ruleBufferC, 1, ruleFileSize, file);
     if (result != ruleFileSize)  {
@@ -76,7 +76,7 @@ get_rules(const char *ruleFileName, UErrorCode status) {
 
     ufile = u_finit(file, NULL, NULL);
     u_frewind(ufile);
-    UChar *ruleSourceU = (UChar *) xmalloc ((ruleFileSize*sizeof(UChar))+1);
+    UChar *ruleSourceU = (UChar *) omalloc ((ruleFileSize*sizeof(UChar))+1);
     long charsRead = u_file_read(ruleSourceU, ruleFileSize, ufile);
     /* u_fprintf(u_stderr, "Chars read: \"%i\", File size: \"%i\"\n", charsRead, ruleFileSize); */
     ruleSourceU[charsRead] = 0;

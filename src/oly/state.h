@@ -59,25 +59,6 @@ typedef enum OlyStateUrgency_enum {
 
 
 OlyState *new_state( OlyResource *master );
-OlyStatus init_state( OlyState *s );
-OlyStatus close_state( OlyState *s );
-OlyStatus set_status( OlyState *state, const OlyStatus status );
-OlyStatus get_status( OlyState *state );
-OlyStatus check_liberror       (OlyState *state);
-
-ResourceData *get_message_data( OlyState *state);
-OChar   *get_state_message( OlyState *state );
-OChar   *get_error_message( OlyState *state, OlyStatus *err_status );
-OlyStatus buffer_message ( OlyState *state, OlyStateUrgency *urgency, 
-        const OChar *message, ... );
-OlyStatus flush_message_buffer ( OlyState *state );
-OlyStatus clear_liberror(OlyState *s);
-OlyStatus set_liberror(OlyState *s, int32_t err_val);
-OlyStatus check_liberror(OlyState *s);
-extern void oly_warning      (const OChar *message);
-extern void oly_error        (const OChar *message);
-extern void oly_fatal        (const OChar *message);
-
 END_C_DECLS
 
 #endif /* !OLY_STATE_H */

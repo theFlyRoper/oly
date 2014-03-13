@@ -35,7 +35,7 @@ int
 main( int argc, char **argv ){
     char            *locale = NULL, *locdir=(char*)PKGDATADIR,
                     *charset = NULL, c, *find_me = NULL, 
-                    *filename = OLY_RESOURCE, *progval = xstrdup(argv[0]);
+                    *filename = OLY_RESOURCE, *progval = ostrdup(argv[0]);
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
     OlyStatus        status  = OLY_OKAY;

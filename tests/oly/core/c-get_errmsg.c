@@ -65,7 +65,7 @@ main( int argc, char **argv ){
     }
     
     set_status(oly->state, OLY_OKAY);
-    plan( num_tests + 12 );
+    plan( num_tests + 11 );
 
     diag("From the smallest to the biggest error number.");
     for ( i = 0; (i<=num_tests); i++)
@@ -75,12 +75,12 @@ main( int argc, char **argv ){
                 (i-OLY_STATUS_OFFSET), results[i]);
     }
     
-    diag("One smaller than the smallest number.");
+    diag("One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.");
     is_unicode_string((results[unknown_num]), 
             get_errmsg(OLY_STATUS_MIN-1), "Number: %i",
             (i-OLY_STATUS_OFFSET));
     diag("A few wildly outlandish numbers.  Powers of -17!");
-    for ( i = -17; (i<1000000); (i)*=(-17) )
+    for ( i = 289; (i<1000000); (i)*=(-17) )
     {
         is_unicode_string(
                 results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
