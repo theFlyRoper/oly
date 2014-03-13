@@ -19,7 +19,7 @@
 
 #include "oly/common.h"
 #include "oly/break_rules.h"
-#include "oly/error.h"
+#include "oly/state.h"
 
 UBreakIterator* 
 get_rules(const char *ruleFileName, UErrorCode status) {
@@ -39,7 +39,7 @@ get_rules(const char *ruleFileName, UErrorCode status) {
     ruleFileSize = ftell(file);
     fseek(file, 0, SEEK_SET);
     
-    char *ruleBufferC = (char *) xmalloc (ruleFileSize + 1);
+    char *ruleBufferC = (char *) omalloc (ruleFileSize + 1);
     ruleBufferC[ruleFileSize] = '\0';
     result = (long)fread(ruleBufferC, 1, ruleFileSize, file);
     if (result != ruleFileSize)  {
@@ -53,12 +53,14 @@ get_rules(const char *ruleFileName, UErrorCode status) {
     const char*    encoding = ucnv_detectUnicodeSignature(
                            ruleSourceC, ruleFileSize, &signatureLength, &status);
     /* fprintf(stderr, "DetectUnicodeSig: \"%s\"\n", encoding); */
-    if (U_FAILURE(status)) {
+    if (U_FAILURE(status)) 
+    {
         fprintf(stderr, "\nCan not initialize ICU.  status = %s\n",
             u_errorName(status));
         exit(1);
     }
-    if(encoding!=NULL ){
+    if(encoding!=NULL )
+    {
         ruleSourceC  += signatureLength;
         ruleFileSize -= signatureLength;
     }
@@ -72,10 +74,9 @@ get_rules(const char *ruleFileName, UErrorCode status) {
         exit(1);
     }
 
-
     ufile = u_finit(file, NULL, NULL);
     u_frewind(ufile);
-    UChar *ruleSourceU = (UChar *) xmalloc ((ruleFileSize*sizeof(UChar))+1);
+    UChar *ruleSourceU = (UChar *) omalloc ((ruleFileSize*sizeof(UChar))+1);
     long charsRead = u_file_read(ruleSourceU, ruleFileSize, ufile);
     /* u_fprintf(u_stderr, "Chars read: \"%i\", File size: \"%i\"\n", charsRead, ruleFileSize); */
     ruleSourceU[charsRead] = 0;

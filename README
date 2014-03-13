@@ -1,0 +1,13 @@
+
+PORTING:
+Oly tries to use sensible types as much as possible, but does not always succeed.  Here are some key points:
+times are recorded as double, and measure the milliseconds since unix epoch (Jan 1, 1970, midnight GMT).  On x86_64, double is 8 bytes (at least on mine).  If available, it uses clock_gettime(CLOCK_REALTIME_COARSE)
+
+* Why not uint64_t?  Would be more precise but a pain to move around.  But then again, that applies to double too.
+* What about CLOCK_MONOTONIC?  Well, to use that, you have to figure out where it started counting from.  Not impossible but I want this timestamp to be crazy fast.
+
+
+TODO: need to add type checking to hash conversions.
+
+
+

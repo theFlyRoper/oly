@@ -23,13 +23,6 @@
 #if HAVE_CONFIG_H
 #  include "olyconf.h"
 #endif
-
-#ifdef HAVE_UNICODE_USTDIO_H
-#include <unicode/ustdio.h>
-typedef UChar ochar;
-#define OFILE UFILE
-#endif /* !HAVE_UNICODE_USTDIO_H */
-
 /** HEADERS */
 
 #include <stdio.h>
@@ -50,6 +43,46 @@ typedef UChar ochar;
 #if HAVE_SYS_WAIT_H
 #  include <sys/wait.h>
 #endif
+
+#include <time.h>
+
+#ifndef CLOCK_REALTIME_COARSE
+#define CLOCK_REALTIME CLOCK_REALTIME_COARSE
+#endif
+
+/* might as well.  Assert is a valuable function. */
+#include <assert.h>
+
+#ifdef HAVE_UNICODE_USTDIO_H
+#include <unicode/ustdio.h>
+#include <unicode/uclean.h>
+typedef UChar OChar;
+typedef UErrorCode LibErrorNum;
+#define OFILE UFILE
+#endif /* HAVE_UNICODE_USTDIO_H */
+
+#ifdef HAVE_UNICODE_URES_H
+#include <unicode/ures.h>
+typedef UResourceBundle ResourceData;
+#endif /* HAVE_UNICODE_URES_H */
+
+#ifdef HAVE_UNICODE_USTRING_H
+#include <unicode/ustring.h>
+#endif /* HAVE_UNICODE_USTRING_H */
+
+#ifdef HAVE_UNICODE_UCNV_H
+#include <unicode/ucnv.h>
+typedef UConverter OlyConverter;
+#endif /* HAVE_UNICODE_UCNV_H */
+
+#ifdef HAVE_UNICODE_UMSG_H
+#include <unicode/umsg.h>
+#endif /* HAVE_UNICODE_UMSG_H */
+
+#ifdef HAVE_UNICODE_USPREP_H
+#include <unicode/usprep.h>
+#endif /* HAVE_UNICODE_USPREP_H */
+
 #ifndef WIFEXITED
 #  define WIFEXITED(stat)       (((stat) & 0xff) == 0)
 #endif
@@ -84,9 +117,7 @@ extern int errno;
 #  define EXIT_FAILURE  1
 #endif
 
-#if !HAVE_BZERO && HAVE_MEMSET
-#  define bzero(buf, bytes)      ((void) memset (buf, 0, bytes))
-#endif
+#define bzero(buf, bytes)      ((void) memset (buf, 0, bytes))
 
 #if !HAVE_STRCHR
 #  define strchr index
@@ -139,24 +170,24 @@ extern int errno;
 /** MALLOC MACROS */
 BEGIN_C_DECLS
 
-#define XCALLOC(type, num) \
-        ((type *) xcalloc ((num), sizeof(type)))
+#define OCALLOC(type, num) \
+        ((type *) ocalloc ((num), sizeof(type)))
 
-#define XMALLOC(type, num) \
-        ((type *) xmalloc ((num) * sizeof(type)))
-#define XREALLOC(type, p, num) \
-        ((type *) xrealloc ((p), (num) * sizeof(type)))
-#define XFREE(stale) do { \
+#define OMALLOC(type, num) \
+        ((type *) omalloc ((num) * sizeof(type)))
+#define OREALLOC(type, p, num) \
+        ((type *) orealloc ((p), (num) * sizeof(type)))
+#define OFREE(stale) do { \
         if (stale) { free (stale);  stale = 0; } \
         } while (0)
 
 
-extern void *xcalloc    (size_t num, size_t size);
-extern void *xmalloc    (size_t num);
-extern void *xrealloc   (void *p, size_t num);
-extern char *xstrdup    (const char *string);
-extern char *xstrcat    (const char *string);
-extern char *xstrerror  (int errnum);
+extern void *ocalloc    (size_t num, size_t size);
+extern void *omalloc    (size_t num);
+extern void *orealloc   (void *p, size_t num);
+extern char *ostrdup    (const char *string);
+extern char *ostrcat    (const char *string);
+extern char *ostrerror  (int errnum);
 
 #if !HAVE_BASENAME
 extern char *basename   (const char *path);

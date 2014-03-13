@@ -1,0 +1,17 @@
+#! /bin/sh
+#
+# Copyright 2014 Oly Project
+#
+# See LICENSE for licensing terms.
+
+# Load the test library.
+. "$SOURCE/tap/libtap.sh"
+
+# Plan test.
+plan 4
+ok_program 'Zero args.' 1 'Please provide exactly 1 argument.  Exiting...' "$BUILD/oly/hash/c-get_hashbits"
+ok_program 'Two args.' 1 'Please provide exactly 1 argument.  Exiting...' "$BUILD/oly/hash/c-get_hashbits" "FOOM" "BOOM"
+ok_program 'One arg.' 0 '8fbdb5236c6335607e0fd885d9e4a5c99f8b6aeaef8001d069a6b528b42bdee5' "$BUILD/oly/hash/c-get_hashbits" "Periwinkle Twibbet Grip Alabaster"
+ok_program 'One arg.' 0 '54041ffced8c211bfbfa7b9543a16bf43b6887e96b667b5a5ea847f314a2b268' "$BUILD/oly/hash/c-get_hashbits" 'Argo'
+
+

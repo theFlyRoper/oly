@@ -55,6 +55,22 @@ dnl must run early, otherwise, we won't know our host system.
 
 AC_CANONICAL_HOST
 
+dnl Determine the platform type and cache its value.
+dnl Oly includes the source code for SHA-3, optimized 
+dnl for 32 bit or 64 bit systems, and hence, checks the 
+dnl host value.
+
+dnl by all means add more.  This is just a preemptive catch.
+dnl case $host in
+dnl  x86_64-*)
+dnl    AC_CONFIG_LINKS([src/oly/cpu.h:src/oly/cpu/x86_64.h]) ;;
+dnl    ;;
+dnl  *)
+dnl    AC_CONFIG_LINKS([src/oly/cpu.h:src/oly/cpu/ix86.h]) ;;
+dnl    ;;
+dnl esac
+
+
 dnl command line args 
 dnl these args have messages at the bottom, after AC_OUTPUT, because
 dnl that ensures they are very obvious to maintainers and users.
@@ -68,13 +84,16 @@ AC_ARG_ENABLE(debug,
                     [enable_debug=no])
 
 AS_IF([test "x$enable_debug" != xyes],,
-      [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])])
+      [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])
+       AC_SUBST(DEV_CFLAGS,["-ggdb3"])])
 
 AS_IF([test "x$enable_debug" != xyes],,
       [AC_SUBST(DEV_LIB,["liboly_dev.a"])])
 
-CFG_LOCALEDIR="${CFG_LOCALEDIR-${datadir}/locale/oly}"
+AM_CONDITIONAL(DEBUG_MODE,
+               [test "x$enable_debug" == xyes])
 
+CFG_PKGDATADIR="${CFG_PKGDATADIR-${datadir}/locale/oly}"
 
 dnl Checks for programs.
 AC_PROG_CPP
@@ -98,15 +117,22 @@ dnl ICUIO_LIBS and ICULAYOUT_LIBS
 
 OLY_CHECK_ICU([4.8],[],[])
 
+dnl time checks.
+AC_SEARCH_LIBS([clock_gettime],[rt posix4])
+
+AC_CHECK_LIB([yaml], [yaml_get_version])
+
 dnl checks for header files 
-AC_STDC_HEADERS
-AC_HEADER_SYS_WAIT
+AC_INCLUDES_DEFAULT()
+
+AC_HEADER_SYS_WAIT()
 
 dnl checks for ICU headers at the end; check as needed.
 dnl                  sqlite3.h \
-AC_CHECK_HEADERS([locale.h \
-                  paths.h \
-                  unicode/ustdio.h])
+AC_CHECK_HEADERS([locale.h paths.h sys/stat.h time.h \
+                  unicode/ustdio.h unicode/umsg.h unicode/ures.h \
+                  unicode/ubrk.h unicode/ucnv.h \
+                  unicode/ustring.h unicode/usprep.h])
 
 AC_TYPE_PID_T
 
@@ -125,6 +151,7 @@ AC_CHECK_FUNCS([calloc \
                 setlocale])
 
 AC_REPLACE_FUNCS([basename \
+                  gettimeofday \
                   strsignal \
                   strtok_r \
                   waitpid])
@@ -135,6 +162,9 @@ AC_CHECK_SIZEOF([size_t])
 AS_IF([test "x$ac_cv_sizeof_size_t" = x],
       [AC_SUBST(ac_cv_sizeof_size_t,[4])],
       [])
+
+AM_CONDITIONAL(SHA3_64BIT,
+               [test "x$ac_cv_sizeof_size_t" = x8])
 
 AC_C_CONST
 AC_C_VOLATILE
@@ -191,15 +221,21 @@ AC_SUBST(ac_aux_dir)
 AC_SUBST([OLY_RESOURCE],[oly_lang])
 AC_DEFINE([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])
 
-AC_CONFIG_COMMANDS([i18n],[$MKDIR_P i18n tests/data/i18n .i18ndeps],[])
-
 AC_OUTPUT
 
 dnl this is a graceful way to ensure your messages end up appearing after all
 dnl the configure tests and output.
 
+dnl to get some space between end of script and here.
+AS_ECHO([])
+
+AS_ECHO([=================================])
 AS_IF([test "x$enable_debug" != xyes],
       [],
-      [AC_MSG_NOTICE([Developer debug mode enabled.])])
+      [AC_MSG_NOTICE([Developer debug mode enabled.  Not for final builds.])])
+AC_MSG_NOTICE([size_t is $ac_cv_sizeof_size_t bytes wide.])
+AS_ECHO([=================================])
+
+dnl AS_BOX(["AS_ESCAPE([$PKGCONFIG = ])AS_ESCAPE([$PKGCONFIG],[""])"])
 
 

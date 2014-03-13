@@ -17,17 +17,7 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
-
 #include "oly/common.h"
-
-#include <unicode/ustdio.h>
-#include <unicode/ustring.h>
-#include <unicode/ubrk.h>
-#include <unicode/udata.h>
-#include <unicode/ures.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,78 +26,34 @@
 #include <unistd.h>
 #include <assert.h>
 
-#include "oly/output.h"
-#include "oly/error.h"
-#include "oly/list.h"
-#include "oly/syntax.h"
-#include "oly/oly.h"
-#include "oly/builtin.h"
 #include "oly/core.h"
+#include "oly/output.h"
 #include "oly/break_rules.h"
-/* u_stdout, u_stdin and u_stderr and program_name are defined in error.c */
-
+#include "oly/globals.h"
+#include "pvt_core.h"
 /* MAIN */
 int
-main( int argc, char **argv ){
-  Oly             *oly      = oly_new ();
-  int32_t         len,optc  = 0;
-  char            rules_file_name[] = "./tests/data/supabreak.txt";
-  ochar           line[BUFSIZ];     /* main buffer */
-  ochar           *liner;
-  char            *optionError;     
-  char            *locale;
-  char            *dbg_var;
-  char            c_line[] = "Rusty,\"Block, Head\", Blomster, \"3.1415,92,9\"";
-  char            c_line2[] = "\"Lorem, ipsum\",Blomster,\"1.41\",Yorgle";
-  int             i=1;
-  Oly_Status      o_status  = OLY_OKAY;
-  UErrorCode      u_status  = U_ZERO_ERROR; 
-  UBreakIterator  *boundary;
-
-  atexit (close_oly);
-  program_name      = argv[0];
-
-  /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
-   * for the internal app data for ICU, which lives in a shared library. */
-  u_setDataDirectory(LOCALEDIR);
-  printf("Data directory set to : %s\n", LOCALEDIR);
-  locale = oget_user_locale(); 
+main( int argc, char **argv )
+{
+    OlyStatus        status  = OLY_OKAY;
+    char            *locale = NULL, *charset = NULL;
 #ifdef OLYDEV
-  printf("\n-- top of program, locale is : %s\n", locale);
-#endif /* OLYDEV */
-  printf("Stuff before init all.\n");
-  init_all(oly, locale);
-  printf("Stuff after init all.\n");
-#ifdef OLYDEV
-  printf("\n-- after init --\n");
+    res_disp_flag   flag;
 #endif /* OLYDEV */
 
-  boundary = get_rules(rules_file_name, u_status);
-  if (U_FAILURE(u_status)) {
-    printf("Could not open!\n");
-  }
-  
-  OlyResources = ures_open(OLY_RESOURCE, locale, &u_status); 
-  if (U_FAILURE(u_status)) {
-    printf("Could not open! status: %s\n", u_errorName(u_status));
-  }
-  printf("Examining: %s\n", c_line);
-  u_uastrcpy(line, c_line);
+    oly = init_oly(argv[0], PKGDATADIR, charset, locale);
 
-  ubrk_setText(boundary, line, u_strlen(line), &u_status);
-  len = NULL;
-
-  liner = ures_getStringByKey(OlyResources, "OlyUsage", &len, &u_status );
-  u_file_write(liner, len, u_stdout);
 #ifdef OLYDEV
-  list_package_locales(OLY_RESOURCE);
+    init_res_disp_flag(&flag);
+    list_package_locales(OLY_RESOURCE);
+    list_table_resources(get_resource_data(oly->data), &flag, 0);
 #endif /* OLYDEV */
   
-  if (U_FAILURE(u_status)) {
-    return EXIT_FAILURE;
-  } else {
-    return EXIT_SUCCESS;
-  }
+    if (status != OLY_OKAY) {
+        return EXIT_FAILURE;
+    } else {
+        return EXIT_SUCCESS;
+    }
 }
 
 

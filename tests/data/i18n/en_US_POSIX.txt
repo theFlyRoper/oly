@@ -1,0 +1,7 @@
+// Copyright (c) 2014 Oly Project
+// See LICENSE file for details
+en_US_POSIX:table {
+    all:alias { "/oly_lang/root" }
+}
+      
+// vim: set syntax=javascript:

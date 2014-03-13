@@ -31,6 +31,11 @@
 #define TAP_BASIC_H 1
 
 #include <tests/tap/macros.h>
+#include <unicode/ustdio.h>
+#include <unicode/ustring.h>
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
 #include <stdarg.h>             /* va_list */
 #include <stddef.h>             /* size_t */
 
@@ -45,6 +50,19 @@
 
 BEGIN_DECLS
 
+
+/* UFILE IO */
+extern UFILE *u_stderr;
+extern UFILE *u_stdout;
+extern UFILE *u_stdin;
+
+
+void is_unicode_string(const UChar *wanted, const UChar *seen, 
+        const char *format, ...)
+    __attribute__((__format__(u_vfprintf, 3, 4)));
+UChar *char_to_utf8(const char *input);
+void u_diag(const char *format, ...)
+    __attribute__((__nonnull__, __format__(printf, 1, 2)));
 /*
  * The test count.  Always contains the number that will be used for the next
  * test status.

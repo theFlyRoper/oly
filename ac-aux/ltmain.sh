@@ -4266,8 +4266,8 @@ int setenv (const char *, const char *, int);
 # define _O_BINARY 0
 #endif
 
-#define XMALLOC(type, num)      ((type *) xmalloc ((num) * sizeof(type)))
-#define XFREE(stale) do { \
+#define OMALLOC(type, num)      ((type *) xmalloc ((num) * sizeof(type)))
+#define OFREE(stale) do { \
   if (stale) { free ((void *) stale); stale = 0; } \
 } while (0)
 
@@ -4362,7 +4362,7 @@ main (int argc, char *argv[])
   int i;
 
   program_name = (char *) xstrdup (base_name (argv[0]));
-  newargz = XMALLOC (char *, argc + 1);
+  newargz = OMALLOC (char *, argc + 1);
 
   /* very simple arg parsing; don't want to rely on getopt
    * also, copy all non cwrapper options to newargz, except
@@ -4430,7 +4430,7 @@ EOF
   lt_debugprintf (__FILE__, __LINE__,
                   "(main) found exe (after symlink chase) at: %s\n",
 		  actual_cwrapper_path);
-  XFREE (tmp_pathspec);
+  OFREE (tmp_pathspec);
 
   actual_cwrapper_name = xstrdup (base_name (actual_cwrapper_path));
   strendzap (actual_cwrapper_path, actual_cwrapper_name);
@@ -4438,7 +4438,7 @@ EOF
   /* wrapper name transforms */
   strendzap (actual_cwrapper_name, ".exe");
   tmp_pathspec = lt_extend_str (actual_cwrapper_name, ".exe", 1);
-  XFREE (actual_cwrapper_name);
+  OFREE (actual_cwrapper_name);
   actual_cwrapper_name = tmp_pathspec;
   tmp_pathspec = 0;
 
@@ -4446,7 +4446,7 @@ EOF
   target_name = xstrdup (base_name (TARGET_PROGRAM_NAME));
   strendzap (target_name, ".exe");
   tmp_pathspec = lt_extend_str (target_name, ".exe", 1);
-  XFREE (target_name);
+  OFREE (target_name);
   target_name = tmp_pathspec;
   tmp_pathspec = 0;
 
@@ -4457,7 +4457,7 @@ EOF
 
 	    cat <<EOF
   newargz[0] =
-    XMALLOC (char, (strlen (actual_cwrapper_path) +
+    OMALLOC (char, (strlen (actual_cwrapper_path) +
 		    strlen ("$objdir") + 1 + strlen (actual_cwrapper_name) + 1));
   strcpy (newargz[0], actual_cwrapper_path);
   strcat (newargz[0], "$objdir");
@@ -4473,7 +4473,7 @@ EOF
 
   /* DO want the lt- prefix here if it exists, so use target_name */
   lt_argv_zero = lt_extend_str (tmp_pathspec, target_name, 1);
-  XFREE (tmp_pathspec);
+  OFREE (tmp_pathspec);
   tmp_pathspec = NULL;
 EOF
 
@@ -4496,9 +4496,9 @@ EOF
 	    esac
 
 	    cat <<"EOF"
-  XFREE (target_name);
-  XFREE (actual_cwrapper_path);
-  XFREE (actual_cwrapper_name);
+  OFREE (target_name);
+  OFREE (actual_cwrapper_path);
+  OFREE (actual_cwrapper_name);
 
   lt_setenv ("BIN_SH", "xpg4"); /* for Tru64 */
   lt_setenv ("DUALCASE", "1");  /* for MSK sh */
@@ -4644,7 +4644,7 @@ find_executable (const char *wrapper)
       concat_name = xstrdup (wrapper);
       if (check_executable (concat_name))
 	return concat_name;
-      XFREE (concat_name);
+      OFREE (concat_name);
     }
   else
     {
@@ -4654,7 +4654,7 @@ find_executable (const char *wrapper)
 	  concat_name = xstrdup (wrapper);
 	  if (check_executable (concat_name))
 	    return concat_name;
-	  XFREE (concat_name);
+	  OFREE (concat_name);
 	}
 #if defined (HAVE_DOS_BASED_FILE_SYSTEM)
     }
@@ -4689,7 +4689,7 @@ find_executable (const char *wrapper)
                               nonnull (strerror (errno)));
 		  tmp_len = strlen (tmp);
 		  concat_name =
-		    XMALLOC (char, tmp_len + 1 + strlen (wrapper) + 1);
+		    OMALLOC (char, tmp_len + 1 + strlen (wrapper) + 1);
 		  memcpy (concat_name, tmp, tmp_len);
 		  concat_name[tmp_len] = '/';
 		  strcpy (concat_name + tmp_len + 1, wrapper);
@@ -4697,14 +4697,14 @@ find_executable (const char *wrapper)
 	      else
 		{
 		  concat_name =
-		    XMALLOC (char, p_len + 1 + strlen (wrapper) + 1);
+		    OMALLOC (char, p_len + 1 + strlen (wrapper) + 1);
 		  memcpy (concat_name, p, p_len);
 		  concat_name[p_len] = '/';
 		  strcpy (concat_name + p_len + 1, wrapper);
 		}
 	      if (check_executable (concat_name))
 		return concat_name;
-	      XFREE (concat_name);
+	      OFREE (concat_name);
 	    }
 	}
       /* not found in PATH; assume curdir */
@@ -4714,14 +4714,14 @@ find_executable (const char *wrapper)
     lt_fatal (__FILE__, __LINE__, "getcwd failed: %s",
               nonnull (strerror (errno)));
   tmp_len = strlen (tmp);
-  concat_name = XMALLOC (char, tmp_len + 1 + strlen (wrapper) + 1);
+  concat_name = OMALLOC (char, tmp_len + 1 + strlen (wrapper) + 1);
   memcpy (concat_name, tmp, tmp_len);
   concat_name[tmp_len] = '/';
   strcpy (concat_name + tmp_len + 1, wrapper);
 
   if (check_executable (concat_name))
     return concat_name;
-  XFREE (concat_name);
+  OFREE (concat_name);
   return NULL;
 }
 
@@ -4767,7 +4767,7 @@ chase_symlinks (const char *pathspec)
 		    tmp_pathspec, nonnull (strerror (errno)));
 	}
     }
-  XFREE (tmp_pathspec);
+  OFREE (tmp_pathspec);
 
   if (!has_symlinks)
     {
@@ -4864,11 +4864,11 @@ lt_setenv (const char *name, const char *value)
     setenv (name, str, 1);
 #else
     int len = strlen (name) + 1 + strlen (value) + 1;
-    char *str = XMALLOC (char, len);
+    char *str = OMALLOC (char, len);
     sprintf (str, "%s=%s", name, value);
     if (putenv (str) != EXIT_SUCCESS)
       {
-        XFREE (str);
+        OFREE (str);
       }
 #endif
   }
@@ -4882,7 +4882,7 @@ lt_extend_str (const char *orig_value, const char *add, int to_end)
     {
       int orig_value_len = strlen (orig_value);
       int add_len = strlen (add);
-      new_value = XMALLOC (char, add_len + orig_value_len + 1);
+      new_value = OMALLOC (char, add_len + orig_value_len + 1);
       if (to_end)
         {
           strcpy (new_value, orig_value);
@@ -4918,7 +4918,7 @@ lt_update_exe_path (const char *name, const char *value)
           new_value[len-1] = '\0';
         }
       lt_setenv (name, new_value);
-      XFREE (new_value);
+      OFREE (new_value);
     }
 }
 
@@ -4933,7 +4933,7 @@ lt_update_lib_path (const char *name, const char *value)
     {
       char *new_value = lt_extend_str (getenv (name), value, 0);
       lt_setenv (name, new_value);
-      XFREE (new_value);
+      OFREE (new_value);
     }
 }
 
@@ -4979,7 +4979,7 @@ prepare_spawn (char **argv)
     ;
 
   /* Allocate new argument vector.  */
-  new_argv = XMALLOC (char *, argc + 1);
+  new_argv = OMALLOC (char *, argc + 1);
 
   /* Put quoted arguments into the new argument vector.  */
   for (i = 0; i < argc; i++)
@@ -5015,7 +5015,7 @@ prepare_spawn (char **argv)
 	  if (quote_around)
 	    length += backslashes + 1;
 
-	  quoted_string = XMALLOC (char, length + 1);
+	  quoted_string = OMALLOC (char, length + 1);
 
 	  p = quoted_string;
 	  backslashes = 0;

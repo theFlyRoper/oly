@@ -41,7 +41,7 @@ olycflags		= -O3 -mtune=native -march=native -Wall
 
 olylibdir		= $(top_builddir)/oly/
 
-DEFS 									= -DLOCALEDIR=\"$(localedir)\" \
+DEFS 									= -DPKGDATADIR=\"$(localedir)\" \
 												@DEFS@ @DEV_DEF@
 
 AM_CPPFLAGS						= $(olycppflags)

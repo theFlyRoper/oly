@@ -17,6 +17,17 @@ ifdef::is_fossil[]
 link:/doc/tip/doc/index.wiki[Back to Home.]
 endif::is_fossil[]
 
+State/Error Handling
+--------------------
+Oly has a struct called OlyState which contains a pointer to a function called handler. 
+When you start a function, call _set_state_handler(<state struct>, <handler function address>)_ and that sets the state handler.
+
+When oly needs to split into threads, be sure to initialize one instance of a state handler for each thread.  Obviously we do not want to change the handler halfway through a lengthy procedure!
+
+There is a function in the core part of the program called oly_fatal, which kills the program and displays very basic information.  This function is for emergencies, initialization errors and suchlike. 
+It is not for general use.  Use the OlyState struct and its supporting 
+functions for internal errors.  If you are writing a function that must have a handler before the general handling functions are available, add your function to the list of functions that call it in the code for oly_fatal.  It can be found at _src/core/oly_fatal.c_.
+
 Language and i18n initialization
 --------------------------------
 This section is first because I've done this research a good four times and still haven't come up with a better answer than what follows.  
@@ -38,7 +49,8 @@ After this research I have decided I will fish up the "LANGUAGE" environment var
 Names
 -----
 . No spaces in filenames.
-. Lower case only, except for macros.
+. functions and variables are lower case only.
+. typedefs are CamelCased, with a leading capital.
 . Words separated by underscores.
 . Prefix with "oly_" if risk of confusing with system function.
 . After prefix, lead with verb appropriate to action.
@@ -52,11 +64,10 @@ All files should be named after what they contain.  Headers should group functio
 
 Code
 ~~~~
-. Files for functions should be named after the function they contain.
-Ideally, one function per file.
-. Code should be in a subdirectory of +src/+ named after the header holding its details.  Thus, all wrapper functions are in +src/wrapper/+.
+. Group functions in files as needed.
+. Code should be in a subdirectory of +src/+ named after the header holding its details.  Thus, all core functions are in src/core
 . Tests are an exception.  C tests for functions should be prefixed with +c-+, 
-  so a test for a function called +char_to_ochar+ would be in a file called +c-char_to_ochar.c+.  See +tests/oly/+ subdirs for examples.
+  so a test for a function called +char_to_OChar+ would be in a file called +c-char_to_OChar.c+.  See +tests/oly/+ subdirs for examples.
 . See naming rules for <<_names_2,functions>> and <<_names_3,types>>, also.
 
 Headers
@@ -81,18 +92,18 @@ Names
 ** logging something? Use +log_+.
 ** closing? Use +free_+.
 ** applying/performing something? Use +do_+.  Read the next item, though.  This is where the rule breaks a bit.
-** Don't use +do_+ where you are not performing an action based on an argument. For example, there is no verb in front of +char_to_ochar+ because it does not apply the char to the ochar or vice versa.
+** Don't use +do_+ where you are not performing an action based on an argument. For example, there is no verb in front of +char_to_OChar+ because it does not apply the char to the OChar or vice versa.
 ** converting should have no prefix and `_to_` between the items converted.  For limit parameter functions (think of +strncpy+ vs +strcpy+), use `_nto_` wherever there is a limit parameter.
 
 Error handling
 ~~~~~~~~~~~~~~
-Oly was designed using http://site.icu-project.org/[ICU], and Oly's error handling uses ICU's localization systems.  So, when you check for errors, follow this process:
+Oly was designed using http://site.icu-project.org/[ICU], and Oly's state.handling uses ICU's localization systems.  So, when you check for errors, follow this process:
 
-. Define a local variable of type +oly_status+. 
+. Define a local variable of type +OlyStatus_t+. 
 .. A value less than zero indicates a warning state.
 .. +OLY_OKAY+ = 0.  Zero indicates everything is fine.
 .. A value greater than zero indicates an error and should either be handled or displayed.
-. Try to find an error that describes what problem you have found.  If you cannot find one, add a new +OLY_ERR_<whatever>+ to +src/oly/oly_status.h+.
+. Try to find an error that describes what problem you have found.  If you cannot find one, add a new +OLY_ERR_<whatever>+ to +src/oly/OlyStatus_t.h+.
 . These special error states indicate an external problem:
 .. +OLY_ERR_SYSTEM+: Check system error status and display any messages from it.
 .. +OLY_ERR_LIB+: Check Oly's primary build library error status and display any messages.  Currently, Oly builds against ICU only, so this displays ICU errors.
@@ -105,9 +116,7 @@ For designing structures, go read Eric S. Raymond's essay on http://www.catb.org
 
 Names
 ~~~~~
-Types should use lower case exclusively.
-
-If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "+io.h+", but rather "oly_io.h".
+Typedefs shall be CamelCased, with leading capitals.
 
 Error handling
 --------------
@@ -115,11 +124,11 @@ For core and internal functions, Oly uses asserts to ensure the function always 
 
 Do not use strerror or perror.  Use strerror_r only.
 
-Oly initializes language as early as it can, as it is essential to error handling.
+Oly initializes language as early as it can, as it is essential to healthy error handling.
 
 References:
 
-[quote, 'http://stackoverflow.com/questions/385975/error-handling-in-c-code/387123#387123[AShelly Stack Overflow User]']
+[quote, 'http://stackoverflow.com/questions/385975/state.handling-in-c-code/387123#387123[AShelly Stack Overflow User]']
 ____
 If the only possible errors are programmer errors, don't return an error code, use asserts inside the function.
 

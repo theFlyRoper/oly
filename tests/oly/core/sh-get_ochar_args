@@ -1,0 +1,15 @@
+#! /bin/sh
+#
+# Copyright 2014 Oly Project
+#
+# See LICENSE for licensing terms.
+
+# Load the test library.
+. "$SOURCE/tap/libtap.sh"
+
+# Plan test.
+plan 3
+ok_program 'Zero args.' 0 '' "$BUILD/oly/core/c-get_OChar_args"
+ok_program 'One arg.' 0 'Argo!' "$BUILD/oly/core/c-get_OChar_args" "Argo"
+ok_program 'Many args.' 0 'Argo!Nautica!help!vee!beee!' "$BUILD/oly/core/c-get_OChar_args" 'Argo' 'Nautica' 'help' 'vee' 'beee'
+

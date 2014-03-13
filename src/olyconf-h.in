@@ -12,8 +12,14 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
+/* Define to 1 if you have the `gettimeofday' function. */
+#undef HAVE_GETTIMEOFDAY
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `yaml' library (-lyaml). */
+#undef HAVE_LIBYAML
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
@@ -67,8 +73,29 @@
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #undef HAVE_SYS_WAIT_H
 
+/* Define to 1 if you have the <time.h> header file. */
+#undef HAVE_TIME_H
+
+/* Define to 1 if you have the <unicode/ubrk.h> header file. */
+#undef HAVE_UNICODE_UBRK_H
+
+/* Define to 1 if you have the <unicode/ucnv.h> header file. */
+#undef HAVE_UNICODE_UCNV_H
+
+/* Define to 1 if you have the <unicode/umsg.h> header file. */
+#undef HAVE_UNICODE_UMSG_H
+
+/* Define to 1 if you have the <unicode/ures.h> header file. */
+#undef HAVE_UNICODE_URES_H
+
+/* Define to 1 if you have the <unicode/usprep.h> header file. */
+#undef HAVE_UNICODE_USPREP_H
+
 /* Define to 1 if you have the <unicode/ustdio.h> header file. */
 #undef HAVE_UNICODE_USTDIO_H
+
+/* Define to 1 if you have the <unicode/ustring.h> header file. */
+#undef HAVE_UNICODE_USTRING_H
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H

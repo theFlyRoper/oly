@@ -1,0 +1,271 @@
+<title>Oly Code Standards</title>
+<nowiki>
+<div id="asciidoc">
+<h1>Oly Code Standards</h1>
+<p>
+<tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
+version 3b082c0e2a,
+2014-03-12
+</p>
+<hr>
+<h2><a name="_state_error_handling"></a>State/Error Handling</h2>
+<p>Oly has a struct called OlyState which contains a pointer to a function called handler.
+When you start a function, call <em>set_state_handler(&lt;state struct&gt;, &lt;handler function address&gt;)</em> and that sets the state handler.</p>
+<p>When oly needs to split into threads, be sure to initialize one instance of a state handler for each thread.  Obviously we do not want to change the handler halfway through a lengthy procedure!</p>
+<p>There is a function in the core part of the program called oly_fatal, which kills the program and displays very basic information.  This function is for emergencies, initialization errors and suchlike.
+It is not for general use.  Use the OlyState struct and its supporting
+functions for internal errors.  If you are writing a function that must have a handler before the general handling functions are available, add your function to the list of functions that call it in the code for oly_fatal.  It can be found at <em>src/core/oly_fatal.c</em>.</p>
+<hr>
+<h2><a name="_language_and_i18n_initialization"></a>Language and i18n initialization</h2>
+<p>This section is first because I&#8217;ve done this research a good four times and still haven&#8217;t come up with a better answer than what follows.</p>
+<p>Gettext, the GNU standard program message dictionary, uses <a href="https://www.gnu.org/software/gettext/manual/gettext.html#Locale-Environment-Variables">several environment variables</a> to determine what language the user sees:</p>
+<ol type="1">
+<li>
+<p>
+LANGUAGE, a colon separated (":") list of two character language codes, representing the user&#8217;s preferred languages, in order.
+</p>
+</li>
+<li>
+<p>
+LC_ALL, the posix standard marker.
+</p>
+</li>
+<li>
+<p>
+LC_&lt;xxx&gt;, where &lt;xxx&gt; refers to one of the numerous subcategories for localization.
+</p>
+</li>
+<li>
+<p>
+Last, the LANG variable.
+</p>
+</li>
+</ol>
+<p>Having looked in the ICU source, I found many circular references culminating in a function that returns the system default locale ID.  It&#8217;s a twisty maze of calls to various functions, but some digging unearthed one called uprv_getDefaultLocaleID(), which can be found in source/common/putil.c at line 1444. As it happens, it calls ANOTHER function called uprv_getPOSIXIDForCategory, which I am glad I dug up.  Looks like that one behaves reasonably, all things
+considered.</p>
+<p>It has distinct behaviors for several OSes and factors in which posix IDs are most consistent.  In POSIX, It uses setlocale() with either of these categories: LC_MESSAGES, LC_CTYPE first.  Then, if they don&#8217;t return anything, it looks at getenv("LC_ALL").</p>
+<p>After this research I have decided I will fish up the "LANGUAGE" environment variable if available, then use ICU&#8217;s default if it is not.</p>
+<hr>
+<h2><a name="_names"></a>Names</h2>
+<ol type="1">
+<li>
+<p>
+No spaces in filenames.
+</p>
+</li>
+<li>
+<p>
+functions and variables are lower case only.
+</p>
+</li>
+<li>
+<p>
+typedefs are CamelCased, with a leading capital.
+</p>
+</li>
+<li>
+<p>
+Words separated by underscores.
+</p>
+</li>
+<li>
+<p>
+Prefix with "oly_" if risk of confusing with system function.
+</p>
+</li>
+<li>
+<p>
+After prefix, lead with verb appropriate to action.
+</p>
+</li>
+<li>
+<p>
+Macros, when used, should be all caps, thus: <code>OLY_HAS_THISOPTION</code>.  Macros are to be avoided, though.  Prefer typedefs and suchlike.
+</p>
+</li>
+<li>
+<p>
+Also look at naming rules for <a href="#_names_2">functions</a> and <a href="#_names_3">types</a>.
+</p>
+</li>
+</ol>
+<hr>
+<h2><a name="_c_language_files_code_and_headers"></a>C language files (code and headers)</h2>
+<p>All files should be named after what they contain.  Headers should group functions by purpose such as <code>wrapper.h</code> (holds wrapper functions around system interfaces).  Only exceptions are <code>olyconf.h</code> (autoconf header) and <code>common.h</code> (cross-compatibility header).</p>
+<h3><a name="_code"></a>Code</h3>
+<ol type="1">
+<li>
+<p>
+Group functions in files as needed.
+</p>
+</li>
+<li>
+<p>
+Code should be in a subdirectory of <code>src/</code> named after the header holding its details.  Thus, all core functions are in src/core
+</p>
+</li>
+<li>
+<p>
+Tests are an exception.  C tests for functions should be prefixed with <code>c-</code>,
+  so a test for a function called <code>char_to_OChar</code> would be in a file called <code>c-char_to_OChar.c</code>.  See <code>tests/oly/</code> subdirs for examples.
+</p>
+</li>
+<li>
+<p>
+See naming rules for <a href="#_names_2">functions</a> and <a href="#_names_3">types</a>, also.
+</p>
+</li>
+</ol>
+<h3><a name="_headers"></a>Headers</h3>
+<ol type="1">
+<li>
+<p>
+Headers should be referenced with the directory prefix <code>oly/</code>.  This is a simple clear rule to avoid separate rules for headers to be installed vs. non-installed headers.
+</p>
+</li>
+<li>
+<p>
+All functions in each header should build as a convenience library.  See <code>noinst_LIBRARIES</code> in the root directory <code>Makefile.am</code> file for examples.
+</p>
+</li>
+<li>
+<p>
+Headers should list all functions in their subdirectory.  Every file in <code>src/wrapper/</code> should have one corresponding row in <code>oly/wrapper.h</code>.
+</p>
+</li>
+<li>
+<p>
+For struct definitions and extern objects (such as <code>ostdout</code>, the oly <code>stdout</code> wrapper object), add a comment telling which C file it can be found in.
+</p>
+</li>
+</ol>
+<hr>
+<h2><a name="_functions"></a>Functions</h2>
+<p>If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "<code>io.h</code>", but rather "oly_io.h".</p>
+<p>Functions should use lower case exclusively.</p>
+<h3><a name="_names_2"></a>Names</h3>
+<ul>
+<li>
+<p>
+initializing/opening? Use <code>init_</code> or <code>open_</code>.  This also applies to files, so file openers are prefixed with <code>open_</code>.
+</p>
+</li>
+<li>
+<p>
+retrieving something? Use <code>get_</code>.
+</p>
+</li>
+<li>
+<p>
+sending/putting/setting something? Use <code>put_</code> or <code>set_</code>.
+</p>
+</li>
+<li>
+<p>
+displaying something? Use <code>display_</code> or <code>show_</code>.
+</p>
+</li>
+<li>
+<p>
+logging something? Use <code>log_</code>.
+</p>
+</li>
+<li>
+<p>
+closing? Use <code>free_</code>.
+</p>
+</li>
+<li>
+<p>
+applying/performing something? Use <code>do_</code>.  Read the next item, though.  This is where the rule breaks a bit.
+</p>
+</li>
+<li>
+<p>
+Don&#8217;t use <code>do_</code> where you are not performing an action based on an argument. For example, there is no verb in front of <code>char_to_OChar</code> because it does not apply the char to the OChar or vice versa.
+</p>
+</li>
+<li>
+<p>
+converting should have no prefix and <code>_to_</code> between the items converted.  For limit parameter functions (think of <code>strncpy</code> vs <code>strcpy</code>), use <code>_nto_</code> wherever there is a limit parameter.
+</p>
+</li>
+</ul>
+<h3><a name="_error_handling"></a>Error handling</h3>
+<p>Oly was designed using <a href="http://site.icu-project.org/">ICU</a>, and Oly&#8217;s state.handling uses ICU&#8217;s localization systems.  So, when you check for errors, follow this process:</p>
+<ol type="1">
+<li>
+<p>
+Define a local variable of type <code>OlyStatus_t</code>.
+</p>
+<ol type="a">
+<li>
+<p>
+A value less than zero indicates a warning state.
+</p>
+</li>
+<li>
+<p>
+<code>OLY_OKAY</code> = 0.  Zero indicates everything is fine.
+</p>
+</li>
+<li>
+<p>
+A value greater than zero indicates an error and should either be handled or displayed.
+</p>
+</li>
+</ol>
+</li>
+<li>
+<p>
+Try to find an error that describes what problem you have found.  If you cannot find one, add a new <code>OLY_ERR_&lt;whatever&gt;</code> to <code>src/oly/OlyStatus_t.h</code>.
+</p>
+</li>
+<li>
+<p>
+These special error states indicate an external problem:
+</p>
+<ol type="a">
+<li>
+<p>
+<code>OLY_ERR_SYSTEM</code>: Check system error status and display any messages from it.
+</p>
+</li>
+<li>
+<p>
+<code>OLY_ERR_LIB</code>: Check Oly&#8217;s primary build library error status and display any messages.  Currently, Oly builds against ICU only, so this displays ICU errors.
+</p>
+</li>
+</ol>
+</li>
+<li>
+<p>
+For localized error messages, Oly can send arguments to error messages.  In ICU message syntax, these are numbered and look like this: <code>{1}</code>, <code>{2}</code> etc.  Not all errors require arguments and an error should display whether arguments are provided or not.
+</p>
+</li>
+<li>
+<p>
+See function <code>set_err</code>, <code>append_err_arg</code>, <code>log_err</code>, <code>show_warn</code>, <code>show_err</code> and <code>fatal_err</code> in <code>src/error/</code> for details.
+</p>
+</li>
+</ol>
+<hr>
+<h2><a name="_types"></a>Types</h2>
+<p>For designing structures, go read Eric S. Raymond&#8217;s essay on <a href="http://www.catb.org/esr/structure-packing/">C structure packing</a>.  Oly must have very efficient structures.</p>
+<h3><a name="_names_3"></a>Names</h3>
+<p>Typedefs shall be CamelCased, with leading capitals.</p>
+<hr>
+<h2><a name="_error_handling_2"></a>Error handling</h2>
+<p>For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs.</p>
+<p>Do not use strerror or perror.  Use strerror_r only.</p>
+<p>Oly initializes language as early as it can, as it is essential to healthy error handling.</p>
+<p>References:</p>
+<blockquote>
+<p>If the only possible errors are programmer errors, don&#8217;t return an error code, use asserts inside the function.</p>
+<p>An assertion that validates the inputs clearly communicates what the function expects, while too much error checking can obscure the program logic. Deciding what to do for all the various error cases can really complicate the design. Why figure out how functionX should handle a null pointer if you can instead insist that the programmer never pass one?</p>
+<p align="right">
+&#8212; <a href="http://stackoverflow.com/questions/385975/state.handling-in-c-code/387123#387123">AShelly Stack Overflow User</a>
+</p>
+</blockquote>
+</div>
+</nowiki>

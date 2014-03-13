@@ -21,6 +21,7 @@
 #  include "olyconf.h"
 #endif
 #include "oly/common.h"
+#include "oly/oly_dev.h"
 
 #include <unicode/ustdio.h>
 #include <unicode/uloc.h>
@@ -31,9 +32,8 @@
 
 void list_icu_countries(void)
 { 
-  const char    **list; 
+  const char *const *list = uloc_getISOCountries();
   int       i = 0;
-  list = uloc_getISOCountries();
   for (i = 0; (list[i] != NULL); i++) {
     printf("%s ", list[i]);
   }

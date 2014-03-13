@@ -123,6 +123,7 @@ CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DEV_CFLAGS = @DEV_CFLAGS@
 DEV_DEF = @DEV_DEF@
 DEV_LIB = @DEV_LIB@
 DLLTOOL = @DLLTOOL@
@@ -487,7 +488,9 @@ dvi: dvi-am
 
 dvi-am:
 
-html-am:
+html: html-am
+
+html-am: html-local
 
 info: info-am
 
@@ -546,16 +549,17 @@ uninstall-man: uninstall-man1
 
 .PHONY: all all-am check check-am clean clean-generic clean-libtool \
 	distclean distclean-generic distclean-libtool distclean-local \
-	distdir dvi dvi-am html html-am info info-am install \
-	install-am install-data install-data-am install-dist_docDATA \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-man install-man1 install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs maintainer-clean maintainer-clean-generic \
-	maintainer-clean-local mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-dist_docDATA uninstall-man uninstall-man1
+	distdir dvi dvi-am html html-am html-local info info-am \
+	install install-am install-data install-data-am \
+	install-dist_docDATA install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-man1 install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic maintainer-clean-local mostlyclean \
+	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
+	uninstall uninstall-am uninstall-dist_docDATA uninstall-man \
+	uninstall-man1
 
 
 .PHONY: html htmlrebuild wikirebuild atool-clean wiki
@@ -568,11 +572,11 @@ wiki: wikirebuild $(WIKIPAGES)
 htmlrebuild:
 	rm -f $(HTMLPAGES)
 
-html: htmlrebuild $(HTMLPAGES)
+html-local: htmlrebuild $(HTMLPAGES)
 
-maintainer-clean-local: wiki htmlrebuild
+maintainer-clean-local: wiki 
 
-distclean-local: html
+distclean-local: html-local
 
 atool-clean: 
 		rm -rf Makefile.in Makefile
