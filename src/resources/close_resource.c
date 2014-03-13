@@ -20,10 +20,12 @@
 #include "oly/common.h"
 #include "oly/core.h"
 #include "oly/resources.h"
+#include "pvt_resources.h"
 
 void
 close_resource(OlyResource *res)
 {
+    void *free_me;
     assert( res != NULL );
     if (res->resource != NULL) 
     {
@@ -33,13 +35,15 @@ close_resource(OlyResource *res)
     }
     if (res->locale != NULL) 
     {
-        OFREE(res->locale);
+        free_me = (void *)res->locale;
+        OFREE(free_me);
     }
     if (res->charset != NULL) 
     {
-        OFREE(res->charset);
+        free_me = (void *)res->charset;
+        OFREE(free_me);
     }
     OFREE(res);
 
-    return OLY_OKAY; 
 }
+

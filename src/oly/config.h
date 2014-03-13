@@ -1,4 +1,4 @@
-/* oly/load_config.h - Basic functions, IO and other stuff. License GPL2+ {{{
+/* oly/config.h - Basic functions, IO and other stuff. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,18 @@
 
 BEGIN_C_DECLS
 
-struct OlyConfig_struct;
 typedef struct OlyConfig_struct OlyConfig;
+
+typedef void (*OlyHandler)(char *input);
+extern OlyConfig *load_config( void );
+
+struct OlyConfig_struct {
+    OChar *key;
+    OChar *value;
+    OlyHandler  handle;    
+    OlyConfig *next;
+};
+
 
 END_C_DECLS
 

@@ -33,7 +33,7 @@ main( int argc, char **argv ){
             OLY_STATUS_MAX + OLY_STATUS_OFFSET );
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
-    OChar          **results = (OChar **) xcalloc (
+    OChar          **results = (OChar **) ocalloc (
                                 num_tests, sizeof(OChar));
         
     char            *locale = (char *)"root",  *charset = NULL;

@@ -1,4 +1,4 @@
-/* new_state.c - allocates a state object and returns a pointer to it.  License GPL2+ {{{
+/* olystate.c - State access functions License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,6 +18,7 @@
  * }}} */
 
 #include "oly/common.h"
+#include <ctype.h>
 #include <assert.h>
 #include "oly/core.h"
 #include "oly/state.h"
@@ -28,9 +29,9 @@ new_state( OlyResource *master )
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
+    OlyState *state = (OlyState *)omalloc(sizeof(OlyState));
 #endif /* HAVE_UNICODE_URES_H */
     assert( master != NULL );
-    OlyState *state = (OlyState *)omalloc(sizeof(OlyState));
     state->msgbuf_start = (OChar *)ocalloc(BUFSIZ, sizeof(OChar));
     state->msgbuf_end = state->msgbuf_start;
     state->status = OLY_OKAY;
@@ -44,4 +45,17 @@ new_state( OlyResource *master )
     }
 #endif /* HAVE_UNICODE_URES_H */
     return state; 
+}
+
+
+OlyStatus
+set_status(OlyState *state, const OlyStatus status)
+{
+    state->status = status;
+    return OLY_OKAY;
+}
+
+OlyStatus
+get_status(OlyState *s){
+  return s->status;
 }

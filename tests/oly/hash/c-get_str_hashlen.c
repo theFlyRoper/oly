@@ -59,7 +59,7 @@ main (void){
     test_data_dir_len = ftell(test2file);
     fseek(test2file, 0, SEEK_SET);
     
-    test2 = (char *)xmalloc (test_data_dir_len + 1);
+    test2 = (char *)omalloc (test_data_dir_len + 1);
     test2[test_data_dir_len] = '\0';
     result = (long)fread(test2, 1, test_data_dir_len, test2file);
     if (result != test_data_dir_len)  {

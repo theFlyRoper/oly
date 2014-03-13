@@ -40,21 +40,23 @@ count_file_bytes(FILE *file, size_t *file_size)
 
 /* transforms a c string to an OChar string. always null terminated. */
 OChar *
-cstr_to_ostr(OChar *o, size_t buffer_size, const char *c, OlyStatus *status)
+cstr_to_ostr(OChar *o, size_t buffer_size, const char *c)
 {
-    *status = OLY_OKAY;
-    c+buffer_size = '\0';
+    OChar    *superzero = (o + buffer_size);
+    assert((c != NULL) && (o != NULL) && (buffer_size > 1));
+    *superzero = '\0';
 #ifdef HAVE_UNICODE_USTDIO_H
     return (OChar *)u_uastrncpy((UChar *)o, c, (buffer_size-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
 }
 
 /* back the other way. */
-char  *ostr_to_cstr(char *c, size_t buffer_size, const OChar *o,
-        OlyStatus *status)
+char  *
+ostr_to_cstr(char *c, size_t buffer_size, const OChar *o)
 {
-    *status = OLY_OKAY;
-    c+buffer_size = '\0';
+    char    *superzero = (c+buffer_size);
+    assert((c != NULL) && (o != NULL) && (buffer_size > 1));
+    *superzero = '\0';
 #ifdef HAVE_UNICODE_USTDIO_H
     return u_austrncpy(c, (UChar *)o, (buffer_size-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
@@ -63,12 +65,12 @@ char  *ostr_to_cstr(char *c, size_t buffer_size, const OChar *o,
 
 /* The resource data charset for oly serves as the default charset throughout,
  * since the Oly object is the primary object throughout the program. */
-OChar *get_default_charset( Oly *oly )
+OChar *get_default_charset( void )
 {
     return get_charset(oly->data);
 }
 
-OChar *get_default_locale( Oly *oly )
+OChar *get_default_locale( void )
 {
     return get_locale(oly->data);
 }

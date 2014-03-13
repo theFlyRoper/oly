@@ -55,6 +55,7 @@
 
 #ifdef HAVE_UNICODE_USTDIO_H
 #include <unicode/ustdio.h>
+#include <unicode/uclean.h>
 typedef UChar OChar;
 typedef UErrorCode LibErrorNum;
 #define OFILE UFILE
@@ -116,9 +117,7 @@ extern int errno;
 #  define EXIT_FAILURE  1
 #endif
 
-#if !HAVE_BZERO && HAVE_MEMSET
-#  define bzero(buf, bytes)      ((void) memset (buf, 0, bytes))
-#endif
+#define bzero(buf, bytes)      ((void) memset (buf, 0, bytes))
 
 #if !HAVE_STRCHR
 #  define strchr index

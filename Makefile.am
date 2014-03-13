@@ -50,20 +50,20 @@ endif !DEBUG_MODE
 ## logic for i18n is pretty complex so it is in an included .mk file.
 include make_i18n.mk
 
-EXTRA_DIST		= $(MAIN_I18N_INDEX_TXT) 	$(TEST_I18N_INDEX_TXT) \
-				$(FULL_MAIN_I18N_TXT)  	$(FULL_TEST_I18N_TXT)
+EXTRA_DIST	= $(MAIN_I18N_INDEX_TXT) $(TEST_I18N_INDEX_TXT) \
+			$(FULL_MAIN_I18N_TXT) $(FULL_TEST_I18N_TXT)
 
 HEAD_CPPFLAGS						=  -I$(top_srcdir) \
 									   -I$(top_srcdir)/src $(I18N_DIR_DEF)
 
 dist_check_DATA		= tests/TESTS \
-						tests/data/test_config.yaml \
-						tests/oly/hash/c-char_to_size.output \
-						tests/oly/hash/sh-get_hashbits.output \
-						tests/oly/hash/sh-read_charhash_from_hex.output \
-						tests/oly/hash/sh-read_sizehash_from_hex.output \
-						tests/oly/hash/c-get_str_hashlen.output \
-						tests/oly/hash/sh-hash_char_to_hash_size.output 
+			tests/data/test_config.yaml \
+			tests/oly/hash/c-char_to_size.output \
+			tests/oly/hash/sh-get_hashbits.output \
+			tests/oly/hash/sh-read_charhash_from_hex.output \
+			tests/oly/hash/sh-read_sizehash_from_hex.output \
+			tests/oly/hash/c-get_str_hashlen.output \
+			tests/oly/hash/sh-hash_char_to_hash_size.output 
 
 
 dist_check_SCRIPTS	= tests/tap/libtap.sh \
@@ -71,6 +71,7 @@ dist_check_SCRIPTS	= tests/tap/libtap.sh \
 						tests/oly/core/sh-resex 
 													
 ## TODO: this should use nobase_ instead 
+
 dist_noinst_HEADERS			=	src/oly/break_rules.h \
 								src/oly/common.h \
 								src/oly/core.h \
@@ -82,11 +83,14 @@ dist_noinst_HEADERS			=	src/oly/break_rules.h \
 								src/pvt_core.h \
 								src/pvt_resources.h \
 								src/pvt_state.h \
-								tests/tap/basic.h tests/tap/float.h \
+								tests/tap/basic.h \
+								tests/tap/float.h \
 								tests/tap/macros.h
-AM_CFLAGS 						= 	-fstack-protector-all @ICU_CFLAGS@ \
-									@DEV_CFLAGS@ -Wall 
-csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ -D_FORTIFY_SOURCE=2 
+AM_CFLAGS 						= 	-fstack-protector-all \
+									@ICU_CFLAGS@ \
+									@DEV_CFLAGS@ -Wall -Werror
+csvparse_CPPFLAGS 				= $(HEAD_CPPFLAGS) @DEV_DEF@ \
+								  -D_FORTIFY_SOURCE=2 
 bin_PROGRAMS					= csvparse 
 
 noinst_PROGRAMS					= resex
@@ -97,20 +101,22 @@ resex_LDADD 					= liboly_dev.a libcore.a \
 									@ICUIO_LIBS@ @ICU_LIBS@ 
 
 
-resex_CPPFLAGS			= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
+resex_CPPFLAGS			= -D_FORTIFY_SOURCE=2 \
+						  -fstack-protector-all \
 						@DEV_DEF@ $(HEAD_CPPFLAGS)
 
-csvparse_SOURCES		= src/main.c \
-						src/print_demo/print_text_range.c \
-						src/print_demo/print_each_forward.c \
-						src/print_demo/print_each_backward.c \
-						src/print_demo/print_at.c \
-						src/print_demo/print_first.c \
-						src/print_demo/print_last.c \
-						src/get_rules.c 
+## 						src/print_demo/print_text_range.c 
+## 						src/print_demo/print_each_forward.c 
+## 						src/print_demo/print_each_backward.c
+## 						src/print_demo/print_at.c 
+## 						src/print_demo/print_first.c 
+## 						src/print_demo/print_last.c 
+# 						src/get_rules.c 
 
-csvparse_LDADD 			= @ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ \
-						libcore.a 
+csvparse_SOURCES		= src/main.c 
+
+csvparse_LDADD 			= liboly_dev.a libcore.a libhash.a \
+						  @ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ 
 
 noinst_LIBRARIES		=	liboly_dev.a libcore.a libhash.a 
 
@@ -147,18 +153,18 @@ liboly_dev_a_SOURCES		=	src/debug/list_icu_countries.c \
 
 liboly_dev_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 
-## todo stack:
-## 								src/state/append_state_message.c \
-libcore_a_SOURCES				=	\
-								src/resources/get_resource_data.c \
-								src/resources/open_resource.c \
-								src/resources/new_resource.c \
-								src/resources/get_charset.c \
-								src/resources/get_locale.c \
-								src/core/basic_functions.c \
-								src/core/get_errmsg.c \
-								src/core/init_oly.c \
-								src/core/oly_mem_string.c 
+libcore_a_SOURCES	=	\
+						src/resources/get_resource_data.c \
+						src/resources/open_resource.c \
+						src/resources/close_resource.c \
+						src/resources/new_resource.c \
+						src/resources/get_charset.c \
+						src/resources/get_locale.c \
+						src/core/olystate.c \
+						src/core/basic_functions.c \
+						src/core/get_errmsg.c \
+						src/core/init_oly.c \
+						src/core/oly_mem_string.c 
 
 libcore_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 
@@ -178,6 +184,7 @@ check_PROGRAMS 	= 	tests/runtests \
  					tests/oly/hash/c-char_to_size \
  					tests/oly/hash/c-hash_char_to_hash_size \
  					tests/oly/hash/c-read_charhash_from_hex 
+
 tests_runtests_CPPFLAGS 		= $(CHECK_DEFS) 
 check_LIBRARIES 				=	tests/tap/libtap.a
 tests_tap_libtap_a_CPPFLAGS 	= $(HEAD_CPPFLAGS) -I$(abs_top_srcdir)/tests 
@@ -187,7 +194,7 @@ tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 								  tests/tap/float.c tests/tap/float.h \
 								  tests/tap/macros.h
 
-tests_tap_libtap_a_LDFLAGS 		= 
+tests_tap_libtap_a_LDFLAGS 		= @ICUIO_LIBS@
 
 tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c 
 tests_oly_hash_c_get_hashbits_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)

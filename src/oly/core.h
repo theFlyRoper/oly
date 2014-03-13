@@ -21,7 +21,7 @@
 #define SRC_OLY_CORE_H 1
 
 #include "oly/common.h"
-#include "oly/load_config.h"
+#include "oly/config.h"
 #include "oly/state.h"
 #include "oly/resources.h"
 
@@ -44,10 +44,13 @@ extern size_t   getMemorySize( void );
 extern OlyStatus count_file_bytes(FILE *file, size_t *file_size);
 
 extern double oly_timestamp( void ) ;
-extern OChar *get_default_charset(Oly *oly);
-extern OChar *get_default_locale(Oly *oly);
+extern OChar *get_default_charset( void );
+extern OChar *get_default_locale( void );
 extern OlyStatus get_OChar_args(OChar ***result, char **source, 
         int32_t argc);
+
+OlyStatus set_status(OlyState *state, const OlyStatus status);
+OlyStatus get_status(OlyState *state);
 
 END_C_DECLS
 

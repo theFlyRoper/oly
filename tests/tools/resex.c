@@ -28,17 +28,14 @@
 static void print_help(void);
 static void usage(void);
 static void print_version(void);
-static void close_main(void);
 
 /* MAIN */
 int
 main( int argc, char **argv ){
     char            *locale = NULL, *locdir=(char*)PKGDATADIR,
-                    *charset = NULL, c, *find_me = NULL, 
-                    *filename = OLY_RESOURCE, *progval = ostrdup(argv[0]);
+                    *charset = NULL, c, *find_me = NULL;
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
-    OlyStatus        status  = OLY_OKAY;
     
     init_res_disp_flag(&flag);
 
@@ -46,7 +43,7 @@ main( int argc, char **argv ){
      * f = find this, h = help, i = integers, l = locales, -L show only locale
      * s = strings, t = tables, v = version, V = vectors
      */
-    while ((c = getopt(argc, argv, "aAbd:hil:Ln:stvV")) != -1) 
+    while ((c = getopt(argc, argv, "aAbd:hil:LstvV")) != -1) 
     {
         switch (c) 
         {
@@ -70,9 +67,6 @@ main( int argc, char **argv ){
             break;
         case ('f'):
             find_me = optarg;
-            break;
-        case ('n'):
-            filename = optarg;
             break;
         case ('a'):
             flag.all = 0;
@@ -130,16 +124,15 @@ main( int argc, char **argv ){
     else if (flag.only_locale == 1)
     {
         u_fprintf(u_stdout, "Default IO locale: %S\n",
-                   get_default_locale(oly) );
+                   get_default_locale() );
         u_fprintf(u_stdout, "Default IO encoding: %S\n",
-                   get_default_charset(oly) );
+                   get_default_charset() );
 
         exit(EXIT_SUCCESS);
     }
 
     if (find_me == NULL) 
     {
-        
         set_status(oly->state, OLY_OKAY);
         u_fprintf(u_stdout, "Show two (should be OLY_ERR_SYS): %S\n",
                    get_errmsg(OLY_ERR_SYS));

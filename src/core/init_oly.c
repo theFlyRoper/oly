@@ -29,8 +29,7 @@
 #include "oly/core.h"
 #include "pvt_core.h"
 #include "pvt_resources.h"
-/* was not planning to include the resource header here
- * but since resource must have non-i18n error handling
+/* since resource must have non-i18n error handling
  * before it is available it only makes sense to have a 
  * special constructor available here.
  */
@@ -42,13 +41,14 @@ static char *get_home (struct passwd *pwd);
 static void *imalloc (size_t num);
 static void *icalloc (size_t num, size_t size);
 static char *istrdup (const char *string);
-static char *init_locale (char *locale);
-static char *init_charset (char * preset);
+static char *init_locale (const char *locale);
+static char *init_charset (const char * preset);
 static OlyResource *init_primary_resource(const char *locale, 
         const char *charset, const char *datadir);
 static void init_io(const char *locale, const char *codepage);
 static void close_oly(void);
 static void clean_io_open(void) ;
+OlyStatus cleanenv (void);
 
 /* TODO:
  * This is organized enough right now, but it can be a lot tighter.
@@ -58,7 +58,6 @@ static void clean_io_open(void) ;
 Oly *init_oly(const char *prog, 
         const char *datadir, const char *charset, const char *locale )
 {
-    OlyStatus        status = OLY_OKAY;
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
@@ -137,7 +136,7 @@ Oly *init_oly(const char *prog,
             inner_charset, inner_datadir );
 
     oly_init->state = new_state( oly_init->data );
-    
+    atexit(close_oly);
     return oly_init;
 }
 
@@ -167,7 +166,7 @@ istrdup (const char *string)
 }
 
 char *
-init_locale (char *locale)
+init_locale (const char *locale)
 {
     int32_t         output_size = BUFSIZ;
     UErrorCode      u_status  = U_ZERO_ERROR;
@@ -195,10 +194,9 @@ init_locale (char *locale)
 }
 
 char *
-init_charset (char * preset)
+init_charset (const char * preset)
 {
 #ifdef HAVE_UNICODE_UCNV_H
-    UErrorCode u_status = U_ZERO_ERROR;
     /* Currently, Oly builds with U_CHARSET_IS_UTF8, which means
      * this function always returns UTF-8 for default charset.
      * This is good in that it simplifies use, but bad in that
@@ -208,13 +206,21 @@ init_charset (char * preset)
      *
      * Cross that bridge later.
      */
-    char *local = ucnv_getDefaultName();
+    const char *local;
+    if (preset == NULL)
+    {
+        local = ucnv_getDefaultName();
+    }
+    else 
+    {
+        local = preset;
+    }
     if ( local == NULL ) 
     {
-        printf("Init: No encoding found for ucnv_getAlias.\n");
+        printf("Init: No encoding found for ucnv_getDefaultName.\n");
         exit(EXIT_FAILURE);
     }
-    return local;
+    return (char *)local;
 #endif /* HAVE_UNICODE_UCNV_H */
 }
 
@@ -243,19 +249,22 @@ init_primary_resource(const char *locale, const char *charset,
 static void 
 close_oly (void) 
 {
-    close_state(oly->state);
+    void *free_me;
     close_resource(oly->data);
+
     if (oly->program_name != NULL)
     {
-        OFREE(oly->program_name);
-    }
+        free_me = (void *)oly->program_name; 
+        OFREE(free_me); }
     if (oly->resource_dir != NULL)
     {
-        OFREE(oly->resource_dir);
+        free_me = (void *)oly->resource_dir; 
+        OFREE(free_me);
     }
     if (oly->config != NULL)
     {
-        OFREE(oly->config);
+        free_me = (void *)oly->config; 
+        OFREE(free_me);
     }
     u_fclose (u_stdout);
     u_fclose (u_stdin);

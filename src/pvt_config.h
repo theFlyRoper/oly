@@ -8,10 +8,6 @@
 
 BEGIN_C_DECLS
 
-struct OlyConfig_struct {
-    void *configdata;
-};
-
 END_C_DECLS
 
 #endif /* SRC_PVT_LOAD_CONFIG_H */

@@ -35,11 +35,9 @@ extern ResourceData *get_resource_data(OlyResource *res);
 extern void          close_resource(OlyResource *res);
 extern OChar *get_charset (OlyResource *res);
 extern OChar *get_locale  (OlyResource *res);
+extern OChar *cstr_to_ostr(OChar *o, size_t buffer_size, const char *c);
+extern char  *ostr_to_cstr(char *c, size_t buffer_size, const OChar *o);
 
-extern OChar *cstr_to_ostr(OChar *o, size_t buffer_size, 
-        const char *c, OlyStatus *status);
-extern char  *ostr_to_cstr(char *c, size_t buffer_size,
-        const OChar *o, OlyStatus *status);
 
 #endif /* SRC_OLY_MESSAGES_H */
 
