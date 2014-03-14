@@ -18,15 +18,8 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `yaml' library (-lyaml). */
-#undef HAVE_LIBYAML
-
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H
-
-/* Define to 1 if your system has a GNU libc compatible `malloc' function, and
-   to 0 otherwise. */
-#undef HAVE_MALLOC
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
@@ -159,9 +152,6 @@
 /* Version number of package */
 #undef VERSION
 
-/* Define if using the dmalloc debugging malloc package */
-#undef WITH_DMALLOC
-
 /* set _FORTIFY_SOURCE=2, which enables the GCC stack smashing detector even
    for small buffers. */
 #undef _FORTIFY_SOURCE
@@ -180,9 +170,6 @@
 #ifndef __cplusplus
 #undef inline
 #endif
-
-/* Define to rpl_malloc if the replacement function should be used. */
-#undef malloc
 
 /* Define to `int' if <sys/types.h> does not define. */
 #undef pid_t

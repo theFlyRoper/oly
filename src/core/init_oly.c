@@ -48,7 +48,7 @@ static OlyResource *init_primary_resource(const char *locale,
 static void init_io(const char *locale, const char *codepage);
 static void close_oly(void);
 static void clean_io_open(void) ;
-OlyStatus cleanenv (void);
+static OlyStatus cleanenv (void);
 
 /* TODO:
  * This is organized enough right now, but it can be a lot tighter.

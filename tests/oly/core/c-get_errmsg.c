@@ -30,7 +30,7 @@
 int
 main( int argc, char **argv ){
     const int       num_tests = ( 
-            OLY_STATUS_MAX + OLY_STATUS_OFFSET );
+            OLY_STATUS_MAX + OLY_STATUS_OFFSET + 1 );
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
     OChar          **results = (OChar **) ocalloc (
@@ -53,6 +53,8 @@ main( int argc, char **argv ){
                         "OLY_ERR_READHEX\0",
                         "OLY_ERR_HASH\0",
                         "OLY_ERR_BADARG\0",
+                        "OLY_ERR_BUFFER_OVERFLOW\0",
+                        "OLY_ERR_FILE_NOT_FOUND\0",
                         "OLY_ERR_UNKNOWN\0"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;
@@ -65,9 +67,9 @@ main( int argc, char **argv ){
     }
     
     set_status(oly->state, OLY_OKAY);
-    plan( num_tests + 11 );
+    plan( num_tests + 8 );
 
-    diag("From the smallest to the biggest error number.");
+    diag("From the smallest to one bigger than biggest error number.");
     for ( i = 0; (i<=num_tests); i++)
     {
         is_unicode_string(results[i], get_errmsg(i-OLY_STATUS_OFFSET), 
@@ -78,7 +80,7 @@ main( int argc, char **argv ){
     diag("One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.");
     is_unicode_string((results[unknown_num]), 
             get_errmsg(OLY_STATUS_MIN-1), "Number: %i",
-            (i-OLY_STATUS_OFFSET));
+            (OLY_STATUS_MIN-1));
     diag("A few wildly outlandish numbers.  Powers of -17!");
     for ( i = 289; (i<1000000); (i)*=(-17) )
     {
@@ -87,16 +89,7 @@ main( int argc, char **argv ){
                 get_errmsg(i), "Number: %i", i);
     }
     
-    diag("Letters and inappropriate hex digits YES MWAHAHAHAHAHA");
-    i = 'a';
-    is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c", i, i);
-    i = '9';
-    is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c", i, i);
-    i = ' ';
-    is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c (space)", i, i);
+    diag("Hex digits, mwaha");
     i = 0xAAAA;
     is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
             get_errmsg(i), "Number: %i, submitted: %c", i, i);

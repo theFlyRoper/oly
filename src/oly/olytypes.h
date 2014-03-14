@@ -35,8 +35,8 @@ typedef struct oly_struct Oly;
  * appropriate. OLY_OKAY is equal to zero.
  */
 typedef enum OlyStatus_enum {
-    /* OLY_STATUS_MIN helps map these internal codes into the external i18n resource
-     * files.
+    /* OLY_STATUS_MIN helps map these internal codes into the 
+     * external i18n resource files.
      */
     OLY_WARN_REINIT=-3,
     OLY_STATUS_MIN=-3,
@@ -55,7 +55,12 @@ typedef enum OlyStatus_enum {
     OLY_ERR_READHEX=9,
     OLY_ERR_HASH=10,
     OLY_ERR_BADARG=11,
-    OLY_STATUS_MAX=11
+    OLY_ERR_BUFFER_OVERFLOW=12,
+    OLY_ERR_FILE_NOT_FOUND=13,
+    OLY_ERR_LIBYAML_INIT=14,
+    OLY_ERR_CONFIG_PARSE=15,
+    OLY_ERR_CONFIG_UNRECOGNIZED=16,
+    OLY_STATUS_MAX=16
 } OlyStatus;
 
 typedef enum OlyBoolean_enum {

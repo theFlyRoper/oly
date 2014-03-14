@@ -42,6 +42,7 @@ OChar *get_errmsg( OlyStatus status )
     {
         message_data = init_messages();
     }
+
     if ((status < OLY_STATUS_MIN) 
             || (status > OLY_STATUS_MAX))
     {
@@ -58,8 +59,8 @@ OChar *get_errmsg( OlyStatus status )
     
     if (U_FAILURE(u_status))
     {
-        /* this should not fail but who knows, stranger things 
-         * have happened.
+        /* This will catch when we forget to update the list of errors in root.txt, 
+         * or any other ICU error.
          */
         fprintf(stderr, "ICU Error: %s.\n",
                 u_errorName(u_status));

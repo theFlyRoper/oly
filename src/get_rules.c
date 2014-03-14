@@ -22,7 +22,8 @@
 #include "oly/state.h"
 
 UBreakIterator* 
-get_rules(const char *ruleFileName, UErrorCode status) {
+get_rules(const char *ruleFileName, UErrorCode status) 
+{
     /*  Read in the rule source file */
     long        result;
     long        ruleFileSize;
