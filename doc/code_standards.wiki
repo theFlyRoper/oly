@@ -4,8 +4,8 @@
 <h1>Oly Code Standards</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 98f19e3f57,
-2014-03-13
+version 0479c5de3f,
+2014-03-14
 </p>
 <hr>
 <h2><a name="_state_error_handling"></a>State/Error Handling</h2>
@@ -17,7 +17,35 @@ It is not for general use.  Use the OlyState struct and its supporting
 functions for internal errors.  If you are writing a function that must have a handler before the general handling functions are available, add your function to the list of functions that call it in the code for oly_fatal.  It can be found at <em>src/core/oly_fatal.c</em>.</p>
 <hr>
 <h2><a name="_language_and_i18n_initialization"></a>Language and i18n initialization</h2>
-<p>This section is first because I&#8217;ve done this research a good four times and still haven&#8217;t come up with a better answer than what follows.</p>
+<p>I have done even more research as of 3-14-14, and here are some more fun facts:</p>
+<ul>
+<li>
+<p>
+GCC supports prefixes for unicode string literals!  This makes it much easier to work with ICU literals.  They look like this: u"string data".
+</p>
+</li>
+<li>
+<p>
+When compared with data from ICU, these return correct values (ie a value pulled from ICU resources equals a value with the u"" prefix.)
+</p>
+</li>
+<li>
+<p>
+These little u string literals are also supported by clang 3.1+.
+</p>
+</li>
+<li>
+<p>
+They require unicode input markers in ustdio, that is, the functions that take unicode input.  They look like this: "u_fprintf_u", as opposed to this: "u_fprintf".
+</p>
+</li>
+<li>
+<p>
+The GCC -fencoding= flags may be tempting but I like them less.  For one thing, they do not handle things correctly in ICU, at least not what I saw.
+</p>
+</li>
+</ul>
+<p>Here are the older notes:</p>
 <p>Gettext, the GNU standard program message dictionary, uses <a href="https://www.gnu.org/software/gettext/manual/gettext.html#Locale-Environment-Variables">several environment variables</a> to determine what language the user sees:</p>
 <ol type="1">
 <li>

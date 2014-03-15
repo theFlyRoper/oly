@@ -33,9 +33,7 @@ main( int argc, char **argv ){
             OLY_STATUS_MAX + OLY_STATUS_OFFSET + 1 );
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
-    OChar          **results = (OChar **) ocalloc (
-                                num_tests, sizeof(OChar));
-        
+    OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar) );
     char            *locale = (char *)"root",  *charset = NULL;
     const char     *results_char[] = {
                         "OLY_WARN_REINIT",
@@ -54,6 +52,7 @@ main( int argc, char **argv ){
                         "OLY_ERR_HASH",
                         "OLY_ERR_BADARG",
                         "OLY_ERR_BUFFER_OVERFLOW",
+                        "OLY_ERR_FILE_NOT_FOUND",
                         "OLY_ERR_CONFIG_FILE_NOT_FOUND",
                         "OLY_ERR_LIBYAML_INIT",
                         "OLY_ERR_CONFIG_PARSE",

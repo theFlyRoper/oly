@@ -46,6 +46,8 @@ extern OlyStatus count_file_bytes(FILE *file, size_t *file_size);
 extern double oly_timestamp( void ) ;
 extern OChar *get_default_charset( void );
 extern OChar *get_default_locale( void );
+extern const char *char_default_charset( void );
+extern const char *char_default_locale( void );
 extern OlyStatus get_OChar_args(OChar ***result, char **source, 
         int32_t argc);
 

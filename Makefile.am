@@ -225,14 +225,16 @@ tests_oly_core_c_get_errmsg_LDADD 	= tests/tap/libtap.a \
 tests_oly_core_c_oly_config_SOURCES = tests/oly/core/c-oly_config.c \
 									  src/core/oly_mem_string.c 
 tests_oly_core_c_oly_config_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_oly_config_LDADD 	= tests/tap/libtap.a \
-									@YAML_LIBS@
+tests_oly_core_c_oly_config_LDADD 	= libcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
+									  tests/tap/libtap.a \
+										@YAML_LIBS@ 
+										  
 
 tests_oly_core_c_oly_timestamp_SOURCES = tests/oly/core/c-oly_timestamp.c 
 tests_oly_core_c_oly_timestamp_CPPFLAGS = $(HEAD_CPPFLAGS) \
 										  $(CHECK_DEFS)
 tests_oly_core_c_oly_timestamp_LDADD 	= @ICUIO_LIBS@ @ICU_LIBS@ tests/tap/libtap.a \
-										  libcore.a libhash.a 
+										  libcore.a
 
 tests_oly_core_c_test_gcc_encoding_SOURCES = tests/oly/core/c-test_gcc_encoding.c \
 									  src/core/oly_mem_string.c 

@@ -1,4 +1,4 @@
-1..28
+1..29
 # From the smallest to one bigger than biggest error number.
 ok 1 - Item: -3, err: OLY_WARN_REINIT
 ok 2 - Item: -2, err: OLY_WARN_LIB
@@ -17,18 +17,19 @@ ok 14 - Item: 10, err: OLY_ERR_HASH
 ok 15 - Item: 11, err: OLY_ERR_BADARG
 ok 16 - Item: 12, err: OLY_ERR_BUFFER_OVERFLOW
 ok 17 - Item: 13, err: OLY_ERR_FILE_NOT_FOUND
-ok 18 - Item: 14, err: OLY_ERR_LIBYAML_INIT
-ok 19 - Item: 15, err: OLY_ERR_CONFIG_PARSE
-ok 20 - Item: 16, err: OLY_ERR_CONFIG_UNRECOGNIZED
-ok 21 - Item: 17, err: OLY_ERR_UNKNOWN
+ok 18 - Item: 14, err: OLY_ERR_CONFIG_FILE_NOT_FOUND
+ok 19 - Item: 15, err: OLY_ERR_LIBYAML_INIT
+ok 20 - Item: 16, err: OLY_ERR_CONFIG_PARSE
+ok 21 - Item: 17, err: OLY_ERR_CONFIG_UNRECOGNIZED
+ok 22 - Item: 18, err: OLY_ERR_UNKNOWN
 # One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.
-ok 22 - Number: -4
+ok 23 - Number: -4
 # A few wildly outlandish numbers.  Powers of -17!
-ok 23 - Number: 289
-ok 24 - Number: -4,913
-ok 25 - Number: 83,521
-ok 26 - Number: -1,419,857
+ok 24 - Number: 289
+ok 25 - Number: -4,913
+ok 26 - Number: 83,521
+ok 27 - Number: -1,419,857
 # Hex digits, mwaha
-ok 27 - Number: 43,690, submitted: �
-ok 28 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
-# All 28 tests successful or skipped
+ok 28 - Number: 43,690, submitted: �
+ok 29 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
+# All 29 tests successful or skipped

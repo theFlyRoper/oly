@@ -24,7 +24,7 @@
 #include "oly/core.h"
 
 static OFILE *find_config_file (OlyStatus *status)  ;
-void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
+static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
 static int ofile_read_handler(void *data, 
         unsigned char *buffer, size_t size, size_t *size_read);
 
@@ -36,10 +36,11 @@ static int ofile_read_handler(void *data,
 OlyConfig *
 load_config( OlyStatus *status )
 {
-    FILE *config_file = find_config_file(status);
+    OFILE *config_file = find_config_file(status);
     yaml_parser_t        config_parser ;
     yaml_event_t         event;
     OlyConfig           *olyconf;
+    printf("hello!!!!\n");
     if ( *status != OLY_OKAY )
     {
         return NULL;
@@ -48,12 +49,13 @@ load_config( OlyStatus *status )
     {
         *status = OLY_ERR_CONFIG_FILE_NOT_FOUND ;
     }
+    
     if ( yaml_parser_initialize(&config_parser) != 1 )
     {
         *status = OLY_ERR_LIBYAML_INIT;
          return NULL;
     }
-    
+    yaml_parser_set_encoding( &config_parser, YAML_UTF16LE_ENCODING );
     yaml_input_ofile( &config_parser , config_file );
     
     while(event.type != YAML_STREAM_END_EVENT)
@@ -89,9 +91,7 @@ load_config( OlyStatus *status )
             case YAML_ALIAS_EVENT:  
                 break;
             case YAML_SCALAR_EVENT: 
-                u_fprintf(u_stdout, "Got scalar\nanchor = %s\ntag = %s\nvalue = %s\n ", 
-                        event.data.scalar.anchor,
-                        event.data.scalar.tag,
+                u_fprintf(u_stdout, "Current value = %s\n", 
                         event.data.scalar.value
                         );
                 break;
@@ -104,18 +104,23 @@ load_config( OlyStatus *status )
     return olyconf;
 }
 
-#define DOT_CONFIG_NAME "/.olyrc"
-#define ETC_CONFIG_NAME "/olyrc"
 static int
 ofile_read_handler(void *data, unsigned char *buffer, size_t size,
         size_t *size_read)
 {
     yaml_parser_t *parser = data;
 
-    *size_read = (u_fread((UChar *)buffer, 
+    *size_read = (u_file_read((UChar *)buffer, 
                     (int32_t)(size/sizeof(OChar)-1), 
-                    parser->input.file)*sizeof(OChar));
-    return !ferror(parser->input.file);
+                    (UFILE *)parser->input.file)*sizeof(OChar));
+    if (parser->input.file != NULL)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 static void
@@ -128,7 +133,7 @@ yaml_input_ofile(yaml_parser_t *parser, OFILE *file)
     parser->read_handler = ofile_read_handler;
     parser->read_handler_data = parser;
 
-    parser->input.file = file;
+    parser->input.file = (FILE *)file;
 }
 
 /* find_config_file.  Looks for a file in any of the colon-separated
@@ -138,10 +143,9 @@ yaml_input_ofile(yaml_parser_t *parser, OFILE *file)
  * finding the file).
  * If it recieves a status != OLY_OKAY, returns that error and does nothing 
  * else.
- *
- * If status is OLY_OKAY at the end, the file name in result can be opened
- * to read, if nothing else.
  */
+#define DOT_CONFIG_NAME "/.olyrc"
+#define ETC_CONFIG_NAME "/olyrc"
 
 static OFILE *
 find_config_file (OlyStatus *status) 
@@ -149,18 +153,18 @@ find_config_file (OlyStatus *status)
     char *path = strcat(strcpy(
             omalloc((strlen(getenv("HOME")) + strlen(DOT_CONFIG_NAME)+1)),
             getenv("HOME")), DOT_CONFIG_NAME),
-            result[BUFSIZ], 
-            *token, *watch;;
+            result[BUFSIZ], *token, *watch;
+    const char  *basename = ETC_CONFIG_NAME,
+                *sysconf_path = SYSCONFDIR;
     const char  *the_colon = ":";
-    size_t       path_size, name_size = ( strlen(basename) + 1 ), 
+    size_t       name_size = ( strlen(basename) + 1 ), 
                  result_len = BUFSIZ;
-    OFILE        *return_file = NULL;
+    OFILE       *return_file = NULL;
     void        *free_me;
-
 
     if (*status != OLY_OKAY)
     {
-        return *status;
+        return NULL;
     }
     
     if ( path != NULL )
@@ -172,6 +176,8 @@ find_config_file (OlyStatus *status)
 
     if (return_file == NULL)
     {
+        path = omalloc( (strlen(sysconf_path) + 1) );
+        strcpy(path, sysconf_path);
         for ( token = strtok_r(path, the_colon, &watch); 
                 ( token != NULL ); 
                 token = strtok_r(NULL, the_colon, &watch) )
@@ -180,8 +186,8 @@ find_config_file (OlyStatus *status)
             {
                 strcpy( result, token );
                 strcat( result, basename );
-                return_file = u_fopen(result, "rb", get_default_locale(), 
-                    get_default_charset());
+                return_file = u_fopen( result, "rb", 
+                        char_default_locale(), char_default_charset() );
             }
             else
             {
@@ -189,6 +195,8 @@ find_config_file (OlyStatus *status)
                 *result = '\0';
             }
         }
+        free_me = (void *)path;
+        OFREE(free_me);
     }
     return return_file;
 }

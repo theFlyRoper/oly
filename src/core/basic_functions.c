@@ -75,6 +75,19 @@ OChar *get_default_locale( void )
     return get_locale(oly->data);
 }
 
+const char *char_default_charset( void )
+{
+    return ucnv_getDefaultName 	( );
+}
+
+const char *char_default_locale( void )
+{
+    UErrorCode u_status;
+    const char * retval = ures_getLocaleByType(get_resource_data(oly->data), 
+            ULOC_ACTUAL_LOCALE, &u_status );
+    return retval;
+}
+
 /* http://linux.die.net/man/2/clock_gettime 
  * these top two require linking with realtime:
  * -lrt
