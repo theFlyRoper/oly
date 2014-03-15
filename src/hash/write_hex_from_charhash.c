@@ -29,19 +29,22 @@
 OlyStatus
 write_hex_from_charhash (FILE *f, const charhash c, OlyState *state)
 {
-  int       i=0;
-  for (i = 0; (i<(OLY_HASH_BITS/CHAR_BIT)); i += sizeof(char)) 
-  {
-      if (fprintf(f, "%02x", c[i]) <= 0) {
-        return OLY_ERR_FILEIO;
-      };
-  }
-  return OLY_OKAY;
+    int  i=0;
+    for ( i = 0; (i<(OLY_HASH_BITS/CHAR_BIT)); i += sizeof(char) )
+    {
+        if ( fprintf(f, "%02x", c[i]) <= 0 )
+        {
+            return OLY_ERR_FILEIO;
+        };
+    }
+    return OLY_OKAY;
 }
 
 OlyStatus
 print_hex_from_charhash (const charhash c, OlyState *state)
 {
-  return write_hex_from_charhash(stdout, c, state);
+    OlyStatus status = write_hex_from_charhash(stdout, c, state);
+    fprintf(stdout, "\n");
+    return status;
 }
 

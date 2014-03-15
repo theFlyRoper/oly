@@ -113,7 +113,7 @@ resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
 ## 						src/print_demo/print_last.c 
 ## 						src/get_rules.c 
 
-noinst_LIBRARIES	=	liboly_dev.a libcore.a libhash.a 
+noinst_LIBRARIES	=	liboly_dev.a libcore.a libhash.a libtestcore.a
 
 
 libhash_a_SOURCES	=	src/hash/char_to_size.c \
@@ -128,7 +128,6 @@ libhash_a_SOURCES	=	src/hash/char_to_size.c \
 						lib/sha_three/KeccakNISTInterface.c \
 						lib/sha_three/KeccakSponge.c \
 						$(SHA3_SRC)
-
 
 libhash_a_CPPFLAGS				= $(HEAD_CPPFLAGS)
 libhash_a_CFLAGS				= $(SHA3_CFLAGS)
@@ -165,16 +164,17 @@ libcore_a_SOURCES	=	src/resources/get_resource_data.c \
 libcore_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 libcore_a_CFLAGS			= $(DEV_CFLAGS) 
 
-
 ## tests/check starts here.
 CHECK_DEFS	= @DEFS@ @DEV_DEF@ \
-			-DTEST_PKGDATADIR=\"$(I18N_TESTBUILDDIR)\" \
+			-DTESTING=1 -DTEST_PKGDATADIR=\"$(I18N_TESTBUILDDIR)\" \
 			-DTESTDATADIR=\"$(abs_top_srcdir)/tests/\" \
-			-I$(top_srcdir)/src/ 
+			-I$(top_srcdir)/src/ $(SYSCONFDIR_DEF)
+
+libtestcore_a_SOURCES		= $(libcore_a_SOURCES)
+libtestcore_a_CPPFLAGS		= $(CHECK_DEFS) 
 
 check_PROGRAMS 	= 	tests/runtests \
-					tests/oly/core/c-oly_timestamp \
-					tests/oly/core/c-test_gcc_encoding \
+					tests/oly/core/c-basic_functions \
 					tests/oly/core/c-get_errmsg \
 					tests/oly/core/c-oly_config \
 					tests/oly/hash/c-read_sizehash_from_hex \
@@ -196,53 +196,53 @@ tests_tap_libtap_a_SOURCES 		= tests/tap/basic.c tests/tap/basic.h \
 tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c 
 tests_oly_hash_c_get_hashbits_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_get_hashbits_LDADD = tests/tap/libtap.a \
-									libcore.a libhash.a \
+									libtestcore.a libhash.a \
 									@YAML_LIBS@
 tests_oly_hash_c_read_charhash_from_hex_SOURCES  = tests/oly/hash/c-read_charhash_from_hex.c 
 tests_oly_hash_c_read_charhash_from_hex_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_read_charhash_from_hex_LDADD 	= tests/tap/libtap.a \
-						libcore.a libhash.a @ICUIO_LIBS@
+						libtestcore.a libhash.a @ICUIO_LIBS@
 tests_oly_hash_c_read_sizehash_from_hex_SOURCES = tests/oly/hash/c-read_sizehash_from_hex.c 
 tests_oly_hash_c_read_sizehash_from_hex_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_read_sizehash_from_hex_LDADD = tests/tap/libtap.a \
-								libcore.a libhash.a @ICUIO_LIBS@
+								libtestcore.a libhash.a @ICUIO_LIBS@
 tests_oly_hash_c_hash_char_to_hash_size_SOURCES = tests/oly/hash/c-hash_char_to_hash_size.c 
 tests_oly_hash_c_hash_char_to_hash_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_hash_char_to_hash_size_LDADD 	= tests/tap/libtap.a libcore.a \
+tests_oly_hash_c_hash_char_to_hash_size_LDADD 	= tests/tap/libtap.a libtestcore.a \
 												  libhash.a @ICUIO_LIBS@
 tests_oly_hash_c_get_str_hashlen_SOURCES = tests/oly/hash/c-get_str_hashlen.c 
 tests_oly_hash_c_get_str_hashlen_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_get_str_hashlen_LDADD 	= tests/tap/libtap.a libcore.a \
+tests_oly_hash_c_get_str_hashlen_LDADD 	= tests/tap/libtap.a libtestcore.a \
 										  libhash.a @ICUIO_LIBS@ 
 tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
-tests_oly_hash_c_char_to_size_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_char_to_size_LDADD = tests/tap/libtap.a \
-									libcore.a libhash.a @ICUIO_LIBS@
-tests_oly_core_c_get_errmsg_SOURCES = tests/oly/core/c-get_errmsg.c 
-tests_oly_core_c_get_errmsg_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_get_errmsg_LDADD 	= tests/tap/libtap.a \
-									  libcore.a @ICUIO_LIBS@ @ICU_LIBS@ 
+tests_oly_hash_c_char_to_size_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_char_to_size_LDADD 	= 	tests/tap/libtap.a \
+											libtestcore.a libhash.a @ICUIO_LIBS@
+tests_oly_core_c_get_errmsg_SOURCES 	= tests/oly/core/c-get_errmsg.c 
+tests_oly_core_c_get_errmsg_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_get_errmsg_LDADD 		= tests/tap/libtap.a \
+									  	  libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ 
 tests_oly_core_c_oly_config_SOURCES = tests/oly/core/c-oly_config.c \
 									  src/core/oly_mem_string.c 
 tests_oly_core_c_oly_config_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_oly_config_LDADD 	= libcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
-									  tests/tap/libtap.a \
-										@YAML_LIBS@ 
+tests_oly_core_c_oly_config_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
+									  tests/tap/libtap.a @YAML_LIBS@ 
 										  
 
-tests_oly_core_c_oly_timestamp_SOURCES = tests/oly/core/c-oly_timestamp.c 
-tests_oly_core_c_oly_timestamp_CPPFLAGS = $(HEAD_CPPFLAGS) \
+tests_oly_core_c_basic_functions_SOURCES = tests/oly/core/c-basic_functions.c 
+tests_oly_core_c_basic_functions_CPPFLAGS = $(HEAD_CPPFLAGS) \
 										  $(CHECK_DEFS)
-tests_oly_core_c_oly_timestamp_LDADD 	= @ICUIO_LIBS@ @ICU_LIBS@ tests/tap/libtap.a \
-										  libcore.a
-
+tests_oly_core_c_basic_functions_LDADD 	= @ICUIO_LIBS@ @ICU_LIBS@ tests/tap/libtap.a \
+										  libtestcore.a 
+tests_oly_core_c_basic_functions_LDFLAGS = -lm
+ 
 tests_oly_core_c_test_gcc_encoding_SOURCES = tests/oly/core/c-test_gcc_encoding.c \
 									  src/core/oly_mem_string.c 
 tests_oly_core_c_test_gcc_encoding_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 ## there is a great cflag -fexec-charset=UTF-16 that GCC has, but
 ## with ICU it messes thigns up.
 tests_oly_core_c_test_gcc_encoding_CFLAGS 	= $(CFLAGS)
-tests_oly_core_c_test_gcc_encoding_LDADD 	= tests/tap/libtap.a libcore.a \
+tests_oly_core_c_test_gcc_encoding_LDADD 	= tests/tap/libtap.a libtestcore.a \
 									@YAML_LIBS@ @ICUIO_LIBS@ @ICU_LIBS@
 
 									
@@ -251,11 +251,11 @@ check-local: check-i18n $(check_PROGRAMS)
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
 	    -b '$(abs_top_builddir)/tests' -l '$(abs_top_srcdir)/tests/TESTS'
 
-i18n: i18n/$(OLY_I18N_NAME).dat
+i18n: 		i18n/$(OLY_I18N_NAME).dat
 	
 check-i18n:	tests/data/i18n/$(OLY_I18N_NAME).dat
 
-all-local: i18n check-i18n
+all-local:  i18n check-i18n
 
 ## end of tests/check stuff.
 

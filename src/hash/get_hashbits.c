@@ -28,9 +28,9 @@
 OlyStatus 
 get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) 
 {
-  if (Hash(OLY_HASH_BITS, data, len, hash) != SUCCESS) {
-    return OLY_ERR_HASH;
-  };
-  return OLY_OKAY;
+    if (Hash(OLY_HASH_BITS, data, len, hash) != SUCCESS) {
+        return OLY_ERR_HASH;
+    };
+    return OLY_OKAY;
 }
 

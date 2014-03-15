@@ -29,40 +29,48 @@
 #include "pvt_core.h"
 
 #include "tests/tap/basic.h"
-static void close_main(void);
-
+#include "tests/tap/float.h"
 /* MAIN */
 int
 main( int argc, char **argv )
 {
-    
+    const char *count_bytes_files[] = {
+            "/data/orig_breaks.txt", "/data/spawner_output.txt",
+            "/data/zh_romance_of_three_kingdoms.txt", ""},
+            *source_dir = getenv("SOURCE");
+    char    buffer[BUFSIZ], *locale = NULL, *charset = NULL;
+    struct  stat sts;
+    time_t  now;
+    size_t  results[] = {4255, 142803, 46838, 0}, i = 0,
+            output = 0;
+    FILE    *f;
     UErrorCode status = U_ZERO_ERROR;
-    int32_t i, myStrlen = 0;
-    UChar* myString;
-    char buffer[1024], *locale = NULL, *charset = NULL,
-                        *locdir=(char*)TEST_PKGDATADIR;
-    UDate myDateArr[] = { 0.0, 10000000000.0, 200000000000.0, oly_timestamp() }; 
-    UDateFormat* df = udat_open(UDAT_DEFAULT, UDAT_DEFAULT, NULL, NULL, -1, NULL, 0, &status);
-    atexit (close_main);
-    oly = init_oly(argv[0], locdir, NULL, locale);
-    printf("sizeof(double): %i, sizeof(uint64_t): %i\n", sizeof(double), 
-            sizeof(uint64_t));
-
-    for (i = 0; i < 4; i++) {
-        u_fprintf(u_stdout, "%i times through, myStrLen: %i, uerrocode: %S\n", 
-                i, myStrlen, u_uastrcpy(buffer, u_errorName(status))) ;
-        myStrlen = udat_format(df, myDateArr[i], NULL, myStrlen, NULL, &status);
-        if(status == U_BUFFER_OVERFLOW_ERROR){
-            status = U_ZERO_ERROR;
-            myString = (UChar*)malloc(sizeof(UChar) * (myStrlen+1) );
-            udat_format(df, myDateArr[i], myString, myStrlen+1, NULL, &status);
-            printf("double: %e - Formatted: %s\n", myDateArr[i], u_austrcpy(buffer, myString)) ;
-            free(myString);
-            myStrlen = 0;
-        }
+    int32_t string_length = 0;
+    UChar*  test_string;
+    if (source_dir == NULL)
+    {
+        printf("requires SOURCE environment variable, supplied by runtest. Exiting...");
+        exit(EXIT_FAILURE);
     }
-    /* plan(3); */
+    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    plan(4);
+    diag("testing oly_timestamp function.");
+    time(&now);
+    is_double((double now), oly_timestamp, 1000.0, "Two times should be close enough.");
 
+    diag("testing count_file_bytes function.");
+    for (i = 0; (results[i] != 0); i++) {
+        strcpy(buffer, source_dir);
+        strcat(buffer, count_bytes_files[i]);
+        if (stat(buffer, &sts) == -1 && errno == ENOENT)
+        {
+            printf ("The file %s doesn't exist...\n", buffer);
+        }
+        f = fopen(buffer, "r");
+        assert( count_file_bytes( f, &output ) == OLY_OKAY ) ;
+        is_int(results[i], output, "File: %s", count_bytes_files[i]);
+        fclose(f);
+    }
 
     if ( 0 != 0 ) 
     {
@@ -72,12 +80,5 @@ main( int argc, char **argv )
     {
         exit(EXIT_SUCCESS);
     }
-}
-
-static void 
-close_main (void) 
-{
-    fclose (stdout);
-    fclose (stdin) ;
 }
 

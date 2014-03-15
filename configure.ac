@@ -201,7 +201,7 @@ AC_DEFINE([U_HIDE_INTERNAL_API],[1],
 
 AC_DEFINE([U_HIDE_SYSTEM_API],[1],
           [ICU API 3 of 3: Parts of API intended only 
-           for use at a system level.]) 
+           for use at a system level.])
 
 AC_DEFINE([UNISTR_FROM_STRING_EXPLICIT],[explicit],
           [Recommended setting from ICU documentation; stipulates 

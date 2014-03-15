@@ -27,7 +27,10 @@ omalloc (size_t num)
 {
   void *new = malloc (num);
   if (!new)
-    fprintf(stderr, "Memory exhausted");
+  {
+    u_fprintf_u(u_stderr, get_errmsg( OLY_ERR_NOMEM ));
+    exit(EXIT_FAILURE);
+  }
   return new;
 }
 
@@ -41,8 +44,10 @@ orealloc (void *p, size_t num)
 
   new = realloc (p, num);
   if (!new)
-    fprintf(stderr, "Memory exhausted");
-
+  {
+    u_fprintf_u(u_stderr, get_errmsg( OLY_ERR_NOMEM ));
+    exit(EXIT_FAILURE);
+  }
   return new;
 }
 
@@ -50,7 +55,7 @@ void *
 ocalloc (size_t num, size_t size)
 {
   void *new = omalloc (num * size);
-  bzero (new, num * size);
+  memset(new, '\0', (num * size));
   return new;
 }
 
@@ -68,11 +73,11 @@ static char ostrerror_buf[sizeof ERRSTR_FMT + 20];
 char *
 ostrerror (int errnum)
 {
-  char *errstr;
+    char *errstr;
     strerror_r (errnum, ostrerror_buf, (sizeof(ERRSTR_FMT)+20) );
 
     errstr = ostrerror_buf;
-  /* If `errnum' is out of range, result might be NULL.  We'll fio that.  */
+  /* If `errnum' is out of range, result might be NULL.  We'll fix that.  */
   if (!errstr)
     {
       sprintf (ostrerror_buf, ERRSTR_FMT, errnum);

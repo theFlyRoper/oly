@@ -27,15 +27,16 @@ OlyStatus
 count_file_bytes(FILE *file, size_t *file_size)
 {
     fpos_t pos;
-    set_status(oly->state, OLY_OKAY);
+    OlyStatus status = OLY_OKAY;
+
     fseek(file, 0, SEEK_END);
     if (fgetpos(file, &pos) != 0) 
     {
-        set_status(oly->state, OLY_ERR_FILEIO);
+        status = OLY_ERR_FILEIO;
     }
     *file_size = (size_t)ftello(file);
     fseek(file, 0, SEEK_SET);
-    return get_status(oly->state);
+    return status;
 }
 
 /* transforms a c string to an OChar string. always null terminated. */
@@ -61,7 +62,6 @@ ostr_to_cstr(char *c, size_t buffer_size, const OChar *o)
     return u_austrncpy(c, (UChar *)o, (buffer_size-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
 }
-
 
 /* The resource data charset for oly serves as the default charset throughout,
  * since the Oly object is the primary object throughout the program. */

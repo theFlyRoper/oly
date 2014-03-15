@@ -34,25 +34,51 @@
  * special constructor available here.
  */
 
-/* pre init functions */
+/* pre init functions.  None of these should be called anywhere else, which is why they are all static. */
 
-static int open_devnull(int fd);
+/* get_home, cleanenv, open_devnull and clean_io_open
+ * are adapted from the Secure Programming 
+ * Cookbook, John Viega and Matt Messier.
+ * 2003, O'Reilly Press, 
+ * ISBN: 0-596-00394-3
+ */
+
+/* verifies we can open /dev/null, just in case some malicious user has 
+ * hijacked all the file streams in order to capture stdout or stderr. */
+static int   open_devnull(int fd);
+/* gets the user's home directory in a reliable way. */
 static char *get_home (struct passwd *pwd);
-static void *imalloc (size_t num);
-static void *icalloc (size_t num, size_t size);
-static char *istrdup (const char *string);
+/* closes any nonstandard files that are open now, then reopens the std* set
+ * if needed. */
+static void clean_io_open(void) ;
+/* cleans the local program environment, removing any environment variables that
+ * are not used by Oly and providing secure ones to Oly through more reliable 
+ * means. */
+static OlyStatus cleanenv (void);
+/* collects the startup locale from the environment or system. */
 static char *init_locale (const char *locale);
+/* collects the startup character set / encoding / codepoint from the env or system 
+ * Note that if the U_CHARSET_IS_UTF8 C preprocessor marker is defined,
+ * ICU will always return UTF-8 as the default character set. */
 static char *init_charset (const char * preset);
+/* Initializes the ICU resource and sets up OChar versions
+ * of the locale, charset and datadir. */
 static OlyResource *init_primary_resource(const char *locale, 
         const char *charset, const char *datadir);
+/* initializes ICU IO */
 static void init_io(const char *locale, const char *codepage);
+/* cleans up after Oly.  May need work. */
 static void close_oly(void);
-static void clean_io_open(void) ;
-static OlyStatus cleanenv (void);
+/* pre-init, non-i18n malloc wrapper with out-of-memory checks. */
+static void *imalloc (size_t num);
+/* pre-init, non-i18n calloc wrapper with out-of-memory checks. */
+static void *icalloc (size_t num, size_t size);
+/* pre-init, non-i18n strdup wrapper with out-of-memory checks. */
+static char *istrdup (const char *string);
 
 /* TODO:
  * This is organized enough right now, but it can be a lot tighter.
- * 1. Does not load config right now.  It should, once config is implemented.  Placeholder in the arguments.
+ * 1. Does not load config right now.  It should, once config is implemented.
  */
 
 Oly *init_oly(const char *prog, 
@@ -147,6 +173,7 @@ imalloc (size_t num)
     if (!new)
     {
         fprintf(stderr, "Memory exhausted: %s\n", strerror(errno));
+        exit(EXIT_FAILURE);
     }
     return new;
 }
@@ -245,7 +272,6 @@ init_primary_resource(const char *locale, const char *charset,
     return res; 
 }
 
-
 static void 
 close_oly (void) 
 {
@@ -269,7 +295,6 @@ close_oly (void)
     u_fclose (u_stdout);
     u_fclose (u_stdin);
 }
-
 
 static void
 init_io(const char *locale, const char *codepage) 
@@ -338,6 +363,12 @@ spc_preserve_environ[  ] = {
     "LC_ALL",
     "LANG",
     "TZ",
+    /* ./tests/runtests provides these two environment variables so 
+     * it behooves us to not clobber them during tests. :) */
+#ifdef TESTING
+    "SOURCE",
+    "BUILD",
+#endif /* TESTING */
     0
 };
 

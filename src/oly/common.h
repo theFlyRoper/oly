@@ -110,10 +110,6 @@ typedef UConverter OlyConverter;
 extern int errno;
 #endif
 
-#ifndef BUFSIZ
-#define BUFSIZ 8192
-#endif
-
 /** FUNCTIONS AND SYSTEM MACROS  */
 
 #ifndef EXIT_SUCCESS
@@ -141,8 +137,6 @@ extern int errno;
 #  define BEGIN_C_DECLS
 #  define END_C_DECLS
 #endif
-
-
 
 #ifdef __GNUC__
 #  ifndef const
@@ -184,7 +178,6 @@ BEGIN_C_DECLS
 #define OFREE(stale) do { \
         if (stale) { free (stale);  stale = 0; } \
         } while (0)
-
 
 extern void *ocalloc    (size_t num, size_t size);
 extern void *omalloc    (size_t num);

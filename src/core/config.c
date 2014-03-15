@@ -55,6 +55,11 @@ load_config( OlyStatus *status )
         *status = OLY_ERR_LIBYAML_INIT;
          return NULL;
     }
+    /* TODO:
+     * This encoding set may need to be dynamic at some point.  
+     * for now, Linux is pretty much exclusively little endian. 
+     * but you never know! 
+     */
     yaml_parser_set_encoding( &config_parser, YAML_UTF16LE_ENCODING );
     yaml_input_ofile( &config_parser , config_file );
     
