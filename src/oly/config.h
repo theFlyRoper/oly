@@ -29,7 +29,7 @@ BEGIN_C_DECLS
 typedef struct OlyConfig_struct OlyConfig;
 
 typedef void (*OlyHandler)(char *input);
-extern void load_config( OlyStatus *status );
+extern OlyConfig * load_config( OlyStatus *status );
 
 /* if null is passed, it allocates a new structure. 
 extern OlyStatus *update_from_char( OlyConfig *conf, char * key,

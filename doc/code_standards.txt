@@ -30,7 +30,15 @@ functions for internal errors.  If you are writing a function that must have a h
 
 Language and i18n initialization
 --------------------------------
-This section is first because I've done this research a good four times and still haven't come up with a better answer than what follows.  
+I have done even more research as of 3-14-14, and here are some more fun facts:
+
+* GCC supports prefixes for unicode string literals!  This makes it much easier to work with ICU literals.  They look like this: u"string data".
+* When compared with data from ICU, these return correct values (ie a value pulled from ICU resources equals a value with the u"" prefix.)
+* These little u string literals are also supported by clang 3.1+.
+* They require unicode input markers in ustdio, that is, the functions that take unicode input.  They look like this: "u_fprintf_u", as opposed to this: "u_fprintf".
+* The GCC -fencoding= flags may be tempting but I like them less.  For one thing, they do not handle things correctly in ICU, at least not what I saw.
+
+Here are the older notes:
 
 Gettext, the GNU standard program message dictionary, uses https://www.gnu.org/software/gettext/manual/gettext.html#Locale-Environment-Variables[several environment variables] to determine what language the user sees:
 

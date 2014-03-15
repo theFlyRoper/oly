@@ -38,24 +38,27 @@ main( int argc, char **argv ){
         
     char            *locale = (char *)"root",  *charset = NULL;
     const char     *results_char[] = {
-                        "OLY_WARN_REINIT\0",
-                        "OLY_WARN_LIB\0",
-                        "OLY_WARN_EXIT\0",
-                        "OLY_OKAY\0",
-                        "OLY_ERR_UNKNOWN\0",
-                        "OLY_ERR_SYS\0",
-                        "OLY_ERR_LIB\0",
-                        "OLY_ERR_INIT\0",
-                        "OLY_ERR_NOMEM\0",
-                        "OLY_ERR_NOPWD\0",
-                        "OLY_ERR_NOUSER\0",
-                        "OLY_ERR_FILEIO\0",
-                        "OLY_ERR_READHEX\0",
-                        "OLY_ERR_HASH\0",
-                        "OLY_ERR_BADARG\0",
-                        "OLY_ERR_BUFFER_OVERFLOW\0",
-                        "OLY_ERR_FILE_NOT_FOUND\0",
-                        "OLY_ERR_UNKNOWN\0"
+                        "OLY_WARN_REINIT",
+                        "OLY_WARN_LIB",
+                        "OLY_WARN_EXIT",
+                        "OLY_OKAY",
+                        "OLY_ERR_UNKNOWN",
+                        "OLY_ERR_SYS",
+                        "OLY_ERR_LIB",
+                        "OLY_ERR_INIT",
+                        "OLY_ERR_NOMEM",
+                        "OLY_ERR_NOPWD",
+                        "OLY_ERR_NOUSER",
+                        "OLY_ERR_FILEIO",
+                        "OLY_ERR_READHEX",
+                        "OLY_ERR_HASH",
+                        "OLY_ERR_BADARG",
+                        "OLY_ERR_BUFFER_OVERFLOW",
+                        "OLY_ERR_CONFIG_FILE_NOT_FOUND",
+                        "OLY_ERR_LIBYAML_INIT",
+                        "OLY_ERR_CONFIG_PARSE",
+                        "OLY_ERR_CONFIG_UNRECOGNIZED",
+                        "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;
     
@@ -103,3 +106,4 @@ main( int argc, char **argv ){
         exit(EXIT_SUCCESS);
     }
 }
+

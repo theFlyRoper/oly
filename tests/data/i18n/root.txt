@@ -49,6 +49,10 @@ root:table {
         {"OLY_ERR_BADARG"},
         {"OLY_ERR_BUFFER_OVERFLOW"},
         {"OLY_ERR_FILE_NOT_FOUND"},
+        {"OLY_ERR_CONFIG_FILE_NOT_FOUND"},
+        {"OLY_ERR_LIBYAML_INIT"},
+        {"OLY_ERR_CONFIG_PARSE"},
+        {"OLY_ERR_CONFIG_UNRECOGNIZED"},
     }
     OlyHelpTopics:table {
         configuration     { "ROOT configuration help topic" }
