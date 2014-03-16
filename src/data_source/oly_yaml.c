@@ -1,4 +1,4 @@
-/* config.c - load and parse configuration.  License GPL 2+{{{
+/* oly_yaml.c - Oly bindings for YAML.  License GPL 2+{{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,12 +19,13 @@
 
 
 #include "oly/common.h"
-#include <yaml.h>
-#include "pvt_config.h"
-#include "oly/oly_dev.h"
 #include "sys/types.h"
-#include "oly/core.h"
 #include "stdbool.h"
+
+#include <yaml.h>
+#include "oly/doc_data_source.h"
+#include "oly/oly_dev.h"
+#include "oly/core.h"
 
 static OFILE *find_config_file (OlyStatus *status)  ;
 static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
@@ -57,7 +58,7 @@ load_config( OlyStatus *status )
     }
     else if ( config_file == NULL )
     {
-        *status = OLY_ERR_CONFIG_FILE_NOT_FOUND ;
+        *status = OLY_ERR_FILE_NOT_FOUND ;
     }
     
     if ( yaml_parser_initialize(&config_parser) != 1 )
@@ -159,6 +160,39 @@ load_config( OlyStatus *status )
     return olyconf;
 }
 
+/* preflight_config counts the number of nodes and OChar items needed for each
+ * level of the document representation in question. */
+TokenMark *
+preflight_config( OlyStatus *status )
+{
+    OFILE *config_file = find_config_file(status);
+    yaml_parser_t        config_parser ;
+    yaml_token_t         token;
+    TokenMark           *token_mark = new_token_mark();
+
+    if ( *status != OLY_OKAY )
+    {
+        return NULL;
+    }
+    else if ( config_file == NULL )
+    {
+        *status = OLY_ERR_FILE_NOT_FOUND ;
+    }
+    
+    if ( yaml_parser_initialize(&config_parser) != 1 )
+    {
+        *status = OLY_ERR_LIBYAML_INIT;
+         return NULL;
+    }
+    yaml_parser_set_encoding( &config_parser, YAML_UTF16LE_ENCODING );
+    yaml_input_ofile( &config_parser , config_file );
+    if ( count_this_level( token_mark, &config_parser, &token ) != OLY_OKAY )
+    {
+        *status = OLY_ERR_YAML_PARSE;
+    };
+    yaml_token_delete(&token);
+    return token_mark;
+}
 
 OlyStatus 
 count_this_level( TokenMark *token_mark, 
@@ -355,7 +389,6 @@ print_config( OlyStatus *status )
                 if (token_mark->is_key_token == 1) 
                 {
                     u_fprintf(u_stdout, "%s : ", token.data.scalar.value);
-                }
                 else
                 {
                     u_fprintf(u_stdout, "%s\n", token.data.scalar.value);
@@ -418,9 +451,8 @@ static int
 ofile_read_handler(void *data, unsigned char *buffer, size_t size, size_t *size_read)
 {
     yaml_parser_t *parser = data;
-
-    *size_read = (u_file_read((UChar *)buffer, 
-                    (int32_t)(size/sizeof(OChar)-1), 
+    
+    *size_read = (u_file_read((UChar *)buffer, (int32_t)(size/sizeof(OChar)-1), 
                     (UFILE *)parser->input.file)*sizeof(OChar));
     if (parser->input.file != NULL)
     {
@@ -443,70 +475,5 @@ yaml_input_ofile(yaml_parser_t *parser, OFILE *file)
     parser->read_handler_data = parser;
 
     parser->input.file = (FILE *)file;
-}
-
-/* find_config_file.  Looks for a file in any of the colon-separated
- * directories listed in the path argument. returns OlyStatus.  
- * May return one of these errors: OLY_ERR_BADARG (one of the 
- * arguments provided was invalid), OLY_ERR_FILE_NOT_FOUND (not successful 
- * finding the file).
- * If it recieves a status != OLY_OKAY, returns that error and does nothing 
- * else.
- */
-#define DOT_CONFIG_NAME "/.olyrc"
-#define ETC_CONFIG_NAME "/olyrc"
-
-static OFILE *
-find_config_file (OlyStatus *status) 
-{
-    char *path = strcat(strcpy(
-            omalloc((strlen(getenv("HOME")) + strlen(DOT_CONFIG_NAME)+1)),
-            getenv("HOME")), DOT_CONFIG_NAME),
-            result[BUFSIZ], *token, *watch;
-    const char  *basename = ETC_CONFIG_NAME,
-                *sysconf_path = SYSCONFDIR;
-    const char  *the_colon = ":";
-    size_t       name_size = ( strlen(basename) + 1 ), 
-                 result_len = BUFSIZ;
-    OFILE       *return_file = NULL;
-    void        *free_me;
-
-    if (*status != OLY_OKAY)
-    {
-        return NULL;
-    }
-    
-    if ( path != NULL )
-    {
-        return_file = u_fopen( path , "rb", NULL, NULL );
-        free_me = (void *)path;
-        OFREE(free_me);
-    }
-
-    if (return_file == NULL)
-    {
-        path = omalloc( (strlen(sysconf_path) + 1) );
-        strcpy(path, sysconf_path);
-        for ( token = strtok_r(path, the_colon, &watch); 
-                ( token != NULL ); 
-                token = strtok_r(NULL, the_colon, &watch) )
-        {
-            if ((token != NULL) && ((strlen(token) + name_size) < result_len))
-            {
-                strcpy( result, token );
-                strcat( result, basename );
-                return_file = u_fopen( result, "rb", 
-                        char_default_locale(), char_default_charset() );
-            }
-            else
-            {
-                *status = OLY_ERR_FILE_NOT_FOUND;
-                *result = '\0';
-            }
-        }
-        free_me = (void *)path;
-        OFREE(free_me);
-    }
-    return return_file;
 }
 

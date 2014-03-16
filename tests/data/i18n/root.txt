@@ -32,32 +32,32 @@ root:table {
       }
     }
     OlyErrors:array {
-        {"OLY_WARN_REINIT"},
-        {"OLY_WARN_LIB"},
-        {"OLY_WARN_EXIT"},
-        {"OLY_OKAY"},
-        {"OLY_ERR_UNKNOWN"},
-        {"OLY_ERR_SYS"},
-        {"OLY_ERR_LIB"},
-        {"OLY_ERR_INIT"},
-        {"OLY_ERR_NOMEM"},
-        {"OLY_ERR_NOPWD"},
-        {"OLY_ERR_NOUSER"},
-        {"OLY_ERR_FILEIO"},
-        {"OLY_ERR_READHEX"},
-        {"OLY_ERR_HASH"},
-        {"OLY_ERR_BADARG"},
-        {"OLY_ERR_BUFFER_OVERFLOW"},
-        {"OLY_ERR_FILE_NOT_FOUND"},
-        {"OLY_ERR_CONFIG_FILE_NOT_FOUND"},
-        {"OLY_ERR_LIBYAML_INIT"},
-        {"OLY_ERR_CONFIG_PARSE"},
-        {"OLY_ERR_CONFIG_UNRECOGNIZED"},
+        {"OLY_WARN_REINIT"}
+        {"OLY_WARN_LIB"}
+        {"OLY_WARN_EXIT"}
+        {"OLY_OKAY"}
+        {"OLY_ERR_UNKNOWN"}
+        {"OLY_ERR_SYS"}
+        {"OLY_ERR_LIB"}
+        {"OLY_ERR_INIT"}
+        {"OLY_ERR_NOMEM"}
+        {"OLY_ERR_NOPWD"}
+        {"OLY_ERR_NOUSER"}
+        {"OLY_ERR_FILEIO"}
+        {"OLY_ERR_READHEX"}
+        {"OLY_ERR_HASH"}
+        {"OLY_ERR_BADARG"}
+        {"OLY_ERR_BUFFER_OVERFLOW"}
+        {"OLY_ERR_FILE_NOT_FOUND"}
+        {"OLY_ERR_CONFIG_FILE_NOT_FOUND"}
+        {"OLY_ERR_LIBYAML_INIT"}
+        {"OLY_ERR_CONFIG_PARSE"}
+        {"OLY_ERR_CONFIG_UNRECOGNIZED"}
     }
     ConfigOptions:table{
-        ErrorBufferSize {"error_buffer_size"},
-        WorkingBufferSize {"working_buffer_size"},
-        OutputBufferSize {"output_buffer_size"},
+        ErrorBufferSize {"error_buffer_size"}
+        WorkingBufferSize {"working_buffer_size"}
+        OutputBufferSize {"output_buffer_size"}
     }
     OlyHelpTopics:table {
         configuration     { "ROOT configuration help topic" }
