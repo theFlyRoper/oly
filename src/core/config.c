@@ -22,6 +22,7 @@
 #include <yaml.h>
 #include "sys/types.h"
 #include "oly/core.h"
+#include "stdbool.h"
 
 static OFILE *find_config_file (OlyStatus *status)  ;
 static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
@@ -32,15 +33,38 @@ static int ofile_read_handler(void *data,
 #define IS_KEY 1
 #define IS_VALUE 2
 
-/* using defines and a bit flipper because it is easier */
 OlyConfig *
 load_config( OlyStatus *status )
 {
     OFILE *config_file = find_config_file(status);
     yaml_parser_t        config_parser ;
-    yaml_event_t         event;
+    yaml_token_t         token;
     OlyConfig           *olyconf;
-    printf("hello!!!!\n");
+    typedef struct token_marker_struct
+    {
+        bool is_stream_start : 1;
+        bool is_stream_end : 1;
+        bool is_version_directive : 1;
+        bool is_tag_directive : 1;
+        bool is_document_start : 1;
+        bool is_document_end : 1;
+        bool is_block_sequence_start : 1;
+        bool is_block_mapping_start : 1;
+        bool is_block_end : 1;
+        bool is_flow_sequence_start : 1;
+        bool is_flow_sequence_end : 1;
+        bool is_flow_mapping_start : 1;
+        bool is_flow_mapping_end : 1;
+        bool is_block_entry_start : 1;
+        bool is_flow_entry_start : 1;
+        bool is_key_token : 1;
+        bool is_value_token : 1;
+        bool is_alias_token : 1;
+        bool is_anchor_token : 1;
+        bool is_tag_token : 1;
+        bool is_scalar_token : 1;
+    } token_marker;
+
     if ( *status != OLY_OKAY )
     {
         return NULL;
@@ -57,54 +81,57 @@ load_config( OlyStatus *status )
     }
     /* TODO:
      * This encoding set may need to be dynamic at some point.  
-     * for now, Linux is pretty much exclusively little endian. 
+     * since this is only in Linux right now on x86, we are fine,
      * but you never know! 
      */
     yaml_parser_set_encoding( &config_parser, YAML_UTF16LE_ENCODING );
     yaml_input_ofile( &config_parser , config_file );
     
-    while(event.type != YAML_STREAM_END_EVENT)
-    {
-        if (!yaml_parser_parse(&config_parser, &event)) 
+    
+    do {
+        if (!yaml_parser_scan(&config_parser, &token)) 
         {
             printf("Parser error %d\n", config_parser.error);
             exit(EXIT_FAILURE);
         }
-        switch(event.type)
+        switch(token.type)
         { 
-            case YAML_NO_EVENT: 
+            case YAML_STREAM_START_TOKEN:
+                puts("STREAM START");
                 break;
-            /* Stream start/end */
-            case YAML_STREAM_START_EVENT: 
+            case YAML_STREAM_END_TOKEN:
+                puts("STREAM END");
                 break;
-            case YAML_STREAM_END_EVENT:   
+            case YAML_KEY_TOKEN:
+                printf("(Key token)   ");
                 break;
-            /* Block delimeters */
-            case YAML_DOCUMENT_START_EVENT: 
+            case YAML_VALUE_TOKEN:
+                printf("(Value token) ");
                 break;
-            case YAML_DOCUMENT_END_EVENT:   
+            case YAML_BLOCK_SEQUENCE_START_TOKEN:
+                puts("<b>Start Block (Sequence)</b>");
                 break;
-            case YAML_SEQUENCE_START_EVENT: 
+            case YAML_BLOCK_ENTRY_TOKEN:
+                puts("<b>Start Block (Entry)</b>");
                 break;
-            case YAML_SEQUENCE_END_EVENT:   
+            case YAML_BLOCK_END_TOKEN:
+                puts("<b>End block</b>");
                 break;
-            case YAML_MAPPING_START_EVENT:  
+            case YAML_BLOCK_MAPPING_START_TOKEN:
+                puts("[Block mapping]");
                 break;
-            case YAML_MAPPING_END_EVENT:    
+            case YAML_SCALAR_TOKEN:
+                u_fprintf(u_stdout, "%S \n", token.data.scalar.value);
                 break;
-            /* Data */
-            case YAML_ALIAS_EVENT:  
-                break;
-            case YAML_SCALAR_EVENT: 
-                u_fprintf(u_stdout, "Current value = %s\n", 
-                        event.data.scalar.value
-                        );
+            default: 
                 break;
         }
-        if(event.type != YAML_STREAM_END_EVENT)
-        yaml_event_delete(&event);
-    } 
-    yaml_event_delete(&event);
+        if(token.type != YAML_STREAM_END_TOKEN)
+        {
+            yaml_token_delete(&token);
+        }
+    } while(token.type != YAML_STREAM_END_TOKEN) ;
+    yaml_token_delete(&token);
   /* END new code */
     return olyconf;
 }

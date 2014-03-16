@@ -59,7 +59,7 @@ extern UFILE *u_stdin;
 
 void is_unicode_string(const UChar *wanted, const UChar *seen, 
         const char *format, ...)
-    __attribute__((__format__(u_vfprintf, 3, 4)));
+    __attribute__((__format__(printf, 3, 4)));
 UChar *char_to_utf8(const char *input);
 void u_diag(const char *format, ...)
     __attribute__((__nonnull__, __format__(printf, 1, 2)));

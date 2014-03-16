@@ -833,16 +833,6 @@ test_cleanup_register(test_cleanup_func func)
 }
 
 #define UPRINT_DESC(prefix, format)              \
-    do {                                        \
-        if (format != NULL) {                   \
-            va_list args;                       \
-            if (prefix != NULL)                 \
-                fprintf(stdout, "%s", prefix);           \
-            va_start(args, format);             \
-            u_vfprintf(u_stdout, format, args);              \
-            va_end(args);                       \
-        }                                       \
-    } while (0)
 
 void
 u_diag(const char *format, ...)
@@ -880,6 +870,7 @@ void
 is_unicode_string(const UChar *wanted, const UChar *seen, 
         const char *format, ...)
 {
+    va_list args;
     if (wanted == NULL)
         wanted = char_to_utf8("(null)");
     if (seen == NULL)
@@ -895,6 +886,13 @@ is_unicode_string(const UChar *wanted, const UChar *seen,
         u_fprintf(u_stdout, "not ok %lu", testnum++);
         _failed++;
     }
-    UPRINT_DESC(" - ", format);
+    if (format != NULL) 
+    {
+        fprintf(stdout, "%s", " - ");
+        va_start(args, format);
+        u_vfprintf(u_stdout, format, args);
+        va_end(args);
+    }
     putchar('\n');
 }
+

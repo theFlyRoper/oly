@@ -39,25 +39,44 @@ count_file_bytes(FILE *file, size_t *file_size)
     return status;
 }
 
-/* transforms a c string to an OChar string. always null terminated. */
+/* transforms a c string to an OChar string. Always returns 
+ * something which is null terminated. o must not be null and buffer_size must be
+ * greater than 1.  c may be null.  The function will return an empty string
+ * in that case. */
 OChar *
 cstr_to_ostr(OChar *o, size_t buffer_size, const char *c)
 {
     OChar    *superzero = (o + buffer_size);
-    assert((c != NULL) && (o != NULL) && (buffer_size > 1));
+    assert((o != NULL) && (buffer_size > 1));
+    *superzero = '\0';
+    if (o == NULL)
+    {
+        *o = 0x0;
+        superzero = o+1;
+        *superzero = 0x0;
+        return o;
+    }
     *superzero = '\0';
 #ifdef HAVE_UNICODE_USTDIO_H
     return (OChar *)u_uastrncpy((UChar *)o, c, (buffer_size-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
 }
 
-/* back the other way. */
+/* transforms an OChar string into a c string. Always returns 
+ * something which is null terminated. o must not be null and buffer_size must be
+ * greater than 1.  c may be null or empty.  The function will return an empty string
+ * in that case. */
 char  *
 ostr_to_cstr(char *c, size_t buffer_size, const OChar *o)
 {
     char    *superzero = (c+buffer_size);
-    assert((c != NULL) && (o != NULL) && (buffer_size > 1));
+    assert((c != NULL) && (buffer_size > 1));
     *superzero = '\0';
+    if (o == NULL)
+    {
+        *c = '\0';
+        return c;
+    }
 #ifdef HAVE_UNICODE_USTDIO_H
     return u_austrncpy(c, (UChar *)o, (buffer_size-1));
 #endif /* HAVE_UNICODE_USTDIO_H */

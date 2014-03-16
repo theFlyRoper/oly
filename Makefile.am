@@ -84,7 +84,7 @@ dist_noinst_HEADERS		=	src/oly/break_rules.h src/oly/common.h \
 							src/pvt_core.h src/pvt_resources.h \
 							src/pvt_state.h tests/tap/basic.h \
 							tests/tap/float.h tests/tap/macros.h
-AM_CFLAGS 		= -fstack-protector-all @ICU_CFLAGS@ @GDB_FLAG@ -Wall 
+AM_CFLAGS 			= -fstack-protector-all @ICU_CFLAGS@ @GDB_FLAG@ -Wall
 
 bin_PROGRAMS		= oly 
 
@@ -102,7 +102,7 @@ resex_CFLAGS		= $(DEV_CFLAGS)
 resex_SOURCES		= tests/tools/resex.c 
 resex_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
 					  @ICU_LIBS@ @YAML_LIBS@
-resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 -fstack-protector-all \
+resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 					@DEV_DEF@ $(HEAD_CPPFLAGS)
 
 ## 						src/print_demo/print_text_range.c 
@@ -174,9 +174,10 @@ libtestcore_a_SOURCES		= $(libcore_a_SOURCES)
 libtestcore_a_CPPFLAGS		= $(CHECK_DEFS) 
 
 check_PROGRAMS 	= 	tests/runtests \
-					tests/oly/core/c-basic_functions \
 					tests/oly/core/c-get_errmsg \
 					tests/oly/core/c-oly_config \
+					tests/oly/core/c-test_gcc_encoding \
+					tests/oly/core/c-basic_functions \
 					tests/oly/hash/c-read_sizehash_from_hex \
 					tests/oly/hash/c-get_hashbits \
  					tests/oly/hash/c-get_str_hashlen \
@@ -230,12 +231,14 @@ tests_oly_core_c_oly_config_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
 										  
 
 tests_oly_core_c_basic_functions_SOURCES = tests/oly/core/c-basic_functions.c 
-tests_oly_core_c_basic_functions_CPPFLAGS = $(HEAD_CPPFLAGS) \
-										  $(CHECK_DEFS)
-tests_oly_core_c_basic_functions_LDADD 	= @ICUIO_LIBS@ @ICU_LIBS@ tests/tap/libtap.a \
-										  libtestcore.a 
+tests_oly_core_c_basic_functions_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_basic_functions_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
+										  -ansi -std=gnu99 -Werror=format-security
+tests_oly_core_c_basic_functions_LDADD 	= libtestcore.a tests/tap/libtap.a \
+										  @ICUIO_LIBS@ @ICU_LIBS@ 
+
 tests_oly_core_c_basic_functions_LDFLAGS = -lm
- 
+
 tests_oly_core_c_test_gcc_encoding_SOURCES = tests/oly/core/c-test_gcc_encoding.c \
 									  src/core/oly_mem_string.c 
 tests_oly_core_c_test_gcc_encoding_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
@@ -245,7 +248,6 @@ tests_oly_core_c_test_gcc_encoding_CFLAGS 	= $(CFLAGS)
 tests_oly_core_c_test_gcc_encoding_LDADD 	= tests/tap/libtap.a libtestcore.a \
 									@YAML_LIBS@ @ICUIO_LIBS@ @ICU_LIBS@
 
-									
 
 check-local: check-i18n $(check_PROGRAMS) 
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
