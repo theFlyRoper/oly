@@ -37,12 +37,12 @@ extern OlyStatus *update_from_char( OlyConfig *conf, char * key,
 */
 
 struct OlyConfig_struct {
-    char *key;
+    OChar *key;
     OChar *value;
+    /* points to a subnode, such as an array or block. */
+    OlyConfig *subnode;
     OlyHandler handle;    
-    OlyConfig *next;
 };
-
 
 END_C_DECLS
 

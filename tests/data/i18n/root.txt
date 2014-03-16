@@ -54,6 +54,11 @@ root:table {
         {"OLY_ERR_CONFIG_PARSE"},
         {"OLY_ERR_CONFIG_UNRECOGNIZED"},
     }
+    ConfigOptions:table{
+        ErrorBufferSize {"error_buffer_size"},
+        WorkingBufferSize {"working_buffer_size"},
+        OutputBufferSize {"output_buffer_size"},
+    }
     OlyHelpTopics:table {
         configuration     { "ROOT configuration help topic" }
     }

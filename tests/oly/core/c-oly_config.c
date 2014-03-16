@@ -30,11 +30,10 @@ int
 main( int argc, char **argv )
 {
     OlyStatus        status = OLY_OKAY;
-    OlyConfig       *olyconf;
     char            *locale = (char *)"root",  *charset = NULL;
 
     oly     = init_oly( argv[0], TEST_PKGDATADIR, charset, locale );
-    olyconf = load_config(&status);
+    print_config( &status );
 
     exit(EXIT_SUCCESS);
 }

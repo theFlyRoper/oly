@@ -18,6 +18,7 @@
 
 #ifndef SRC_OLY_DEV_H
 #define SRC_OLY_DEV_H 1
+#include "oly/olytypes.h"
 
 BEGIN_C_DECLS
 
@@ -46,6 +47,34 @@ extern char *level_indent(char *indent, size_t size, const int level);
 extern void init_res_disp_flag(res_disp_flag *flag);
 extern const char *get_resource_type(UResourceBundle *res);
 extern UResType flag_check(UResourceBundle *res, const res_disp_flag *flag);
+
+extern void print_config( OlyStatus *status );
+
+typedef enum bash_pretty_attrs_enum {
+    RESET = 0,
+    BRIGHT = 1,
+    DIM = 2,
+    UNDERLINE = 3,
+    BLINK = 4,
+    REVERSE = 7,
+    HIDDEN = 8
+} BashAttr;
+
+typedef enum bash_pretty_colors_enum {
+    BLACK = 0,
+    RED = 1,
+    GREEN = 2,
+    YELLOW = 3,
+    BLUE = 4,
+    MAGENTA = 5,
+    CYAN = 6,
+    WHITE = 7
+} BashColors;
+
+extern void print_stdout_char_color(BashColors fg, BashColors bg, BashAttr attr, char *text);
+extern void print_stderr_char_color(BashColors fg, BashColors bg, BashAttr attr, char *text);
+extern void print_stdout_OChar_color(BashColors fg, BashColors bg, BashAttr attr, OChar *text);
+extern void print_stderr_OChar_color(BashColors fg, BashColors bg, BashAttr attr, OChar *text);
 
 END_C_DECLS
 

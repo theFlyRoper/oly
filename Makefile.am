@@ -176,7 +176,6 @@ libtestcore_a_CPPFLAGS		= $(CHECK_DEFS)
 check_PROGRAMS 	= 	tests/runtests \
 					tests/oly/core/c-get_errmsg \
 					tests/oly/core/c-oly_config \
-					tests/oly/core/c-test_gcc_encoding \
 					tests/oly/core/c-basic_functions \
 					tests/oly/hash/c-read_sizehash_from_hex \
 					tests/oly/hash/c-get_hashbits \
@@ -224,7 +223,8 @@ tests_oly_core_c_get_errmsg_CPPFLAGS 	= $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_get_errmsg_LDADD 		= tests/tap/libtap.a \
 									  	  libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ 
 tests_oly_core_c_oly_config_SOURCES = tests/oly/core/c-oly_config.c \
-									  src/core/oly_mem_string.c 
+									  src/core/oly_mem_string.c \
+									  src/debug/bash_printing.c 
 tests_oly_core_c_oly_config_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oly_config_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
 									  tests/tap/libtap.a @YAML_LIBS@ 
@@ -238,15 +238,6 @@ tests_oly_core_c_basic_functions_LDADD 	= libtestcore.a tests/tap/libtap.a \
 										  @ICUIO_LIBS@ @ICU_LIBS@ 
 
 tests_oly_core_c_basic_functions_LDFLAGS = -lm
-
-tests_oly_core_c_test_gcc_encoding_SOURCES = tests/oly/core/c-test_gcc_encoding.c \
-									  src/core/oly_mem_string.c 
-tests_oly_core_c_test_gcc_encoding_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
-## there is a great cflag -fexec-charset=UTF-16 that GCC has, but
-## with ICU it messes thigns up.
-tests_oly_core_c_test_gcc_encoding_CFLAGS 	= $(CFLAGS)
-tests_oly_core_c_test_gcc_encoding_LDADD 	= tests/tap/libtap.a libtestcore.a \
-									@YAML_LIBS@ @ICUIO_LIBS@ @ICU_LIBS@
 
 
 check-local: check-i18n $(check_PROGRAMS) 
