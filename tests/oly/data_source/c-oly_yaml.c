@@ -24,6 +24,7 @@
 #include "tests/tap/basic.h"
 #include "oly/core.h"
 #include "oly/globals.h"
+#include "src/data_source/oly_yaml.c"
 
 /* MAIN */
 int
@@ -32,8 +33,8 @@ main( int argc, char **argv )
     OlyStatus        status = OLY_OKAY;
     char            *locale = (char *)"root",  *charset = NULL;
 
-    oly     = init_oly( argv[0], TEST_PKGDATADIR, charset, locale );
-    print_config( &status );
+    oly             = init_oly( argv[0], TEST_PKGDATADIR, charset, locale );
+    load_yaml( &status );
 
     exit(EXIT_SUCCESS);
 }

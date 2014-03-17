@@ -23,11 +23,12 @@
 #include "stdbool.h"
 
 #include <yaml.h>
+
+#include "data_source/oly_yaml.h"
 #include "oly/doc_data_source.h"
 #include "oly/oly_dev.h"
 #include "oly/core.h"
 
-static OFILE *find_config_file (OlyStatus *status)  ;
 static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
 static int ofile_read_handler(void *data, 
         unsigned char *buffer, size_t size, size_t *size_read);
@@ -41,10 +42,10 @@ static void print_preflight_count(TokenMark *token_mark, int level);
 #define IS_KEY 1
 #define IS_VALUE 2
 
-OlyConfig *
-load_config( OlyStatus *status )
+void
+load_yaml( OlyStatus *status , const char *yaml_file, DataOption *options )
 {
-    OFILE *config_file = find_config_file(status);
+    OFILE *config_file = u_fopen( yaml_file, "rd", options->locale, options->charset );
     yaml_parser_t        config_parser ;
     yaml_token_t         token;
     OlyConfig           *olyconf;
@@ -82,18 +83,25 @@ load_config( OlyStatus *status )
         switch(token.type)
         { 
             case YAML_STREAM_START_TOKEN:
+                print_stdout_char_color( BLACK, WHITE, DIM, "[STREAM START]\n" );
                 break;
             case YAML_STREAM_END_TOKEN:
+                print_stdout_char_color( BLACK, WHITE, DIM, "[STREAM END]\n" );
                 break;
             case YAML_VERSION_DIRECTIVE_TOKEN:
+                print_stdout_char_color( WHITE, MAGENTA, DIM, "[VERSION DIRECTIVE]\n" );
                 break;
             case YAML_TAG_DIRECTIVE_TOKEN:
+                print_stdout_char_color( WHITE, CYAN, DIM, "[TAG DIRECTIVE]\n" );
                 break;
             case YAML_DOCUMENT_START_TOKEN:
+                print_stdout_char_color( MAGENTA, BLACK, DIM, "[Document Start]\n" );
                 break;
             case YAML_DOCUMENT_END_TOKEN:
+                print_stdout_char_color( MAGENTA, BLACK, DIM, "[Document End]\n" );
                 break;
             case YAML_BLOCK_SEQUENCE_START_TOKEN:
+                print_stdout_char_color( YELLOW, BLUE, DIM, "[Block Sequence Start]\n" );
                 break;
             case YAML_BLOCK_MAPPING_START_TOKEN:
                 if (token_mark->is_value_token == 1) 
@@ -108,21 +116,25 @@ load_config( OlyStatus *status )
                 }
                 break;
             case YAML_BLOCK_END_TOKEN:
-                print_stdout_char_color(RED, BLACK, BRIGHT, 
-                        "[Block END]\n");
+                print_stdout_char_color(RED, BLACK, BRIGHT, "[Block End]\n" );
                 break;
             case YAML_FLOW_SEQUENCE_START_TOKEN:
+                print_stdout_char_color( YELLOW, BLUE, DIM, "[Flow Sequence Start]\n" );
                 break;
             case YAML_FLOW_SEQUENCE_END_TOKEN:
+                print_stdout_char_color( YELLOW, BLUE, DIM, "[Flow Sequence End]\n" );
                 break;
             case YAML_FLOW_MAPPING_START_TOKEN:
+                print_stdout_char_color( BLUE, RED, BRIGHT, "[Flow Mapping Start]\n" );
                 break;
             case YAML_FLOW_MAPPING_END_TOKEN:
+                print_stdout_char_color( BLUE, RED, BRIGHT, "[Flow Mapping End]\n" );
                 break;
             case YAML_BLOCK_ENTRY_TOKEN:
-                print_stdout_char_color(BLUE, BLACK, BRIGHT, "\n[Block Entry]");
+                print_stdout_char_color( BLUE, BLACK, BRIGHT, "\n[Block Entry]" );
                 break;
             case YAML_FLOW_ENTRY_TOKEN:
+                print_stdout_char_color( YELLOW, BLACK, BRIGHT, "\n[Flow Entry]" );
                 break;
             case YAML_KEY_TOKEN:
                 token_mark->is_key_token = 1;
@@ -131,10 +143,13 @@ load_config( OlyStatus *status )
                 token_mark->is_value_token = 1;
                 break;
             case YAML_ALIAS_TOKEN:
+                print_stdout_char_color( GREEN, BLACK, BRIGHT, "\n[Alias Token]" );
                 break;
             case YAML_ANCHOR_TOKEN:
+                print_stdout_char_color( GREEN, BLACK, BRIGHT, "\n[Anchor Token]" );
                 break;
             case YAML_TAG_TOKEN:
+                print_stdout_char_color( GREEN, BLACK, BRIGHT, "\n[Tag Token]" );
                 break;
             case YAML_SCALAR_TOKEN:
                 if (token_mark->is_key_token == 1) 
@@ -160,12 +175,12 @@ load_config( OlyStatus *status )
     return olyconf;
 }
 
-/* preflight_config counts the number of nodes and OChar items needed for each
+/* preflight_yaml counts the number of nodes and OChar items needed for each
  * level of the document representation in question. */
 TokenMark *
-preflight_config( OlyStatus *status )
+preflight_yaml( OlyStatus *status )
 {
-    OFILE *config_file = find_config_file(status);
+    OFILE *config_file = find_yaml_file(status);
     yaml_parser_t        config_parser ;
     yaml_token_t         token;
     TokenMark           *token_mark = new_token_mark();
@@ -280,12 +295,12 @@ print_preflight_count(TokenMark *token_mark, int level)
 }
 
 void 
-print_config( OlyStatus *status )
+print_yaml( OlyStatus *status )
 {
-    OFILE *config_file = find_config_file(status);
+    OFILE *config_file = find_yaml_file(status);
     yaml_parser_t        config_parser ;
     yaml_token_t         token;
-    TokenMark           *token_mark = preflight_config(status);
+    TokenMark           *token_mark = preflight_yaml(status);
 
     zero_token_mark(token_mark);
     print_preflight_count(token_mark, 0);
@@ -389,6 +404,7 @@ print_config( OlyStatus *status )
                 if (token_mark->is_key_token == 1) 
                 {
                     u_fprintf(u_stdout, "%s : ", token.data.scalar.value);
+                }
                 else
                 {
                     u_fprintf(u_stdout, "%s\n", token.data.scalar.value);

@@ -113,7 +113,7 @@ resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 ## 						src/print_demo/print_last.c 
 ## 						src/get_rules.c 
 
-noinst_LIBRARIES	=	liboly_dev.a libcore.a libhash.a libtestcore.a
+noinst_LIBRARIES	=	liboly_dev.a libcore.a libhash.a libtestcore.a libolyyamlds.a
 
 
 libhash_a_SOURCES	=	src/hash/char_to_size.c \
@@ -155,11 +155,14 @@ libcore_a_SOURCES	=	src/resources/get_resource_data.c \
 						src/resources/get_charset.c \
 						src/resources/get_locale.c \
 						src/core/olystate.c \
-						src/core/config.c \
 						src/core/basic_functions.c \
 						src/core/get_errmsg.c \
 						src/core/init_oly.c \
 						src/core/oly_mem_string.c 
+
+libolyyamlds_a_SOURCES = src/data_source/oly_yaml.c
+					
+##					src/core/config.c \
 
 libcore_a_CPPFLAGS			= $(HEAD_CPPFLAGS)	
 libcore_a_CFLAGS			= $(DEV_CFLAGS) 
@@ -173,10 +176,11 @@ CHECK_DEFS	= @DEFS@ @DEV_DEF@ \
 libtestcore_a_SOURCES		= $(libcore_a_SOURCES)
 libtestcore_a_CPPFLAGS		= $(CHECK_DEFS) 
 
+## tests/oly/core/c-oly_config \
 check_PROGRAMS 	= 	tests/runtests \
 					tests/oly/core/c-get_errmsg \
-					tests/oly/core/c-oly_config \
 					tests/oly/core/c-basic_functions \
+					tests/oly/data_source/c-oly_yaml \
 					tests/oly/hash/c-read_sizehash_from_hex \
 					tests/oly/hash/c-get_hashbits \
  					tests/oly/hash/c-get_str_hashlen \
@@ -228,6 +232,13 @@ tests_oly_core_c_oly_config_SOURCES = tests/oly/core/c-oly_config.c \
 tests_oly_core_c_oly_config_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_oly_config_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
 									  tests/tap/libtap.a @YAML_LIBS@ 
+
+tests_oly_data_source_c_oly_yaml_SOURCES = tests/oly/data_source/c-oly_yaml.c \
+									  src/core/oly_mem_string.c \
+									  src/debug/bash_printing.c 
+tests_oly_data_source_c_oly_yaml_CPPFLAGS = $(HEAD_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_data_source_c_oly_yaml_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
+									  tests/tap/libtap.a @YAML_LIBS@ 
 										  
 
 tests_oly_core_c_basic_functions_SOURCES = tests/oly/core/c-basic_functions.c 
@@ -236,7 +247,6 @@ tests_oly_core_c_basic_functions_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
 										  -ansi -std=gnu99 -Werror=format-security
 tests_oly_core_c_basic_functions_LDADD 	= libtestcore.a tests/tap/libtap.a \
 										  @ICUIO_LIBS@ @ICU_LIBS@ 
-
 tests_oly_core_c_basic_functions_LDFLAGS = -lm
 
 

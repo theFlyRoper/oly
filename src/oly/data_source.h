@@ -1,4 +1,4 @@
-/* oly.h -- data source functions. {{{
+/* data_source.h -- data source functions. {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,14 +27,40 @@
 
 BEGIN_C_DECLS
 
+struct data_source_struct;
+typedef struct data_source_struct OlyDataSource;
+
 typedef enum oly_ds_direction {
-  IN, OUT, INOUT
+  IN = 0, 
+  OUT = 1, 
+  INOUT = 2
 } OlyDSDirection;
 
-OlyStatus oly_get_ds(OlyDataSource *ds, 
-    OChar *ds_type, 
-    OlyDSDirection ds_direct,
-    OChar **ds_args);
+typedef enum data_source_type_struct {
+    YAML_FILE = 0,
+    DS_TYPE_MIN = 0;
+    DS_TYPE_MAX = 0;
+} DataSourceType;
+
+typedef enum data_source_format_struct {
+    UNKNOWN,
+    DATA_IN_FLAT_FILE,
+    DATA_IN_DATABASE_FILE,
+    LOCAL_DATABASE_SERVER,
+    REMOTE_DATABASE_SERVER,
+    REMOTE_DATA_CLOUD
+} DataSourceFormat;
+
+OlyDataSource *new_data_source( DataSourceType dst, OlyStatus *status );
+/* practically all of the file data sources need this. */
+OlyStatus set_data_filename( OlyDataSource *ds, const char *filename );
+/* normally these locale and charset functions should not be necessary,
+ * since we can usually deduce this information from the data source itself. */
+OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
+OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
+/* this function, however, will be used for many remote data sources. */
+OlyStatus set_data_connection_string( OlyDataSource *ds, const char *connection_string );
+OlyStatus close_data_source( OlyDataSource *ds );
 
 END_C_DECLS
 
