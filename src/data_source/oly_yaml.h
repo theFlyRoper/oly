@@ -23,51 +23,15 @@
 #include <stdbool.h>
 
 BEGIN_C_DECLS
-typedef struct token_mark_struct YAMLTokenMark;
-/* preflight structure for allocating document format data storage */
-struct token_mark_struct
-{
-    /* counts the number of OChar slots we need to allocate */
-    int     count_ochars;
-    /* counts the number of nodes we will have. */
-    int     count_nodes;
-    /* pointer to any subnodes that come from this one. */
-    YAMLTokenMark   *subnode;     
-    bool    is_stream_start : 1;
-    bool    is_stream_end : 1;
-    bool    is_version_directive : 1;
-    bool    is_tag_directive : 1;
-    bool    is_document_start : 1;
-    bool    is_document_end : 1;
-    bool    is_block_sequence_start : 1;
-    bool    is_block_mapping_start : 1;
-    bool    is_block_end : 1;
-    bool    is_flow_sequence_start : 1;
-    bool    is_flow_sequence_end : 1;
-    bool    is_flow_mapping_start : 1;
-    bool    is_flow_mapping_end : 1;
-    bool    is_block_entry_start : 1;
-    bool    is_flow_entry_start : 1;
-    bool    is_key_token : 1;
-    bool    is_value_token : 1;
-    bool    is_alias_token : 1;
-    bool    is_anchor_token : 1;
-    bool    is_tag_token : 1;
-    bool    is_scalar_token : 1;
-};
 
+/* YAML is a superset of JSON, and libyaml handles JSON correctly, but technically 
+ * they are different data sources. 
+ */
+
+extern OlyStatus init_yaml( OlyDataSource *ds ) ;
 extern void load_yaml( OlyStatus *status , OlyDataSource *ds );
 extern OlyStatus count_this_level( YAMLTokenMark *token_mark,
         yaml_parser_t *config_parser, yaml_token_t *token);
-
-typedef struct oly_yaml_data_struct 
-{
-    OFILE               *yaml_file ;
-    yaml_parser_t       *yaml_parser ;
-    yaml_token_t        *token ;
-    YAMLTokenMark       *token_mark ;
-} OlyYAMLData;
-
 
 END_C_DECLS
 

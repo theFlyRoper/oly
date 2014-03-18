@@ -30,7 +30,8 @@
 #include "oly/oly_dev.h"
 #include "oly/core.h"
 
-OlyStatus set_datasource_function( OlyDataSource *ds, 
+OlyStatus
+set_datasource_function( OlyDataSource *ds, 
         OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function)
 {
     OlyStatus status = OLY_OKAY;
@@ -53,8 +54,28 @@ OlyStatus set_datasource_function( OlyDataSource *ds,
     return status;
 }
 
+DataInterface *get_data_interface( OlyDataSource *ds, OlyStatus *status)
+{
+    if (*status != OLY_OKAY)
+    {
+        return NULL;
+    }
+    else
+    {
+        return ds->data ; 
+    }
+
+}
+
+OlyStatus set_data_interface( OlyDataSource *ds, DataInterface *interface)
+{
+    OlyStatus status = OLY_OKAY;
+    ds->data = interface;
+    return status;
+}
+
 OlyStatus
-ds_option_required( OlyDataSource *ds, DataSourceOptions option )
+set_ds_option_required( OlyDataSource *ds, DataSourceOptions option )
 {
     OlyStatus status = OLY_OKAY;
     if ((option > (sizeof(long)*CHAR_BIT)) || 
@@ -71,7 +92,7 @@ ds_option_required( OlyDataSource *ds, DataSourceOptions option )
 }
 
 OlyStatus
-ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
+set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
 {
     OlyStatus status = OLY_OKAY;
     if ((option > (sizeof(long)*CHAR_BIT)) || 

@@ -1,0 +1,69 @@
+<title>Glossary</title>
+<nowiki>
+<div id="asciidoc">
+<h1>Glossary</h1>
+<p>
+<tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
+version d69f44ddb7,
+2014-03-18
+</p>
+<hr>
+<h2><a name="_glossary"></a>Glossary</h2>
+<dl>
+<dt>
+<a name="glossary_document_centered"></a>Document-centered system
+</dt>
+<dd>
+<p>
+Many <a href="https://en.wikipedia.org/wiki/Non-relational_database">non-relational</a> databases store their data in individual documents, which are <a href="https://en.wikipedia.org/wiki/Markup_language">marked up</a> with appropriate information about the data itself.  These documents can then be parsed to extract this data in an organized way.
+</p>
+</dd>
+<dt>
+<a name="glossary_level"></a>Level
+</dt>
+<dd>
+<p>
+In a <a href="#glossary_document_centered">document-centered</a> system, <em>level</em> refers to how far we have recursively stepped.
+</p>
+<div class="listingblock">
+<div class="title">In YAML</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># we start at level zero (0)</span></span>
+record_id<span style="color: #990000">:</span> <span style="color: #993399">777</span>
+user<span style="color: #990000">:</span> Amy Examplerecord
+contact_information<span style="color: #990000">:</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># each type of contact information has a sublevel with details about it</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># information type is on level one (1), information data is on level two (2)</span></span>
+    address<span style="color: #990000">:</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># address has several parts, so we represent it as a</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># sublevel.  We are now at level two (2).</span></span>
+        Street<span style="color: #990000">:</span> <span style="color: #FF0000">"345 Three Four Five way"</span>
+        City<span style="color: #990000">:</span> <span style="color: #FF0000">"Sampletown"</span>
+        State<span style="color: #990000">:</span> <span style="color: #FF0000">"Kenswick"</span>
+        Zipcode<span style="color: #990000">:</span> <span style="color: #FF0000">"00112"</span>
+    email<span style="color: #990000">:</span>
+        <span style="color: #990000">-</span> amy<span style="color: #990000">.</span>examplerecord@freeexampleemail<span style="color: #990000">.</span>com
+        <span style="color: #990000">-</span> the_real_amy_examplerecord@truefact<span style="color: #990000">.</span>com
+    phone<span style="color: #990000">:</span>
+        <span style="color: #990000">-</span> <span style="color: #FF0000">"01-(000) 000-0000"</span>
+<span style="font-style: italic"><span style="color: #9A1900"># since contact information ends there, we return to level 0.</span></span>
+logins<span style="color: #990000">:</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">01</span><span style="color: #990000">-</span><span style="color: #993399">15</span><span style="color: #990000">-</span><span style="color: #993399">2009</span> <span style="color: #993399">11</span><span style="color: #990000">:</span><span style="color: #993399">14</span><span style="color: #990000">:</span><span style="color: #993399">57</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">04</span><span style="color: #990000">-</span><span style="color: #993399">19</span><span style="color: #990000">-</span><span style="color: #993399">2009</span> <span style="color: #993399">12</span><span style="color: #990000">:</span><span style="color: #993399">19</span><span style="color: #990000">:</span><span style="color: #993399">29</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">01</span><span style="color: #990000">-</span><span style="color: #993399">20</span><span style="color: #990000">-</span><span style="color: #993399">2010</span> <span style="color: #993399">22</span><span style="color: #990000">:</span><span style="color: #993399">47</span><span style="color: #990000">:</span><span style="color: #993399">25</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">01</span><span style="color: #990000">-</span><span style="color: #993399">12</span><span style="color: #990000">-</span><span style="color: #993399">2011</span> <span style="color: #993399">21</span><span style="color: #990000">:</span><span style="color: #993399">33</span><span style="color: #990000">:</span><span style="color: #993399">25</span></tt></pre></div></div>
+</dd>
+<dt>
+<a name="glossary_table_centered"></a>Table-centered system
+</dt>
+<dd>
+<p>
+Traditional relational databases store their data in tables, which encapsulate a single <em>type of thing</em> and are then connected to other types of things with relationships.
+</p>
+</dd>
+</dl>
+</div>
+</nowiki>

@@ -37,10 +37,43 @@ static YAMLTokenMark *new_token_mark (void);
 static void print_preflight_count(YAMLTokenMark *token_mark, int level);
 static YAMLTokenMark *preflight_yaml( OlyStatus *status , OlyDataSource *ds );
 
-void
-load_yaml( OlyStatus *status , OlyDataSource *ds )
+OlyYAMLData *oly_init_yaml_data (void)
 {
-    OFILE               *yaml_file  = u_fopen( ds->filename, "rd", ds->locale, ds->charset );
+    OlyYAMLData *new_data = omalloc(sizeof(OlyYAMLData));
+}
+
+OlyStatus 
+oly_init_yaml( OlyDataSource *ds )
+{
+    OlyStatus status = OLY_OKAY;
+    OlyYAMLData *yaml_data = oly_init_yaml_data(); 
+    set_ds_option_required( ds , DSOPT_FILE_NAME );
+    set_ds_option_unused( ds , DSOPT_CONNECTION_STRING );
+    
+    status = set_datasource_function( ds, 
+        OLYDS_OPEN_FUNCTION, oly_open_yaml );
+    if (status != OLY_OKAY)
+    {
+        return status;
+    }
+    status = set_datasource_function( ds, 
+        OLYDS_DELETE_FUNCTION, close_yaml );
+    if (status != OLY_OKAY)
+    {
+        return status;
+    }
+}
+
+OlyStatus 
+oly_close_yaml( OlyDataSource *ds )
+{
+}
+
+OlyStatus 
+oly_open_yaml( OlyDataSource *ds )
+{
+    OFILE               *yaml_file  = u_fopen( ds->filename, "rd", ds->locale, 
+                            ds->charset );
     yaml_parser_t        config_parser ;
     yaml_token_t         token;
     YAMLTokenMark       *token_mark = new_token_mark();

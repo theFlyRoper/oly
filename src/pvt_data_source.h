@@ -24,10 +24,6 @@
 #include "data_source/oly_yaml.h"
 
 BEGIN_C_DECLS
-typedef union data_interface_union
-{
-    OlyYAMLData *yaml;
-} DataInterface;
 
 struct data_source_struct {
     OlyDSDirection       direction;
@@ -40,6 +36,7 @@ struct data_source_struct {
     DataSourceFunction  *init_function;
     DataSourceFunction  *open_function;
     DataSourceFunction  *delete_function;
+    DataInterface        data;
 };
 
 END_C_DECLS

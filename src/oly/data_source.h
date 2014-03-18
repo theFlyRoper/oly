@@ -26,6 +26,15 @@
 
 BEGIN_C_DECLS
 
+/* stub definitions for the different data source interfaces */
+
+struct oly_yaml_data_struct; 
+typedef struct oly_yaml_data_struct OlyYAMLData;
+
+typedef union oly_data_interface_union {
+    OlyYAMLData *yaml_data;
+} DataInterface;
+
 struct data_source_struct;
 typedef struct data_source_struct OlyDataSource;
 
@@ -43,12 +52,9 @@ typedef enum oly_data_format_enum {
 typedef enum oly_ds_function_type_enum {
     OLYDS_INIT_FUNCTION,
     OLYDS_OPEN_FUNCTION,
-    OLYDS_OPTCHECK_FUNCTION,
     OLYDS_DELETE_FUNCTION
 } OlyDSFunctionType;
 
-/* YAML is a superset of JSON, and libyaml handles JSON correctly, but technically 
- * they are different data sources. */
 typedef enum data_source_type_enum {
     YAML_FILE = 0,
     DS_TYPE_MIN = 0,
@@ -71,15 +77,19 @@ extern OlyStatus check_data_option( OlyDataSource *ds, DataSourceOptions ds_opt)
 extern OlyStatus set_datasource_function( OlyDataSource *ds, 
     OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function );
 extern OlyDataSource *new_data_source( DataSourceType dst, OlyStatus *status );
+extern OlyStatus close_data_source( OlyDataSource *ds );
+extern void *get_data_interface( OlyDataSource *ds, OlyStatus *status);
+extern OlyStatus set_data_interface( OlyDataSource *ds, DataInterface *interface);
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */
-OlyStatus ds_option_required( OlyDataSource *ds, DataSourceOptions option );
+extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );
 /* Marks a data source option flag as unused.  Data source initializing function should call. */
-OlyStatus ds_option_unused( OlyDataSource *ds, DataSourceOptions option );
+extern OlyStatus set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option );
 /* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
-OlyStatus set_data_option( OlyDataSource *ds, 
+extern OlyStatus set_data_option( OlyDataSource *ds, 
         const DataSourceOptions option, const char *value );
-char *get_data_option( OlyDataSource *ds, const DataSourceOptions option, OlyStatus *status );
+extern char *get_data_option( OlyDataSource *ds, const DataSourceOptions option,
+        OlyStatus *status );
 /* normally these locale and charset functions should not be necessary,
  * since we can usually deduce this information from the data source itself. */
 OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
