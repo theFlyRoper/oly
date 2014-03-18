@@ -39,9 +39,10 @@ typedef enum OlyStatus_enum {
     /* OLY_STATUS_MIN helps map these internal codes into the 
      * external i18n resource files.
      */
+    OLY_WARN_DSOPT_NOT_USED=-4,
+    OLY_STATUS_MIN=-4,
+    OLY_STATUS_OFFSET=4,
     OLY_WARN_REINIT=-3,
-    OLY_STATUS_MIN=-3,
-    OLY_STATUS_OFFSET=3,
     OLY_WARN_LIB=-2,
     OLY_WARN_EXIT=-1,
     OLY_OKAY=0,
@@ -62,7 +63,9 @@ typedef enum OlyStatus_enum {
     OLY_ERR_LIBYAML_INIT=15,
     OLY_ERR_YAML_PARSE=16,
     OLY_ERR_CONFIG_UNRECOGNIZED=17,
-    OLY_STATUS_MAX=17
+    OLY_ERR_UNKNOWN_FUNCTION_TYPE=18,
+    OLY_ERR_DS_OPTION_CONFLICT=19,
+    OLY_STATUS_MAX=19
 } OlyStatus;
 
 typedef enum OlyBoolean_enum {
@@ -74,9 +77,6 @@ typedef enum OlyBoolean_enum {
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;
 extern OFILE *u_stdin;
-
-/* globals 
-extern const OChar *program_name; */
 extern char **environ; 
 extern Oly *oly;
 

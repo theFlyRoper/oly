@@ -18,22 +18,110 @@
  * }}} */
 
 #include "oly/common.h"
-#include "sys/types.h"
-#include "stdbool.h"
+#include <sys/types.h>
+#include <limits.h>
+#include <math.h>
+#include <stdbool.h>
 
 #include <yaml.h>
 
-#include "data_source/oly_yaml.h"
 #include "oly/data_source.h"
 #include "pvt_data_source.h"
 #include "oly/oly_dev.h"
 #include "oly/core.h"
 
-static DataSourceFormat get_data_source_format(const DataSourceType dst);
+OlyStatus set_datasource_function( OlyDataSource *ds, 
+        OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function)
+{
+    OlyStatus status = OLY_OKAY;
+    assert((ds_function != NULL) && (ds != NULL));
+    switch(ds_func_type)
+    { 
+        case OLYDS_INIT_FUNCTION:
+            ds->init_function = ds_function;
+            break;
+        case OLYDS_OPEN_FUNCTION:
+            ds->open_function = ds_function;
+            break;
+        case OLYDS_DELETE_FUNCTION:
+            ds->delete_function = ds_function;
+            break;
+        default:
+            status = OLY_ERR_UNKNOWN_FUNCTION_TYPE;
+            break;
+    }
+    return status;
+}
+
+OlyStatus
+ds_option_required( OlyDataSource *ds, DataSourceOptions option )
+{
+    OlyStatus status = OLY_OKAY;
+    if ((option > (sizeof(long)*CHAR_BIT)) || 
+            ( ds->unused_settings & (unsigned int)pow(2,option) ) == option )
+    {
+        status = OLY_ERR_DS_OPTION_CONFLICT;
+    }
+    else 
+    {
+        ds->required_settings |= option;
+    }
+
+    return status;
+}
+
+OlyStatus
+ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
+{
+    OlyStatus status = OLY_OKAY;
+    if ((option > (sizeof(long)*CHAR_BIT)) || 
+            ( ds->required_settings & (unsigned int)pow(2,option) ) == option )
+    {
+        status = OLY_ERR_DS_OPTION_CONFLICT;
+    }
+    else 
+    {
+        ds->unused_settings |= option;
+    }
+
+    return status;
+}
+
+/* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
+OlyStatus 
+set_data_option( OlyDataSource *ds, const DataSourceOptions option, const char *value )
+{
+    OlyStatus status = OLY_OKAY;
+    if ((ds->unused_settings & option) == option)
+    {
+        status = OLY_WARN_DSOPT_NOT_USED;
+    }
+    else
+    {
+        ds->options[option] = (char *)ostrdup(value);
+    }
+    return status;
+}
+
+char *
+get_data_option( OlyDataSource *ds, const DataSourceOptions option, OlyStatus *status )
+{
+    char    *opt = NULL;
+    if ((ds->unused_settings & option) == option)
+    {
+        *status = OLY_WARN_DSOPT_NOT_USED;
+    }
+    else
+    {
+        opt = ds->options[option];
+    }
+    return opt;
+}
 
 OlyDataSource *
 new_data_source( DataSourceType ds_type, OlyStatus *status )
 {
+    unsigned int i = 0;
     OlyDataSource *retval;
     if (*status != OLY_OKAY)
     {
@@ -46,26 +134,34 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
         return NULL;
     }
     retval = (OlyDataSource *)ocalloc(1, sizeof(OlyDataSource));
+    for ( i = 0; ( i <= DSOPT_MAX ); i++ )
+    {
+        retval->options[i] = NULL;
+    }
 
-    retval->dstype = dst;
-    retval->direction = IN;
-    retval->dsformat = get_data_source_format(dst);
+    retval->ds_type = ds_type;
+    retval->direction = OLY_DS_IN;
+    retval->unused_settings = 0x0;
+    retval->required_settings = 0x0;
     retval->locale = NULL;
     retval->charset = NULL;
-    retval->filename = NULL;
-    retval->username = NULL;
-    retval->connect_string = NULL;
-    retval->port = 0;
-    retval->data = NULL;
+    retval->init_function = NULL;
+    retval->open_function = NULL;
+    retval->delete_function = NULL;
+    return retval;
 }
 
 OlyStatus 
-set_data_filename( OlyDataSource *ds, const char *filename )
+set_data_direction( OlyDataSource *ds, OlyDSDirection ds_io)
 {
-    ds->filename = (char *)filename;
+    ds->direction = ds_io;
     return OLY_OKAY;
 }
 
+/* for the sake of a consistent interface, charset and locale return as OlyStatus 
+ * Options for later:
+ *  Check them against ICU?
+ *  Check them against the datasource? */
 OlyStatus 
 set_data_locale( OlyDataSource *ds, const char *locale )
 {
@@ -81,71 +177,36 @@ set_data_charset( OlyDataSource *ds, const char *charset )
 }
 
 OlyStatus 
-set_data_connection_string( OlyDataSource *ds, const char *connection_string )
-{
-    ds->connection_string = (char *)connection_string;
-    return OLY_OKAY;
-}
-
-OlyStatus 
 close_data_source( OlyDataSource *ds )
 {
-    void *free_me;
+    int      i = 0;
+    void    *free_me;
     if ( ds == NULL )
     {
         return OLY_OKAY;
     }
-    if ( ds->connection_string != NULL )
+    for ( i = 0; ( i <= DSOPT_MAX ); i++ )
     {
-        free_me = (void *)ds->connection_string;
-        ofree(free_me);
+        if ( ds->options[i] != NULL )
+        {
+            free_me = (void *)ds->options[i];
+            OFREE(free_me);
+        }
     }
     
     if ( ds->locale != NULL )
     {
         free_me = (void *)ds->locale;
-        ofree(free_me);
+        OFREE(free_me);
     }
     if ( ds->charset != NULL )
     {
         free_me = (void *)ds->charset;
-        ofree(free_me);
-    }
-    if ( ds->filename != NULL )
-    {
-        free_me = (void *)ds->filename;
-        ofree(free_me);
-    }
-    if ( ds->username != NULL )
-    {
-        free_me = (void *)ds->username;
-        ofree(free_me);
-    }
-    if ( ds->connect_string != NULL )
-    {
-        free_me = (void *)ds->connect_string;
-        ofree(free_me);
-    }
-    if ( ds->data != NULL )
-    {
-        free_me = (void *)ds->data;
-        ofree(free_me);
+        OFREE(free_me);
     }
     free_me = (void *)ds;
-    ofree(free_me);
+    OFREE(free_me);
     return OLY_OKAY;
 }
 
-static DataSourceFormat 
-get_data_source_format(const DataSourceType dst)
-{
-    switch(dst)
-    { 
-        case YAML_FILE :
-            return DATA_IN_FLAT_FILE;
-        default :
-            return UNKNOWN;
-    }
-
-}
 

@@ -36,6 +36,7 @@ main( int argc, char **argv ){
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar) );
     char            *locale = (char *)"root",  *charset = NULL;
     const char     *results_char[] = {
+                        "OLY_WARN_DSOPT_NOT_USED",
                         "OLY_WARN_REINIT",
                         "OLY_WARN_LIB",
                         "OLY_WARN_EXIT",
@@ -57,6 +58,8 @@ main( int argc, char **argv ){
                         "OLY_ERR_LIBYAML_INIT",
                         "OLY_ERR_CONFIG_PARSE",
                         "OLY_ERR_CONFIG_UNRECOGNIZED",
+                        "OLY_ERR_UNKNOWN_FUNCTION_TYPE",
+                        "OLY_ERR_DS_OPTION_CONFLICT",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

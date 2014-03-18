@@ -1,0 +1,58 @@
+Glossary
+========
+:description: Oly term definitions
+:keywords:    Oly, standards, definitions, glossary, index, terms
+:title:       Glossary
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:icons:
+:toc2:
+endif::is_standalone[]
+ifdef::is_fossil[]
+:iconsdir:  /doc/tip/doc/icons
+:imagesdir: /doc/tip/doc/images
+:icons:
+link:/doc/tip/doc/index.wiki[Back to Home.]
+endif::is_fossil[]
+
+[glossary]
+Glossary
+--------
+anchor:glossary_document_centered[]Document-centered system:: Many https://en.wikipedia.org/wiki/Non-relational_database[non-relational] databases store their data in individual documents, which are https://en.wikipedia.org/wiki/Markup_language[marked up] with appropriate information about the data itself.  These documents can then be parsed to extract this data in an organized way.
+anchor:glossary_level[]Level:: In a <<glossary_document_centered,document-centered>> system, _level_ refers to how far we have recursively stepped. 
++
+.In YAML
+[source,python]
+----
+# we start at level zero (0)
+record_id: 777
+user: Amy Examplerecord
+contact_information:
+    # each type of contact information has a sublevel with details about it
+    # information type is on level one (1), information data is on level two (2)
+    address:
+        # address has several parts, so we represent it as a 
+        # sublevel.  We are now at level two (2).
+        Street: "345 Three Four Five way"
+        City: "Sampletown"
+        State: "Kenswick"
+        Zipcode: "00112"
+    email:
+        - amy.examplerecord@freeexampleemail.com
+        - the_real_amy_examplerecord@truefact.com
+    phone:
+        - "01-(000) 000-0000"
+# since contact information ends there, we return to level 0.
+logins:
+    - 01-15-2009 11:14:57
+    - 04-19-2009 12:19:29
+    - 01-20-2010 22:47:25
+    - 01-12-2011 21:33:25
+----
++
+anchor:glossary_table_centered[]Table-centered system:: Traditional relational databases store their data in tables, which encapsulate a single _type of thing_ and are then connected to other types of things with relationships.
+
+
+// vim: set syntax=asciidoc:

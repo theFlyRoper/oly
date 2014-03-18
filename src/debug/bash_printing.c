@@ -23,28 +23,28 @@
 
 static void reset( void );
 void
-print_stdout_char_color(BashColors fg, BashColors bg, BashAttr attr, char *text)
+print_stdout_char_color(BashColors fg, BashColors bg, BashAttr attr, const char *text)
 {
 	fprintf(stdout, "%c[%d;%d;%dm%s", 0x1B, attr, fg + 30, bg + 40, text);
     reset();
 }
 
 void
-print_stderr_char_color(BashColors fg, BashColors bg, BashAttr attr, char *text)
+print_stderr_char_color(BashColors fg, BashColors bg, BashAttr attr, const char *text)
 {
 	fprintf(stderr, "%c[%d;%d;%dm%s", 0x1B, attr, fg + 30, bg + 40, text);
     reset();
 }
 
 void
-print_stdout_OChar_color(BashColors fg, BashColors bg, BashAttr attr, OChar *text)
+print_stdout_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text)
 {
 	fprintf(u_stdout, "%c[%d;%d;%dm%s", 0x1B, attr, fg + 30, bg + 40, text);
     reset();
 }
 
 void
-print_stderr_OChar_color(BashColors fg, BashColors bg, BashAttr attr, OChar *text)
+print_stderr_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text)
 {
 	fprintf(u_stderr, "%c[%d;%d;%dm%s", 0x1B, attr, fg + 30, bg + 40, text);
     reset();

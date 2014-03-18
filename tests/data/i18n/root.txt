@@ -32,6 +32,7 @@ root:table {
       }
     }
     OlyErrors:array {
+        {"OLY_WARN_DSOPT_NOT_USED"}
         {"OLY_WARN_REINIT"}
         {"OLY_WARN_LIB"}
         {"OLY_WARN_EXIT"}
@@ -53,6 +54,8 @@ root:table {
         {"OLY_ERR_LIBYAML_INIT"}
         {"OLY_ERR_CONFIG_PARSE"}
         {"OLY_ERR_CONFIG_UNRECOGNIZED"}
+        {"OLY_ERR_UNKNOWN_FUNCTION_TYPE"}
+        {"OLY_ERR_DS_OPTION_CONFLICT"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

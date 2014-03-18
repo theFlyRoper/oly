@@ -17,27 +17,32 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifndef SRC_DATA_SOURCE_H
-#define SRC_DATA_SOURCE_H 1
+#ifndef PVT_DATA_SOURCE_H
+#define PVT_DATA_SOURCE_H 1
 
 #include "oly/data_source.h"
+#include "data_source/oly_yaml.h"
 
 BEGIN_C_DECLS
+typedef union data_interface_union
+{
+    OlyYAMLData *yaml;
+} DataInterface;
 
 struct data_source_struct {
-    OlyDSDirection direction;
-    DataSourceType dstype;
-    DataSourceFormat dsformat;
-    char    *locale;
-    char    *charset;
-    char    *filename;
-    char    *username;
-    int     port;
-    char    *connect_string;
-    void    *data;
+    OlyDSDirection       direction;
+    DataSourceType       ds_type;
+    unsigned int         required_settings;
+    unsigned int         unused_settings;
+    char                *locale;
+    char                *charset;
+    char                *options[(DSOPT_MAX+1)];
+    DataSourceFunction  *init_function;
+    DataSourceFunction  *open_function;
+    DataSourceFunction  *delete_function;
 };
 
 END_C_DECLS
 
-#endif /* SRC_DATA_SOURCE_H */
+#endif /* PVT_DATA_SOURCE_H */
 

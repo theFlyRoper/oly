@@ -1,35 +1,37 @@
-1..29
+1..31
 # From the smallest to one bigger than biggest error number.
-ok 1 - Item: -3, err: OLY_WARN_REINIT
-ok 2 - Item: -2, err: OLY_WARN_LIB
-ok 3 - Item: -1, err: OLY_WARN_EXIT
-ok 4 - Item: 0, err: OLY_OKAY
-ok 5 - Item: 1, err: OLY_ERR_UNKNOWN
-ok 6 - Item: 2, err: OLY_ERR_SYS
-ok 7 - Item: 3, err: OLY_ERR_LIB
-ok 8 - Item: 4, err: OLY_ERR_INIT
-ok 9 - Item: 5, err: OLY_ERR_NOMEM
-ok 10 - Item: 6, err: OLY_ERR_NOPWD
-ok 11 - Item: 7, err: OLY_ERR_NOUSER
-ok 12 - Item: 8, err: OLY_ERR_FILEIO
-ok 13 - Item: 9, err: OLY_ERR_READHEX
-ok 14 - Item: 10, err: OLY_ERR_HASH
-ok 15 - Item: 11, err: OLY_ERR_BADARG
-ok 16 - Item: 12, err: OLY_ERR_BUFFER_OVERFLOW
-ok 17 - Item: 13, err: OLY_ERR_FILE_NOT_FOUND
-ok 18 - Item: 14, err: OLY_ERR_CONFIG_FILE_NOT_FOUND
-ok 19 - Item: 15, err: OLY_ERR_LIBYAML_INIT
-ok 20 - Item: 16, err: OLY_ERR_CONFIG_PARSE
-ok 21 - Item: 17, err: OLY_ERR_CONFIG_UNRECOGNIZED
-ok 22 - Item: 18, err: OLY_ERR_UNKNOWN
+ok 1 - Item: -4, err: OLY_WARN_DSOPT_NOT_USED
+ok 2 - Item: -3, err: OLY_WARN_REINIT
+ok 3 - Item: -2, err: OLY_WARN_LIB
+ok 4 - Item: -1, err: OLY_WARN_EXIT
+ok 5 - Item: 0, err: OLY_OKAY
+ok 6 - Item: 1, err: OLY_ERR_UNKNOWN
+ok 7 - Item: 2, err: OLY_ERR_SYS
+ok 8 - Item: 3, err: OLY_ERR_LIB
+ok 9 - Item: 4, err: OLY_ERR_INIT
+ok 10 - Item: 5, err: OLY_ERR_NOMEM
+ok 11 - Item: 6, err: OLY_ERR_NOPWD
+ok 12 - Item: 7, err: OLY_ERR_NOUSER
+ok 13 - Item: 8, err: OLY_ERR_FILEIO
+ok 14 - Item: 9, err: OLY_ERR_READHEX
+ok 15 - Item: 10, err: OLY_ERR_HASH
+ok 16 - Item: 11, err: OLY_ERR_BADARG
+ok 17 - Item: 12, err: OLY_ERR_BUFFER_OVERFLOW
+ok 18 - Item: 13, err: OLY_ERR_FILE_NOT_FOUND
+ok 19 - Item: 14, err: OLY_ERR_CONFIG_FILE_NOT_FOUND
+ok 20 - Item: 15, err: OLY_ERR_LIBYAML_INIT
+ok 21 - Item: 16, err: OLY_ERR_CONFIG_PARSE
+ok 22 - Item: 17, err: OLY_ERR_CONFIG_UNRECOGNIZED
+ok 23 - Item: 18, err: OLY_ERR_UNKNOWN_FUNCTION_TYPE
+ok 24 - Item: 19, err: OLY_ERR_UNKNOWN
 # One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.
-ok 23 - Number: -4
+ok 25 - Number: -5
 # A few wildly outlandish numbers.  Powers of -17!
-ok 24 - Number: 289
-ok 25 - Number: -4,913
-ok 26 - Number: 83,521
-ok 27 - Number: -1,419,857
+ok 26 - Number: 289
+ok 27 - Number: -4,913
+ok 28 - Number: 83,521
+ok 29 - Number: -1,419,857
 # Hex digits, mwaha
-ok 28 - Number: 43,690, submitted: �
-ok 29 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
-# All 29 tests successful or skipped
+ok 30 - Number: 43,690, submitted: �
+ok 31 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
+# All 31 tests successful or skipped

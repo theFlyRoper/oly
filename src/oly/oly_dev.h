@@ -71,10 +71,10 @@ typedef enum bash_pretty_colors_enum {
     WHITE = 7
 } BashColors;
 
-extern void print_stdout_char_color(BashColors fg, BashColors bg, BashAttr attr, char *text);
-extern void print_stderr_char_color(BashColors fg, BashColors bg, BashAttr attr, char *text);
-extern void print_stdout_OChar_color(BashColors fg, BashColors bg, BashAttr attr, OChar *text);
-extern void print_stderr_OChar_color(BashColors fg, BashColors bg, BashAttr attr, OChar *text);
+extern void print_stdout_char_color(BashColors fg, BashColors bg, BashAttr attr, const char *text);
+extern void print_stderr_char_color(BashColors fg, BashColors bg, BashAttr attr, const char *text);
+extern void print_stdout_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text);
+extern void print_stderr_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text);
 
 END_C_DECLS
 

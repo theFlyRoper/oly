@@ -1,4 +1,4 @@
-/* c-oly_config.c - tests for oly_config functions.  License GPL2+ {{{
+/* c-oly_yaml.c - Yaml language bindings for Oly.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  * Permission is hereby granted, free of charge, to any person obtaining a copy of 
  * this software and associated documentation files (the "Software"), to deal in 
@@ -32,9 +32,21 @@ main( int argc, char **argv )
 {
     OlyStatus        status = OLY_OKAY;
     char            *locale = (char *)"root",  *charset = NULL;
+    const char      *files[] = {
+                        "tests/data/long_json.json",
+                        "tests/data/every_token.yaml"
+                     };
+    int              record = 1;
+    OlyDataSource   *ds = new_data_source( YAML_FILE , &status);
 
+    if (set_data_filename( ds, files[record]) != OLY_OKAY)
+    {
+        printf("Could not load yaml file %s. Exiting...\n", files[record]);
+        exit(EXIT_FAILURE);
+    }
     oly             = init_oly( argv[0], TEST_PKGDATADIR, charset, locale );
-    load_yaml( &status );
+    print_yaml( &status , ds );
+    printf("\n");
 
     exit(EXIT_SUCCESS);
 }
