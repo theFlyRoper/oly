@@ -33,13 +33,15 @@ BEGIN_C_DECLS
 
 struct passwd;
 
+void init_errors(void);
 /* constructor */
-extern Oly *init_oly(const char *prog, 
+extern Oly      *init_oly(const char *prog, 
         const char *datadir, const char *charset, const char *locale);
 
-extern OChar *get_errmsg( OlyStatus status );
-extern size_t   memory_left_now(void);
-extern size_t   getMemorySize( void );
+extern OChar    *get_errmsg( OlyStatus status );
+extern OChar    *get_ltdl_errmsg( int status );
+extern size_t    memory_left_now(void);
+extern size_t    getMemorySize( void );
 
 extern OlyStatus count_file_bytes(FILE *file, size_t *file_size);
 

@@ -284,7 +284,7 @@ See function <code>set_err</code>, <code>append_err_arg</code>, <code>log_err</c
 <p>Typedefs shall be CamelCased, with leading capitals.</p>
 <hr>
 <h2><a name="_error_handling_2"></a>Error handling</h2>
-<p>For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs.</p>
+<p>For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs, or it checks them before the function runs.</p>
 <p>Do not use strerror or perror.  Use strerror_r only.</p>
 <p>Oly initializes language as early as it can, as it is essential to healthy error handling.</p>
 <p>References:</p>

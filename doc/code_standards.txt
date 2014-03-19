@@ -128,7 +128,7 @@ Typedefs shall be CamelCased, with leading capitals.
 
 Error handling
 --------------
-For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs.
+For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs, or it checks them before the function runs.
 
 Do not use strerror or perror.  Use strerror_r only.
 

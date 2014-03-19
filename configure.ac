@@ -50,6 +50,8 @@ AC_CONFIG_HEADERS([src/olyconf.h:src/olyconf-h.in])
 dnl questions address
 AC_SUBST(FAQ_ADDR,[maintainer@fakesite.com])
 
+LT_CONFIG_LTDL_DIR([lib/libltdl])
+
 dnl Architecture, target and host checks 
 dnl must run early, otherwise, we won't know our host system.
 
@@ -110,7 +112,8 @@ AC_PATH_PROG([PKGDATA],[pkgdata],[])
 
 AM_PROG_CC_C_O
 
-LT_INIT
+LT_INIT([dlopen])
+LTDL_INIT([nonrecursive])
 
 dnl checks for libraries 
 
@@ -216,8 +219,6 @@ AC_CONFIG_FILES([doc/Makefile \
                  lib/Makefile \
                  Makefile])
 
-AC_SUBST([FOO_CFLAGS])
-AC_SUBST([FOO_LIBS])
 AC_SUBST(ac_aux_dir)
 AC_SUBST([OLY_RESOURCE],[oly_lang])
 AC_DEFINE([OLY_RESOURCE],["oly_lang"], [The primary resource file for Oly.])

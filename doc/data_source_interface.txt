@@ -1,0 +1,76 @@
+Oly Data Source Interface
+=========================
+:description: Oly data source interface
+:keywords:    Oly, interface, module, libltdl, stream, metadata
+:title:       Oly Data Source Inteface
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:icons:
+:toc2:
+endif::is_standalone[]
+ifdef::is_fossil[]
+:iconsdir:  /doc/tip/doc/icons
+:imagesdir: /doc/tip/doc/images
+:icons:
+link:/doc/tip/doc/index.wiki[Back to Home.]
+endif::is_fossil[]
+
+Functions
+---------
+
+Required functions
+~~~~~~~~~~~~~~~~~~
+
+.Must be defined
+open_oly_ds_stream:: Try to connect to the data source.  If successful, open the stream from the data source.  
+close_oly_ds_stream:: Flush the current stream buffers in the stream direction, stop any queries against this stream and free any pointers allocated by the stream.
++
+.close_oly_ds_stream definition
+[source,c]
+----
+OlyStatus close_oly_ds_stream(OlyDataSource *ds);
+----
++
+get_oly_ds_metadata:: Retrieve metadata at granularity specified.  Will go into greater detail once this is more firmly defined.  Must be thread-safe.
++
+.get_oly_ds_metadata definition
+[source,c]
+----
+OlyStatus get_oly_ds_metadata(OlyDataSource *ds);
+----
++
+get_oly_ds_error_message:: See <<_open_questions,open questions>>.
+
+.Not sure about these
+flush_oly_ds_buffer:: Should this be necessary?  Probably, eh?  Oly needs to have control over the stream on a direct level, but should that be part of closing?  Also, what about direction?  Is this for output only?
+fill_oly_ds_buffer:: Same thing.  Needed?  Wanted?  How should this work?
+get_oly_ds_error_number:: See <<_open_questions,open questions>>.
+
+
+Open Questions
+~~~~~~~~~~~~~~
+
+. Should error numbers be defined by Oly or by the data source?  I think Oly.
+. However, there will be data source errors that Oly cannot predict.  Thus, "get_oly_ds_error_message" should return those.
+
+Data Stream
+-----------
+
+. The stream will use the Oly data source conversion functions to get the data into a state friendly to Oly.  
+. Stream direction must be in or out.  To use one data source in both directions, open two streams.
+. Stream will checkpoint in a way that makes sense.  This depends on whether it is writing to a table or a document type data source.
+. Stream will use data source's native functionality to ensure whatever data was written is atomic.
+. Oly will recover to last checkpoint in the event of a sudden stop.
+
+Data Source Metadata
+--------------------
+What information should be here?
+
+. Data source direction (in or out)
+. Oly data source buffer size
+. Threads?
+. Connection information?
+
+// vim: set syntax=asciidoc:

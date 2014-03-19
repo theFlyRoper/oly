@@ -36,7 +36,8 @@ struct data_source_struct {
     DataSourceFunction  *init_function;
     DataSourceFunction  *open_function;
     DataSourceFunction  *delete_function;
-    DataInterface        data;
+    OlyDataStream       *data;
+
 };
 
 END_C_DECLS

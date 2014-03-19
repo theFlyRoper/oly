@@ -31,6 +31,28 @@ root:table {
         Display:string{"Show current version information for Oly."}
       }
     }
+    libltdlErrors:array {
+        {"LT_ERROR_UNKNOWN"}
+        {"LT_ERROR_DLOPEN_NOT_SUPPORTED"}
+        {"LT_ERROR_INVALID_LOADER"}
+        {"LT_ERROR_INIT_LOADER"}
+        {"LT_ERROR_REMOVE_LOADER"}
+        {"LT_ERROR_FILE_NOT_FOUND"}
+        {"LT_ERROR_DEPLIB_NOT_FOUND"}
+        {"LT_ERROR_NO_SYMBOLS"}
+        {"LT_ERROR_CANNOT_OPEN"}
+        {"LT_ERROR_CANNOT_CLOSE"}
+        {"LT_ERROR_SYMBOL_NOT_FOUND"}
+        {"LT_ERROR_NO_MEMORY"}
+        {"LT_ERROR_INVALID_HANDLE"}
+        {"LT_ERROR_BUFFER_OVERFLOW"}
+        {"LT_ERROR_INVALID_ERRORCODE"}
+        {"LT_ERROR_SHUTDOWN"}
+        {"LT_ERROR_CLOSE_RESIDENT_MODULE"}
+        {"LT_ERROR_INVALID_MUTEX_ARGS"}
+        {"LT_ERROR_INVALID_POSITION"}
+        {"LT_ERROR_CONFLICTING_FLAGS"}
+    }
     OlyErrors:array {
         {"OLY_WARN_DSOPT_NOT_USED"}
         {"OLY_WARN_REINIT"}
@@ -55,6 +77,8 @@ root:table {
         {"OLY_ERR_CONFIG_PARSE"}
         {"OLY_ERR_CONFIG_UNRECOGNIZED"}
         {"OLY_ERR_UNKNOWN_FUNCTION_TYPE"}
+        {"OLY_ERR_LTDL_UNKNOWN"}
+        {"OLY_ERR_LTDL_ERR"}
         {"OLY_ERR_DS_OPTION_CONFLICT"}
     }
     ConfigOptions:table{

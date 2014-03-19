@@ -11,7 +11,7 @@ version d69f44ddb7,
 <h2><a name="_glossary"></a>Glossary</h2>
 <dl>
 <dt>
-<a name="glossary_document_centered"></a>Document-centered system
+<a name="glossary_collection_centered"></a>Collection-centered system
 </dt>
 <dd>
 <p>
@@ -23,7 +23,7 @@ Many <a href="https://en.wikipedia.org/wiki/Non-relational_database">non-relatio
 </dt>
 <dd>
 <p>
-In a <a href="#glossary_document_centered">document-centered</a> system, <em>level</em> refers to how far we have recursively stepped.
+In a <a href="#glossary_collection_centered">document-centered</a> system, <em>level</em> refers to how far we have recursively stepped.
 </p>
 <div class="listingblock">
 <div class="title">In YAML</div>
@@ -62,6 +62,54 @@ logins<span style="color: #990000">:</span>
 <dd>
 <p>
 Traditional relational databases store their data in tables, which encapsulate a single <em>type of thing</em> and are then connected to other types of things with relationships.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_table"></a>Table (data source)
+</dt>
+<dd>
+<p>
+A type of data source object.  In a data source, "table" refers to something like a relational database table, with <a href="#glossary_data_source_rows">rows</a> and <a href="#glossary_data_source_columns">columns</a>.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_rows"></a>Row (data source)
+</dt>
+<dd>
+<p>
+A data source row refers to a single <a href="#glossary_data_source_table">table</a> row, that is, a set of <a href="#glossary_data_source_columns">column</a> data corresponding to a single record in a table, however that is identified.  A CSV or other flat file data source is usually defined by newlines, for example.  Relational database systems define query output by row.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_columns"></a>Column (data source)
+</dt>
+<dd>
+<p>
+A data source column refers to a single <a href="#glossary_data_source_table">table</a> column.  Every row should have a marker deliniating every column in a <a href="#glossary_data_source_table">table</a>, although those column records may be empty for any given row.  Ideally, the data source can also provide <a href="#glossary_data_source_types">type</a> information for the columns.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_collection"></a>Collection (data source)
+</dt>
+<dd>
+<p>
+Collections store data like an outline.  A type of data source object.  Each document will have keys and values.  Each document will have either <a href="#glossary_data_source_key">keys</a> or <a href="#glossary_data_source_index">indexes</a>, and each of those should have a <a href="#glossary_data_source_value">value</a>.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_key"></a>Key (data source)
+</dt>
+<dd>
+<p>
+A text identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_index">indexes</a>.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_index"></a>Index (data source)
+</dt>
+<dd>
+<p>
+An ordered, integer identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_key">keys</a>.
 </p>
 </dd>
 </dl>

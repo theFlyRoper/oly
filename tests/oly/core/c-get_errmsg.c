@@ -60,6 +60,8 @@ main( int argc, char **argv ){
                         "OLY_ERR_CONFIG_UNRECOGNIZED",
                         "OLY_ERR_UNKNOWN_FUNCTION_TYPE",
                         "OLY_ERR_DS_OPTION_CONFLICT",
+                        "OLY_ERR_LTDL_UNKNOWN",
+                        "OLY_ERR_LTDL_ERR",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

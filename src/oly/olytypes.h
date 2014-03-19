@@ -65,13 +65,10 @@ typedef enum OlyStatus_enum {
     OLY_ERR_CONFIG_UNRECOGNIZED=17,
     OLY_ERR_UNKNOWN_FUNCTION_TYPE=18,
     OLY_ERR_DS_OPTION_CONFLICT=19,
-    OLY_STATUS_MAX=19
+    OLY_ERR_LTDL_UNKNOWN=20,
+    OLY_ERR_LTDL_ERR=21,
+    OLY_STATUS_MAX=21
 } OlyStatus;
-
-typedef enum OlyBoolean_enum {
-    OLY_TRUE=0,
-    OLY_FALSE=-1
-} OlyBoolean;
 
 /* OFILE IO */
 extern OFILE *u_stderr;

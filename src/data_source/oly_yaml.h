@@ -30,8 +30,6 @@ BEGIN_C_DECLS
 
 extern OlyStatus init_yaml( OlyDataSource *ds ) ;
 extern void load_yaml( OlyStatus *status , OlyDataSource *ds );
-extern OlyStatus count_this_level( YAMLTokenMark *token_mark,
-        yaml_parser_t *config_parser, yaml_token_t *token);
 
 END_C_DECLS
 

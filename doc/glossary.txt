@@ -20,8 +20,8 @@ endif::is_fossil[]
 [glossary]
 Glossary
 --------
-anchor:glossary_document_centered[]Document-centered system:: Many https://en.wikipedia.org/wiki/Non-relational_database[non-relational] databases store their data in individual documents, which are https://en.wikipedia.org/wiki/Markup_language[marked up] with appropriate information about the data itself.  These documents can then be parsed to extract this data in an organized way.
-anchor:glossary_level[]Level:: In a <<glossary_document_centered,document-centered>> system, _level_ refers to how far we have recursively stepped. 
+anchor:glossary_collection_centered[]Collection-centered system:: Many https://en.wikipedia.org/wiki/Non-relational_database[non-relational] databases store their data in individual documents, which are https://en.wikipedia.org/wiki/Markup_language[marked up] with appropriate information about the data itself.  These documents can then be parsed to extract this data in an organized way.
+anchor:glossary_level[]Level:: In a <<glossary_collection_centered,document-centered>> system, _level_ refers to how far we have recursively stepped. 
 +
 .In YAML
 [source,python]
@@ -53,6 +53,15 @@ logins:
 ----
 +
 anchor:glossary_table_centered[]Table-centered system:: Traditional relational databases store their data in tables, which encapsulate a single _type of thing_ and are then connected to other types of things with relationships.
+anchor:glossary_data_source_table[]Table (data source):: A type of data source object.  In a data source, "table" refers to something like a relational database table, with <<glossary_data_source_rows,rows>> and <<glossary_data_source_columns,columns>>.  
+anchor:glossary_data_source_rows[]Row (data source):: A data source row refers to a single <<glossary_data_source_table,table>> row, that is, a set of <<glossary_data_source_columns,column>> data corresponding to a single record in a table, however that is identified.  A CSV or other flat file data source is usually defined by newlines, for example.  Relational database systems define query output by row.
+anchor:glossary_data_source_columns[]Column (data source):: A data source column refers to a single <<glossary_data_source_table,table>> column.  Every row should have a marker deliniating every column in a <<glossary_data_source_table,table>>, although those column records may be empty for any given row.  Ideally, the data source can also provide <<glossary_data_source_types,type>> information for the columns.
+anchor:glossary_data_source_collection[]Collection (data source):: Collections store data like an outline.  A type of data source object.  Each document will have keys and values.  Each document will have either <<glossary_data_source_key,keys>> or <<glossary_data_source_index,indexes>>, and each of those should have a <<glossary_data_source_value,value>>.  
+anchor:glossary_data_source_key[]Key (data source):: A text identifier for a  <<glossary_data_source_value,value>>.  Compare to <<glossary_data_source_index,indexes>>.
+anchor:glossary_data_source_index[]Index (data source):: An ordered, integer identifier for a  <<glossary_data_source_value,value>>.  Compare to <<glossary_data_source_key,keys>>.
+
+
+
 
 
 // vim: set syntax=asciidoc:

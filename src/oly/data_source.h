@@ -40,8 +40,7 @@ typedef struct data_source_struct OlyDataSource;
 
 typedef enum oly_ds_direction_enum {
   OLY_DS_IN = 0, 
-  OLY_DS_OUT = 1, 
-  OLY_DS_INOUT = 2
+  OLY_DS_OUT = 1
 } OlyDSDirection;
 
 typedef enum oly_data_format_enum {
@@ -78,7 +77,7 @@ extern OlyStatus set_datasource_function( OlyDataSource *ds,
     OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function );
 extern OlyDataSource *new_data_source( DataSourceType dst, OlyStatus *status );
 extern OlyStatus close_data_source( OlyDataSource *ds );
-extern void *get_data_interface( OlyDataSource *ds, OlyStatus *status);
+extern DataInterface *get_data_interface( OlyDataSource *ds, OlyStatus *status);
 extern OlyStatus set_data_interface( OlyDataSource *ds, DataInterface *interface);
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */

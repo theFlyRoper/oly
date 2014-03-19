@@ -162,8 +162,15 @@ Oly *init_oly(const char *prog,
             inner_charset, inner_datadir );
 
     oly_init->state = new_state( oly_init->data );
+
     atexit(close_oly);
     return oly_init;
+}
+
+void init_errors(void)
+{
+    get_errmsg( OLY_OKAY );
+    get_ltdl_errmsg( 0 );
 }
 
 void *

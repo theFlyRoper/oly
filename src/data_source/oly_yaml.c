@@ -19,6 +19,7 @@
 
 
 #include "oly/common.h"
+
 #include "sys/types.h"
 #include "stdbool.h"
 
@@ -28,6 +29,33 @@
 #include "oly/doc_data_source.h"
 #include "oly/oly_dev.h"
 #include "oly/core.h"
+
+#define run ltdl_module_LTX_run
+
+int
+run (const char *argument)
+{
+  char *end = NULL;
+  long number;
+  
+  if (!argument || *argument == '\0')
+    {
+      fprintf (stderr, "error: invalid argument, \"%s\".\n",
+               argument ? argument : "(null)");
+      return -1;
+    }
+  
+  number = strtol (argument, &end, 0);
+  if (end && *end != '\0')
+    {
+      fprintf (stderr, "warning: trailing garbage \"%s\".\n",
+               end);
+    }
+
+  printf ("Square root of %s is %f\n", argument, sqrt (number));
+
+  return 0;
+}
 
 static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
 static int ofile_read_handler(void *data, 

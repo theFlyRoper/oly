@@ -32,6 +32,7 @@ static const ResourceData * message_data;
  * main oly structure has been destroyed and if that
  * happened, there are bigger problems.
  */
+
 OChar *get_errmsg( OlyStatus status )
 {
     int len = 0;
@@ -57,7 +58,14 @@ OChar *get_errmsg( OlyStatus status )
                 (status + OLY_STATUS_OFFSET), &len, &u_status );
     }
     
-    if (U_FAILURE(u_status))
+    if (u_status == U_MISSING_RESOURCE_ERROR )
+    {
+        u_status = U_ZERO_ERROR;
+        result = (OChar *)ures_getStringByIndex( message_data, 
+            (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
+            &len, &u_status );
+    }
+    else if (U_FAILURE(u_status))
     {
         /* This will catch when we forget to update the list of errors in root.txt, 
          * or any other ICU error.
