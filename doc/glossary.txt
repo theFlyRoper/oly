@@ -1,7 +1,7 @@
 Glossary
 ========
 :description: Oly term definitions
-:keywords:    Oly, standards, definitions, glossary, index, terms
+:keywords:    Oly, standards, definitions, glossary, tuple, terms
 :title:       Glossary
 :icons:
 ifdef::is_standalone[]
@@ -14,14 +14,14 @@ ifdef::is_fossil[]
 :iconsdir:  /doc/tip/doc/icons
 :imagesdir: /doc/tip/doc/images
 :icons:
-link:/doc/tip/doc/index.wiki[Back to Home.]
+link:/doc/tip/doc/tuple.wiki[Back to Home.]
 endif::is_fossil[]
 
 [glossary]
 Glossary
 --------
-anchor:glossary_collection_centered[]Collection-centered system:: Many https://en.wikipedia.org/wiki/Non-relational_database[non-relational] databases store their data in individual documents, which are https://en.wikipedia.org/wiki/Markup_language[marked up] with appropriate information about the data itself.  These documents can then be parsed to extract this data in an organized way.
-anchor:glossary_level[]Level:: In a <<glossary_collection_centered,document-centered>> system, _level_ refers to how far we have recursively stepped. 
+anchor:glossary_collection_centered[]Collection-centered system:: Many https://en.wikipedia.org/wiki/Non-relational_database[non-relational] databases store their data in individual collections, which are https://en.wikipedia.org/wiki/Markup_language[marked up] with appropriate information about the data itself.  These collections can then be parsed to extract this data in an organized way.
+anchor:glossary_level[]Level:: In a <<glossary_collection_centered,collection-centered>> system, _level_ refers to how far we have recursively stepped. 
 +
 .In YAML
 [source,python]
@@ -56,9 +56,10 @@ anchor:glossary_table_centered[]Table-centered system:: Traditional relational d
 anchor:glossary_data_source_table[]Table (data source):: A type of data source object.  In a data source, "table" refers to something like a relational database table, with <<glossary_data_source_rows,rows>> and <<glossary_data_source_columns,columns>>.  
 anchor:glossary_data_source_rows[]Row (data source):: A data source row refers to a single <<glossary_data_source_table,table>> row, that is, a set of <<glossary_data_source_columns,column>> data corresponding to a single record in a table, however that is identified.  A CSV or other flat file data source is usually defined by newlines, for example.  Relational database systems define query output by row.
 anchor:glossary_data_source_columns[]Column (data source):: A data source column refers to a single <<glossary_data_source_table,table>> column.  Every row should have a marker deliniating every column in a <<glossary_data_source_table,table>>, although those column records may be empty for any given row.  Ideally, the data source can also provide <<glossary_data_source_types,type>> information for the columns.
-anchor:glossary_data_source_collection[]Collection (data source):: Collections store data like an outline.  A type of data source object.  Each document will have keys and values.  Each document will have either <<glossary_data_source_key,keys>> or <<glossary_data_source_index,indexes>>, and each of those should have a <<glossary_data_source_value,value>>.  
-anchor:glossary_data_source_key[]Key (data source):: A text identifier for a  <<glossary_data_source_value,value>>.  Compare to <<glossary_data_source_index,indexes>>.
-anchor:glossary_data_source_index[]Index (data source):: An ordered, integer identifier for a  <<glossary_data_source_value,value>>.  Compare to <<glossary_data_source_key,keys>>.
+anchor:glossary_data_source_collection[]Collection (data source):: Collections store data like an outline.  A type of data source object.  Each collection will have either <<glossary_data_source_key,keys>> or <<glossary_data_source_tuple,tuples>>, and each of those should have a <<glossary_data_source_value,value>>.
+anchor:glossary_data_source_key[]Key (data source):: A text identifier for a  <<glossary_data_source_value,value>>.  In oly, all keys will be unique within a collection, but many data sources do not require keys to be unique.  Compare to <<glossary_data_source_tuple,tuples>>.
+anchor:glossary_data_source_tuple[]Tuple (data source):: An ordered, integer identifier for a  <<glossary_data_source_value,value>>.  Compare to <<glossary_data_source_key,keys>>.  See the wikipedia page on https://en.wikipedia.org/wiki/Tuple[tuples] for details.  We use the term this way in Oly to avoid using terms like "index" for these items; an index in a relational database is not the same thing as an array index.  Tuples
+anchor:glossary_data_source_value[]Value (data source):: Data that corresponds to a <<glossary_data_source_key,key>> or an <<glossary_data_source_tuple,tuple>>.  Can have a <<glossary_data_source_types,type>>.  Will be either a scalar value or another <<glossary_data_source_collection,collection>>.
 
 
 

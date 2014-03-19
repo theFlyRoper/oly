@@ -64,13 +64,36 @@ Data Stream
 . Stream will use data source's native functionality to ensure whatever data was written is atomic.
 . Oly will recover to last checkpoint in the event of a sudden stop.
 
-Data Source Metadata
---------------------
+
+Structures
+----------
+
+Collection-centered data
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Collection
+^^^^^^^^^^
+A collection holds indexes or keys, each of which references values.  Indexes are unique, ascending, automatically assigned identifiers for a value.
+
+Metadata
+~~~~~~~~
 What information should be here?
 
 . Data source direction (in or out)
 . Oly data source buffer size
 . Threads?
 . Connection information?
+
+Data Source -> Structure Maps
+-----------------------------
+
+ICU Resource Bundle
+~~~~~~~~~~~~~~~~~~~
+
+Resource bundle -> collection.
+Key -> key
+Index -> tuple
+Array -> collection (with tuples)
+Table -> collection (with keys)
 
 // vim: set syntax=asciidoc:

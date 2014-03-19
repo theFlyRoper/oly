@@ -28,12 +28,11 @@ BEGIN_C_DECLS
 
 /* stub definitions for the different data source interfaces */
 
-struct oly_yaml_data_struct; 
 typedef struct oly_yaml_data_struct OlyYAMLData;
 
 typedef union oly_data_interface_union {
     OlyYAMLData *yaml_data;
-} DataInterface;
+} OlyDataStream;
 
 struct data_source_struct;
 typedef struct data_source_struct OlyDataSource;
@@ -77,8 +76,10 @@ extern OlyStatus set_datasource_function( OlyDataSource *ds,
     OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function );
 extern OlyDataSource *new_data_source( DataSourceType dst, OlyStatus *status );
 extern OlyStatus close_data_source( OlyDataSource *ds );
-extern DataInterface *get_data_interface( OlyDataSource *ds, OlyStatus *status);
-extern OlyStatus set_data_interface( OlyDataSource *ds, DataInterface *interface);
+extern OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status);
+extern OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface);
+extern OlyStatus set_data_filename( OlyDataSource *ds, const char *filename );
+
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */
 extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );

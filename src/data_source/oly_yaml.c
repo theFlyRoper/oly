@@ -19,43 +19,16 @@
 
 
 #include "oly/common.h"
-
 #include "sys/types.h"
 #include "stdbool.h"
 
 #include <yaml.h>
 
 #include "data_source/oly_yaml.h"
+#include "pvt_data_source.h"
 #include "oly/doc_data_source.h"
 #include "oly/oly_dev.h"
 #include "oly/core.h"
-
-#define run ltdl_module_LTX_run
-
-int
-run (const char *argument)
-{
-  char *end = NULL;
-  long number;
-  
-  if (!argument || *argument == '\0')
-    {
-      fprintf (stderr, "error: invalid argument, \"%s\".\n",
-               argument ? argument : "(null)");
-      return -1;
-    }
-  
-  number = strtol (argument, &end, 0);
-  if (end && *end != '\0')
-    {
-      fprintf (stderr, "warning: trailing garbage \"%s\".\n",
-               end);
-    }
-
-  printf ("Square root of %s is %f\n", argument, sqrt (number));
-
-  return 0;
-}
 
 static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
 static int ofile_read_handler(void *data, 
@@ -65,43 +38,10 @@ static YAMLTokenMark *new_token_mark (void);
 static void print_preflight_count(YAMLTokenMark *token_mark, int level);
 static YAMLTokenMark *preflight_yaml( OlyStatus *status , OlyDataSource *ds );
 
-OlyYAMLData *oly_init_yaml_data (void)
+void
+load_yaml( OlyStatus *status , OlyDataSource *ds )
 {
-    OlyYAMLData *new_data = omalloc(sizeof(OlyYAMLData));
-}
-
-OlyStatus 
-oly_init_yaml( OlyDataSource *ds )
-{
-    OlyStatus status = OLY_OKAY;
-    OlyYAMLData *yaml_data = oly_init_yaml_data(); 
-    set_ds_option_required( ds , DSOPT_FILE_NAME );
-    set_ds_option_unused( ds , DSOPT_CONNECTION_STRING );
-    
-    status = set_datasource_function( ds, 
-        OLYDS_OPEN_FUNCTION, oly_open_yaml );
-    if (status != OLY_OKAY)
-    {
-        return status;
-    }
-    status = set_datasource_function( ds, 
-        OLYDS_DELETE_FUNCTION, close_yaml );
-    if (status != OLY_OKAY)
-    {
-        return status;
-    }
-}
-
-OlyStatus 
-oly_close_yaml( OlyDataSource *ds )
-{
-}
-
-OlyStatus 
-oly_open_yaml( OlyDataSource *ds )
-{
-    OFILE               *yaml_file  = u_fopen( ds->filename, "rd", ds->locale, 
-                            ds->charset );
+    OFILE               *yaml_file  = u_fopen( ds->filename, "rd", ds->locale, ds->charset );
     yaml_parser_t        config_parser ;
     yaml_token_t         token;
     YAMLTokenMark       *token_mark = new_token_mark();

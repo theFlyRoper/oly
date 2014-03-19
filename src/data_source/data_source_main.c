@@ -54,7 +54,7 @@ set_datasource_function( OlyDataSource *ds,
     return status;
 }
 
-DataInterface *get_data_interface( OlyDataSource *ds, OlyStatus *status)
+OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status)
 {
     if (*status != OLY_OKAY)
     {
@@ -67,7 +67,7 @@ DataInterface *get_data_interface( OlyDataSource *ds, OlyStatus *status)
 
 }
 
-OlyStatus set_data_interface( OlyDataSource *ds, DataInterface *interface)
+OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface)
 {
     OlyStatus status = OLY_OKAY;
     ds->data = interface;
@@ -230,4 +230,11 @@ close_data_source( OlyDataSource *ds )
     return OLY_OKAY;
 }
 
+
+OlyStatus 
+set_data_filename( OlyDataSource *ds, const char *filename )
+{
+    ds->filename = (char *)filename;
+    return OLY_OKAY;
+}
 

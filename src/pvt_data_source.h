@@ -32,6 +32,7 @@ struct data_source_struct {
     unsigned int         unused_settings;
     char                *locale;
     char                *charset;
+    char                *filename;
     char                *options[(DSOPT_MAX+1)];
     DataSourceFunction  *init_function;
     DataSourceFunction  *open_function;

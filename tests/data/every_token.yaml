@@ -50,10 +50,16 @@ Stack:
     line: 23
     code: |
       x = MoreObject("345\n")
+  thing: one and two
   - file: MoreClass.py
     line: 58
     code: |-
       foo = bar
+  item: baz
+  - file: LessClass.py
+    line: 22
+    code: |-
+      bar = baz
 
 
 
