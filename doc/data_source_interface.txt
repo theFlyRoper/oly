@@ -70,10 +70,42 @@ Structures
 
 Collection-centered data
 ~~~~~~~~~~~~~~~~~~~~~~~~
+As of 3-19-2013, Oly's collection-centered data processing is not concerned about type.  This may change in the future.
 
 Collection
 ^^^^^^^^^^
-A collection holds indexes or keys, each of which references values.  Indexes are unique, ascending, automatically assigned identifiers for a value.
+A collection holds tuples or keys, each of which references values.  At a macro level, collection-centered data will be a collection of tuples, keys, collections and values.
+
+Tuple
+^^^^^
+A numeric identifier for a value.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.
+
+Key
+^^^
+A scalar identifier for a value.  
+
+Value
+^^^^^
+A collection or a scalar.
+
+Scalar
+^^^^^^
+Term from http://www.yaml.org/spec/1.2/spec.html#scalar//[yaml], which defines it as " an opaque datum that can be presented as a series of zero or more Unicode characters."  Can be a key or a value.
+
+Table-centered data
+~~~~~~~~~~~~~~~~~~~
+
+Table
+^^^^^
+A row and column based data storage structure.  A CSV file would be a good example.
+
+Row
+^^^
+One row of a table.
+
+Column
+^^^^^^
+One typed column, identifiable by either its name or its number.  If type is not provided, for now, Oly assumes the type is "text".
 
 Metadata
 ~~~~~~~~
@@ -93,7 +125,7 @@ ICU Resource Bundle
 Resource bundle -> collection.
 Key -> key
 Index -> tuple
-Array -> collection (with tuples)
-Table -> collection (with keys)
+Array -> collection (with tuples only)
+Table -> collection (with keys only)
 
 // vim: set syntax=asciidoc:

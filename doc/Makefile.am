@@ -48,7 +48,8 @@ atool-clean:
 		rm -rf Makefile.in Makefile
 
 TXTFILES				=	index.txt input_doc.txt code_standards.txt \
-							inline_in_automake.txt bibliography.txt glossary.txt
+							inline_in_automake.txt bibliography.txt glossary.txt \
+							data_source_interface.txt
 
 WIKIPAGES							= $(TXTFILES:txt=wiki)
 HTMLPAGES							= $(TXTFILES:txt=html)
