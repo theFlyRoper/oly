@@ -23,13 +23,13 @@ ok_result () {
 }
 
 # Total tests.  There are two tests per row in ok_result.
-plan 6
+plan 4
 
 # Run the individual tests.
 # may turn this back on some time but for now not necessary.
 # ok_result sh-resex "$SOURCE"  0
+# ok_result c-oly_config "$SOURCE"  0
 ok_result c-basic_functions "$SOURCE"  0
-ok_result c-oly_config "$SOURCE"  0
 ok_result c-get_errmsg "$SOURCE"  0
 
 

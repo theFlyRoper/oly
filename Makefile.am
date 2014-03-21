@@ -200,6 +200,7 @@ libtestcore_a_CPPFLAGS		= $(CHECK_DEFS)
 ## tests/oly/core/c-oly_config \
 
 check_PROGRAMS 	= 	tests/runtests \
+					tests/prototypes/yaml_to_sqlite \
 					tests/oly/core/c-get_errmsg \
 					tests/oly/core/c-basic_functions \
 					tests/oly/data_source/c-oly_yaml \
@@ -274,7 +275,7 @@ tests_oly_core_c_basic_functions_LDFLAGS = -lm
 ## 									  tests/tap/libtap.a @YAML_LIBS@ 
 ## 
 
-check-local: check-i18n $(check_PROGRAMS) 
+check-local: check-i18n prototypes $(check_PROGRAMS) 
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
 	    -b '$(abs_top_builddir)/tests' -l '$(abs_top_srcdir)/tests/TESTS'
 
@@ -283,6 +284,7 @@ i18n: 		i18n/$(OLY_I18N_NAME).dat
 check-i18n:	tests/data/i18n/$(OLY_I18N_NAME).dat
 
 all-local:  i18n check-i18n
+
 
 ## end of tests/check stuff.
 
