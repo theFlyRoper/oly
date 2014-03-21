@@ -4,8 +4,8 @@
 <h1>Oly Code Standards</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 0479c5de3f,
-2014-03-14
+version bf2e02f87d,
+2014-03-19
 </p>
 <hr>
 <h2><a name="_state_error_handling"></a>State/Error Handling</h2>

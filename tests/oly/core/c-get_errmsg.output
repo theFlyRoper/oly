@@ -1,4 +1,4 @@
-1..31
+1..35
 # From the smallest to one bigger than biggest error number.
 ok 1 - Item: -4, err: OLY_WARN_DSOPT_NOT_USED
 ok 2 - Item: -3, err: OLY_WARN_REINIT
@@ -20,18 +20,22 @@ ok 17 - Item: 12, err: OLY_ERR_BUFFER_OVERFLOW
 ok 18 - Item: 13, err: OLY_ERR_FILE_NOT_FOUND
 ok 19 - Item: 14, err: OLY_ERR_CONFIG_FILE_NOT_FOUND
 ok 20 - Item: 15, err: OLY_ERR_LIBYAML_INIT
-ok 21 - Item: 16, err: OLY_ERR_CONFIG_PARSE
-ok 22 - Item: 17, err: OLY_ERR_CONFIG_UNRECOGNIZED
+ok 21 - Item: 16, err: OLY_ERR_NODES_TOO_DEEP
+ok 22 - Item: 17, err: OLY_ERR_NODES_TOO_SHALLOW
 ok 23 - Item: 18, err: OLY_ERR_UNKNOWN_FUNCTION_TYPE
-ok 24 - Item: 19, err: OLY_ERR_UNKNOWN
+ok 24 - Item: 19, err: OLY_ERR_DS_OPTION_CONFLICT
+ok 25 - Item: 20, err: OLY_ERR_LTDL_UNKNOWN
+ok 26 - Item: 21, err: OLY_ERR_LTDL_ERR
+ok 27 - Item: 22, err: OLY_ERR_YAML_PARSE
+ok 28 - Item: 23, err: OLY_ERR_UNKNOWN
 # One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.
-ok 25 - Number: -5
+ok 29 - Number: -5
 # A few wildly outlandish numbers.  Powers of -17!
-ok 26 - Number: 289
-ok 27 - Number: -4,913
-ok 28 - Number: 83,521
-ok 29 - Number: -1,419,857
+ok 30 - Number: 289
+ok 31 - Number: -4,913
+ok 32 - Number: 83,521
+ok 33 - Number: -1,419,857
 # Hex digits, mwaha
-ok 30 - Number: 43,690, submitted: �
-ok 31 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
-# All 31 tests successful or skipped
+ok 34 - Number: 43,690, submitted: �
+ok 35 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
+# All 35 tests successful or skipped

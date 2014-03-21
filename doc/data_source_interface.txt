@@ -7,13 +7,11 @@ Oly Data Source Interface
 ifdef::is_standalone[]
 :iconsdir:  icons
 :imagesdir: images
-:icons:
 :toc2:
 endif::is_standalone[]
 ifdef::is_fossil[]
 :iconsdir:  /doc/tip/doc/icons
 :imagesdir: /doc/tip/doc/images
-:icons:
 link:/doc/tip/doc/index.wiki[Back to Home.]
 endif::is_fossil[]
 
@@ -25,29 +23,76 @@ Required functions
 
 .Must be defined
 open_oly_ds_stream:: Try to connect to the data source.  If successful, open the stream from the data source.  
++
+.definition
+[source,c]
+----
+OlyStatus open_oly_ds_stream(OlyDataSource *ds);
+----
++
 close_oly_ds_stream:: Flush the current stream buffers in the stream direction, stop any queries against this stream and free any pointers allocated by the stream.
 +
-.close_oly_ds_stream definition
+.definition
 [source,c]
 ----
 OlyStatus close_oly_ds_stream(OlyDataSource *ds);
 ----
 +
-get_oly_ds_metadata:: Retrieve metadata at granularity specified.  Will go into greater detail once this is more firmly defined.  Must be thread-safe.
-+
-.get_oly_ds_metadata definition
-[source,c]
-----
-OlyStatus get_oly_ds_metadata(OlyDataSource *ds);
-----
-+
 get_oly_ds_error_message:: See <<_open_questions,open questions>>.
 
-.Not sure about these
-flush_oly_ds_buffer:: Should this be necessary?  Probably, eh?  Oly needs to have control over the stream on a direct level, but should that be part of closing?  Also, what about direction?  Is this for output only?
-fill_oly_ds_buffer:: Same thing.  Needed?  Wanted?  How should this work?
-get_oly_ds_error_number:: See <<_open_questions,open questions>>.
+Required Table Data Functions 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+get_oly_ds_row:: Return a pointer to exactly one row in a table data structure.  Should be buffered properly.
++
+.definition
+[source,c]
+----
+OlyDSRow *get_oly_ds_row(OlyDataSource *ds, OlyStatus *status);
+----
++
+get_oly_ds_column:: Return a pointer to exactly one column in a table data structure.  Should be buffered properly.  A column may take many buffers to fully express.  This may not actually happen, since a column may not be terribly worthwhile to retrieve.
++
+.definition
+[source,c]
+----
+OlyDSColumn *get_oly_ds_column(OlyDataSource *ds, OlyStatus *status);
+----
 
+Required Collection Data Functions 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+get_oly_ds_next_node:: Return a pointer to the next node in the collection.  The Node data structure includes an integer indicating how deep in the collection we are.
++
+.definition
+[source,c]
+----
+OlyDSNode *get_oly_ds_next_node(OlyDataSource *ds, OlyStatus *status);
+----
+
+Optional Functions
+~~~~~~~~~~~~~~~~~~
+get_oly_ds_metadata:: Retrieve metadata at granularity specified.  Will go into greater detail once this is more firmly defined.  Must be thread-safe.  This function is not firmly defined now, as of 3-19-2013.
++
+.definition
+[source,c]
+----
+OlyDSMetadata *get_oly_ds_metadata(OlyDataSource *ds, OlyStatus *status);
+----
++
+get_oly_ds_locale:: Retrieve data source locale information.  Intent here is to use the native data source metadata to find the locale information.
++
+.definition
+[source,c]
+----
+char *get_oly_ds_locale(OlyDataSource *ds, OlyStatus *status);
+----
++
+get_oly_ds_charset:: Retrieve data source charset information. Intent here is to use the native data source metadata to find the charset information.
++
+.definition
+[source,c]
+----
+char *get_oly_ds_charset(OlyDataSource *ds, OlyStatus *status);
+----
 
 Open Questions
 ~~~~~~~~~~~~~~
@@ -76,17 +121,21 @@ Collection
 ^^^^^^^^^^
 A collection holds tuples or keys, each of which references values.  At a macro level, collection-centered data will be a collection of tuples, keys, collections and values.
 
+Node
+^^^^
+For Oly, a node points to a key or a tuple and the type of node within.  Node is taken from http://www.yaml.org/spec/1.2/spec.html#representation//[yaml], and Oly nodes can contain a collection (mapping or sequence) or a scalar value.
+
 Tuple
 ^^^^^
-A numeric identifier for a value.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.
+A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.
 
 Key
 ^^^
-A scalar identifier for a value.  
+A scalar identifier for a value.  A type of node.
 
 Value
 ^^^^^
-A collection or a scalar.
+A collection or a scalar.  Must have a node.
 
 Scalar
 ^^^^^^
@@ -116,16 +165,16 @@ What information should be here?
 . Threads?
 . Connection information?
 
-Data Source -> Structure Maps
+Data Source to Structure Maps
 -----------------------------
 
 ICU Resource Bundle
 ~~~~~~~~~~~~~~~~~~~
 
-Resource bundle -> collection.
-Key -> key
-Index -> tuple
-Array -> collection (with tuples only)
-Table -> collection (with keys only)
+* Resource bundle -> collection.
+* Key -> key
+* Index -> tuple
+* Array -> collection (with tuples only)
+* Table -> collection (with keys only)
 
 // vim: set syntax=asciidoc:

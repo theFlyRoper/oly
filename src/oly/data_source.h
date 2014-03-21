@@ -26,6 +26,15 @@
 
 BEGIN_C_DECLS
 
+/* the data source interface needs to provide access to the ICU converter functions. 
+ * UConververtFromUCallback is the function ICU calls after failing to convert from 
+ * unicode to a given codepage, and UConverterToUCallback is the other direction. */
+/*
+typedef void( * UConverterToUCallback)(const void *context, UConverterToUnicodeArgs *args, const char *codeUnits, int32_t length, UConverterCallbackReason reason, UErrorCode *pErrorCode)
+
+typedef void( * UConverterFromUCallback)(const void *context, UConverterFromUnicodeArgs *args, const UChar *codeUnits, int32_t length, UChar32 codePoint, UConverterCallbackReason reason, UErrorCode *pErrorCode)
+*/
+
 /* stub definitions for the different data source interfaces */
 
 typedef struct oly_yaml_data_struct OlyYAMLData;
@@ -43,7 +52,7 @@ typedef enum oly_ds_direction_enum {
 } OlyDSDirection;
 
 typedef enum oly_data_format_enum {
-    DOCUMENT_DATA_SOURCE,
+    COLLECTION_DATA_SOURCE,
     TABLE_DATA_SOURCE
 } OlyDataFormat;
 
@@ -102,7 +111,15 @@ OlyStatus get_data_direction( OlyDataSource *ds, OlyDSDirection ds_io );
 /* retrieve locale or charset from the data source. */
 OlyStatus get_data_locale( OlyDataSource *ds, const char *locale );
 OlyStatus get_data_charset( OlyDataSource *ds, const char *charset );
+UConverter *get_ds_charset_converter(OlyDataSource *ds);
 
+/* data source buffer interface */
+/* gets the amount of space remaining in the input buffer.  This is so we can dump large input to files.  If we have a scalar holding war and peace, I would rather it get dumped to a file, which the OlyDSNode can pass around instead of five hundred buffers' worth of string :) */
+extern size_t get_buffer_size(OlyDataSource *ds, OlyStatus *status);
+/* copies a *char string to the charbuffer. */
+extern OlyStatus put_in_charbuffer(OlyDataSource *ds, const char *putstr);
+/* flushes the charbuffer from the specified pointer to the end. */
+extern OlyStatus flush_charbuffer( OlyDataSource *ds, const char *from_here_to_end );
 END_C_DECLS
 
 #endif /* SRC_DATA_SOURCE_H */

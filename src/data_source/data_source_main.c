@@ -29,7 +29,7 @@
 #include "pvt_data_source.h"
 #include "oly/oly_dev.h"
 #include "oly/core.h"
-
+/* set_datasource_function, get_data_interface, set_data_interface, 
 OlyStatus
 set_datasource_function( OlyDataSource *ds, 
         OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function)
@@ -74,6 +74,8 @@ OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface)
     return status;
 }
 
+*/
+
 OlyStatus
 set_ds_option_required( OlyDataSource *ds, DataSourceOptions option )
 {
@@ -109,6 +111,7 @@ set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
 }
 
 /* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
+
 OlyStatus 
 set_data_option( OlyDataSource *ds, const DataSourceOptions option, const char *value )
 {
@@ -142,8 +145,8 @@ get_data_option( OlyDataSource *ds, const DataSourceOptions option, OlyStatus *s
 OlyDataSource *
 new_data_source( DataSourceType ds_type, OlyStatus *status )
 {
-    unsigned int i = 0;
-    OlyDataSource *retval;
+    unsigned int     i = 0;
+    OlyDataSource   *retval;
     if (*status != OLY_OKAY)
     {
         return NULL;
@@ -166,9 +169,10 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     retval->required_settings = 0x0;
     retval->locale = NULL;
     retval->charset = NULL;
-    retval->init_function = NULL;
+/*    retval->init_function = NULL;
     retval->open_function = NULL;
-    retval->delete_function = NULL;
+    retval->delete_function = NULL; 
+    */
     return retval;
 }
 
@@ -229,7 +233,6 @@ close_data_source( OlyDataSource *ds )
     OFREE(free_me);
     return OLY_OKAY;
 }
-
 
 OlyStatus 
 set_data_filename( OlyDataSource *ds, const char *filename )

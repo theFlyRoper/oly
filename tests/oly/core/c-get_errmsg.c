@@ -33,7 +33,7 @@ main( int argc, char **argv ){
             OLY_STATUS_MAX + OLY_STATUS_OFFSET + 1 );
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
-    OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar) );
+    OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
     char            *locale = (char *)"root",  *charset = NULL;
     const char     *results_char[] = {
                         "OLY_WARN_DSOPT_NOT_USED",
@@ -56,17 +56,19 @@ main( int argc, char **argv ){
                         "OLY_ERR_FILE_NOT_FOUND",
                         "OLY_ERR_CONFIG_FILE_NOT_FOUND",
                         "OLY_ERR_LIBYAML_INIT",
-                        "OLY_ERR_CONFIG_PARSE",
-                        "OLY_ERR_CONFIG_UNRECOGNIZED",
+                        "OLY_ERR_NODES_TOO_DEEP",
+                        "OLY_ERR_NODES_TOO_SHALLOW",
                         "OLY_ERR_UNKNOWN_FUNCTION_TYPE",
                         "OLY_ERR_DS_OPTION_CONFLICT",
                         "OLY_ERR_LTDL_UNKNOWN",
                         "OLY_ERR_LTDL_ERR",
+                        "OLY_ERR_YAML_PARSE",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;
     
     oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    init_errors();
     
     for ( i = 0; (i<=num_tests); i++)
     {

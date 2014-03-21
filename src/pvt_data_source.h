@@ -34,11 +34,10 @@ struct data_source_struct {
     char                *charset;
     char                *filename;
     char                *options[(DSOPT_MAX+1)];
-    DataSourceFunction  *init_function;
-    DataSourceFunction  *open_function;
-    DataSourceFunction  *delete_function;
-    OlyDataStream       *data;
-
+    size_t               buffer_size;
+    OChar               *ochar_buffer;
+    char                *char_buffer;
+    UConverter          *converter;
 };
 
 END_C_DECLS

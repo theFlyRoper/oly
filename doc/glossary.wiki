@@ -4,8 +4,8 @@
 <h1>Glossary</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version d69f44ddb7,
-2014-03-18
+version 0f71aa1190,
+2014-03-19
 </p>
 <hr>
 <h2><a name="_glossary"></a>Glossary</h2>
@@ -15,7 +15,7 @@ version d69f44ddb7,
 </dt>
 <dd>
 <p>
-Many <a href="https://en.wikipedia.org/wiki/Non-relational_database">non-relational</a> databases store their data in individual documents, which are <a href="https://en.wikipedia.org/wiki/Markup_language">marked up</a> with appropriate information about the data itself.  These documents can then be parsed to extract this data in an organized way.
+Many <a href="https://en.wikipedia.org/wiki/Non-relational_database">non-relational</a> databases store their data in individual collections, which are <a href="https://en.wikipedia.org/wiki/Markup_language">marked up</a> with appropriate information about the data itself.  These collections can then be parsed to extract this data in an organized way.
 </p>
 </dd>
 <dt>
@@ -23,7 +23,7 @@ Many <a href="https://en.wikipedia.org/wiki/Non-relational_database">non-relatio
 </dt>
 <dd>
 <p>
-In a <a href="#glossary_collection_centered">document-centered</a> system, <em>level</em> refers to how far we have recursively stepped.
+In a <a href="#glossary_collection_centered">collection-centered</a> system, <em>level</em> refers to how far we have recursively stepped.
 </p>
 <div class="listingblock">
 <div class="title">In YAML</div>
@@ -93,7 +93,7 @@ A data source column refers to a single <a href="#glossary_data_source_table">ta
 </dt>
 <dd>
 <p>
-Collections store data like an outline.  A type of data source object.  Each document will have keys and values.  Each document will have either <a href="#glossary_data_source_key">keys</a> or <a href="#glossary_data_source_index">indexes</a>, and each of those should have a <a href="#glossary_data_source_value">value</a>.
+Collections store data like an outline.  A type of data source object.  Each collection will have either <a href="#glossary_data_source_key">keys</a> or <a href="#glossary_data_source_tuple">tuples</a>, and each of those should have a <a href="#glossary_data_source_value">value</a>.
 </p>
 </dd>
 <dt>
@@ -101,15 +101,23 @@ Collections store data like an outline.  A type of data source object.  Each doc
 </dt>
 <dd>
 <p>
-A text identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_index">indexes</a>.
+A text identifier for a  <a href="#glossary_data_source_value">value</a>.  In oly, all keys will be unique within a collection, but many data sources do not require keys to be unique.  Compare to <a href="#glossary_data_source_tuple">tuples</a>.
 </p>
 </dd>
 <dt>
-<a name="glossary_data_source_index"></a>Index (data source)
+<a name="glossary_data_source_tuple"></a>Tuple (data source)
 </dt>
 <dd>
 <p>
-An ordered, integer identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_key">keys</a>.
+An ordered, integer identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_key">keys</a>.  See the wikipedia page on <a href="https://en.wikipedia.org/wiki/Tuple">tuples</a> for details.  We use the term this way in Oly to avoid using terms like "index" for these items; an index in a relational database is not the same thing as an array index.  Tuples
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_value"></a>Value (data source)
+</dt>
+<dd>
+<p>
+Data that corresponds to a <a href="#glossary_data_source_key">key</a> or an <a href="#glossary_data_source_tuple">tuple</a>.  Can have a <a href="#glossary_data_source_types">type</a>.  Will be either a scalar value or another <a href="#glossary_data_source_collection">collection</a>.
 </p>
 </dd>
 </dl>

@@ -74,12 +74,13 @@ root:table {
         {"OLY_ERR_FILE_NOT_FOUND"}
         {"OLY_ERR_CONFIG_FILE_NOT_FOUND"}
         {"OLY_ERR_LIBYAML_INIT"}
-        {"OLY_ERR_CONFIG_PARSE"}
-        {"OLY_ERR_CONFIG_UNRECOGNIZED"}
+        {"OLY_ERR_NODES_TOO_DEEP"}
+        {"OLY_ERR_NODES_TOO_SHALLOW"}
         {"OLY_ERR_UNKNOWN_FUNCTION_TYPE"}
+        {"OLY_ERR_DS_OPTION_CONFLICT"}
         {"OLY_ERR_LTDL_UNKNOWN"}
         {"OLY_ERR_LTDL_ERR"}
-        {"OLY_ERR_DS_OPTION_CONFLICT"}
+        {"OLY_ERR_YAML_PARSE"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

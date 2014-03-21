@@ -4,7 +4,7 @@
 <h1>Oly Data Source Interface</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 0f71aa1190,
+version d8d641930c,
 2014-03-19
 </p>
 <hr>
@@ -18,6 +18,13 @@ open_oly_ds_stream
 <p>
 Try to connect to the data source.  If successful, open the stream from the data source.
 </p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">OlyStatus</span> <span style="font-weight: bold"><span style="color: #000000">open_oly_ds_stream</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 <dt>
 close_oly_ds_stream
@@ -27,27 +34,12 @@ close_oly_ds_stream
 Flush the current stream buffers in the stream direction, stop any queries against this stream and free any pointers allocated by the stream.
 </p>
 <div class="listingblock">
-<div class="title">close_oly_ds_stream definition</div>
+<div class="title">definition</div>
 <div class="content"><!-- Generator: GNU source-highlight 3.1.6
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
 <pre><tt><span style="color: #008080">OlyStatus</span> <span style="font-weight: bold"><span style="color: #000000">close_oly_ds_stream</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">);</span></tt></pre></div></div>
-</dd>
-<dt>
-get_oly_ds_metadata
-</dt>
-<dd>
-<p>
-Retrieve metadata at granularity specified.  Will go into greater detail once this is more firmly defined.  Must be thread-safe.
-</p>
-<div class="listingblock">
-<div class="title">get_oly_ds_metadata definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyStatus</span> <span style="font-weight: bold"><span style="color: #000000">get_oly_ds_metadata</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 <dt>
 get_oly_ds_error_message
@@ -58,30 +50,103 @@ See <a href="#_open_questions">open questions</a>.
 </p>
 </dd>
 </dl>
-<p><b>Not sure about these</b></p><dl>
+<h3><a name="_required_table_data_functions"></a>Required Table Data Functions</h3>
+<dl>
 <dt>
-flush_oly_ds_buffer
+get_oly_ds_row
 </dt>
 <dd>
 <p>
-Should this be necessary?  Probably, eh?  Oly needs to have control over the stream on a direct level, but should that be part of closing?  Also, what about direction?  Is this for output only?
+Return a pointer to exactly one row in a table data structure.  Should be buffered properly.
 </p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">OlyDSRow</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_row</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 <dt>
-fill_oly_ds_buffer
+get_oly_ds_column
 </dt>
 <dd>
 <p>
-Same thing.  Needed?  Wanted?  How should this work?
+Return a pointer to exactly one column in a table data structure.  Should be buffered properly.  A column may take many buffers to fully express.  This may not actually happen, since a column may not be terribly worthwhile to retrieve.
 </p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">OlyDSColumn</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_column</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+</dd>
+</dl>
+<h3><a name="_required_collection_data_functions"></a>Required Collection Data Functions</h3>
+<dl>
+<dt>
+get_oly_ds_next_node
+</dt>
+<dd>
+<p>
+Return a pointer to the next node in the collection.  The Node data structure includes an integer indicating how deep in the collection we are.
+</p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">OlyDSNode</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_next_node</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+</dd>
+</dl>
+<h3><a name="_optional_functions"></a>Optional Functions</h3>
+<dl>
+<dt>
+get_oly_ds_metadata
+</dt>
+<dd>
+<p>
+Retrieve metadata at granularity specified.  Will go into greater detail once this is more firmly defined.  Must be thread-safe.  This function is not firmly defined now, as of 3-19-2013.
+</p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #008080">OlyDSMetadata</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_metadata</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 <dt>
-get_oly_ds_error_number
+get_oly_ds_locale
 </dt>
 <dd>
 <p>
-See <a href="#_open_questions">open questions</a>.
+Retrieve data source locale information.  Intent here is to use the native data source metadata to find the locale information.
 </p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">char</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_locale</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+</dd>
+<dt>
+get_oly_ds_charset
+</dt>
+<dd>
+<p>
+Retrieve data source charset information. Intent here is to use the native data source metadata to find the charset information.
+</p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #009900">char</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_charset</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 </dl>
 <h3><a name="_open_questions"></a>Open Questions</h3>
@@ -132,12 +197,14 @@ Oly will recover to last checkpoint in the event of a sudden stop.
 <p>As of 3-19-2013, Oly&#8217;s collection-centered data processing is not concerned about type.  This may change in the future.</p>
 <h4><a name="_collection"></a>Collection</h4>
 <p>A collection holds tuples or keys, each of which references values.  At a macro level, collection-centered data will be a collection of tuples, keys, collections and values.</p>
+<h4><a name="_node"></a>Node</h4>
+<p>For Oly, a node points to a key or a tuple and the type of node within.  Node is taken from <a href="http://www.yaml.org/spec/1.2/spec.html#representation//">yaml</a>, and Oly nodes can contain a collection (mapping or sequence) or a scalar value.</p>
 <h4><a name="_tuple"></a>Tuple</h4>
-<p>A numeric identifier for a value.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.</p>
+<p>A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.</p>
 <h4><a name="_key"></a>Key</h4>
-<p>A scalar identifier for a value.</p>
+<p>A scalar identifier for a value.  A type of node.</p>
 <h4><a name="_value"></a>Value</h4>
-<p>A collection or a scalar.</p>
+<p>A collection or a scalar.  Must have a node.</p>
 <h4><a name="_scalar"></a>Scalar</h4>
 <p>Term from <a href="http://www.yaml.org/spec/1.2/spec.html#scalar//">yaml</a>, which defines it as " an opaque datum that can be presented as a series of zero or more Unicode characters."  Can be a key or a value.</p>
 <h3><a name="_table_centered_data"></a>Table-centered data</h3>
@@ -172,12 +239,34 @@ Connection information?
 </li>
 </ol>
 <hr>
-<h2><a name="_data_source_8594_structure_maps"></a>Data Source &#8594; Structure Maps</h2>
+<h2><a name="_data_source_to_structure_maps"></a>Data Source to Structure Maps</h2>
 <h3><a name="_icu_resource_bundle"></a>ICU Resource Bundle</h3>
-<p>Resource bundle &#8594; collection.
+<ul>
+<li>
+<p>
+Resource bundle &#8594; collection.
+</p>
+</li>
+<li>
+<p>
 Key &#8594; key
+</p>
+</li>
+<li>
+<p>
 Index &#8594; tuple
+</p>
+</li>
+<li>
+<p>
 Array &#8594; collection (with tuples only)
-Table &#8594; collection (with keys only)</p>
+</p>
+</li>
+<li>
+<p>
+Table &#8594; collection (with keys only)
+</p>
+</li>
+</ul>
 </div>
 </nowiki>

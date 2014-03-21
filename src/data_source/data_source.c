@@ -36,13 +36,12 @@ load_ds (const char *name, OlyStatus *status)
     unsigned int    ltdl_status = 0;
     char            char_err = NULL;
 
-
     last_error = NULL;
 
     module = lt_dlopenext (name);
 
     if (module)
-        {
+    {
         builtin_table = (Builtin*) lt_dlsym (module, "builtin_table");
         syntax_table = (Syntax *) lt_dlsym (module, "syntax_table");
         if (!builtin_table && !syntax_table)
@@ -51,15 +50,15 @@ load_ds (const char *name, OlyStatus *status)
             last_error = no_builtin_table_error;
             module = NULL;
             }
-        }
+    }
 
     if (module)
-        {
+    {
         ModuleInit *init_func
             = (ModuleInit *) lt_dlsym (module, "module_init");
         if (init_func)
             (*init_func) (sic);
-        }
+    }
 
     if (module)
         {
@@ -144,5 +143,195 @@ data_source_init (void)
 
     last_error = multi_init_error;
     return OLY_ERROR;
+}
+
+OlyStatus
+set_ds_option_required( OlyDataSource *ds, DataSourceOptions option )
+{
+    OlyStatus status = OLY_OKAY;
+    if ((option > (sizeof(long)*CHAR_BIT)) || 
+            ( ds->unused_settings & (unsigned int)pow(2,option) ) == option )
+    {
+        status = OLY_ERR_DS_OPTION_CONFLICT;
+    }
+    else 
+    {
+        ds->required_settings |= option;
+    }
+
+    return status;
+}
+
+OlyStatus
+set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
+{
+    OlyStatus status = OLY_OKAY;
+    if ((option > (sizeof(long)*CHAR_BIT)) || 
+            ( ds->required_settings & (unsigned int)pow(2,option) ) == option )
+    {
+        status = OLY_ERR_DS_OPTION_CONFLICT;
+    }
+    else 
+    {
+        ds->unused_settings |= option;
+    }
+
+    return status;
+}
+
+/* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
+
+OlyStatus 
+set_data_option( OlyDataSource *ds, const DataSourceOptions option, const char *value )
+{
+    OlyStatus status = OLY_OKAY;
+    if ((ds->unused_settings & option) == option)
+    {
+        status = OLY_WARN_DSOPT_NOT_USED;
+    }
+    else
+    {
+        ds->options[option] = (char *)ostrdup(value);
+    }
+    return status;
+}
+
+char *
+get_data_option( OlyDataSource *ds, const DataSourceOptions option, OlyStatus *status )
+{
+    char    *opt = NULL;
+    if ((ds->unused_settings & option) == option)
+    {
+        *status = OLY_WARN_DSOPT_NOT_USED;
+    }
+    else
+    {
+        opt = ds->options[option];
+    }
+    return opt;
+}
+
+OlyDataSource *
+new_data_source( DataSourceType ds_type, OlyStatus *status )
+{
+    unsigned int     i = 0;
+    OlyDataSource   *retval;
+    if (*status != OLY_OKAY)
+    {
+        return NULL;
+    }
+
+    if ((ds_type > DS_TYPE_MAX) || (ds_type < DS_TYPE_MIN))
+    {
+        *status = OLY_ERR_BADARG;
+        return NULL;
+    }
+    retval = (OlyDataSource *)ocalloc(1, sizeof(OlyDataSource));
+    for ( i = 0; ( i <= DSOPT_MAX ); i++ )
+    {
+        retval->options[i] = NULL;
+    }
+
+    retval->ds_type             = ds_type;
+    retval->direction           = OLY_DS_IN;
+    retval->unused_settings     = 0x0;
+    retval->required_settings   = 0x0;
+    retval->locale              = NULL;
+    retval->charset             = NULL;
+    retval->buffer_size         = BUFSIZ;
+    retval->ochar_buffer        = ocalloc(BUFSIZ, sizeof(OChar));
+    retval->char_buffer         = ocalloc(BUFSIZ, sizeof(char));
+    retval->converter           = NULL;
+    
+/*    retval->init_function = NULL;
+    retval->open_function = NULL;
+    retval->delete_function = NULL; 
+    */
+    return retval;
+}
+
+OlyStatus 
+set_data_direction( OlyDataSource *ds, OlyDSDirection ds_io)
+{
+    ds->direction = ds_io;
+    return OLY_OKAY;
+}
+
+/* for the sake of a consistent interface, charset and locale return as OlyStatus 
+ * Options for later:
+ *  Check them against ICU?
+ *  Check them against the datasource? */
+OlyStatus 
+set_data_locale( OlyDataSource *ds, const char *locale )
+{
+    ds->locale = (char *)locale;
+    return OLY_OKAY;
+}
+
+OlyStatus 
+set_data_charset( OlyDataSource *ds, const char *charset )
+{
+    OlyStatus       status   = OLY_OKAY;
+    UErrorCode      u_status = U_ZERO_ERROR;
+    ds->charset = (char *)charset;
+    if (ds->converter != NULL)
+    {
+        ucnv_close(ds->converter);
+    }
+    ds->converter = ucnv_open( charset, &u_status );
+    
+    if (U_FAILURE(u_status))
+    {
+    
+        ucnv_close(ds->converter);
+        status = OLY_ERR_LIB;
+    }
+    return status;
+}
+
+OlyStatus 
+close_data_source( OlyDataSource *ds )
+{
+    int      i = 0;
+    void    *free_me;
+    if ( ds == NULL )
+    {
+        return OLY_OKAY;
+    }
+    for ( i = 0; ( i <= DSOPT_MAX ); i++ )
+    {
+        if ( ds->options[i] != NULL )
+        {
+            free_me = (void *)ds->options[i];
+            OFREE(free_me);
+        }
+    }
+    
+    if ( ds->locale != NULL )
+    {
+        free_me = (void *)ds->locale;
+        OFREE(free_me);
+    }
+    if ( ds->charset != NULL )
+    {
+        free_me = (void *)ds->charset;
+        OFREE(free_me);
+    }
+    free_me = (void *)ds;
+    OFREE(free_me);
+    return OLY_OKAY;
+}
+
+OlyStatus 
+set_data_filename( OlyDataSource *ds, const char *filename )
+{
+    ds->filename = (char *)filename;
+    return OLY_OKAY;
+}
+
+UConverter  *
+get_ds_charset_converter(OlyDataSource *ds)
+{
+    return ds->converter;
 }
 
