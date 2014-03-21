@@ -242,12 +242,34 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     retval->ochar_buffer        = ocalloc(BUFSIZ, sizeof(OChar));
     retval->char_buffer         = ocalloc(BUFSIZ, sizeof(char));
     retval->converter           = NULL;
-    
+    if (COLLECTION_DATA_SOURCE == )
+        retval->data            = 
+
 /*    retval->init_function = NULL;
     retval->open_function = NULL;
     retval->delete_function = NULL; 
     */
     return retval;
+}
+
+OlyDataSourceFormat
+get_data_type_format( DataSourceType ds_type )
+{
+    OlyDataSourceFormat format;
+
+    switch (ds_type)
+    {
+        case SQLITE_FILE:
+            format = TABLE_DATA_SOURCE;
+            break;
+        case YAML_FILE:
+            format = COLLECTION_DATA_SOURCE;
+            break;
+        default:
+            format = UNKNOWN_DATA_SOURCE_FORMAT;
+            break;
+    }
+    return format;
 }
 
 OlyStatus 

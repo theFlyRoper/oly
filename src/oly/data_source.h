@@ -26,6 +26,20 @@
 
 BEGIN_C_DECLS
 
+/* data source buffer interface */
+/* gets the amount of space remaining in the input buffer.  This is so we can dump large input to files.  If we have a scalar holding war and peace, I would rather it get dumped to a file, which the OlyNode can pass around instead of five hundred buffers' worth of string :) 
+extern size_t get_buffer_size(OlyDataSource *ds, OlyStatus *status);
+*/
+/* copies a *char string to the charbuffer. */
+extern OlyStatus put_in_charbuffer(OlyDataSource *ds, const char *putstr);
+/* flushes the charbuffer from the specified pointer to the end. */
+extern OlyStatus flush_charbuffer( OlyDataSource *ds, 
+        const char *flush_start, const char *flush_end );
+extern OlyStatus put_in_ocharbuffer(OlyDataSource *ds, const OChar *putstr);
+/* flushes the charbuffer from the specified pointer to the end. */
+extern OlyStatus flush_ocharbuffer( OlyDataSource *ds, 
+        const OChar *flush_start, const OChar *flush_end );
+
 /* the data source interface needs to provide access to the ICU converter functions. 
  * UConververtFromUCallback is the function ICU calls after failing to convert from 
  * unicode to a given codepage, and UConverterToUCallback is the other direction. */
@@ -52,6 +66,7 @@ typedef enum oly_ds_direction_enum {
 } OlyDSDirection;
 
 typedef enum oly_data_format_enum {
+    UNKNOWN_DATA_SOURCE_FORMAT,
     COLLECTION_DATA_SOURCE,
     TABLE_DATA_SOURCE
 } OlyDataFormat;
@@ -66,7 +81,8 @@ typedef enum data_source_type_enum {
     YAML_FILE = 0,
     DS_TYPE_MIN = 0,
     JSON_FILE = 1,
-    DS_TYPE_MAX = 1
+    SQLITE_FILE = 2,
+    DS_TYPE_MAX = 2
 } DataSourceType;
 
 /* data_source_options: used to describe which options are required and which are not. 
@@ -88,7 +104,7 @@ extern OlyStatus close_data_source( OlyDataSource *ds );
 extern OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status);
 extern OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface);
 extern OlyStatus set_data_filename( OlyDataSource *ds, const char *filename );
-
+extern OlyDataSourceFormat get_data_type_format( DataSourceType ds_type );
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */
 extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );
@@ -99,27 +115,16 @@ extern OlyStatus set_data_option( OlyDataSource *ds,
         const DataSourceOptions option, const char *value );
 extern char *get_data_option( OlyDataSource *ds, const DataSourceOptions option,
         OlyStatus *status );
+
 /* normally these locale and charset functions should not be necessary,
  * since we can usually deduce this information from the data source itself. */
 OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
 OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
-/* sets the OlyDSDirection option for a datasource.  If not set, defaults to read only */
-OlyStatus set_data_direction( OlyDataSource *ds, const OlyDSDirection ds_io );
 
-/* sets the OlyDSDirection option for a datasource.  If not set, defaults to read only */
-OlyStatus get_data_direction( OlyDataSource *ds, OlyDSDirection ds_io );
 /* retrieve locale or charset from the data source. */
 OlyStatus get_data_locale( OlyDataSource *ds, const char *locale );
 OlyStatus get_data_charset( OlyDataSource *ds, const char *charset );
-UConverter *get_ds_charset_converter(OlyDataSource *ds);
 
-/* data source buffer interface */
-/* gets the amount of space remaining in the input buffer.  This is so we can dump large input to files.  If we have a scalar holding war and peace, I would rather it get dumped to a file, which the OlyDSNode can pass around instead of five hundred buffers' worth of string :) */
-extern size_t get_buffer_size(OlyDataSource *ds, OlyStatus *status);
-/* copies a *char string to the charbuffer. */
-extern OlyStatus put_in_charbuffer(OlyDataSource *ds, const char *putstr);
-/* flushes the charbuffer from the specified pointer to the end. */
-extern OlyStatus flush_charbuffer( OlyDataSource *ds, const char *from_here_to_end );
 END_C_DECLS
 
 #endif /* SRC_DATA_SOURCE_H */

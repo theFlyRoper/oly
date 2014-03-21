@@ -172,50 +172,16 @@ For struct definitions and extern objects (such as <code>ostdout</code>, the oly
 <p>If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "<code>io.h</code>", but rather "oly_io.h".</p>
 <p>Functions should use lower case exclusively.</p>
 <h3><a name="_names_2"></a>Names</h3>
+<p>For data sources, use the following dialectic pairs <br><i>&#91;Hegel!  Call these names dialectics because it is a good idea.]</i><br></p>
 <ul>
 <li>
 <p>
-initializing/opening? Use <code>init_</code> or <code>open_</code>.  This also applies to files, so file openers are prefixed with <code>open_</code>.
+<em>open</em> and <em>close</em> for initialization / deletion.
 </p>
 </li>
 <li>
 <p>
-retrieving something? Use <code>get_</code>.
-</p>
-</li>
-<li>
-<p>
-sending/putting/setting something? Use <code>put_</code> or <code>set_</code>.
-</p>
-</li>
-<li>
-<p>
-displaying something? Use <code>display_</code> or <code>show_</code>.
-</p>
-</li>
-<li>
-<p>
-logging something? Use <code>log_</code>.
-</p>
-</li>
-<li>
-<p>
-closing? Use <code>free_</code>.
-</p>
-</li>
-<li>
-<p>
-applying/performing something? Use <code>do_</code>.  Read the next item, though.  This is where the rule breaks a bit.
-</p>
-</li>
-<li>
-<p>
-Don&#8217;t use <code>do_</code> where you are not performing an action based on an argument. For example, there is no verb in front of <code>char_to_OChar</code> because it does not apply the char to the OChar or vice versa.
-</p>
-</li>
-<li>
-<p>
-converting should have no prefix and <code>_to_</code> between the items converted.  For limit parameter functions (think of <code>strncpy</code> vs <code>strcpy</code>), use <code>_nto_</code> wherever there is a limit parameter.
+<em>get</em> and <em>put</em> for retrieval / dispatching.
 </p>
 </li>
 </ul>

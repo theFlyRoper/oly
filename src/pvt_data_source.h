@@ -21,13 +21,16 @@
 #define PVT_DATA_SOURCE_H 1
 
 #include "oly/data_source.h"
+#include "oly/node.h"
 #include "data_source/oly_yaml.h"
+
 
 BEGIN_C_DECLS
 
 struct data_source_struct {
     OlyDSDirection       direction;
     DataSourceType       ds_type;
+    DataSourceFormat     ds_format;
     unsigned int         required_settings;
     unsigned int         unused_settings;
     char                *locale;
@@ -38,6 +41,7 @@ struct data_source_struct {
     OChar               *ochar_buffer;
     char                *char_buffer;
     UConverter          *converter;
+    OlyNode           *data;
 };
 
 END_C_DECLS

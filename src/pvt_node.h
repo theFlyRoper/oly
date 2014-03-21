@@ -1,4 +1,4 @@
-/* pvt_collection_ds.h -- private collection data source definitions. License GPL2+ {{{
+/* pvt_node.h -- private node definitions. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #ifndef DATA_SOURCE_PVT_COLLECTION_DS_H
 #define DATA_SOURCE_PVT_COLLECTION_DS_H 1
 
-#include "oly/collection_ds.h"
+#include "oly/node.h"
 
 BEGIN_C_DECLS
 
@@ -30,16 +30,17 @@ union oly_node_value_union {
     long                 int_value;
     double               float_value;
 }
+
 typedef union oly_node_value_union OlyDSValue;
 
 struct oly_data_source_node_struct 
 {
     unsigned short       current_level;
-    OlyDSNodeValueType   vt;
-    OlyDSNodeValueType   parent_vt;
+    OlyNodeValueType   vt;
+    OlyNodeValueType   parent_vt;
     OChar               *key;
     OlyDSValue          *value;
-    OlyDSNode           *parent_node;
+    OlyNode           *parent_node;
     unsigned long long   tuple;
     OlyDataSource       *ds;
     OFILE               *large_object_file;

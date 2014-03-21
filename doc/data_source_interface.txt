@@ -65,7 +65,7 @@ get_oly_ds_next_node:: Return a pointer to the next node in the collection.  The
 .definition
 [source,c]
 ----
-OlyDSNode *get_oly_ds_next_node(OlyDataSource *ds, OlyStatus *status);
+OlyNode *get_oly_ds_next_node(OlyDataSource *ds, OlyStatus *status);
 ----
 
 Optional Functions

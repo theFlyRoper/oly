@@ -1,4 +1,4 @@
-/* collection_ds.c -- collection data source functions. License GPL2+ {{{
+/* node.c -- collection data source functions. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,18 +18,18 @@
  *
  * }}} */
 
-#include "data_source/pvt_collection_ds.h"
+#include "data_source/pvt_node.h"
 
-OlyDSNode *
+OlyNode *
 new_oly_ds_node( OlyDataSource *ds, Oly OlyStatus *status )
 {
-    OlyDSNode       *new_node = NULL;
+    OlyNode       *new_node = NULL;
     UErrorCode      u_status = U_ZERO_ERROR;
     if (*status != OLY_OKAY)
     {
         return NULL;
     }
-    new_node = omalloc(sizeof(OlyDSNode));
+    new_node = omalloc(sizeof(OlyNode));
     if ( new_node == NULL )
     {
         *status = OLY_ERR_NOMEM;
@@ -52,7 +52,7 @@ new_oly_ds_node( OlyDataSource *ds, Oly OlyStatus *status )
     return new_node;
 }
 
-void close_oly_ds_node( OlyDSNode *node )
+void close_oly_ds_node( OlyNode *node )
 {
     OlyStatus status = OLY_OKAY;
 
@@ -71,20 +71,10 @@ void close_oly_ds_node( OlyDSNode *node )
     return;
 }
 
-/*
-    unsigned short       current_level;
-    OlyDSNodeValueType   vt;
-    OlyDSNodeValueType   parent_vt;
-    long                 tuple;
-    OChar               *key;
-    OlyDSValue           value;
-    OlyDSNode           *parent_node;
-    */
-
-OlyStatus  descend_one_level( OlyDSNode **node )
+OlyStatus  descend_one_level( OlyNode **node )
 {
     OlyStatus  status = OLY_OKAY;
-    OlyDSNode *next_node = NULL;
+    OlyNode *next_node = NULL;
     if (((*node)->current_level + 1) > MAX_NODE_DEPTH)
     {
         status = OLY_ERR_NODES_TOO_DEEP;
@@ -112,33 +102,34 @@ OlyStatus  descend_one_level( OlyDSNode **node )
     return status;
 }
 
-OlyStatus  ascend_one_level( OlyDSNode **node )
+OlyStatus  ascend_one_level( OlyNode **node )
 {
     OlyStatus  status = OLY_OKAY;
-    OlyDSNode *next_node = NULL;
+    OlyNode *next_node = NULL;
     if (((*node)->current_level - 1) < 0)
     {
         status = OLY_ERR_NODES_TOO_SHALLOW;
         return status;
     }
     next_node = (*node)->parent_node ;
-
     return status;
 }
 
-OlyStatus  set_node_key(OlyDSNode *node, OChar *key );
-OChar     *get_node_key(OlyDSNode *node, OlyStatus *status);
+/* key is not required.  If key is null, advance node assumes a tuple. 
+ * key is copied into the charset translation buffer.
+ * Before copying, key is checked for length.  Oly requires that the key be at most 
+ * 1024 unicode characters long, per YAML.  It is just simpler.
+ */
 
-OlyStatus  set_node_string_value(OlyDSNode *node, char *value);
-OChar     *get_node_string_value(OlyDSNode *node, OlyStatus *status);
+extern OlyStatus  advance_node(OlyNode *node, char *key );
+extern OlyStatus  set_node_string_value ( OlyNode *node, char *value);
+extern OlyStatus  set_node_float_value  ( OlyNode *node, const double value);
+extern OlyStatus  set_node_int_value    ( OlyNode *node, const long value);
 
-OlyStatus  set_node_float_value(OlyDSNode *node, const double value);
-double     get_node_float_value(OlyDSNode *node, OlyStatus *status);
-OlyStatus  set_node_int_value(OlyDSNode *node, const long value);
-long       get_node_int_value(OlyDSNode *node, OlyStatus *status);
+extern OChar     *get_node_key(OlyNode *node, OlyStatus *status);
+extern OChar     *get_node_string_value(OlyNode *node, OlyStatus *status);
+extern double     get_node_float_value(OlyNode *node, OlyStatus *status);
+extern long       get_node_int_value(OlyNode *node, OlyStatus *status);
 
-OlyStatus  set_node_value_type(OlyDSNode *node, OlyDSNodeValueType *value_type);
-OlyDSNodeValueType get_node_value_type(OlyDSNode *node, OlyStatus *status);
-OlyDSNodeValueType get_node_parent_type(OlyDSNode *node, OlyStatus *status);
 
 

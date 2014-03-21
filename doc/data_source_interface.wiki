@@ -4,8 +4,8 @@
 <h1>Oly Data Source Interface</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version d8d641930c,
-2014-03-19
+version 171cdc64a3,
+2014-03-21
 </p>
 <hr>
 <h2><a name="_functions"></a>Functions</h2>
@@ -98,7 +98,7 @@ Return a pointer to the next node in the collection.  The Node data structure in
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyDSNode</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_next_node</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="color: #008080">OlyNode</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_next_node</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 </dl>
 <h3><a name="_optional_functions"></a>Optional Functions</h3>
