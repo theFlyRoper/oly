@@ -84,14 +84,35 @@ ostr_to_cstr(char *c, size_t buffer_size, const OChar *o)
 
 /* The resource data charset for oly serves as the default charset throughout,
  * since the Oly object is the primary object throughout the program. */
-OChar *get_default_charset( void )
+
+OChar *
+get_default_charset( void )
 {
     return get_charset(oly->data);
 }
 
-OChar *get_default_locale( void )
+OChar *
+get_default_locale( void )
 {
     return get_locale(oly->data);
+}
+
+OChar *
+get_program_name( void )
+{
+    return oly->program_name;
+}
+
+OChar *
+get_resource_dir( void )
+{
+    return oly->resource_dir;
+}
+
+ResourceData *
+get_oly_resource( Oly *oly )
+{
+    return get_resource_data(oly->data);
 }
 
 const char *char_default_charset( void )

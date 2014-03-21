@@ -32,7 +32,7 @@ static void print_version(void);
 /* MAIN */
 int
 main( int argc, char **argv ){
-    char            *locale = NULL, *locdir=(char*)PKGDATADIR,
+    char            *locale = NULL, *locdir=PKGDATADIR,
                     *charset = NULL, c, *find_me = NULL;
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;

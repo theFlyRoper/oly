@@ -252,10 +252,10 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     return retval;
 }
 
-OlyDataSourceFormat
+OlyDataFormat
 get_data_type_format( DataSourceType ds_type )
 {
-    OlyDataSourceFormat format;
+    OlyDataFormat format;
 
     switch (ds_type)
     {

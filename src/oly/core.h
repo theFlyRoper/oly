@@ -33,7 +33,6 @@ BEGIN_C_DECLS
 
 struct passwd;
 
-void init_errors(void);
 /* constructor */
 extern Oly      *init_oly(const char *prog, 
         const char *datadir, const char *charset, const char *locale);
@@ -48,6 +47,9 @@ extern OlyStatus count_file_bytes(FILE *file, size_t *file_size);
 extern double oly_timestamp( void ) ;
 extern OChar *get_default_charset( void );
 extern OChar *get_default_locale( void );
+extern OChar *get_program_name( void );
+extern OChar *get_resource_dir( void );
+extern ResourceData *get_oly_resource( Oly *oly );
 extern const char *char_default_charset( void );
 extern const char *char_default_locale( void );
 extern OlyStatus get_OChar_args(OChar ***result, char **source, 

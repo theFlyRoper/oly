@@ -29,6 +29,8 @@
 #include "oly/core.h"
 #include "pvt_core.h"
 #include "pvt_resources.h"
+#include "oly/core/pvt_init_errmsg.h"
+
 /* since resource must have non-i18n error handling
  * before it is available it only makes sense to have a 
  * special constructor available here.
@@ -163,14 +165,9 @@ Oly *init_oly(const char *prog,
 
     oly_init->state = new_state( oly_init->data );
 
+    init_errmsg(oly_init);
     atexit(close_oly);
     return oly_init;
-}
-
-void init_errors(void)
-{
-    get_errmsg( OLY_OKAY );
-    get_ltdl_errmsg( 0 );
 }
 
 void *

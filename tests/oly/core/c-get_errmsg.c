@@ -34,8 +34,10 @@ main( int argc, char **argv ){
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
-    char            *locale = (char *)"root",  *charset = NULL;
-    const char     *results_char[] = {
+    char            *locale = "root",  *charset = NULL;
+    const char      *results_char[] = {
+                        "OLY_WARN_SHOW_VERSION",
+                        "OLY_WARN_SHOW_HELP",
                         "OLY_WARN_DSOPT_NOT_USED",
                         "OLY_WARN_REINIT",
                         "OLY_WARN_LIB",

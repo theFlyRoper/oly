@@ -109,7 +109,7 @@ AM_CFLAGS 			= -fstack-protector-all @ICU_CFLAGS@ @GDB_FLAG@ -Wall
 
 bin_PROGRAMS		= oly 
 
-noinst_PROGRAMS		= resex
+noinst_PROGRAMS		= resex yaml_to_sqlite 
 
 oly_CFLAGS			= $(DEV_CFLAGS)
 
@@ -125,6 +125,14 @@ resex_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
 					  @ICU_LIBS@ @YAML_LIBS@
 resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 					@DEV_DEF@ $(AM_CPPFLAGS)
+
+yaml_to_sqlite_CFLAGS		= $(DEV_CFLAGS)
+yaml_to_sqlite_SOURCES		= tests/prototypes/yaml_to_sqlite.c 
+yaml_to_sqlite_LDFLAGS		= @SQLITE3_LDFLAGS@
+yaml_to_sqlite_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
+							  @ICU_LIBS@ @YAML_LIBS@ 
+yaml_to_sqlite_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
+							  @DEV_DEF@ $(AM_CPPFLAGS)
 
 ## 						src/print_demo/print_text_range.c 
 ## 						src/print_demo/print_each_forward.c 
@@ -200,7 +208,6 @@ libtestcore_a_CPPFLAGS		= $(CHECK_DEFS)
 ## tests/oly/core/c-oly_config \
 
 check_PROGRAMS 	= 	tests/runtests \
-					tests/prototypes/yaml_to_sqlite \
 					tests/oly/core/c-get_errmsg \
 					tests/oly/core/c-basic_functions \
 					tests/oly/data_source/c-oly_yaml \

@@ -26,6 +26,9 @@
 
 BEGIN_C_DECLS
 
+struct data_source_struct;
+typedef struct data_source_struct OlyDataSource;
+
 /* data source buffer interface */
 /* gets the amount of space remaining in the input buffer.  This is so we can dump large input to files.  If we have a scalar holding war and peace, I would rather it get dumped to a file, which the OlyNode can pass around instead of five hundred buffers' worth of string :) 
 extern size_t get_buffer_size(OlyDataSource *ds, OlyStatus *status);
@@ -56,9 +59,6 @@ typedef struct oly_yaml_data_struct OlyYAMLData;
 typedef union oly_data_interface_union {
     OlyYAMLData *yaml_data;
 } OlyDataStream;
-
-struct data_source_struct;
-typedef struct data_source_struct OlyDataSource;
 
 typedef enum oly_ds_direction_enum {
   OLY_DS_IN = 0, 
@@ -104,7 +104,7 @@ extern OlyStatus close_data_source( OlyDataSource *ds );
 extern OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status);
 extern OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface);
 extern OlyStatus set_data_filename( OlyDataSource *ds, const char *filename );
-extern OlyDataSourceFormat get_data_type_format( DataSourceType ds_type );
+extern OlyDataFormat get_data_type_format( DataSourceType ds_type );
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */
 extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );

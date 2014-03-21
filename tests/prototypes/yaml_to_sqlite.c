@@ -20,23 +20,100 @@
  * }}} */
 
 #include "oly/common.h"
+#include "stdbool.h"
 #include "oly/core.h"
 #include "oly/globals.h"
 
+static void print_help(void);
+static void usage(void);
+static void print_version(void);
+static char *locdir = PKGDATADIR, *locale = "root", *charset = NULL, 
+    *yaml_file = "/tests/data/every_token.yaml", 
+    *sqlite_file = "/tests/data/test_sqlite.sqlite3";
+
+OlyStatus get_options(int argc, char **argv);
 /* MAIN */
 int
 main( int argc, char **argv ){
-    int              i = 0;
-    char            *locale     = (char *)"root",  *charset = NULL;
-    UErrorCode       u_status   = U_ZERO_ERROR;
-    
-    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    OlyStatus        status = OLY_OKAY;
+    UErrorCode       u_status  = U_ZERO_ERROR;
+
+    oly = init_oly(argv[0], locdir, charset, locale);
     init_errors();
-    
-    if (U_FAILURE(u_status)) {
-        exit(EXIT_FAILURE);
-    } else {
-        exit(EXIT_SUCCESS);
+    status = get_options(argc, argv);
+
+
+    switch (status)
+    {
+        case OLY_WARN_SHOW_VERSION:
+            break;
+        case OLY_WARN_SHOW_HELP:
+            break;
+        case OLY_OKAY:
+            break;
+        default:
+            u_fprintf(u_stderr, "ERROR: ");
+            u_fprintf_u(u_stderr, get_errmsg(status));
+            u_fprintf(u_stderr, "\n");
+            exit(EXIT_FAILURE);
     }
 }
+
+OlyStatus
+get_options(int argc, char **argv)
+{
+    OlyStatus status = OLY_OKAY;
+    char c;
+    /* y = YAML file, q = sqlite file, h = help, v = version */
+    while ((c = getopt(argc, argv, "y:q:hv")) != -1) 
+    {
+        switch (c) 
+        {
+        case ('h'):
+            status = OLY_WARN_SHOW_HELP;
+            break;
+        case ('v'):
+            status = OLY_WARN_SHOW_VERSION;
+            break;
+        case ('y'):
+            yaml_file = optarg;
+            break;
+        case ('q'):
+            sqlite_file = optarg;
+            break;
+        default:
+            status = OLY_ERR_BADARG;
+            break;
+        }
+    }
+    return status;
+}
+
+static void 
+print_help(void)
+{
+    usage();
+    u_fprintf(u_stdout,"A prototype to test buffering approaches between a collection data source (YAML) and a table data source (sqlite 3).\n");
+    u_fprintf(u_stdout,"Options:\n");
+    u_fprintf(u_stdout,"\t\t-h\t\tShow this help message.\n");
+    u_fprintf(u_stdout,"\t\t-v\t\tShow the program version.\n");
+    u_fprintf(u_stdout,"\t\t-y\t\tyaml file to use.\n");
+    u_fprintf(u_stdout,"\t\t-q\t\tsqlite file to use.\n");
+    exit(EXIT_SUCCESS);
+}
+
+static void usage(void){
+    u_fprintf(u_stdout, "%S: [OPTIONS]\n", 
+           get_program_name());
+}
+
+static void print_version(void){
+    u_fprintf(u_stdout, "%S: Version 1.0, 3-21-2014 - copyright (C) Oly Project\n", 
+           get_program_name());
+    u_fprintf(u_stdout, "\tLicensed according to the terms of the GNU general public license, version 2 or (at your option) any later version.\n");
+    u_fprintf(u_stdout, "\tThis program is provided in the hopes that it will be useful, but\n");
+    u_fprintf(u_stdout, "\tWITHOUT ANY WARRANTY, to the extent permitted by law.\n\n");
+    u_fprintf(u_stdout, "\tVisit %s for precise details on authorship.\n", PACKAGE_URL);
+}
+
 

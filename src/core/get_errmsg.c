@@ -19,7 +19,8 @@
 
 #include "oly/common.h"
 #include "oly/core.h"
-#include "pvt_core.h"
+#include "oly/core/pvt_init_errmsg.h"
+
 /* the error handler stays separate to minimize the risk of errors
  * within it.  Also, no other part of Oly needs access to the message
  * data.
@@ -39,10 +40,6 @@ OChar *get_errmsg( OlyStatus status )
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
     OChar* result = NULL;
-    if (message_data == NULL) 
-    {
-        message_data = init_messages();
-    }
 
     if ((status < OLY_STATUS_MIN) 
             || (status > OLY_STATUS_MAX))
@@ -77,12 +74,26 @@ OChar *get_errmsg( OlyStatus status )
     return result; 
 }
 
-static const ResourceData * const init_messages(void)
+OlyStatus init_errmsg(Oly *oly)
+{
+    OlyStatus status = OLY_OKAY;
+    if (message_data == NULL) 
+    {
+        message_data = init_messages(oly);
+    }
+    else
+    {
+        status = OLY_WARN_REINIT;
+    }
+    return status;
+}
+
+static const ResourceData * const init_messages(Oly *oly)
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
     ResourceData *retval = (ResourceData *)ures_getByKey(
-            (UResourceBundle *)get_resource_data(oly->data), 
+            (UResourceBundle *)get_oly_resource(oly), 
             "OlyErrors", NULL, &u_status);
     if (U_FAILURE(u_status)) 
     {

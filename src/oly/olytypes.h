@@ -39,9 +39,11 @@ typedef enum OlyStatus_enum {
     /* OLY_STATUS_MIN helps map these internal codes into the 
      * external i18n resource files.
      */
+    OLY_WARN_SHOW_VERSION=-6,
+    OLY_STATUS_MIN=-6,
+    OLY_STATUS_OFFSET=6,
+    OLY_WARN_SHOW_HELP=-5,
     OLY_WARN_DSOPT_NOT_USED=-4,
-    OLY_STATUS_MIN=-4,
-    OLY_STATUS_OFFSET=4,
     OLY_WARN_REINIT=-3,
     OLY_WARN_LIB=-2,
     OLY_WARN_EXIT=-1,

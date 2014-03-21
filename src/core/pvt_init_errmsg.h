@@ -1,4 +1,4 @@
-/* pvt_data_source.h -- private data source definitions.  License GPL2+ {{{
+/* pvt_init_errmsg.h -- private data source definitions.  License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifndef PVT_DATA_SOURCE_H
-#define PVT_DATA_SOURCE_H 1
+#ifndef PVT_INIT_ERRMSG_H
+#define PVT_INIT_ERRMSG_H 1
 
 #include "oly/data_source.h"
 #include "oly/node.h"
@@ -27,24 +27,11 @@
 
 BEGIN_C_DECLS
 
-struct data_source_struct {
-    OlyDSDirection       direction;
-    DataSourceType       ds_type;
-    OlyDataFormat     ds_format;
-    unsigned int         required_settings;
-    unsigned int         unused_settings;
-    char                *locale;
-    char                *charset;
-    char                *filename;
-    char                *options[(DSOPT_MAX+1)];
-    size_t               buffer_size;
-    OChar               *ochar_buffer;
-    char                *char_buffer;
-    UConverter          *converter;
-    OlyNode           *data;
-};
+/* function to call from the init subsystem to initialize the error handler. */
+
+extern OlyStatus init_errmsg(Oly *oly);
 
 END_C_DECLS
 
-#endif /* PVT_DATA_SOURCE_H */
+#endif /* PVT_INIT_ERRMSG_H */
 
