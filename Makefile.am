@@ -120,7 +120,7 @@ oly_SOURCES			= src/main.c
 oly_LDADD 			= liboly_dev.a libcore.a libhash.a \
 					  @ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ 
 resex_CFLAGS		= $(DEV_CFLAGS)
-resex_SOURCES		= tests/tools/resex.c 
+resex_SOURCES		= tests/prototypes/resex.c 
 resex_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
 					  @ICU_LIBS@ @YAML_LIBS@
 resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
