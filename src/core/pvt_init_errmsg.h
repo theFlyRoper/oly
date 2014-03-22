@@ -20,9 +20,7 @@
 #ifndef PVT_INIT_ERRMSG_H
 #define PVT_INIT_ERRMSG_H 1
 
-#include "oly/data_source.h"
-#include "oly/node.h"
-#include "data_source/oly_yaml.h"
+#include "oly/core.h"
 
 
 BEGIN_C_DECLS

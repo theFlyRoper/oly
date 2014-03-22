@@ -19,13 +19,13 @@
 
 #include "oly/common.h"
 #include "oly/core.h"
-#include "oly/core/pvt_init_errmsg.h"
+#include "core/pvt_init_errmsg.h"
 
 /* the error handler stays separate to minimize the risk of errors
  * within it.  Also, no other part of Oly needs access to the message
  * data.
  */
-static const ResourceData * const init_messages(void);
+static const ResourceData * const init_messages(Oly *oly);
 
 static const ResourceData * message_data;
 /* do not call before initializing main oly structure. 

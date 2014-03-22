@@ -43,7 +43,6 @@ main( int argc, char **argv )
 
     oly = init_oly(argv[0], PKGDATADIR, charset, locale);
     printf("hi there!\n");
-    init_errors();
 
 #ifdef OLYDEV
     init_res_disp_flag(&flag);

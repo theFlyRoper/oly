@@ -29,7 +29,7 @@
 #include "oly/core.h"
 #include "pvt_core.h"
 #include "pvt_resources.h"
-#include "oly/core/pvt_init_errmsg.h"
+#include "core/pvt_init_errmsg.h"
 
 /* since resource must have non-i18n error handling
  * before it is available it only makes sense to have a 
@@ -121,7 +121,7 @@ Oly *init_oly(const char *prog,
     }
 #endif /* HAVE_UNICODE_USTDIO_H */
     /* program name get. */
-    len = strlen(basename(inner_prog));
+    len = (strlen(basename(inner_prog))+1);
     if (len == 0)
     {
         printf("Init: Program name not found. inner_prog = %s basename = %s\n",
@@ -134,7 +134,7 @@ Oly *init_oly(const char *prog,
 #endif /* HAVE_UNICODE_USTDIO_H */
     oly_init->program_name = (const OChar *)transfer;
     /*  attach data directory */
-    len = strlen(inner_datadir);
+    len = (strlen(inner_datadir)+1);
     if (len == 0)
     {
         printf("Init: Resource dir not found. inner_datadir = %s\n",

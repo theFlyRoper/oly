@@ -36,25 +36,25 @@ OlyStatus get_options(int argc, char **argv);
 int
 main( int argc, char **argv ){
     OlyStatus        status = OLY_OKAY;
-    UErrorCode       u_status  = U_ZERO_ERROR;
 
     oly = init_oly(argv[0], locdir, charset, locale);
-    init_errors();
     status = get_options(argc, argv);
-
 
     switch (status)
     {
         case OLY_WARN_SHOW_VERSION:
+            print_version();
             break;
         case OLY_WARN_SHOW_HELP:
+            print_help();
             break;
         case OLY_OKAY:
             break;
         default:
+            usage();
             u_fprintf(u_stderr, "ERROR: ");
             u_fprintf_u(u_stderr, get_errmsg(status));
-            u_fprintf(u_stderr, "\n");
+            u_fprintf(u_stderr, " Exiting...\n");
             exit(EXIT_FAILURE);
     }
 }
@@ -93,7 +93,7 @@ static void
 print_help(void)
 {
     usage();
-    u_fprintf(u_stdout,"A prototype to test buffering approaches between a collection data source (YAML) and a table data source (sqlite 3).\n");
+    u_fprintf(u_stdout,"A prototype to test buffering approaches between a \ncollection data source (YAML) and a table data source (sqlite 3).\n");
     u_fprintf(u_stdout,"Options:\n");
     u_fprintf(u_stdout,"\t\t-h\t\tShow this help message.\n");
     u_fprintf(u_stdout,"\t\t-v\t\tShow the program version.\n");
@@ -102,15 +102,18 @@ print_help(void)
     exit(EXIT_SUCCESS);
 }
 
-static void usage(void){
+static void 
+usage(void){
     u_fprintf(u_stdout, "%S: [OPTIONS]\n", 
            get_program_name());
 }
 
-static void print_version(void){
+static void 
+print_version(void){
     u_fprintf(u_stdout, "%S: Version 1.0, 3-21-2014 - copyright (C) Oly Project\n", 
            get_program_name());
-    u_fprintf(u_stdout, "\tLicensed according to the terms of the GNU general public license, version 2 or (at your option) any later version.\n");
+    u_fprintf(u_stdout, "\tLicensed according to the terms of the GNU general public\n");
+    u_fprintf(u_stdout, "\tlicense, version 2 or (at your option) any later version.\n");
     u_fprintf(u_stdout, "\tThis program is provided in the hopes that it will be useful, but\n");
     u_fprintf(u_stdout, "\tWITHOUT ANY WARRANTY, to the extent permitted by law.\n\n");
     u_fprintf(u_stdout, "\tVisit %s for precise details on authorship.\n", PACKAGE_URL);

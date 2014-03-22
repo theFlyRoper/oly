@@ -54,6 +54,8 @@ root:table {
         {"LT_ERROR_CONFLICTING_FLAGS"}
     }
     OlyErrors:array {
+        {"OLY_WARN_SHOW_VERSION"}
+        {"OLY_WARN_SHOW_HELP"}
         {"OLY_WARN_DSOPT_NOT_USED"}
         {"OLY_WARN_REINIT"}
         {"OLY_WARN_LIB"}

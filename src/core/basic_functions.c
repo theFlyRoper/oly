@@ -28,7 +28,6 @@ count_file_bytes(FILE *file, size_t *file_size)
 {
     fpos_t pos;
     OlyStatus status = OLY_OKAY;
-
     fseek(file, 0, SEEK_END);
     if (fgetpos(file, &pos) != 0) 
     {
@@ -72,6 +71,7 @@ ostr_to_cstr(char *c, size_t buffer_size, const OChar *o)
     char    *superzero = (c+buffer_size);
     assert((c != NULL) && (buffer_size > 1));
     *superzero = '\0';
+
     if (o == NULL)
     {
         *c = '\0';
@@ -97,16 +97,16 @@ get_default_locale( void )
     return get_locale(oly->data);
 }
 
-OChar *
+const OChar *
 get_program_name( void )
 {
-    return oly->program_name;
+    return (const OChar *)oly->program_name;
 }
 
-OChar *
+const OChar *
 get_resource_dir( void )
 {
-    return oly->resource_dir;
+    return (const OChar *)oly->resource_dir;
 }
 
 ResourceData *
