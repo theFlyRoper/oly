@@ -24,24 +24,26 @@
 #include "oly/node.h"
 #include "data_source/oly_yaml.h"
 
+#define DEFAULT_BUFFER_SIZE BUFSIZ
 
 BEGIN_C_DECLS
 
 struct data_source_struct {
     OlyDSDirection       direction;
     DataSourceType       ds_type;
-    OlyDataFormat     ds_format;
+    OlyDataFormat        ds_format;
     unsigned int         required_settings;
     unsigned int         unused_settings;
     char                *locale;
     char                *charset;
     char                *filename;
+    size_t               max_buffer_size;
     char                *options[(DSOPT_MAX+1)];
     size_t               buffer_size;
     OChar               *ochar_buffer;
     char                *char_buffer;
     UConverter          *converter;
-    OlyNode           *data;
+    OlyNode             *data;
 };
 
 END_C_DECLS

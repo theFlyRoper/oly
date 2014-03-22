@@ -61,7 +61,7 @@ SHA3_SRC 		= lib/sha_three/KeccakF-1600-opt32.c
 SHA3_CFLAGS 	= -fomit-frame-pointer -O3 -g0 -m32 $(CFLAGS)
 endif !SHA3_64BIT
 
-DEV_CFLAGS		= -Wall -Werror 
+DEV_CFLAGS		= -Wall -Werror -O0
 
 if DEBUG_MODE
 I18N_DIR_DEF 		= -DPKGDATADIR=\"$(I18N_TESTBUILDDIR)\"
@@ -76,7 +76,8 @@ endif !DEBUG_MODE
 ## logic for i18n is pretty complex so it is in an included .mk file.
 include make_i18n.mk
 
-AM_CPPFLAGS	+= $(SYSCONFDIR_DEF) $(I18N_DIR_DEF) -I$(top_srcdir) -I$(top_srcdir)/src 
+AM_CPPFLAGS	+= $(SYSCONFDIR_DEF) $(I18N_DIR_DEF) -I$(top_srcdir) -I$(top_srcdir)/src \
+			   -fstack-protector-all 
 
 EXTRA_DIST	+= $(MAIN_I18N_INDEX_TXT) $(TEST_I18N_INDEX_TXT) \
 			$(FULL_MAIN_I18N_TXT) $(FULL_TEST_I18N_TXT)
@@ -127,7 +128,8 @@ resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 					@DEV_DEF@ $(AM_CPPFLAGS)
 
 yaml_to_sqlite_CFLAGS		= $(DEV_CFLAGS)
-yaml_to_sqlite_SOURCES		= tests/prototypes/yaml_to_sqlite.c 
+yaml_to_sqlite_SOURCES		= tests/prototypes/yaml_to_sqlite.c \
+							  src/data_source/data_source_main.c
 yaml_to_sqlite_LDFLAGS		= @SQLITE3_LDFLAGS@
 yaml_to_sqlite_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
 							  @ICU_LIBS@ @YAML_LIBS@ 
@@ -298,7 +300,8 @@ all-local:  i18n check-i18n
 ## maint and cleaning
 CLEANFILES 					+= $(MAIN_I18N_CLEAN) $(TEST_I18N_CLEAN) \
 							  $(MAIN_I18N_CLEAN) $(TEST_I18N_CLEAN) \
-							$(i18n_DATA) tests/data/i18n/@OLY_RESOURCE@.dat
+							$(i18n_DATA) tests/data/i18n/@OLY_RESOURCE@.dat \
+							tests/data/test_sqlite.sqlite3
 
 DISTCLEANFILES 			= tests/atconfig 
 

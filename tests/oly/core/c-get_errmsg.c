@@ -36,6 +36,7 @@ main( int argc, char **argv ){
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
     char            *locale = "root",  *charset = NULL;
     const char      *results_char[] = {
+                        "OLY_WARN_DS_BUFFER_DEFAULT",
                         "OLY_WARN_SHOW_VERSION",
                         "OLY_WARN_SHOW_HELP",
                         "OLY_WARN_DSOPT_NOT_USED",
@@ -65,6 +66,8 @@ main( int argc, char **argv ){
                         "OLY_ERR_LTDL_UNKNOWN",
                         "OLY_ERR_LTDL_ERR",
                         "OLY_ERR_YAML_PARSE",
+                        "OLY_ERR_SQLITE_INIT",
+                        "OLY_ERR_SQLITE",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

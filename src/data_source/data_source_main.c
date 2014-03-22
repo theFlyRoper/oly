@@ -110,6 +110,40 @@ set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
     return status;
 }
 
+size_t 
+get_max_buffer_size(OlyDataSource *ds, OlyStatus *status)
+{
+    size_t mbuff = 0;
+
+    if (ds->max_buffer_size == 0)
+    {
+        *status = OLY_WARN_DS_BUFFER_DEFAULT;
+        mbuff = DEFAULT_BUFFER_SIZE;
+    }
+    else
+    {
+        mbuff = ds->max_buffer_size;
+    }
+    return mbuff;
+}
+
+OlyStatus
+set_max_buffer_size(OlyDataSource *ds, size_t mbuff)
+{
+
+    OlyStatus status = OLY_OKAY;
+    if (mbuff == 0)
+    {
+        status = OLY_WARN_DS_BUFFER_DEFAULT;
+        ds->max_buffer_size = DEFAULT_BUFFER_SIZE;
+    }
+    else
+    {
+        ds->max_buffer_size = mbuff;
+    }
+    return status;
+}
+
 /* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
 
 OlyStatus 
@@ -199,6 +233,16 @@ set_data_charset( OlyDataSource *ds, const char *charset )
 {
     ds->charset = (char *)charset;
     return OLY_OKAY;
+}
+
+char *get_data_locale( OlyDataSource *ds )
+{
+    return ds->locale;
+}
+
+char *get_data_charset( OlyDataSource *ds )
+{
+    return ds->charset;
 }
 
 OlyStatus 

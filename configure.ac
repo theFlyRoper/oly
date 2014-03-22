@@ -135,7 +135,7 @@ AC_HEADER_SYS_WAIT()
 
 dnl checks for ICU headers at the end; check as needed.
 AC_CHECK_HEADERS([locale.h paths.h sys/stat.h time.h \
-                  sqlite3.h \
+                  sqlite3.h yaml.h \
                   unicode/ustdio.h unicode/umsg.h unicode/ures.h \
                   unicode/ubrk.h unicode/ucnv.h \
                   unicode/ustring.h unicode/usprep.h])

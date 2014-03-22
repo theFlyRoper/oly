@@ -39,9 +39,10 @@ typedef enum OlyStatus_enum {
     /* OLY_STATUS_MIN helps map these internal codes into the 
      * external i18n resource files.
      */
+    OLY_WARN_DS_BUFFER_DEFAULT=-7,
+    OLY_STATUS_MIN=-7,
+    OLY_STATUS_OFFSET=7,
     OLY_WARN_SHOW_VERSION=-6,
-    OLY_STATUS_MIN=-6,
-    OLY_STATUS_OFFSET=6,
     OLY_WARN_SHOW_HELP=-5,
     OLY_WARN_DSOPT_NOT_USED=-4,
     OLY_WARN_REINIT=-3,
@@ -70,7 +71,9 @@ typedef enum OlyStatus_enum {
     OLY_ERR_LTDL_UNKNOWN=20,
     OLY_ERR_LTDL_ERR=21,
     OLY_ERR_YAML_PARSE=22,
-    OLY_STATUS_MAX=22
+    OLY_ERR_SQLITE_INIT=23,
+    OLY_ERR_SQLITE=24,
+    OLY_STATUS_MAX=24
 } OlyStatus;
 
 #define MAX_NODE_DEPTH 16

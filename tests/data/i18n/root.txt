@@ -54,6 +54,7 @@ root:table {
         {"LT_ERROR_CONFLICTING_FLAGS"}
     }
     OlyErrors:array {
+        {"OLY_WARN_DS_BUFFER_DEFAULT"}
         {"OLY_WARN_SHOW_VERSION"}
         {"OLY_WARN_SHOW_HELP"}
         {"OLY_WARN_DSOPT_NOT_USED"}
@@ -83,6 +84,8 @@ root:table {
         {"OLY_ERR_LTDL_UNKNOWN"}
         {"OLY_ERR_LTDL_ERR"}
         {"OLY_ERR_YAML_PARSE"}
+        {"OLY_ERR_SQLITE_INIT"}
+        {"OLY_ERR_SQLITE"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

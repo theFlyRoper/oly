@@ -42,6 +42,9 @@ extern OlyStatus put_in_ocharbuffer(OlyDataSource *ds, const OChar *putstr);
 extern OlyStatus flush_ocharbuffer( OlyDataSource *ds, 
         const OChar *flush_start, const OChar *flush_end );
 
+extern size_t get_max_buffer_size(OlyDataSource *ds, OlyStatus *status);
+extern OlyStatus set_max_buffer_size(OlyDataSource *ds, size_t mbuff);
+
 /* the data source interface needs to provide access to the ICU converter functions. 
  * UConververtFromUCallback is the function ICU calls after failing to convert from 
  * unicode to a given codepage, and UConverterToUCallback is the other direction. */
@@ -121,8 +124,8 @@ OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
 OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
 
 /* retrieve locale or charset from the data source. */
-OlyStatus get_data_locale( OlyDataSource *ds, const char *locale );
-OlyStatus get_data_charset( OlyDataSource *ds, const char *charset );
+char *get_data_charset( OlyDataSource *ds );
+char *get_data_locale( OlyDataSource *ds );
 
 END_C_DECLS
 
