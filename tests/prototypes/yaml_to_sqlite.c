@@ -21,8 +21,10 @@
 
 #include "oly/common.h"
 #include "oly/data_source.h"
+#include "oly/node.h"
 #include "oly/core.h"
 #include "oly/globals.h"
+
 
 #ifdef HAVE_SQLITE3
 #include <sqlite3.h>
@@ -67,21 +69,7 @@ typedef struct yaml_oly_struct {
     yaml_token_t  *token;
 } YAMLOly;
 
-struct oly_boundary_struct;
-typedef struct oly_boundary_struct OlyBoundary;
-
-struct oly_boundary_struct
-{
-    OChar           *o_now;
-    OChar           *o_end;
-    OChar           *o_start;
-    OChar           *o_flush_break;
-    char            *c_now;
-    char            *c_end;
-    char            *c_start;
-    char            *c_flush_break;
-    UConverter      *converter;
-};
+extern OlyStatus delete_file(char *file);
 
 extern YAMLOly *open_yaml_oly( const char *file, const char *charset, 
         const char *locale, OlyStatus *status );
@@ -91,16 +79,27 @@ extern SQLiteOly *open_sqlite_oly( const char *file, const char *charset,
         const char *locale, OlyStatus *status );
 extern void close_sqlite_oly( SQLiteOly *close_me );
 extern OlyStatus set_sqlite_sql( SQLiteOly *db, char *sql);
-extern OlyBoundary *open_oly_boundary(OlyDataSource *ds, OlyStatus *status);
+extern OlyStatus exec_sqlite_sql( SQLiteOly *db );
+extern OlyStatus finalize_sqlite_sql( SQLiteOly *db );
 
 /* Goal here is to figure out the order things
  * must follow so that ICU and other data sources can
  * work together effectively. */
+
+#include "tests/prototypes/incl-yaml_to_sqlite.c"
 int
 main( int argc, char **argv ) 
 {
     OlyStatus        status = OLY_OKAY;
     char             name_buffer[BUFSIZ];
+    char            *create_table_node = "create table node (id integer primary key,"
+                        "\nkey text, value text);\n"
+                        "create table node_relation (\n"
+                        "id integer primary key,\n"
+                        "node_id integer not null, parent_node_id integer not null,\n"
+                        "foreign key (node_id) references node(id),\n"
+                        "foreign key (parent_node_id) references node(id)"
+                        "unique (node_id, parent_node_id));";
     OlyBoundary     *oly_bound;
     YAMLOly         *yaml_data;
     SQLiteOly       *sqlite_data;
@@ -136,13 +135,12 @@ main( int argc, char **argv )
     {
         pick_up_phone_booth_and_die(status);
     }
-        
 
     strcpy(name_buffer, DATASOURCEDIR); 
     strcat(name_buffer, yaml_file);
-    yaml_data       = open_yaml_oly((const char *)name_buffer, (const char *)charset, 
+    yaml_data = open_yaml_oly((const char *)name_buffer, (const char *)charset, 
                         (const char *)locale, &status );
-
+    
     if (status != OLY_OKAY)
     {
         pick_up_phone_booth_and_die(status);
@@ -150,14 +148,22 @@ main( int argc, char **argv )
     
     strcpy(name_buffer, DATASOURCEDIR); 
     strcat(name_buffer, sqlite_file);
-    sqlite_data     = open_sqlite_oly((const char *)name_buffer, (const char *)charset, 
+    delete_file(name_buffer);
+    sqlite_data = open_sqlite_oly((const char *)name_buffer, (const char *)charset, 
                         (const char *)locale, &status );
     
     if (status != OLY_OKAY)
     {
         pick_up_phone_booth_and_die(status);
     }
-/* (sqlite_data == NULL) || (yaml_data == NULL) || */
+   
+    /* here we create the node and node_relation table */
+    set_sqlite_sql( sqlite_data, create_table_node );
+    exec_sqlite_sql( sqlite_data );
+    finalize_sqlite_sql( sqlite_data );
+    printf("built the node and node_relation tables.\n");
+    
+
     close_yaml_oly( yaml_data );
     close_sqlite_oly( sqlite_data );
 
@@ -170,103 +176,6 @@ main( int argc, char **argv )
         pick_up_phone_booth_and_die(status);
     }
 }
-
-OlyBoundary *
-open_oly_boundary(OlyDataSource *ds, OlyStatus *status)
-{
-    UErrorCode   u_status = U_ZERO_ERROR;
-    size_t       o_size = 0, c_size = 0, max_characters = 0, min_char_size = 0,
-                 buffer_max_size = get_max_buffer_size(ds, status);
-    char        *break_ptr;
-    OlyBoundary *oly_bound = omalloc(sizeof(OlyBoundary));
-    /* oly boundary uses two buffers:
-     * 1. Buffer full of input characters
-     * 2. Buffer full of OChars 
-     *
-     * to use it, drop chars in the input buffer and once it is full it will flush
-     * them.
-     */
-
-    /* Allocate the space for both buffers,
-     * then chop it into two spaces according to character size ratios. 
-     * Add sizeof(OChar) to accomodate an OChar sized null space to 
-     * delineate the two areas. 
-     * Consertative and wastes a bit of the end of the buffer.
-     * Better that then overflows.
-     */
-    oly_bound->converter   = ucnv_open( get_data_charset(ds), &u_status );
-    min_char_size = ucnv_getMinCharSize(oly_bound->converter) ;
-    max_characters      = (buffer_max_size / ( min_char_size + sizeof(OChar)));
-    o_size          = (( max_characters * sizeof(OChar) ) - sizeof(OChar));
-    c_size          = (( max_characters * min_char_size ) - min_char_size);
-    DLOG("\n\to_size: %llu, c_size: %llu, max_buffer_size: %llu\n", 
-            (unsigned long long)o_size, (unsigned long long)c_size, 
-            (unsigned long long)buffer_max_size);
-
-    /* normally the ICU converter API only uses 6 pointers, 
-     * 3 for the outside charset (c_) and 3 for the ICU internal
-     * UChar structures (o_).  The flush_break pointers are 
-     * there to hold the spot for higher nodes.
-     */
-
-    oly_bound->c_now            = (char *)omalloc( o_size + c_size 
-            + min_char_size + sizeof(OChar) );
-    oly_bound->c_start          = oly_bound->c_now;
-    /* because the char buffers are actually pointing to different 
-     * character sets, although we only expect to find max_characters characters in it,
-     * as they are char pointers we must move it the correct number of chars. */
-    oly_bound->c_end            = ((oly_bound->c_now + ((max_characters*min_char_size)- min_char_size*2)));
-    oly_bound->c_flush_break    = oly_bound->c_now;
-
-    /* OChar buffer */
-    oly_bound->o_now            = (OChar *)((oly_bound->c_end) + min_char_size + 1);
-    oly_bound->o_start          = oly_bound->o_now;
-    /* unlike the char buffer, the OChar buffer points to its actual character set.
-     * Thus, it must only move max_characters forward, as opposed to 
-     * o_size. */
-    oly_bound->o_end            = ((oly_bound->o_now) + (max_characters-2));
-    oly_bound->o_flush_break    = oly_bound->o_now;
-    
-
-    
-    /* make sure the area after each buffer is null. */
-    for ( break_ptr = ((oly_bound->c_end) + 1); 
-            ( break_ptr < (char *)oly_bound->o_now ); break_ptr++ )
-    {
-        *break_ptr = '\0' ;
-    }
-    
-    for ( break_ptr = (char *)(oly_bound->o_end); 
-            ( break_ptr < (oly_bound->c_start + buffer_max_size )); break_ptr++ )
-    {
-        *break_ptr = '\0' ;
-    }
-    DLOG("\nc_start = 1.\n With that context, here are relative positions:"
-            "\nc_end: %llu, o_start: %llu, o_end %llu\n", 
-        (unsigned long long)(oly_bound->c_end - oly_bound->c_start),
-        (unsigned long long)((char *)oly_bound->o_start - oly_bound->c_start),
-        (unsigned long long)((char *)oly_bound->o_end - oly_bound->c_start)
-        );
-    o_size = (size_t)(oly_bound->o_end - oly_bound->o_start);
-    c_size = (size_t)((oly_bound->c_end - oly_bound->c_start)/min_char_size);
-    DLOG("\nnumber of ochars: %zu,  number of chars: %zu\n", 
-        o_size, c_size);
-    
-    assert( o_size == c_size );
-
-    o_size = (size_t)((char *)oly_bound->o_end - (char *)oly_bound->o_start);
-    c_size = (size_t)(oly_bound->c_end - oly_bound->c_start);
-    assert( ( o_size + c_size ) < buffer_max_size );
-    assert( ( o_size % sizeof(OChar) ) == 0 );
-    assert( ( c_size % min_char_size ) == 0 );
-    break_ptr = oly_bound->c_start;
-    assert(break_ptr[1023] == '\0' );
-    
-    assert( &break_ptr[1023] == (break_ptr + 1023));
-
-    return oly_bound;
-};
-
 
 YAMLOly *
 open_yaml_oly( const char *file, const char *charset, const char *locale, 
@@ -291,6 +200,8 @@ open_yaml_oly( const char *file, const char *charset, const char *locale,
         *status = OLY_ERR_LIBYAML_INIT;
         return NULL;
     };
+    yaml_parser_set_encoding( yaml_data->parser, YAML_UTF16LE_ENCODING );
+    yaml_input_ofile( yaml_data->parser, yaml_file );
     return yaml_data;
 }
 
@@ -303,7 +214,78 @@ close_yaml_oly( YAMLOly *close_me )
     free((void *)close_me);
 }
 
-SQLiteOly *open_sqlite_oly( const char *file, const char *charset, const char *locale, 
+OlyStatus
+yaml_to_nodes(YAMLOly *ds, )
+{
+    OlyStatus status = OLY_OKAY;
+    do {
+        if (!yaml_parser_scan(ds->parser, ds->token)) 
+        {
+            printf("Parser error %d\n", ds->parser.error);
+            exit(EXIT_FAILURE);
+        }
+        switch(ds->token.type)
+        { 
+            case YAML_BLOCK_SEQUENCE_START_TOKEN:
+            case YAML_FLOW_SEQUENCE_START_TOKEN:
+                break;
+            case YAML_BLOCK_MAPPING_START_TOKEN:
+            case YAML_FLOW_MAPPING_START_TOKEN:
+                break;
+            case YAML_FLOW_MAPPING_END_TOKEN:
+            case YAML_FLOW_SEQUENCE_END_TOKEN:
+            case YAML_BLOCK_END_TOKEN:
+                break;
+            case YAML_BLOCK_ENTRY_TOKEN:
+            case YAML_FLOW_ENTRY_TOKEN:
+            case YAML_KEY_TOKEN:
+                token_mark->is_key_token = 1;
+                break;
+            case YAML_VALUE_TOKEN:
+                token_mark->is_value_token = 1;
+                break;
+            case YAML_ALIAS_TOKEN:
+                sprintf(ultrabuffer, "%s\n", token.data.alias.value);
+                print_stdout_char_color( YELLOW, BLACK, BRIGHT, ultrabuffer );
+                break;
+            case YAML_ANCHOR_TOKEN:
+                sprintf(ultrabuffer, "\n[Anchor Token] %s\n", token.data.anchor.value);
+                print_stdout_char_color( GREEN, BLACK, BRIGHT, ultrabuffer);
+                break;
+            case YAML_TAG_TOKEN:
+                sprintf(ultrabuffer, "\n[Tag Token] handle: %s, suffix: %s\n", token.data.tag.handle, token.data.tag.suffix);
+                print_stdout_char_color( CYAN, BLACK, BRIGHT, ultrabuffer);
+                break;
+            case YAML_SCALAR_TOKEN:
+                if (token_mark->is_key_token == 1) 
+                {
+                    u_fprintf(u_stdout, "%s : ", token.data.scalar.value);
+                }
+                else
+                {
+                    u_fprintf(u_stdout, "%s\n", token.data.scalar.value);
+                }
+                zero_token_mark(token_mark);
+                break;
+            case YAML_STREAM_START_TOKEN:
+            case YAML_STREAM_END_TOKEN:
+            case YAML_VERSION_DIRECTIVE_TOKEN:
+            case YAML_TAG_DIRECTIVE_TOKEN:
+            case YAML_DOCUMENT_START_TOKEN:
+            case YAML_DOCUMENT_END_TOKEN:
+            default: 
+                break;
+        }
+        if(ds->token.type != YAML_STREAM_END_TOKEN)
+        {
+            yaml_token_delete(&token);
+        }
+    } while(token.type != YAML_STREAM_END_TOKEN) ;
+    return status;
+}
+
+SQLiteOly *
+open_sqlite_oly( const char *file, const char *charset, const char *locale, 
         OlyStatus *status )
 {
     SQLiteOly       *sqlite_data = (SQLiteOly *)omalloc(sizeof(SQLiteOly));
@@ -330,18 +312,19 @@ close_sqlite_oly( SQLiteOly *close_me )
         sqlite3_finalize( close_me->prepped );
     }
     sqlite3_close(close_me->data);
-    free((void *)close_me->raw_sql);
 }
 
 OlyStatus
 set_sqlite_sql( SQLiteOly *db, char *sql)
 {
-    db->raw_sql = sql;
     int len = (strlen(sql)+1);
-    sqlite3_stmt *prepped = db->prepped ;
+    const char *unused;
+    db->raw_sql = sql;
+    sqlite3_stmt *prepped = NULL;
     OlyStatus status = OLY_OKAY;
-    if ( sqlite3_prepare_v2(db->data, sql, len, &prepped, NULL ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( db->data, sql, len, &prepped, &unused ) != SQLITE_OK )
     {
+        printf("SQLite err: %s\n", sqlite3_errmsg( db->data ));
         status = OLY_ERR_SQLITE;
         return status;
     }
@@ -351,72 +334,38 @@ set_sqlite_sql( SQLiteOly *db, char *sql)
 }
 
 OlyStatus
-get_options(int argc, char **argv)
+exec_sqlite_sql( SQLiteOly *db )
 {
     OlyStatus status = OLY_OKAY;
-    char c;
-    /* y = YAML file, q = sqlite file, h = help, v = version */
-    while ((c = getopt(argc, argv, "y:q:hv")) != -1) 
+    int sqlite_return = sqlite3_step( db->prepped );
+    if (sqlite_return != SQLITE_DONE)
     {
-        switch (c) 
-        {
-        case ('h'):
-            status = OLY_WARN_SHOW_HELP;
-            break;
-        case ('v'):
-            status = OLY_WARN_SHOW_VERSION;
-            break;
-        case ('y'):
-            yaml_file = optarg;
-            break;
-        case ('q'):
-            sqlite_file = optarg;
-            break;
-        default:
-            status = OLY_ERR_BADARG;
-            break;
-        }
+        printf("SQLite err: %s\n", sqlite3_errmsg( db->data ));
+        status = OLY_ERR_SQLITE ;
     }
     return status;
 }
 
-static void
-pick_up_phone_booth_and_die( OlyStatus status )
+OlyStatus
+finalize_sqlite_sql( SQLiteOly *db )
 {
-            u_fprintf(u_stderr, "ERROR: ");
-            u_fprintf_u(u_stderr, get_errmsg(status));
-            u_fprintf(u_stderr, " Exiting...\n");
-            exit(EXIT_FAILURE);
+    OlyStatus status = OLY_OKAY;
+    if (db->prepped != NULL)
+    {
+        sqlite3_finalize( db->prepped );
+    }
+    return status;
 }
 
-static void 
-print_help(void)
+OlyStatus
+delete_file(char *file)
 {
-    usage();
-    u_fprintf(u_stdout,"A prototype to test buffering approaches between a \ncollection data source (YAML) and a table data source (sqlite 3).\n");
-    u_fprintf(u_stdout,"Options:\n");
-    u_fprintf(u_stdout,"\t\t-h\t\tShow this help message.\n");
-    u_fprintf(u_stdout,"\t\t-v\t\tShow the program version.\n");
-    u_fprintf(u_stdout,"\t\t-y\t\tyaml file to use.\n");
-    u_fprintf(u_stdout,"\t\t-q\t\tsqlite file to use.\n");
-    exit(EXIT_SUCCESS);
+    OlyStatus status = OLY_OKAY;
+    if (unlink( file) != 0)
+    {
+        status = OLY_ERR_FILEIO;
+        printf("delete file %s err: %s\n", file, ostrerror(errno));
+    }
+    return status;
 }
-
-static void 
-usage(void){
-    u_fprintf(u_stdout, "%S: [OPTIONS]\n", 
-           get_program_name());
-}
-
-static void 
-print_version(void){
-    u_fprintf(u_stdout, "%S: Version 1.0, 3-21-2014 - copyright (C) Oly Project\n", 
-           get_program_name());
-    u_fprintf(u_stdout, "\tLicensed according to the terms of the GNU general public\n");
-    u_fprintf(u_stdout, "\tlicense, version 2 or (at your option) any later version.\n");
-    u_fprintf(u_stdout, "\tThis program is provided in the hopes that it will be useful, but\n");
-    u_fprintf(u_stdout, "\tWITHOUT ANY WARRANTY, to the extent permitted by law.\n\n");
-    u_fprintf(u_stdout, "\tVisit %s for precise details on authorship.\n", PACKAGE_URL);
-}
-
 

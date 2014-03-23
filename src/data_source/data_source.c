@@ -239,8 +239,6 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     retval->locale              = NULL;
     retval->charset             = NULL;
     retval->buffer_size         = BUFSIZ;
-    retval->ochar_buffer        = ocalloc(BUFSIZ, sizeof(OChar));
-    retval->char_buffer         = ocalloc(BUFSIZ, sizeof(char));
     retval->converter           = NULL;
     if (COLLECTION_DATA_SOURCE == )
         retval->data            = 
@@ -356,4 +354,5 @@ get_ds_charset_converter(OlyDataSource *ds)
 {
     return ds->converter;
 }
+
 

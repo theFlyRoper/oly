@@ -1,41 +1,46 @@
-1..35
+1..40
 # From the smallest to one bigger than biggest error number.
-ok 1 - Item: -4, err: OLY_WARN_DSOPT_NOT_USED
-ok 2 - Item: -3, err: OLY_WARN_REINIT
-ok 3 - Item: -2, err: OLY_WARN_LIB
-ok 4 - Item: -1, err: OLY_WARN_EXIT
-ok 5 - Item: 0, err: OLY_OKAY
-ok 6 - Item: 1, err: OLY_ERR_UNKNOWN
-ok 7 - Item: 2, err: OLY_ERR_SYS
-ok 8 - Item: 3, err: OLY_ERR_LIB
-ok 9 - Item: 4, err: OLY_ERR_INIT
-ok 10 - Item: 5, err: OLY_ERR_NOMEM
-ok 11 - Item: 6, err: OLY_ERR_NOPWD
-ok 12 - Item: 7, err: OLY_ERR_NOUSER
-ok 13 - Item: 8, err: OLY_ERR_FILEIO
-ok 14 - Item: 9, err: OLY_ERR_READHEX
-ok 15 - Item: 10, err: OLY_ERR_HASH
-ok 16 - Item: 11, err: OLY_ERR_BADARG
-ok 17 - Item: 12, err: OLY_ERR_BUFFER_OVERFLOW
-ok 18 - Item: 13, err: OLY_ERR_FILE_NOT_FOUND
-ok 19 - Item: 14, err: OLY_ERR_CONFIG_FILE_NOT_FOUND
-ok 20 - Item: 15, err: OLY_ERR_LIBYAML_INIT
-ok 21 - Item: 16, err: OLY_ERR_NODES_TOO_DEEP
-ok 22 - Item: 17, err: OLY_ERR_NODES_TOO_SHALLOW
-ok 23 - Item: 18, err: OLY_ERR_UNKNOWN_FUNCTION_TYPE
-ok 24 - Item: 19, err: OLY_ERR_DS_OPTION_CONFLICT
-ok 25 - Item: 20, err: OLY_ERR_LTDL_UNKNOWN
-ok 26 - Item: 21, err: OLY_ERR_LTDL_ERR
-ok 27 - Item: 22, err: OLY_ERR_YAML_PARSE
-ok 28 - Item: 23, err: OLY_ERR_UNKNOWN
+ok 1 - Item: -7, err: OLY_WARN_DS_BUFFER_DEFAULT
+ok 2 - Item: -6, err: OLY_WARN_SHOW_VERSION
+ok 3 - Item: -5, err: OLY_WARN_SHOW_HELP
+ok 4 - Item: -4, err: OLY_WARN_DSOPT_NOT_USED
+ok 5 - Item: -3, err: OLY_WARN_REINIT
+ok 6 - Item: -2, err: OLY_WARN_LIB
+ok 7 - Item: -1, err: OLY_WARN_EXIT
+ok 8 - Item: 0, err: OLY_OKAY
+ok 9 - Item: 1, err: OLY_ERR_UNKNOWN
+ok 10 - Item: 2, err: OLY_ERR_SYS
+ok 11 - Item: 3, err: OLY_ERR_LIB
+ok 12 - Item: 4, err: OLY_ERR_INIT
+ok 13 - Item: 5, err: OLY_ERR_NOMEM
+ok 14 - Item: 6, err: OLY_ERR_NOPWD
+ok 15 - Item: 7, err: OLY_ERR_NOUSER
+ok 16 - Item: 8, err: OLY_ERR_FILEIO
+ok 17 - Item: 9, err: OLY_ERR_READHEX
+ok 18 - Item: 10, err: OLY_ERR_HASH
+ok 19 - Item: 11, err: OLY_ERR_BADARG
+ok 20 - Item: 12, err: OLY_ERR_BUFFER_OVERFLOW
+ok 21 - Item: 13, err: OLY_ERR_FILE_NOT_FOUND
+ok 22 - Item: 14, err: OLY_ERR_CONFIG_FILE_NOT_FOUND
+ok 23 - Item: 15, err: OLY_ERR_LIBYAML_INIT
+ok 24 - Item: 16, err: OLY_ERR_NODES_TOO_DEEP
+ok 25 - Item: 17, err: OLY_ERR_NODES_TOO_SHALLOW
+ok 26 - Item: 18, err: OLY_ERR_UNKNOWN_FUNCTION_TYPE
+ok 27 - Item: 19, err: OLY_ERR_DS_OPTION_CONFLICT
+ok 28 - Item: 20, err: OLY_ERR_LTDL_UNKNOWN
+ok 29 - Item: 21, err: OLY_ERR_LTDL_ERR
+ok 30 - Item: 22, err: OLY_ERR_YAML_PARSE
+ok 31 - Item: 23, err: OLY_ERR_SQLITE_INIT
+ok 32 - Item: 24, err: OLY_ERR_SQLITE
+ok 33 - Item: 25, err: OLY_ERR_UNKNOWN
 # One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.
-ok 29 - Number: -5
+ok 34 - Number: -8
 # A few wildly outlandish numbers.  Powers of -17!
-ok 30 - Number: 289
-ok 31 - Number: -4,913
-ok 32 - Number: 83,521
-ok 33 - Number: -1,419,857
+ok 35 - Number: 289
+ok 36 - Number: -4,913
+ok 37 - Number: 83,521
+ok 38 - Number: -1,419,857
 # Hex digits, mwaha
-ok 34 - Number: 43,690, submitted: �
-ok 35 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
-# All 35 tests successful or skipped
+ok 39 - Number: 43,690, submitted: �
+ok 40 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
+# All 40 tests successful or skipped

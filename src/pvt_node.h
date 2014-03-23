@@ -36,11 +36,12 @@ typedef union oly_node_value_union OlyDSValue;
 struct oly_data_source_node_struct 
 {
     unsigned short       current_level;
-    OlyNodeValueType   vt;
-    OlyNodeValueType   parent_vt;
+    OlyNodeValueType     vt;
     OChar               *key;
+    /* for debugging.  Remove later. */
+    char                *char_key;
     OlyDSValue          *value;
-    OlyNode           *parent_node;
+    OlyNode             *parent_node;
     unsigned long long   tuple;
     OlyDataSource       *ds;
     OFILE               *large_object_file;

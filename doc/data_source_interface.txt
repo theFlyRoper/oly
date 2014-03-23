@@ -15,6 +15,59 @@ ifdef::is_fossil[]
 link:/doc/tip/doc/index.wiki[Back to Home.]
 endif::is_fossil[]
 
+Structures
+----------
+
+Boundary (buffer)
+~~~~~~~~~~~~~~~~~
+Called boundary because it should translate from the source encoding to the Oly internal encoding.
+
+.definition
+[source,c]
+----
+struct oly_boundary_struct;
+typedef struct oly_boundary_struct OlyBoundary;
+
+struct oly_boundary_struct
+{
+    OChar           *o_now;
+    OChar           *o_end;
+    OChar           *o_start;
+    OChar           *o_flush_break;
+    char            *c_now;
+    char            *c_end;
+    char            *c_start;
+    char            *c_flush_break;
+    size_t          nodes
+    UConverter      *converter;
+};
+----
+
+Node
+~~~~
+Node must know about buffers.  Node type determines how many character strings the node will look for.  This also means we must keep nodes handy.
+
+.definition
+[source,c]
+----
+struct oly_data_source_node_struct;
+typedef struct oly_data_source_node_struct OlyNode;
+
+struct oly_data_source_node_struct 
+{
+    unsigned short       current_level;
+    OlyNodeValueType     vt;
+    OChar               *key;
+    /* for debugging.  Remove later. */
+    char                *char_key;
+    OlyDSValue          *value;
+    OlyNode             *parent_node;
+    unsigned long long   tuple;
+    OlyDataSource       *ds;
+    OFILE               *large_object_file;
+}
+----
+
 Functions
 ---------
 

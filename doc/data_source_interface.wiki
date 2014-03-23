@@ -8,6 +8,56 @@ version 375e06b3f0,
 2014-03-21
 </p>
 <hr>
+<h2><a name="_structures"></a>Structures</h2>
+<h3><a name="_boundary_buffer"></a>Boundary (buffer)</h3>
+<p>Called boundary because it should translate from the source encoding to the Oly internal encoding.</p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_boundary_struct</span><span style="color: #990000">;</span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_boundary_struct</span> OlyBoundary<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_boundary_struct</span>
+<span style="color: #FF0000">{</span>
+    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_now<span style="color: #990000">;</span>
+    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_end<span style="color: #990000">;</span>
+    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_start<span style="color: #990000">;</span>
+    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_flush_break<span style="color: #990000">;</span>
+    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_now<span style="color: #990000">;</span>
+    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_end<span style="color: #990000">;</span>
+    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_start<span style="color: #990000">;</span>
+    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_flush_break<span style="color: #990000">;</span>
+    size_t          nodes
+    <span style="color: #008080">UConverter</span>      <span style="color: #990000">*</span>converter<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span><span style="color: #990000">;</span></tt></pre></div></div>
+<h3><a name="_node"></a>Node</h3>
+<p>Node must know about buffers.  Node type determines how many character strings the node will look for.  This also means we must keep nodes handy.</p>
+<div class="listingblock">
+<div class="title">definition</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_data_source_node_struct</span><span style="color: #990000">;</span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_data_source_node_struct</span> OlyNode<span style="color: #990000">;</span>
+
+<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_data_source_node_struct</span>
+<span style="color: #FF0000">{</span>
+    <span style="color: #009900">unsigned</span> <span style="color: #009900">short</span>       current_level<span style="color: #990000">;</span>
+    <span style="color: #008080">OlyNodeValueType</span>     vt<span style="color: #990000">;</span>
+    <span style="color: #008080">OChar</span>               <span style="color: #990000">*</span>key<span style="color: #990000">;</span>
+    <span style="font-style: italic"><span style="color: #9A1900">/* for debugging.  Remove later. */</span></span>
+    <span style="color: #009900">char</span>                <span style="color: #990000">*</span>char_key<span style="color: #990000">;</span>
+    <span style="color: #008080">OlyDSValue</span>          <span style="color: #990000">*</span>value<span style="color: #990000">;</span>
+    <span style="color: #008080">OlyNode</span>             <span style="color: #990000">*</span>parent_node<span style="color: #990000">;</span>
+    <span style="color: #009900">unsigned</span> <span style="color: #009900">long</span> <span style="color: #009900">long</span>   tuple<span style="color: #990000">;</span>
+    <span style="color: #008080">OlyDataSource</span>       <span style="color: #990000">*</span>ds<span style="color: #990000">;</span>
+    <span style="color: #008080">OFILE</span>               <span style="color: #990000">*</span>large_object_file<span style="color: #990000">;</span>
+<span style="color: #FF0000">}</span></tt></pre></div></div>
+<hr>
 <h2><a name="_functions"></a>Functions</h2>
 <h3><a name="_required_functions"></a>Required functions</h3>
 <p><b>Must be defined</b></p><dl>
@@ -192,12 +242,12 @@ Oly will recover to last checkpoint in the event of a sudden stop.
 </li>
 </ol>
 <hr>
-<h2><a name="_structures"></a>Structures</h2>
+<h2><a name="_structures_2"></a>Structures</h2>
 <h3><a name="_collection_centered_data"></a>Collection-centered data</h3>
 <p>As of 3-19-2013, Oly&#8217;s collection-centered data processing is not concerned about type.  This may change in the future.</p>
 <h4><a name="_collection"></a>Collection</h4>
 <p>A collection holds tuples or keys, each of which references values.  At a macro level, collection-centered data will be a collection of tuples, keys, collections and values.</p>
-<h4><a name="_node"></a>Node</h4>
+<h4><a name="_node_2"></a>Node</h4>
 <p>For Oly, a node points to a key or a tuple and the type of node within.  Node is taken from <a href="http://www.yaml.org/spec/1.2/spec.html#representation//">yaml</a>, and Oly nodes can contain a collection (mapping or sequence) or a scalar value.</p>
 <h4><a name="_tuple"></a>Tuple</h4>
 <p>A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.</p>

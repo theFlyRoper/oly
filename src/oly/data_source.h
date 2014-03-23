@@ -28,10 +28,12 @@ BEGIN_C_DECLS
 struct data_source_struct;
 typedef struct data_source_struct OlyDataSource;
 
+struct oly_boundary_struct;
+typedef struct oly_boundary_struct OlyBoundary;
+
+
 /* data source buffer interface */
-/* gets the amount of space remaining in the input buffer.  This is so we can dump large input to files.  If we have a scalar holding war and peace, I would rather it get dumped to a file, which the OlyNode can pass around instead of five hundred buffers' worth of string :) 
-extern size_t get_buffer_size(OlyDataSource *ds, OlyStatus *status);
-*/
+
 /* copies a *char string to the charbuffer. */
 extern OlyStatus put_in_charbuffer(OlyDataSource *ds, const char *putstr);
 /* flushes the charbuffer from the specified pointer to the end. */
@@ -42,6 +44,7 @@ extern OlyStatus put_in_ocharbuffer(OlyDataSource *ds, const OChar *putstr);
 extern OlyStatus flush_ocharbuffer( OlyDataSource *ds, 
         const OChar *flush_start, const OChar *flush_end );
 
+/* gets the amount of space remaining in the input buffer. */
 extern size_t get_max_buffer_size(OlyDataSource *ds, OlyStatus *status);
 extern OlyStatus set_max_buffer_size(OlyDataSource *ds, size_t mbuff);
 
@@ -107,6 +110,8 @@ extern OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status);
 extern OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface);
 extern OlyStatus set_data_filename( OlyDataSource *ds, const char *filename );
 extern OlyDataFormat get_data_type_format( DataSourceType ds_type );
+
+extern OlyBoundary *open_oly_boundary(OlyDataSource *ds, OlyStatus *status);
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */
 extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );

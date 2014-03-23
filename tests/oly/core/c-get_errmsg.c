@@ -73,7 +73,6 @@ main( int argc, char **argv ){
     UErrorCode       u_status  = U_ZERO_ERROR;
     
     oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
-    init_errors();
     
     for ( i = 0; (i<=num_tests); i++)
     {

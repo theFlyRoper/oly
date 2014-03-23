@@ -129,7 +129,8 @@ resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 
 yaml_to_sqlite_CFLAGS		= $(DEV_CFLAGS)
 yaml_to_sqlite_SOURCES		= tests/prototypes/yaml_to_sqlite.c \
-							  src/data_source/data_source_main.c
+							  src/data_source/data_source_main.c \
+							  src/node/node.c
 yaml_to_sqlite_LDFLAGS		= @SQLITE3_LDFLAGS@
 yaml_to_sqlite_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
 							  @ICU_LIBS@ @YAML_LIBS@ 
@@ -284,7 +285,7 @@ tests_oly_core_c_basic_functions_LDFLAGS = -lm
 ## 									  tests/tap/libtap.a @YAML_LIBS@ 
 ## 
 
-check-local: check-i18n prototypes $(check_PROGRAMS) 
+check-local: check-i18n $(check_PROGRAMS) 
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \
 	    -b '$(abs_top_builddir)/tests' -l '$(abs_top_srcdir)/tests/TESTS'
 

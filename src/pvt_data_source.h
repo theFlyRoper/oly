@@ -44,6 +44,20 @@ struct data_source_struct {
     char                *char_buffer;
     UConverter          *converter;
     OlyNode             *data;
+    OlyBoundary         *buffer;
+};
+
+struct oly_boundary_struct
+{
+    OChar           *o_now;
+    OChar           *o_end;
+    OChar           *o_start;
+    OChar           *o_flush_break;
+    char            *c_now;
+    char            *c_end;
+    char            *c_start;
+    char            *c_flush_break;
+    UConverter      *converter;
 };
 
 END_C_DECLS

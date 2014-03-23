@@ -40,21 +40,23 @@ struct oly_data_source_node_struct;
 typedef struct oly_data_source_node_struct OlyNode;
 
 extern OlyNode *new_oly_ds_node( OlyStatus *status );
-extern void       close_oly_ds_node( OlyNode *node );
+extern void     close_oly_ds_node( OlyNode *node );
 /* key is not required.  If key is null, advance node assumes a tuple. 
  * key is copied into the charset translation buffer.
  * Before copying, key is checked for length.  Oly requires that the key be at most 
  * 1024 unicode characters long, per YAML.  It is just simpler.
  */
 extern OlyStatus  advance_node(OlyNode *node, char *key );
+extern OlyStatus  descend_one_level( OlyNode **node );
+extern OlyStatus  ascend_one_level ( OlyNode **node );
+extern OChar     *get_node_key(OlyNode *node, OlyStatus *status);
+
+
+/* scalar value functions */
 extern OlyStatus  set_node_string_value(OlyNode *node, char *value);
 extern OlyStatus  set_node_float_value(OlyNode *node, const double value);
 extern OlyStatus  set_node_int_value(OlyNode *node, const long value);
-extern OlyStatus  descend_one_level( OlyNode **node );
-extern OlyStatus  ascend_one_level ( OlyNode **node );
 
-
-extern OChar     *get_node_key(OlyNode *node, OlyStatus *status);
 extern OChar     *get_node_string_value(OlyNode *node, OlyStatus *status);
 extern double     get_node_float_value(OlyNode *node, OlyStatus *status);
 extern long       get_node_int_value(OlyNode *node, OlyStatus *status);
