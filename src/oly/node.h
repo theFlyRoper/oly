@@ -21,6 +21,7 @@
 #ifndef OLY_COLLECTION_DS_H
 #define OLY_COLLECTION_DS_H 1
 
+#include "oly/common.h"
 #include "oly/data_source.h"
 #include <math.h>
 

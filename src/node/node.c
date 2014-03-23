@@ -18,7 +18,7 @@
  *
  * }}} */
 
-#include "data_source/pvt_node.h"
+#include "node/pvt_node.h"
 
 OlyNode *
 new_oly_ds_node( OlyDataSource *ds, Oly OlyStatus *status )

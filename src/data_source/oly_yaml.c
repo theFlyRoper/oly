@@ -71,106 +71,38 @@ load_yaml( OlyStatus *status , OlyDataSource *ds )
     yaml_parser_set_encoding( &config_parser, YAML_UTF16LE_ENCODING );
     yaml_input_ofile( &config_parser , yaml_file );
     do {
-        if (!yaml_parser_scan(&config_parser, &token)) 
+        if (!yaml_parser_parse(&parser, &event)) 
         {
-            printf("Parser error %d\n", config_parser.error);
+            printf("Parser error %d\n", parser.error);
             exit(EXIT_FAILURE);
         }
-        switch(token.type)
+
+        switch(event.type)
         { 
-            case YAML_STREAM_START_TOKEN:
-                print_stdout_char_color( BLACK, WHITE, DIM, "[STREAM START]\n" );
-                break;
-            case YAML_STREAM_END_TOKEN:
-                print_stdout_char_color( BLACK, WHITE, DIM, "[STREAM END]\n" );
-                break;
-            case YAML_VERSION_DIRECTIVE_TOKEN:
-                print_stdout_char_color( WHITE, MAGENTA, DIM, "[VERSION DIRECTIVE]\n" );
-                break;
-            case YAML_TAG_DIRECTIVE_TOKEN:
-                print_stdout_char_color( WHITE, CYAN, DIM, "[TAG DIRECTIVE]\n" );
-                break;
-            case YAML_DOCUMENT_START_TOKEN:
-                print_stdout_char_color( MAGENTA, BLACK, DIM, "[Document Start]\n" );
-                break;
-            case YAML_DOCUMENT_END_TOKEN:
-                print_stdout_char_color( MAGENTA, BLACK, DIM, "[Document End]\n" );
-                break;
-            case YAML_BLOCK_SEQUENCE_START_TOKEN:
-                print_stdout_char_color( YELLOW, BLUE, DIM, "[Block Sequence Start]\n" );
-                break;
-            case YAML_BLOCK_MAPPING_START_TOKEN:
-                if (token_mark->is_value_token == 1) 
-                {
-                    print_stdout_char_color(BLUE, BLACK, BRIGHT, 
-                            "\n[Block Mapping START]\n");
-                }
-                else
-                {
-                    print_stdout_char_color(BLUE, BLACK, BRIGHT, 
-                        "[Block Mapping START]\n");
-                }
-                break;
-            case YAML_BLOCK_END_TOKEN:
-                print_stdout_char_color(RED, BLACK, BRIGHT, "[Block End]\n" );
-                break;
-            case YAML_FLOW_SEQUENCE_START_TOKEN:
-                print_stdout_char_color( YELLOW, BLUE, DIM, "[Flow Sequence Start]\n" );
-                break;
-            case YAML_FLOW_SEQUENCE_END_TOKEN:
-                print_stdout_char_color( YELLOW, BLUE, DIM, "[Flow Sequence End]\n" );
-                break;
-            case YAML_FLOW_MAPPING_START_TOKEN:
-                print_stdout_char_color( BLUE, RED, BRIGHT, "[Flow Mapping Start]\n" );
-                break;
-            case YAML_FLOW_MAPPING_END_TOKEN:
-                print_stdout_char_color( BLUE, RED, BRIGHT, "[Flow Mapping End]\n" );
-                break;
-            case YAML_BLOCK_ENTRY_TOKEN:
-                print_stdout_char_color( BLUE, BLACK, BRIGHT, "\n[Block Entry]" );
-                break;
-            case YAML_FLOW_ENTRY_TOKEN:
-                print_stdout_char_color( YELLOW, BLACK, BRIGHT, "\n[Flow Entry]" );
-                break;
-            case YAML_KEY_TOKEN:
-                token_mark->is_key_token = 1;
-                break;
-            case YAML_VALUE_TOKEN:
-                token_mark->is_value_token = 1;
-                break;
-            case YAML_ALIAS_TOKEN:
-                sprintf(ultrabuffer, "%s\n", token.data.alias.value);
-                print_stdout_char_color( YELLOW, BLACK, BRIGHT, ultrabuffer );
-                break;
-            case YAML_ANCHOR_TOKEN:
-                sprintf(ultrabuffer, "\n[Anchor Token] %s\n", token.data.anchor.value);
-                print_stdout_char_color( GREEN, BLACK, BRIGHT, ultrabuffer);
-                break;
-            case YAML_TAG_TOKEN:
-                sprintf(ultrabuffer, "\n[Tag Token] handle: %s, suffix: %s\n", token.data.tag.handle, token.data.tag.suffix);
-                print_stdout_char_color( CYAN, BLACK, BRIGHT, ultrabuffer);
-                break;
-            case YAML_SCALAR_TOKEN:
-                if (token_mark->is_key_token == 1) 
-                {
-                    u_fprintf(u_stdout, "%s : ", token.data.scalar.value);
-                }
-                else
-                {
-                    u_fprintf(u_stdout, "%s\n", token.data.scalar.value);
-                }
-                zero_token_mark(token_mark);
-                break;
-            default: 
-                break;
+        case YAML_NO_EVENT: puts("No event!"); break;
+        /* Stream start/end */
+        case YAML_STREAM_START_EVENT: puts("STREAM START"); break;
+        case YAML_STREAM_END_EVENT:   puts("STREAM END");   break;
+        /* Block delimeters */
+        case YAML_DOCUMENT_START_EVENT: puts("<b>Start Document</b>"); break;
+        case YAML_DOCUMENT_END_EVENT:   puts("<b>End Document</b>");   break;
+        case YAML_SEQUENCE_START_EVENT: puts("<b>Start Sequence</b>"); break;
+        case YAML_SEQUENCE_END_EVENT:   puts("<b>End Sequence</b>");   break;
+        case YAML_MAPPING_START_EVENT:  puts("<b>Start Mapping</b>");  break;
+        case YAML_MAPPING_END_EVENT:    puts("<b>End Mapping</b>");    break;
+        /* Data */
+        case YAML_ALIAS_EVENT:  printf("Got alias (anchor %s)\n", event.data.alias.anchor); break;
+        case YAML_SCALAR_EVENT: printf("Got scalar (value %s)\n", event.data.scalar.value); break;
         }
-        if(token.type != YAML_STREAM_END_TOKEN)
-        {
-            yaml_token_delete(&token);
-        }
-    } while(token.type != YAML_STREAM_END_TOKEN) ;
-    yaml_token_delete(&token);
-  /* END new code */
+        if(event.type != YAML_STREAM_END_EVENT)
+        yaml_event_delete(&event);
+    } while(event.type != YAML_STREAM_END_EVENT);
+    yaml_event_delete(&event);
+    /*
+        print_stdout_char_color( WHITE, MAGENTA, DIM, "[VERSION DIRECTIVE]\n" );
+        print_stdout_char_color( WHITE, CYAN, DIM, "[TAG DIRECTIVE]\n" );
+        print_stdout_char_color( YELLOW, BLUE, DIM, "[Block Sequence Start]\n" );
+    */
     return ;
 }
 

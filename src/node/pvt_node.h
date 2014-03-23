@@ -29,7 +29,7 @@ union oly_node_value_union {
     OChar               *string_value;
     long                 int_value;
     double               float_value;
-}
+};
 
 typedef union oly_node_value_union OlyDSValue;
 

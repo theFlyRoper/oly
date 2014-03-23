@@ -49,6 +49,10 @@ static char *locdir = PKGDATADIR, *locale = "root", *charset = "UTF-8",
     *yaml_file = "/tests/data/every_token.yaml", 
     *sqlite_file = "/tests/data/test_sqlite.sqlite3";
 
+static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
+static int ofile_read_handler(void *data, 
+        unsigned char *buffer, size_t size, size_t *size_read);
+
 OlyStatus get_options( int argc, char **argv );
 
 typedef struct sqlite_oly_struct {
@@ -201,7 +205,7 @@ open_yaml_oly( const char *file, const char *charset, const char *locale,
         return NULL;
     };
     yaml_parser_set_encoding( yaml_data->parser, YAML_UTF16LE_ENCODING );
-    yaml_input_ofile( yaml_data->parser, yaml_file );
+    yaml_input_ofile( yaml_data->parser, yaml_data->data );
     return yaml_data;
 }
 
@@ -215,16 +219,17 @@ close_yaml_oly( YAMLOly *close_me )
 }
 
 OlyStatus
-yaml_to_nodes(YAMLOly *ds, )
+yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
 {
+    char ultrabuffer[BUFSIZ];
     OlyStatus status = OLY_OKAY;
     do {
         if (!yaml_parser_scan(ds->parser, ds->token)) 
         {
-            printf("Parser error %d\n", ds->parser.error);
+            printf("Parser error %d\n", ds->parser->error);
             exit(EXIT_FAILURE);
         }
-        switch(ds->token.type)
+        switch(ds->token->type)
         { 
             case YAML_BLOCK_SEQUENCE_START_TOKEN:
             case YAML_FLOW_SEQUENCE_START_TOKEN:
@@ -239,33 +244,21 @@ yaml_to_nodes(YAMLOly *ds, )
             case YAML_BLOCK_ENTRY_TOKEN:
             case YAML_FLOW_ENTRY_TOKEN:
             case YAML_KEY_TOKEN:
-                token_mark->is_key_token = 1;
                 break;
             case YAML_VALUE_TOKEN:
-                token_mark->is_value_token = 1;
                 break;
             case YAML_ALIAS_TOKEN:
-                sprintf(ultrabuffer, "%s\n", token.data.alias.value);
-                print_stdout_char_color( YELLOW, BLACK, BRIGHT, ultrabuffer );
+                sprintf(ultrabuffer, "%s\n", ds->token->data.alias.value);
                 break;
             case YAML_ANCHOR_TOKEN:
-                sprintf(ultrabuffer, "\n[Anchor Token] %s\n", token.data.anchor.value);
-                print_stdout_char_color( GREEN, BLACK, BRIGHT, ultrabuffer);
+                sprintf(ultrabuffer, "\n[Anchor Token] %s\n", 
+                        ds->token->data.anchor.value);
                 break;
             case YAML_TAG_TOKEN:
-                sprintf(ultrabuffer, "\n[Tag Token] handle: %s, suffix: %s\n", token.data.tag.handle, token.data.tag.suffix);
-                print_stdout_char_color( CYAN, BLACK, BRIGHT, ultrabuffer);
+                sprintf(ultrabuffer, "\n[Tag Token] handle: %s, suffix: %s\n", ds->token->data.tag.handle, ds->token->data.tag.suffix);
                 break;
             case YAML_SCALAR_TOKEN:
-                if (token_mark->is_key_token == 1) 
-                {
-                    u_fprintf(u_stdout, "%s : ", token.data.scalar.value);
-                }
-                else
-                {
-                    u_fprintf(u_stdout, "%s\n", token.data.scalar.value);
-                }
-                zero_token_mark(token_mark);
+                u_fprintf(u_stdout, "%s : ", ds->token->data.scalar.value);
                 break;
             case YAML_STREAM_START_TOKEN:
             case YAML_STREAM_END_TOKEN:
@@ -276,11 +269,11 @@ yaml_to_nodes(YAMLOly *ds, )
             default: 
                 break;
         }
-        if(ds->token.type != YAML_STREAM_END_TOKEN)
+        if(ds->token->type != YAML_STREAM_END_TOKEN)
         {
-            yaml_token_delete(&token);
+            yaml_token_delete(ds->token);
         }
-    } while(token.type != YAML_STREAM_END_TOKEN) ;
+    } while(ds->token->type != YAML_STREAM_END_TOKEN) ;
     return status;
 }
 
@@ -369,3 +362,32 @@ delete_file(char *file)
     return status;
 }
 
+static int
+ofile_read_handler(void *data, unsigned char *buffer, size_t size, size_t *size_read)
+{
+    yaml_parser_t *parser = data;
+    
+    *size_read = (u_file_read((UChar *)buffer, (int32_t)(size/sizeof(OChar)-1), 
+                    (UFILE *)parser->input.file)*sizeof(OChar));
+    if (parser->input.file != NULL)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+static void
+yaml_input_ofile(yaml_parser_t *parser, OFILE *file)
+{
+    assert(parser); /* Non-NULL parser object expected. */
+    assert(!parser->read_handler);  /* You can set the source only once. */
+    assert(file);   /* Non-NULL file object expected. */
+
+    parser->read_handler = ofile_read_handler;
+    parser->read_handler_data = parser;
+
+    parser->input.file = (FILE *)file;
+}
