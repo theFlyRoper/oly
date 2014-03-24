@@ -18,8 +18,8 @@
  *
  * }}} */
 
-#ifndef DATA_SOURCE_PVT_COLLECTION_DS_H
-#define DATA_SOURCE_PVT_COLLECTION_DS_H 1
+#ifndef DATA_SOURCE_PVT_NODE_H
+#define DATA_SOURCE_PVT_NODE_H 1
 
 #include "oly/node.h"
 
@@ -27,6 +27,8 @@ BEGIN_C_DECLS
 
 union oly_node_value_union {
     OChar               *string_value;
+    FILE                *large_binary_file;
+    OFILE               *large_text_file;
     long                 int_value;
     double               float_value;
 };
@@ -36,18 +38,17 @@ typedef union oly_node_value_union OlyDSValue;
 struct oly_data_source_node_struct 
 {
     unsigned short       current_level;
+    unsigned char        has_key;
     OlyNodeValueType     vt;
     OChar               *key;
     /* for debugging.  Remove later. */
     char                *char_key;
-    OlyDSValue          *value;
+    OlyDSValue           value;
     OlyNode             *parent_node;
-    unsigned long long   tuple;
-    OlyDataSource       *ds;
-    OFILE               *large_object_file;
-}
+    size_t               tuple;
+};
 
 END_C_DECLS
 
-#endif /* DATA_SOURCE_PVT_COLLECTION_DS_H */
+#endif /* DATA_SOURCE_PVT_NODE_H */
 

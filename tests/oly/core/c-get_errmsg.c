@@ -68,6 +68,8 @@ main( int argc, char **argv ){
                         "OLY_ERR_YAML_PARSE",
                         "OLY_ERR_SQLITE_INIT",
                         "OLY_ERR_SQLITE",
+                        "OLY_ERR_KEY_STR_TOO_LONG",
+                        "OLY_ERR_NO_KEY_BUFFER",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

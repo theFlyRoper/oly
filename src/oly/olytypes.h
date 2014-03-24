@@ -18,6 +18,10 @@
 #ifndef OLY_OLYTYPES_H
 #define OLY_OLYTYPES_H 1
 
+#define DEFAULT_BUFFER_SIZE BUFSIZ
+#define MAX_NODE_DEPTH 16
+#define MAX_KEY_LENGTH (DEFAULT_BUFFER_SIZE/(MAX_NODE_DEPTH))
+
 /* main oly structure. details in src/pvt_core.h */
 struct  oly_struct; 
 typedef struct oly_struct Oly;
@@ -73,11 +77,11 @@ typedef enum OlyStatus_enum {
     OLY_ERR_YAML_PARSE=22,
     OLY_ERR_SQLITE_INIT=23,
     OLY_ERR_SQLITE=24,
-    OLY_STATUS_MAX=24
+    OLY_ERR_KEY_STR_TOO_LONG=25,
+    OLY_ERR_NO_KEY_BUFFER=26,
+    OLY_STATUS_MAX=26
 } OlyStatus;
 
-#define MAX_NODE_DEPTH 16
-#define MAX_KEY_LENGTH 1024
 
 /* OFILE IO */
 extern OFILE *u_stderr;

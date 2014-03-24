@@ -17,20 +17,20 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifndef SRC_DATA_SOURCE_H
-#define SRC_DATA_SOURCE_H 1
+#ifndef OLY_DATA_SOURCE_H
+#define OLY_DATA_SOURCE_H 1
 
 #include "oly/common.h"
 #include "oly/olytypes.h"
+#include "data_source/node.h"
+#include "data_source/boundary.h"
 
 BEGIN_C_DECLS
 
 struct data_source_struct;
 typedef struct data_source_struct OlyDataSource;
 
-struct oly_boundary_struct;
-typedef struct oly_boundary_struct OlyBoundary;
-
+typedef OlyStatus DataSourceFunction(OlyDataSource *ds) ;
 
 /* data source buffer interface */
 
@@ -91,15 +91,14 @@ typedef enum data_source_type_enum {
 } DataSourceType;
 
 /* data_source_options: used to describe which options are required and which are not. 
- * locale and charset are not listed because they are valid for any data source. 
- * */
+ * locale and charset are not listed because they are valid for any data source. */
 typedef enum data_source_options_enum {
     DSOPT_FILE_NAME = 0x0,
     DSOPT_CONNECTION_STRING = 0x1,
     DSOPT_MAX = 0x1
 } DataSourceOptions;
 
-typedef OlyStatus DataSourceFunction(OlyDataSource *ds) ;
+extern OlyStatus  push_ds_node(OlyDataSource *ds, void *value, OlyNodeValueType node_value_type);
 
 extern OlyStatus check_data_option( OlyDataSource *ds, DataSourceOptions ds_opt);
 extern OlyStatus set_datasource_function( OlyDataSource *ds, 
@@ -110,8 +109,6 @@ extern OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status);
 extern OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface);
 extern OlyStatus set_data_filename( OlyDataSource *ds, const char *filename );
 extern OlyDataFormat get_data_type_format( DataSourceType ds_type );
-
-extern OlyBoundary *open_oly_boundary(OlyDataSource *ds, OlyStatus *status);
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */
 extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );
@@ -125,8 +122,13 @@ extern char *get_data_option( OlyDataSource *ds, const DataSourceOptions option,
 
 /* normally these locale and charset functions should not be necessary,
  * since we can usually deduce this information from the data source itself. */
-OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
-OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
+extern OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
+extern OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
+
+extern OlyStatus stage_node_key( OlyDataSource *ds, const char *key );
+extern OlyStatus enqueue_ds_node( OlyDataSource *ds, const void *value, OlyNodeValueType type);
+extern OlyStatus dequeue_ds_node( OlyDataSource *ds, char **key, void **value, OlyNodeValueType *type );
+extern OlyStatus handle_ds_status( OlyDataSource *ds );
 
 /* retrieve locale or charset from the data source. */
 char *get_data_charset( OlyDataSource *ds );
@@ -134,5 +136,5 @@ char *get_data_locale( OlyDataSource *ds );
 
 END_C_DECLS
 
-#endif /* SRC_DATA_SOURCE_H */
+#endif /* OLY_DATA_SOURCE_H */
 

@@ -85,6 +85,8 @@ root:table {
         {"OLY_ERR_LTDL_ERR"}
         {"OLY_ERR_YAML_PARSE"}
         {"OLY_ERR_SQLITE_INIT"}
+        {"OLY_ERR_KEY_STR_TOO_LONG"}
+        {"OLY_ERR_NO_KEY_BUFFER"}
         {"OLY_ERR_SQLITE"}
     }
     ConfigOptions:table{

@@ -130,7 +130,6 @@ get_max_buffer_size(OlyDataSource *ds, OlyStatus *status)
 OlyStatus
 set_max_buffer_size(OlyDataSource *ds, size_t mbuff)
 {
-
     OlyStatus status = OLY_OKAY;
     if (mbuff == 0)
     {
@@ -181,6 +180,7 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
 {
     unsigned int     i = 0;
     OlyDataSource   *retval;
+    size_t           max_key_size = MAX_KEY_LENGTH;
     if (*status != OLY_OKAY)
     {
         return NULL;
@@ -203,10 +203,15 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     retval->required_settings = 0x0;
     retval->locale = NULL;
     retval->charset = NULL;
-/*    retval->init_function = NULL;
+    retval->key_staging = ocalloc((max_key_size), 1);
+    retval->key_stage_max_length = (max_key_size-1);
+    retval->node_list_size = (size_t)MAX_NODE_DEPTH;
+    retval->node_count_now = (size_t)0;
+    retval->node_list = (OlyNode **)ocalloc(retval->node_list_size * sizeof(OlyNode *));
+
+/*  retval->init_function = NULL;
     retval->open_function = NULL;
-    retval->delete_function = NULL; 
-    */
+    retval->delete_function = NULL; */
     return retval;
 }
 
@@ -235,12 +240,14 @@ set_data_charset( OlyDataSource *ds, const char *charset )
     return OLY_OKAY;
 }
 
-char *get_data_locale( OlyDataSource *ds )
+char *
+get_data_locale( OlyDataSource *ds )
 {
     return ds->locale;
 }
 
-char *get_data_charset( OlyDataSource *ds )
+char *
+get_data_charset( OlyDataSource *ds )
 {
     return ds->charset;
 }
@@ -285,85 +292,63 @@ set_data_filename( OlyDataSource *ds, const char *filename )
     return OLY_OKAY;
 }
 
-OlyBoundary *
-open_oly_boundary(OlyDataSource *ds, OlyStatus *status)
+OlyStatus
+stage_node_key( OlyDataSource *ds, const char *key )
 {
-    UErrorCode   u_status = U_ZERO_ERROR;
-    size_t       o_size = 0, c_size = 0, max_characters = 0, min_char_size = 0,
-                 buffer_max_size = get_max_buffer_size(ds, status);
-    char        *break_ptr;
-    OlyBoundary *oly_bound = omalloc(sizeof(OlyBoundary));
-    /* oly boundary uses two buffers:
-     * 1. Buffer full of input characters
-     * 2. Buffer full of OChars 
-     *
-     * to use it, drop chars in the input buffer and once it is full it will flush
-     * them.
-     */
-
-    /* Allocate the space for both buffers,
-     * then chop it into two spaces according to character size ratios. 
-     * Add sizeof(OChar) to accomodate an OChar sized null space to 
-     * delineate the two areas. 
-     * Consertative and wastes a bit of the end of the buffer.
-     * Better that then overflows.
-     */
-    oly_bound->converter   = ucnv_open( get_data_charset(ds), &u_status );
-    min_char_size = ucnv_getMinCharSize(oly_bound->converter) ;
-    max_characters      = (buffer_max_size / ( min_char_size + sizeof(OChar)));
-    o_size          = (( max_characters * sizeof(OChar) ) - sizeof(OChar));
-    c_size          = (( max_characters * min_char_size ) - min_char_size);
-
-    /* normally the ICU converter API only uses 6 pointers, 
-     * 3 for the outside charset (c_) and 3 for the ICU internal
-     * UChar structures (o_).  The flush_break pointers are 
-     * there to hold the spot for higher nodes. 
-     * 
-     * because the char buffers are actually pointing to different 
-     * character sets, although we only expect to find max_characters characters in it,
-     * as they are char pointers we must move it the correct number of chars. */
-    oly_bound->c_now = (char *)omalloc( o_size +c_size +min_char_size +sizeof(OChar));
-    oly_bound->c_start          = oly_bound->c_now;
-    oly_bound->c_end            = ((oly_bound->c_now + 
-                ((max_characters*min_char_size)- min_char_size*2)));
-    oly_bound->c_flush_break    = oly_bound->c_now;
-
-    /* OChar buffer
-     * unlike the char buffer, the OChar buffer points to its actual character set.
-     * Thus, it must only move max_characters forward, as opposed to 
-     * o_size. */
-    oly_bound->o_now            = (OChar *)((oly_bound->c_end) + min_char_size + 1);
-    oly_bound->o_start          = oly_bound->o_now;
-    oly_bound->o_end            = ((oly_bound->o_now) + (max_characters-2));
-    oly_bound->o_flush_break    = oly_bound->o_now;
-    
-    /* make sure the area after each buffer is null. */
-    for ( break_ptr = ((oly_bound->c_end) + 1); 
-            ( break_ptr < (char *)oly_bound->o_now ); break_ptr++ )
+    size_t      key_len = 0;
+    if ( ds->status != OLY_OKAY )
     {
-        *break_ptr = '\0' ;
+        return ds->status;
     }
-    
-    for ( break_ptr = (char *)(oly_bound->o_end); 
-            ( break_ptr < (oly_bound->c_start + buffer_max_size )); break_ptr++ )
+    if ( ds->key == NULL )
     {
-        *break_ptr = '\0' ;
+        ds->status = OLY_ERR_NO_KEY_BUFFER;
     }
-   
-    /* assert same number of characters fit in both buffers. */
-    o_size = (size_t)(oly_bound->o_end - oly_bound->o_start);
-    c_size = (size_t)((oly_bound->c_end - oly_bound->c_start)/min_char_size);
-    assert( o_size == c_size );
+    key_len = ( strlen(key) + 1 );
+    if ( key_len >= ds->key_stage_max_length )
+    {
+        ds->status = OLY_ERR_KEY_STR_TOO_LONG;
+    }
+    strncpy(ds->key_staging, key, ds->key_stage_max_length);
+    return ds->status;
+}
 
-    /* assert total sum of size is less than max size. */
-    o_size = (size_t)((char *)oly_bound->o_end - (char *)oly_bound->o_start);
-    c_size = (size_t)(oly_bound->c_end - oly_bound->c_start);
-    assert( ( o_size + c_size ) < buffer_max_size );
-    /* o_size and c_size contain exact multiples of the size of their respective character sets. */
-    assert( ( o_size % sizeof(OChar) ) == 0 );
-    assert( ( c_size % min_char_size ) == 0 );
+OlyStatus
+handle_ds_status( OlyDataSource *ds )
+{
+    u_fprintf_u(u_stderr, get_errmsg(ds->status));
+    return OLY_OKAY;
+}
 
-    return oly_bound;
-};
+/* enqueue_ds_node resets the key along with adding the node to the queue */
+OlyStatus 
+enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
+{
+    if ( ds->status != OLY_OKAY )
+    {
+        return ds->status;
+    }
+    /* node_count_now must increase, and if it is too big, we realloc the node list. */
+    (ds->node_count_now)++;
+    if (ds->node_count_now >= ds->node_list_size)
+    {
+        (ds->node_list_size)++;
+        if (orealloc( ds->node_list, ds->node_list_size ) == NULL)
+        {
+            ds->status = OLY_ERR_NOMEM;
+            return ds->status;
+        };
+    }
+    /* if key value != \0, append it to the converter buffer and set *key to \0. */
+    if ( *(ds->key) != '\0' )
+    {
+
+    }
+    strncpy(ds->key_staging, key, ds->key_stage_max_length);
+    return ds->status;
+}
+
+
+extern OlyStatus dequeue_ds_node( OlyDataSource *ds, char **key, void **value, OlyNodeValueType *type );
 
 

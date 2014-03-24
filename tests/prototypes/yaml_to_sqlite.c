@@ -20,11 +20,15 @@
  * }}} */
 
 #include "oly/common.h"
+#include "oly/olytypes.h"
+#undef DEFAULT_BUFFER_SIZE
+#define DEFAULT_BUFFER_SIZE 1024
 #include "oly/data_source.h"
 #include "oly/node.h"
 #include "oly/core.h"
 #include "oly/globals.h"
 
+#include "node/pvt_node.h"
 
 #ifdef HAVE_SQLITE3
 #include <sqlite3.h>
@@ -71,6 +75,7 @@ typedef struct yaml_oly_struct {
     OFILE   *data;
     yaml_parser_t *parser ;
     yaml_token_t  *token;
+    yaml_event_t  *event;
 } YAMLOly;
 
 extern OlyStatus delete_file(char *file);
@@ -108,7 +113,7 @@ main( int argc, char **argv )
     YAMLOly         *yaml_data;
     SQLiteOly       *sqlite_data;
     OlyDataSource   *ds;
-    size_t           buffer_size = 1024;
+    size_t           buffer_size = DEFAULT_BUFFER_SIZE;
 
     oly     = init_oly(argv[0], locdir, charset, locale);
     status  = get_options(argc, argv);
@@ -190,6 +195,7 @@ open_yaml_oly( const char *file, const char *charset, const char *locale,
 
     yaml_data->parser = omalloc(sizeof(yaml_parser_t));
     yaml_data->token = omalloc(sizeof(yaml_token_t));
+    yaml_data->event = omalloc(sizeof(yaml_event_t));
     yaml_data->file_name = (char *)file;
     yaml_data->charset = (char *)charset;
     yaml_data->locale = (char *)locale;
@@ -218,63 +224,88 @@ close_yaml_oly( YAMLOly *close_me )
     free((void *)close_me);
 }
 
+typedef enum oly_yaml_status_enum {
+    OLY_YAML_OKAY,
+    OLY_YAML_SEQUENCE,
+    OLY_YAML_MAP,
+    OLY_YAML_VALUE
+} OlyYAMLStatus;
+
 OlyStatus
 yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
 {
-    char ultrabuffer[BUFSIZ];
-    OlyStatus status = OLY_OKAY;
+    OlyStatus           status      = OLY_OKAY;
+    OlyYAMLStatus       yaml_status = OLY_YAML_OKAY;
+    unsigned char       have_key    = 0x0;
     do {
-        if (!yaml_parser_scan(ds->parser, ds->token)) 
+        if (!yaml_parser_parse(ds->parser, ds->event))
         {
             printf("Parser error %d\n", ds->parser->error);
             exit(EXIT_FAILURE);
         }
-        switch(ds->token->type)
-        { 
-            case YAML_BLOCK_SEQUENCE_START_TOKEN:
-            case YAML_FLOW_SEQUENCE_START_TOKEN:
+        switch(ds->event->type)
+        {
+            /* Stream start/end */
+            case YAML_STREAM_START_EVENT: 
                 break;
-            case YAML_BLOCK_MAPPING_START_TOKEN:
-            case YAML_FLOW_MAPPING_START_TOKEN:
+            case YAML_STREAM_END_EVENT:   
                 break;
-            case YAML_FLOW_MAPPING_END_TOKEN:
-            case YAML_FLOW_SEQUENCE_END_TOKEN:
-            case YAML_BLOCK_END_TOKEN:
+            case YAML_DOCUMENT_START_EVENT: 
                 break;
-            case YAML_BLOCK_ENTRY_TOKEN:
-            case YAML_FLOW_ENTRY_TOKEN:
-            case YAML_KEY_TOKEN:
+            case YAML_DOCUMENT_END_EVENT:   
                 break;
-            case YAML_VALUE_TOKEN:
+            case YAML_SEQUENCE_START_EVENT:
+                yaml_status = OLY_YAML_SEQUENCE;
+                enqueue_ds_node( data, ds->event->data.scalar.value,
+                        OLY_NODE_VALUE_TYPE_SEQUENCE);
+                have_key = 0x0;
                 break;
-            case YAML_ALIAS_TOKEN:
-                sprintf(ultrabuffer, "%s\n", ds->token->data.alias.value);
+            case YAML_SEQUENCE_END_EVENT:
+                status = ds_node_rise(data);
+                yaml_status = OLY_YAML_OKAY;
                 break;
-            case YAML_ANCHOR_TOKEN:
-                sprintf(ultrabuffer, "\n[Anchor Token] %s\n", 
-                        ds->token->data.anchor.value);
+            case YAML_MAPPING_START_EVENT:  
+                enqueue_ds_node( data, NULL, OLY_NODE_VALUE_TYPE_MAP );
+                have_key = 0x0;
                 break;
-            case YAML_TAG_TOKEN:
-                sprintf(ultrabuffer, "\n[Tag Token] handle: %s, suffix: %s\n", ds->token->data.tag.handle, ds->token->data.tag.suffix);
+            case YAML_MAPPING_END_EVENT:    
+                yaml_status = OLY_YAML_OKAY;
                 break;
-            case YAML_SCALAR_TOKEN:
-                u_fprintf(u_stdout, "%s : ", ds->token->data.scalar.value);
+            case YAML_ALIAS_EVENT:  
                 break;
-            case YAML_STREAM_START_TOKEN:
-            case YAML_STREAM_END_TOKEN:
-            case YAML_VERSION_DIRECTIVE_TOKEN:
-            case YAML_TAG_DIRECTIVE_TOKEN:
-            case YAML_DOCUMENT_START_TOKEN:
-            case YAML_DOCUMENT_END_TOKEN:
+            case YAML_SCALAR_EVENT:
+                if ( ( have_key == 0x0 ) && ( yaml_status != OLY_YAML_SEQUENCE ) )
+                {
+                    status = stage_node_key( data, 
+                        (const char *)ds->event->data.scalar.value );
+                    have_key = 0x1;
+                }
+                else 
+                {
+                    if (enqueue_ds_node( data, ds->event->data.scalar.value,
+                            OLY_NODE_VALUE_SCALAR_STRING) != OLY_OKAY)
+                    {
+                        status = handle_ds_status( data );
+                    };
+                    have_key = 0x0;
+                }
+                break;
+            case YAML_NO_EVENT: 
+                break;
             default: 
                 break;
         }
-        if(ds->token->type != YAML_STREAM_END_TOKEN)
+        if( ds->event->type != YAML_STREAM_END_EVENT )
         {
-            yaml_token_delete(ds->token);
+            yaml_event_delete(ds->event);
         }
-    } while(ds->token->type != YAML_STREAM_END_TOKEN) ;
+    } while( ds->event->type != YAML_STREAM_END_EVENT ) ;
     return status;
+}
+
+void
+yaml_next(YAMLOly *ds)
+{
 }
 
 SQLiteOly *

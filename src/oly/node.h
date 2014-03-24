@@ -18,11 +18,10 @@
  *
  * }}} */
 
-#ifndef OLY_COLLECTION_DS_H
-#define OLY_COLLECTION_DS_H 1
+#ifndef OLY_NODE_H
+#define OLY_NODE_H 1
 
 #include "oly/common.h"
-#include "oly/data_source.h"
 #include <math.h>
 
 BEGIN_C_DECLS
@@ -40,14 +39,15 @@ typedef enum oly_node_type_enum {
 struct oly_data_source_node_struct;
 typedef struct oly_data_source_node_struct OlyNode;
 
+/* dispatch function for filled node buffers. Any data source will have one for incoming and one for outgoing. May be used elsewhere later. */
+typedef OlyStatus (* OlyNodeDispatch)(OlyNode **source, OlyNode **dest, size_t node_count); 
+
 extern OlyNode *new_oly_ds_node( OlyStatus *status );
 extern void     close_oly_ds_node( OlyNode *node );
 /* key is not required.  If key is null, advance node assumes a tuple. 
  * key is copied into the charset translation buffer.
  * Before copying, key is checked for length.  Oly requires that the key be at most 
- * 1024 unicode characters long, per YAML.  It is just simpler.
- */
-extern OlyStatus  advance_node(OlyNode *node, char *key );
+ * 1024 unicode characters long, per YAML.  It is just simpler. */
 extern OlyStatus  descend_one_level( OlyNode **node );
 extern OlyStatus  ascend_one_level ( OlyNode **node );
 extern OChar     *get_node_key(OlyNode *node, OlyStatus *status);
@@ -64,5 +64,5 @@ extern long       get_node_int_value(OlyNode *node, OlyStatus *status);
 
 END_C_DECLS
 
-#endif /* OLY_COLLECTION_DS_H */
+#endif /* OLY_NODE_H */
 

@@ -21,43 +21,35 @@
 #define PVT_DATA_SOURCE_H 1
 
 #include "oly/data_source.h"
-#include "oly/node.h"
 #include "data_source/oly_yaml.h"
-
-#define DEFAULT_BUFFER_SIZE BUFSIZ
 
 BEGIN_C_DECLS
 
+/* TODO: clean this up! Lots of outdated ycchyness */
 struct data_source_struct {
-    OlyDSDirection       direction;
-    DataSourceType       ds_type;
-    OlyDataFormat        ds_format;
-    unsigned int         required_settings;
-    unsigned int         unused_settings;
-    char                *locale;
-    char                *charset;
-    char                *filename;
-    size_t               max_buffer_size;
-    char                *options[(DSOPT_MAX+1)];
-    size_t               buffer_size;
-    OChar               *ochar_buffer;
-    char                *char_buffer;
-    UConverter          *converter;
-    OlyNode             *data;
-    OlyBoundary         *buffer;
-};
-
-struct oly_boundary_struct
-{
-    OChar           *o_now;
-    OChar           *o_end;
-    OChar           *o_start;
-    OChar           *o_flush_break;
-    char            *c_now;
-    char            *c_end;
-    char            *c_start;
-    char            *c_flush_break;
-    UConverter      *converter;
+    OlyDSDirection        direction;
+    DataSourceType        ds_type;
+    OlyDataFormat         ds_format;
+    OlyStatus             status;
+    unsigned int          required_settings;
+    unsigned int          unused_settings;
+    char                 *locale;
+    char                 *charset;
+    char                 *filename;
+    size_t                max_buffer_size;
+    char                 *options[(DSOPT_MAX+1)];
+    size_t                buffer_size;
+    OChar                *ochar_buffer;
+    char                 *char_buffer;
+    char                 *key_staging;
+    size_t                key_stage_max_length;
+    UConverter           *converter;
+    OlyBoundary          *buffer;
+    OlyNode             **node_list;
+    size_t                node_count_now;
+    size_t                node_list_size;
+    OlyNodeDispatch       node_receiver;
+    OlyNodeDispatch       node_sender;
 };
 
 END_C_DECLS

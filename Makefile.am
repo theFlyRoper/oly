@@ -129,7 +129,9 @@ resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 
 yaml_to_sqlite_CFLAGS		= $(DEV_CFLAGS)
 yaml_to_sqlite_SOURCES		= tests/prototypes/yaml_to_sqlite.c \
-							  src/data_source/data_source_main.c 
+							  src/data_source/data_source.c \
+							  src/data_source/boundary.c \
+							  src/data_source/node.c
 yaml_to_sqlite_LDFLAGS		= @SQLITE3_LDFLAGS@
 yaml_to_sqlite_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
 							  @ICU_LIBS@ @YAML_LIBS@ 

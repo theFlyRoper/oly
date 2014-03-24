@@ -43,6 +43,8 @@ load_yaml( OlyStatus *status , OlyDataSource *ds )
 {
     OFILE               *yaml_file  = u_fopen( ds->filename, "rd", ds->locale, ds->charset );
     yaml_parser_t        config_parser ;
+
+    yaml_event_t         event;
     yaml_token_t         token;
     YAMLTokenMark       *token_mark = new_token_mark();
     char                 ultrabuffer[BUFSIZ];
@@ -71,9 +73,9 @@ load_yaml( OlyStatus *status , OlyDataSource *ds )
     yaml_parser_set_encoding( &config_parser, YAML_UTF16LE_ENCODING );
     yaml_input_ofile( &config_parser , yaml_file );
     do {
-        if (!yaml_parser_parse(&parser, &event)) 
+        if (!yaml_parser_parse(&config_parser, &event)) 
         {
-            printf("Parser error %d\n", parser.error);
+            printf( "Parser error %d, %s\n", config_parser.error, config_parser.problem );
             exit(EXIT_FAILURE);
         }
 
@@ -81,18 +83,22 @@ load_yaml( OlyStatus *status , OlyDataSource *ds )
         { 
         case YAML_NO_EVENT: puts("No event!"); break;
         /* Stream start/end */
-        case YAML_STREAM_START_EVENT: puts("STREAM START"); break;
-        case YAML_STREAM_END_EVENT:   puts("STREAM END");   break;
+        case YAML_STREAM_START_EVENT: 
+            puts("<p>STREAM START"); 
+            break;
+        case YAML_STREAM_END_EVENT:   
+            puts("STREAM END</p>");   
+            break;
         /* Block delimeters */
-        case YAML_DOCUMENT_START_EVENT: puts("<b>Start Document</b>"); break;
-        case YAML_DOCUMENT_END_EVENT:   puts("<b>End Document</b>");   break;
-        case YAML_SEQUENCE_START_EVENT: puts("<b>Start Sequence</b>"); break;
-        case YAML_SEQUENCE_END_EVENT:   puts("<b>End Sequence</b>");   break;
-        case YAML_MAPPING_START_EVENT:  puts("<b>Start Mapping</b>");  break;
-        case YAML_MAPPING_END_EVENT:    puts("<b>End Mapping</b>");    break;
+        case YAML_DOCUMENT_START_EVENT: puts("<b>Start Document</b></br>"); break;
+        case YAML_DOCUMENT_END_EVENT:   puts("<b>End Document</b></br>");   break;
+        case YAML_SEQUENCE_START_EVENT: puts("<b>Start Sequence</b></br>"); break;
+        case YAML_SEQUENCE_END_EVENT:   puts("<b>End Sequence</b></br>");   break;
+        case YAML_MAPPING_START_EVENT:  puts("<b>Start Mapping</b></br>");  break;
+        case YAML_MAPPING_END_EVENT:    puts("<b>End Mapping</b></br>");    break;
         /* Data */
-        case YAML_ALIAS_EVENT:  printf("Got alias (anchor %s)\n", event.data.alias.anchor); break;
-        case YAML_SCALAR_EVENT: printf("Got scalar (value %s)\n", event.data.scalar.value); break;
+        case YAML_ALIAS_EVENT:  printf("Got alias (anchor %s)</br>", event.data.alias.anchor); break;
+        case YAML_SCALAR_EVENT: printf("Got scalar (value %s)</br>", event.data.scalar.value); break;
         }
         if(event.type != YAML_STREAM_END_EVENT)
         yaml_event_delete(&event);

@@ -21,9 +21,9 @@
 #include "node/pvt_node.h"
 
 OlyNode *
-new_oly_ds_node( OlyDataSource *ds, Oly OlyStatus *status )
+new_oly_ds_node( OlyStatus *status )
 {
-    OlyNode       *new_node = NULL;
+    OlyNode        *new_node = NULL;
     UErrorCode      u_status = U_ZERO_ERROR;
     if (*status != OLY_OKAY)
     {
@@ -38,14 +38,9 @@ new_oly_ds_node( OlyDataSource *ds, Oly OlyStatus *status )
     
     new_node->current_level     = 0;
     new_node->vt                = OLY_NODE_VALUE_TYPE_UNSET;
-    new_node->parent_vt         = OLY_NODE_VALUE_TYPE_TOP;
     new_node->tuple             = 0;
     new_node->key               = NULL;
     new_node->parent_node       = NULL;
-    new_node->data_source       = ds;
-    new_node->buffer_size       = 0;
-    new_node->ochar_buffer      = ds->ochar_buffer;
-    new_node->char_buffer       = ds->char_buffer;
     
     (new_node->value).int_value = 0;
     
@@ -58,15 +53,15 @@ void close_oly_ds_node( OlyNode *node )
 
     if (((node->value).string_value) != NULL)
     {
-        ofree((node->value).string_value);
+        free((node->value).string_value);
     }
     if (node->key != NULL)
     {
-        ofree(node->key);
+        free(node->key);
     }
     if (node != NULL)
     {
-        ofree(node);
+        free(node);
     }
     return;
 }
@@ -80,23 +75,8 @@ OlyStatus  descend_one_level( OlyNode **node )
         status = OLY_ERR_NODES_TOO_DEEP;
         return status;
     }
-    /* TODO: work out buffering! */
-    /*    if ((((*node)->vt) == OLY_NODE_VALUE_TYPE_MAP) 
-            && )
-    {
-        if (((*node)->ochar_buffer + 
-                ( u_strlen((*node)->ochar_buffer) + 2 ))< ((*node)->ochar_buffer_end))
-        next_node->ochar_buffer = ( (*node)->ochar_buffer 
-                + ( u_strlen((*node)->ochar_buffer) + 2 ) );
-    OChar               *ochar_buffer;
-    OChar               *ochar_buffer_end;
-    char                *char_buffer;
-    char                *char_buffer_end;
-    }
-    */
     next_node = new_oly_ds_node( &status );
     next_node->parent_node = *node;
-    next_node->parent_vt = (*node)->vt;
     next_node->current_level = ((*node)->current_level + 1);
     *node = next_node;
     return status;
@@ -112,14 +92,14 @@ OlyStatus  ascend_one_level( OlyNode **node )
         return status;
     }
     next_node = (*node)->parent_node ;
+    (*node) = next_node;
     return status;
 }
 
 /* key is not required.  If key is null, advance node assumes a tuple. 
  * key is copied into the charset translation buffer.
  * Before copying, key is checked for length.  Oly requires that the key be at most 
- * 1024 unicode characters long, per YAML.  It is just simpler.
- */
+ * 1024 unicode characters long, per YAML.  It is just simpler. */
 
 extern OlyStatus  advance_node(OlyNode *node, char *key );
 extern OlyStatus  set_node_string_value ( OlyNode *node, char *value);

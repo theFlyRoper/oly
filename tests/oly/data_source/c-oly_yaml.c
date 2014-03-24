@@ -45,7 +45,8 @@ main( int argc, char **argv )
         exit(EXIT_FAILURE);
     }
     oly             = init_oly( argv[0], TEST_PKGDATADIR, charset, locale );
-    print_yaml( &status , ds );
+    load_yaml( &status, ds );
+    /*    print_yaml( &status , ds ); */
     printf("\n");
 
     exit(EXIT_SUCCESS);
