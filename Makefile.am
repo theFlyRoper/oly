@@ -129,7 +129,6 @@ resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 
 yaml_to_sqlite_CFLAGS		= $(DEV_CFLAGS)
 yaml_to_sqlite_SOURCES		= tests/prototypes/yaml_to_sqlite.c \
-							  src/data_source/data_source.c \
 							  src/data_source/boundary.c \
 							  src/data_source/node.c
 yaml_to_sqlite_LDFLAGS		= @SQLITE3_LDFLAGS@
@@ -192,7 +191,7 @@ libcore_a_SOURCES	=	src/resources/get_resource_data.c \
 						src/core/init_oly.c \
 						src/core/oly_mem_string.c \
 						src/core/olystate.c \
-						src/data_source/data_source_main.c \
+						src/data_source/data_source.c \
 						src/data_source/get_ltdl_errmsg.c 
 
 ##					src/core/config.c \

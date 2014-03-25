@@ -138,7 +138,7 @@ main( int argc, char **argv )
     ds          = new_data_source( YAML_FILE , &status );
     set_max_buffer_size( ds, buffer_size );
     set_data_charset( ds, charset );
-    oly_bound   = open_oly_boundary(ds, &status);
+    oly_bound = open_oly_boundary(get_data_charset(ds), get_max_buffer_size(ds), &status);
     
     if (oly_bound == NULL)
     {

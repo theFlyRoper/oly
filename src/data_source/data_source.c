@@ -29,52 +29,8 @@
 #include "pvt_data_source.h"
 #include "oly/oly_dev.h"
 #include "oly/core.h"
-/* set_datasource_function, get_data_interface, set_data_interface, 
-OlyStatus
-set_datasource_function( OlyDataSource *ds, 
-        OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function)
-{
-    OlyStatus status = OLY_OKAY;
-    assert((ds_function != NULL) && (ds != NULL));
-    switch(ds_func_type)
-    { 
-        case OLYDS_INIT_FUNCTION:
-            ds->init_function = ds_function;
-            break;
-        case OLYDS_OPEN_FUNCTION:
-            ds->open_function = ds_function;
-            break;
-        case OLYDS_DELETE_FUNCTION:
-            ds->delete_function = ds_function;
-            break;
-        default:
-            status = OLY_ERR_UNKNOWN_FUNCTION_TYPE;
-            break;
-    }
-    return status;
-}
 
-OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status)
-{
-    if (*status != OLY_OKAY)
-    {
-        return NULL;
-    }
-    else
-    {
-        return ds->data ; 
-    }
-
-}
-
-OlyStatus set_data_interface( OlyDataSource *ds, OlyDataStream *interface)
-{
-    OlyStatus status = OLY_OKAY;
-    ds->data = interface;
-    return status;
-}
-
-*/
+static OlyStatus flush_data_source( OlyDataSource *ds );
 
 OlyStatus
 set_ds_option_required( OlyDataSource *ds, DataSourceOptions option )
@@ -110,14 +66,20 @@ set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
     return status;
 }
 
+OlyStatus 
+set_ds_dispatch_function( OlyDataSource *ds, OlyDispatch function)
+{
+    return OLY_OKAY;
+}
+
 size_t 
-get_max_buffer_size(OlyDataSource *ds, OlyStatus *status)
+get_max_buffer_size(OlyDataSource *ds)
 {
     size_t mbuff = 0;
 
     if (ds->max_buffer_size == 0)
     {
-        *status = OLY_WARN_DS_BUFFER_DEFAULT;
+        ds->status = OLY_WARN_DS_BUFFER_DEFAULT;
         mbuff = DEFAULT_BUFFER_SIZE;
     }
     else
@@ -130,17 +92,18 @@ get_max_buffer_size(OlyDataSource *ds, OlyStatus *status)
 OlyStatus
 set_max_buffer_size(OlyDataSource *ds, size_t mbuff)
 {
-    OlyStatus status = OLY_OKAY;
+
     if (mbuff == 0)
     {
-        status = OLY_WARN_DS_BUFFER_DEFAULT;
+
+        ds->status = OLY_WARN_DS_BUFFER_DEFAULT;
         ds->max_buffer_size = DEFAULT_BUFFER_SIZE;
     }
     else
     {
         ds->max_buffer_size = mbuff;
     }
-    return status;
+    return ds->status;
 }
 
 /* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
@@ -207,7 +170,7 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     retval->key_stage_max_length = (max_key_size-1);
     retval->node_list_size = (size_t)MAX_NODE_DEPTH;
     retval->node_count_now = (size_t)0;
-    retval->node_list = (OlyNode **)ocalloc(retval->node_list_size * sizeof(OlyNode *));
+    retval->node_list = (OlyNode **)ocalloc(retval->node_list_size, sizeof(OlyNode *));
 
 /*  retval->init_function = NULL;
     retval->open_function = NULL;
@@ -300,7 +263,7 @@ stage_node_key( OlyDataSource *ds, const char *key )
     {
         return ds->status;
     }
-    if ( ds->key == NULL )
+    if ( key == NULL )
     {
         ds->status = OLY_ERR_NO_KEY_BUFFER;
     }
@@ -324,31 +287,81 @@ handle_ds_status( OlyDataSource *ds )
 OlyStatus 
 enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
 {
+    size_t       buffer_needed_value = 0, buffer_needed_key = 0;
+    OlyNode     *new_node = NULL;
+    
     if ( ds->status != OLY_OKAY )
     {
         return ds->status;
     }
-    /* node_count_now must increase, and if it is too big, we realloc the node list. */
-    (ds->node_count_now)++;
-    if (ds->node_count_now >= ds->node_list_size)
-    {
-        (ds->node_list_size)++;
-        if (orealloc( ds->node_list, ds->node_list_size ) == NULL)
-        {
-            ds->status = OLY_ERR_NOMEM;
-            return ds->status;
-        };
-    }
-    /* if key value != \0, append it to the converter buffer and set *key to \0. */
-    if ( *(ds->key) != '\0' )
-    {
 
+    /* node_count_now must increase, and if it is too big, flush the node list */
+    if ( (ds->node_count_now++) >= ds->node_list_size )
+    {
+        ds->status = flush_data_source(ds);
+        if ( ds->status != OLY_OKAY )
+        {
+            return ds->status;
+        }
     }
-    strncpy(ds->key_staging, key, ds->key_stage_max_length);
+
+    new_node = (ds->node_list)[(ds->node_count_now)];
+    ds->status = set_node_tuple( new_node, (ds->sequence++) );
+    if ( ds->status != OLY_OKAY )
+    {
+        return ds->status;
+    }
+    ds->status = set_node_value( new_node, value, type );
+    
+    if ( ds->status != OLY_OKAY )
+    {
+        return ds->status;
+    }
+    
+    /* if value is str, check length. */
+    if (( type == OLY_NODE_VALUE_SCALAR_STRING ) && ( ds->status == OLY_OKAY ))
+    {
+        buffer_needed_value += (strlen( (char *)value ) + 1);
+    }
+    /* if key *value != \0, append it to the converter buffer and set *key to \0. */
+    if ( ( *(ds->key_staging) != '\0' ) && ( ds->status == OLY_OKAY ) )
+    {
+        buffer_needed_key += (strlen( ds->key_staging ) + 1);
+    }
     return ds->status;
 }
 
+OlyStatus flush_data_source( OlyDataSource *ds )
+{
+    size_t i = 0;
+    if ( ds->status != OLY_OKAY )
+    {
+        return ds->status;
+    }
+    
+    ds->status = flush_inbound( ds->buffer );
+    if ( ds->status != OLY_OKAY )
+    {
+        return ds->status;
+    }
+    
+    ds->status = copy_ochar_buffer( ds->buffer, ds->destination->buffer );
+    if ( ds->status != OLY_OKAY )
+    {
+        return ds->status;
+    }
 
-extern OlyStatus dequeue_ds_node( OlyDataSource *ds, char **key, void **value, OlyNodeValueType *type );
+    for ( i = 0; ( i < ds->node_count_now ); i++ )
+    {
+        copy_node( ds->node_list[i], ds->destination->node_list[i] );
+        reset_node( ds->node_list[i] );
+    }
+    
+    ds->node_count_now = 0;
+    ds->status = (*ds->destination->dispatch)(ds->destination);
+    return ds->status;
+}
+
+extern OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node );
 
 

@@ -22,7 +22,7 @@
 
 #include "oly/common.h"
 #include "oly/olytypes.h"
-#include "data_source/node.h"
+#include "oly/node.h"
 #include "data_source/boundary.h"
 
 BEGIN_C_DECLS
@@ -30,22 +30,11 @@ BEGIN_C_DECLS
 struct data_source_struct;
 typedef struct data_source_struct OlyDataSource;
 
-typedef OlyStatus DataSourceFunction(OlyDataSource *ds) ;
-
-/* data source buffer interface */
-
-/* copies a *char string to the charbuffer. */
-extern OlyStatus put_in_charbuffer(OlyDataSource *ds, const char *putstr);
-/* flushes the charbuffer from the specified pointer to the end. */
-extern OlyStatus flush_charbuffer( OlyDataSource *ds, 
-        const char *flush_start, const char *flush_end );
-extern OlyStatus put_in_ocharbuffer(OlyDataSource *ds, const OChar *putstr);
-/* flushes the charbuffer from the specified pointer to the end. */
-extern OlyStatus flush_ocharbuffer( OlyDataSource *ds, 
-        const OChar *flush_start, const OChar *flush_end );
+/* dispatch function for filled node buffers. Any data source will have one for incoming and one for outgoing. May be used elsewhere later. */
+typedef OlyStatus (* OlyDispatch)( OlyDataSource *destination ); 
 
 /* gets the amount of space remaining in the input buffer. */
-extern size_t get_max_buffer_size(OlyDataSource *ds, OlyStatus *status);
+extern size_t get_max_buffer_size(OlyDataSource *ds);
 extern OlyStatus set_max_buffer_size(OlyDataSource *ds, size_t mbuff);
 
 /* the data source interface needs to provide access to the ICU converter functions. 
@@ -101,8 +90,7 @@ typedef enum data_source_options_enum {
 extern OlyStatus  push_ds_node(OlyDataSource *ds, void *value, OlyNodeValueType node_value_type);
 
 extern OlyStatus check_data_option( OlyDataSource *ds, DataSourceOptions ds_opt);
-extern OlyStatus set_datasource_function( OlyDataSource *ds, 
-    OlyDSFunctionType ds_func_type, DataSourceFunction *ds_function );
+extern OlyStatus set_ds_dispatch_function( OlyDataSource *ds, OlyDispatch function);
 extern OlyDataSource *new_data_source( DataSourceType dst, OlyStatus *status );
 extern OlyStatus close_data_source( OlyDataSource *ds );
 extern OlyDataStream *get_data_interface( OlyDataSource *ds, OlyStatus *status);
@@ -126,8 +114,8 @@ extern OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
 extern OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
 
 extern OlyStatus stage_node_key( OlyDataSource *ds, const char *key );
-extern OlyStatus enqueue_ds_node( OlyDataSource *ds, const void *value, OlyNodeValueType type);
-extern OlyStatus dequeue_ds_node( OlyDataSource *ds, char **key, void **value, OlyNodeValueType *type );
+extern OlyStatus enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type);
+extern OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node );
 extern OlyStatus handle_ds_status( OlyDataSource *ds );
 
 /* retrieve locale or charset from the data source. */

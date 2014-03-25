@@ -36,18 +36,36 @@ new_oly_ds_node( OlyStatus *status )
         return NULL;
     }
     
-    new_node->current_level     = 0;
+    new_node->depth             = 0;
     new_node->vt                = OLY_NODE_VALUE_TYPE_UNSET;
     new_node->tuple             = 0;
     new_node->key               = NULL;
     new_node->parent_node       = NULL;
     
-    (new_node->value).int_value = 0;
+    (new_node->value).string_value = NULL;
     
     return new_node;
 }
 
-void close_oly_ds_node( OlyNode *node )
+OlyNodeValue *
+new_node_value( void )
+{
+    return ocalloc(1,sizeof(OlyNodeValue));
+}
+
+void
+reset_node( OlyNode *node )
+{
+    node->depth             = 0;
+    node->vt                = OLY_NODE_VALUE_TYPE_UNSET;
+    node->tuple             = 0;
+    node->key               = NULL;
+    node->parent_node       = NULL;
+    (node->value).string_value = NULL;
+}
+
+void 
+close_oly_ds_node( OlyNode *node )
 {
     OlyStatus status = OLY_OKAY;
 
@@ -66,7 +84,8 @@ void close_oly_ds_node( OlyNode *node )
     return;
 }
 
-OlyStatus  descend_one_level( OlyNode **node )
+OlyStatus  
+descend_one_level( OlyNode **node )
 {
     OlyStatus  status = OLY_OKAY;
     OlyNode *next_node = NULL;
@@ -82,7 +101,8 @@ OlyStatus  descend_one_level( OlyNode **node )
     return status;
 }
 
-OlyStatus  ascend_one_level( OlyNode **node )
+OlyStatus  
+ascend_one_level( OlyNode **node )
 {
     OlyStatus  status = OLY_OKAY;
     OlyNode *next_node = NULL;
@@ -96,20 +116,118 @@ OlyStatus  ascend_one_level( OlyNode **node )
     return status;
 }
 
-/* key is not required.  If key is null, advance node assumes a tuple. 
- * key is copied into the charset translation buffer.
- * Before copying, key is checked for length.  Oly requires that the key be at most 
- * 1024 unicode characters long, per YAML.  It is just simpler. */
+OChar *get_node_key(OlyNode *node, OlyStatus *status)
+{
+    if (*status != OLY_OKAY)
+    {
+        return NULL;
+    }
+    else
+    {
+        return node->key;
+    }
 
-extern OlyStatus  advance_node(OlyNode *node, char *key );
-extern OlyStatus  set_node_string_value ( OlyNode *node, char *value);
-extern OlyStatus  set_node_float_value  ( OlyNode *node, const double value);
-extern OlyStatus  set_node_int_value    ( OlyNode *node, const long value);
+};
 
-extern OChar     *get_node_key(OlyNode *node, OlyStatus *status);
-extern OChar     *get_node_string_value(OlyNode *node, OlyStatus *status);
-extern double     get_node_float_value(OlyNode *node, OlyStatus *status);
-extern long       get_node_int_value(OlyNode *node, OlyStatus *status);
+/* string values must point to a buffer, so they are set separately. */
+OlyStatus set_node_string_value(OlyNode *output, OChar *value)
+{
+    OlyStatus status = OLY_OKAY;
+    (output->value).string_value = value;
+    return status;
+}
+
+/* sets the value if node type is float or int and checks for errors. */
+OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
+{
+    OlyStatus status = OLY_OKAY;
+    OlyNodeValue *output = node->value;
+
+    if ((type <= OLY_NODE_VALUE_MIN) || (type > OLY_NODE_VALUE_MAX))
+    {
+        status = OLY_ERR_ILLEGAL_NODE_TYPE ;
+    }
+    node->vt = type;
+    if ( value != NULL )
+    {
+        switch ( type )
+        {
+            case OLY_NODE_VALUE_SCALAR_STRING:
+                break;
+            case OLY_NODE_VALUE_SCALAR_FLOAT:
+                (*output).float_value = (double)*value;
+                break;
+            case OLY_NODE_VALUE_SCALAR_INT:
+                (*output).int_value = (long)*value;
+                break;
+            default:
+                status = OLY_ERR_NODE_MUST_NOT_HAVE_VALUE;
+                break;
+        }
+    }
+    else
+    {
+        switch ( type )
+        {
+            case OLY_NODE_VALUE_TYPE_MAP:
+            case OLY_NODE_VALUE_TYPE_SEQUENCE:
+                break;
+            default:
+                status = OLY_ERR_NODE_MUST_HAVE_VALUE;
+                break;
+        }
+    }
+    return status;
+}
+
+OlyStatus set_node_tuple(OlyNode *node, int64_t tuple)
+{
+    node->tuple = tuple;
+    return OLY_OKAY;
+};
+
+int64_t get_node_tuple(OlyNode *node, OlyStatus *status)
+{
+    *status = OLY_OKAY;
+    return node->tuple ;
+};
+
+OlyStatus unset_node_has_key(OlyNode *node)
+{
+    node->has_key = 0x0;
+};
+
+unsigned char node_has_key(OlyNode *node)
+{
+    return node->has_key;
+};
+
+int64_t get_parent_tuple(OlyNode *node, OlyStatus *status)
+{
+    if (*status != OLY_OKAY)
+    {
+        return -1;
+    }
+    if (node->parent_node != NULL)
+    {
+        return node->parent_node->tuple;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+OlyStatus copy_node(OlyNode *source, OlyNode *dest)
+{
+    dest->depth             = source->depth;
+    dest->vt                = source->vt;
+    dest->tuple             = source->tuple;
+    dest->key               = source->key;
+    dest->parent_node       = source->parent_node;
+    dest->value             = source->value;
+    return OLY_OKAY ;
+}
 
 
 

@@ -36,6 +36,7 @@ main( int argc, char **argv ){
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
     char            *locale = "root",  *charset = NULL;
     const char      *results_char[] = {
+                        "OLY_WARN_END_OF_ARGS",
                         "OLY_WARN_DS_BUFFER_DEFAULT",
                         "OLY_WARN_SHOW_VERSION",
                         "OLY_WARN_SHOW_HELP",
@@ -70,6 +71,9 @@ main( int argc, char **argv ){
                         "OLY_ERR_SQLITE",
                         "OLY_ERR_KEY_STR_TOO_LONG",
                         "OLY_ERR_NO_KEY_BUFFER",
+                        "OLY_ERR_NODE_MUST_HAVE_VALUE",
+                        "OLY_ERR_NODE_MUST_NOT_HAVE_VALUE",
+                        "OLY_ERR_ILLEGAL_NODE_TYPE",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

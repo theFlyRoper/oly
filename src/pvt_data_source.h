@@ -36,20 +36,17 @@ struct data_source_struct {
     char                 *locale;
     char                 *charset;
     char                 *filename;
-    size_t                max_buffer_size;
     char                 *options[(DSOPT_MAX+1)];
-    size_t                buffer_size;
-    OChar                *ochar_buffer;
-    char                 *char_buffer;
+    size_t                max_buffer_size;
     char                 *key_staging;
     size_t                key_stage_max_length;
-    UConverter           *converter;
+    int64_t               sequence;
     OlyBoundary          *buffer;
     OlyNode             **node_list;
     size_t                node_count_now;
     size_t                node_list_size;
-    OlyNodeDispatch       node_receiver;
-    OlyNodeDispatch       node_sender;
+    OlyDispatch          *dispatch;
+    OlyDataSource        *destination;
 };
 
 END_C_DECLS

@@ -24,26 +24,23 @@ OlyBoundary *
 open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
 {
     UErrorCode   u_status = U_ZERO_ERROR;
-    size_t       o_size = 0, c_size = 0, max_characters = 0, min_char_size = 0,
-                 buffer_max_size = get_max_buffer_size(ds, status);
+    size_t       o_size = 0, c_size = 0, max_characters = 0, min_char_size = 0;
     char        *break_ptr;
     OlyBoundary *oly_bound = omalloc(sizeof(OlyBoundary));
     /* oly boundary uses two buffers:
      * 1. Buffer full of input characters
      * 2. Buffer full of OChars 
      *
-     * to use it, drop chars in the input buffer and once it is full it will flush
-     * them.
-     */
+     * to use it, drop chars in the input buffer and once it is full it will flush 
+     * them. */
 
     /* Allocate the space for both buffers,
      * then chop it into two spaces according to character size ratios. 
      * Add sizeof(OChar) to accomodate an OChar sized null space to 
      * delineate the two areas. 
      * Consertative and wastes a bit of the end of the buffer.
-     * Better that then overflows.
-     */
-    oly_bound->converter   = ucnv_open( get_data_charset(ds), &u_status );
+     * Better that then overflows. */
+    oly_bound->converter   = ucnv_open( charset, &u_status );
     min_char_size = ucnv_getMinCharSize(oly_bound->converter) ;
     max_characters      = (buffer_max_size / ( min_char_size + sizeof(OChar)));
     o_size          = (( max_characters * sizeof(OChar) ) - sizeof(OChar));
@@ -53,7 +50,6 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
      * 3 for the outside charset (c_) and 3 for the ICU internal
      * UChar structures (o_).  The flush_break pointers are 
      * there to hold the spot for higher nodes. 
-     * 
      * because the char buffers are actually pointing to different 
      * character sets, although we only expect to find max_characters characters in it,
      * as they are char pointers we must move it the correct number of chars. */
@@ -61,7 +57,6 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
     oly_bound->c_start          = oly_bound->c_now;
     oly_bound->c_end            = ((oly_bound->c_now + 
                 ((max_characters*min_char_size)- min_char_size*2)));
-    oly_bound->c_flush_break    = oly_bound->c_now;
 
     /* OChar buffer
      * unlike the char buffer, the OChar buffer points to its actual character set.
@@ -70,7 +65,6 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
     oly_bound->o_now            = (OChar *)((oly_bound->c_end) + min_char_size + 1);
     oly_bound->o_start          = oly_bound->o_now;
     oly_bound->o_end            = ((oly_bound->o_now) + (max_characters-2));
-    oly_bound->o_flush_break    = oly_bound->o_now;
     
     /* make sure the area after each buffer is null. */
     for ( break_ptr = ((oly_bound->c_end) + 1); 
@@ -100,4 +94,101 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
 
     return oly_bound;
 };
+
+OlyStatus
+flush_inbound( OlyBoundary *boundary )
+{
+    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status;
+    OChar       *o_start_ptr =  oly_bound->o_start;
+    char        *c_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now )),
+                *c_start_ptr =  oly_bound->c_start;
+
+    ucnv_toUnicode( boundary->converter,
+        &o_start_ptr, oly_bound->o_end, &c_start_ptr, c_end_ptr, NULL,
+        FALSE, &u_status );
+
+    if (U_FAILURE(u_status))
+    {
+        fprintf(stderr, "ICU Error: %s.\n",
+                u_errorName(u_status));
+        status = OLY_ERR_LIB;
+    }
+    return status;
+}
+
+OlyStatus
+flush_outbound( OlyBoundary *boundary )
+{
+    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status;
+    OChar       *o_start_ptr = oly_bound->o_start,
+                *o_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now ));
+    char        *c_start_ptr = oly_bound->c_start;
+    
+    ucnv_fromUnicode ( boundary->converter, &c_start_ptr, c_end_ptr, 
+            &o_start_ptr, oly_bound->o_end, NULL, FALSE, &u_status );
+    if (U_FAILURE(u_status))
+    {
+        fprintf(stderr, "ICU Error: %s.\n", u_errorName(u_status));
+        status = OLY_ERR_LIB;
+    }
+    return status;
+}
+
+OlyStatus
+copy_ochar_buffer( OlyBoundary *source, OlyBoundary *dest )
+{
+    u_memcpy(source->o_start, dest->o_start, (source->o_end - source->o_start) );
+    return OLY_OKAY;
+}
+
+OChar *
+get_next_scalar( OlyBoundary *boundary, OlyStatus status )
+{
+    OlyStatus   status = OLY_OKAY;
+    
+    return status;
+}
+
+OlyStatus
+finish_outbound( OlyBoundary *boundary )
+{
+    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status;
+    OChar       *o_start_ptr = oly_bound->o_start,
+                *o_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now ));
+    char        *c_start_ptr = oly_bound->c_start;
+    
+    ucnv_fromUnicode ( boundary->converter, &c_start_ptr, c_end_ptr, 
+            &o_start_ptr, oly_bound->o_end, NULL, TRUE, &u_status );
+    if (U_FAILURE(u_status))
+    {
+        fprintf(stderr, "ICU Error: %s.\n", u_errorName(u_status));
+        status = OLY_ERR_LIB;
+    }
+    return status;
+}
+
+OlyStatus
+finish_inbound( OlyBoundary *boundary )
+{
+    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status;
+    OChar       *o_start_ptr =  oly_bound->o_start;
+    char        *c_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now )),
+                *c_start_ptr =  oly_bound->c_start;
+
+    ucnv_toUnicode( boundary->converter,
+        &o_start_ptr, oly_bound->o_end, &c_start_ptr, c_end_ptr, NULL,
+        TRUE, &u_status );
+
+    if (U_FAILURE(u_status))
+    {
+        fprintf(stderr, "ICU Error: %s.\n",
+                u_errorName(u_status));
+        status = OLY_ERR_LIB;
+    }
+    return status;
+}
 

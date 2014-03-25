@@ -26,41 +26,40 @@
 
 BEGIN_C_DECLS
 
-typedef enum oly_node_type_enum {
-    OLY_NODE_VALUE_TYPE_UNSET,
-    OLY_NODE_VALUE_TYPE_TOP,
-    OLY_NODE_VALUE_TYPE_MAP,
-    OLY_NODE_VALUE_TYPE_SEQUENCE,
-    OLY_NODE_VALUE_SCALAR_STRING,
-    OLY_NODE_VALUE_SCALAR_FLOAT,
-    OLY_NODE_VALUE_SCALAR_INT
+union oly_node_value_union;
+typedef union oly_node_value_union OlyNodeValue;
+
+typedef enum oly_node_value_type_enum {
+    OLY_NODE_VALUE_TYPE_UNSET = 0,
+    OLY_NODE_VALUE_MIN = 0,
+    OLY_NODE_VALUE_TYPE_MAP = 1,
+    OLY_NODE_VALUE_TYPE_SEQUENCE = 2,
+    OLY_NODE_VALUE_SCALAR_STRING = 3,
+    OLY_NODE_VALUE_SCALAR_FLOAT = 4,
+    OLY_NODE_VALUE_SCALAR_INT = 5,
+    OLY_NODE_VALUE_MAX = 5
 } OlyNodeValueType;
 
 struct oly_data_source_node_struct;
 typedef struct oly_data_source_node_struct OlyNode;
 
-/* dispatch function for filled node buffers. Any data source will have one for incoming and one for outgoing. May be used elsewhere later. */
-typedef OlyStatus (* OlyNodeDispatch)(OlyNode **source, OlyNode **dest, size_t node_count); 
-
+extern void reset_node( OlyNode *node );
 extern OlyNode *new_oly_ds_node( OlyStatus *status );
+extern OlyNodeValue *new_node_value( void );
 extern void     close_oly_ds_node( OlyNode *node );
-/* key is not required.  If key is null, advance node assumes a tuple. 
- * key is copied into the charset translation buffer.
- * Before copying, key is checked for length.  Oly requires that the key be at most 
- * 1024 unicode characters long, per YAML.  It is just simpler. */
 extern OlyStatus  descend_one_level( OlyNode **node );
 extern OlyStatus  ascend_one_level ( OlyNode **node );
-extern OChar     *get_node_key(OlyNode *node, OlyStatus *status);
+extern OChar *get_node_key(OlyNode *node, OlyStatus *status);
+extern unsigned char node_has_key(OlyNode *node);
+extern OlyStatus unset_node_has_key(OlyNode *node);
+extern OlyStatus set_node_tuple(OlyNode *node, int64_t tuple);
+extern int64_t get_node_tuple(OlyNode *node, OlyStatus *status);
+extern int64_t get_parent_tuple(OlyNode *node, OlyStatus *status);
+extern OlyStatus copy_node(OlyNode *source, OlyNode *dest);
 
-
-/* scalar value functions */
-extern OlyStatus  set_node_string_value(OlyNode *node, char *value);
-extern OlyStatus  set_node_float_value(OlyNode *node, const double value);
-extern OlyStatus  set_node_int_value(OlyNode *node, const long value);
-
-extern OChar     *get_node_string_value(OlyNode *node, OlyStatus *status);
-extern double     get_node_float_value(OlyNode *node, OlyStatus *status);
-extern long       get_node_int_value(OlyNode *node, OlyStatus *status);
+/* node value functions */
+extern OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type);
+extern OlyStatus set_node_string_value(OlyNodeValue *output, const OChar *value);
 
 END_C_DECLS
 
