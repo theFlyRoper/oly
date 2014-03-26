@@ -17,6 +17,7 @@
  * MA 02110-1301, USA.
  * }}} */
 
+#include "oly/common.h"
 #include "oly/olytypes.h"
 #include "data_source/pvt_boundary.h"
 
@@ -42,7 +43,7 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
      * Better that then overflows. */
     oly_bound->converter   = ucnv_open( charset, &u_status );
     min_char_size = ucnv_getMinCharSize(oly_bound->converter) ;
-    max_characters      = (buffer_max_size / ( min_char_size + sizeof(OChar)));
+    max_characters  = (buffer_max_size / ( min_char_size + sizeof(OChar)));
     o_size          = (( max_characters * sizeof(OChar) ) - sizeof(OChar));
     c_size          = (( max_characters * min_char_size ) - min_char_size);
 
@@ -100,12 +101,12 @@ flush_inbound( OlyBoundary *boundary )
 {
     OlyStatus status = OLY_OKAY;
     UErrorCode  u_status;
-    OChar       *o_start_ptr =  oly_bound->o_start;
-    char        *c_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now )),
-                *c_start_ptr =  oly_bound->c_start;
+    OChar       *o_start_ptr =  boundary->o_start;
+    const char  *c_end_ptr   = (boundary->c_now + strlen( boundary->c_now )),
+                *c_start_ptr =  boundary->c_start;
 
     ucnv_toUnicode( boundary->converter,
-        &o_start_ptr, oly_bound->o_end, &c_start_ptr, c_end_ptr, NULL,
+        &o_start_ptr, boundary->o_end, &c_start_ptr, c_end_ptr, NULL,
         FALSE, &u_status );
 
     if (U_FAILURE(u_status))
@@ -122,12 +123,12 @@ flush_outbound( OlyBoundary *boundary )
 {
     OlyStatus status = OLY_OKAY;
     UErrorCode  u_status;
-    OChar       *o_start_ptr = oly_bound->o_start,
-                *o_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now ));
-    char        *c_start_ptr = oly_bound->c_start;
+    const OChar       *o_start_ptr = boundary->o_start,
+                *o_end_ptr   = (boundary->o_now + strlen( boundary->c_now ));
+    char        *c_start_ptr = boundary->c_start;
     
-    ucnv_fromUnicode ( boundary->converter, &c_start_ptr, c_end_ptr, 
-            &o_start_ptr, oly_bound->o_end, NULL, FALSE, &u_status );
+    ucnv_fromUnicode ( boundary->converter, &c_start_ptr, boundary->c_end, 
+            &o_start_ptr, o_end_ptr, NULL, FALSE, &u_status );
     if (U_FAILURE(u_status))
     {
         fprintf(stderr, "ICU Error: %s.\n", u_errorName(u_status));
@@ -143,30 +144,11 @@ copy_ochar_buffer( OlyBoundary *source, OlyBoundary *dest )
     return OLY_OKAY;
 }
 
-OChar *
-get_next_scalar( OlyBoundary *boundary, OlyStatus status )
-{
-    OlyStatus   status = OLY_OKAY;
-    
-    return status;
-}
-
 OlyStatus
-finish_outbound( OlyBoundary *boundary )
+get_next_scalar( OlyBoundary *boundary, OChar **next )
 {
     OlyStatus status = OLY_OKAY;
-    UErrorCode  u_status;
-    OChar       *o_start_ptr = oly_bound->o_start,
-                *o_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now ));
-    char        *c_start_ptr = oly_bound->c_start;
     
-    ucnv_fromUnicode ( boundary->converter, &c_start_ptr, c_end_ptr, 
-            &o_start_ptr, oly_bound->o_end, NULL, TRUE, &u_status );
-    if (U_FAILURE(u_status))
-    {
-        fprintf(stderr, "ICU Error: %s.\n", u_errorName(u_status));
-        status = OLY_ERR_LIB;
-    }
     return status;
 }
 
@@ -175,18 +157,37 @@ finish_inbound( OlyBoundary *boundary )
 {
     OlyStatus status = OLY_OKAY;
     UErrorCode  u_status;
-    OChar       *o_start_ptr =  oly_bound->o_start;
-    char        *c_end_ptr   = (oly_bound->c_now + strlen( oly_bound->c_now )),
-                *c_start_ptr =  oly_bound->c_start;
+    OChar       *o_start_ptr =  boundary->o_start;
+    const char  *c_end_ptr   = (boundary->c_now + strlen( boundary->c_now )),
+                *c_start_ptr =  boundary->c_start;
 
     ucnv_toUnicode( boundary->converter,
-        &o_start_ptr, oly_bound->o_end, &c_start_ptr, c_end_ptr, NULL,
+        &o_start_ptr, boundary->o_end, &c_start_ptr, c_end_ptr, NULL,
         TRUE, &u_status );
 
     if (U_FAILURE(u_status))
     {
         fprintf(stderr, "ICU Error: %s.\n",
                 u_errorName(u_status));
+        status = OLY_ERR_LIB;
+    }
+    return status;
+}
+
+OlyStatus
+finish_outbound( OlyBoundary *boundary )
+{
+    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status;
+    const OChar       *o_start_ptr = boundary->o_start,
+                *o_end_ptr   = (boundary->o_now + strlen( boundary->c_now ));
+    char        *c_start_ptr = boundary->c_start;
+    
+    ucnv_fromUnicode ( boundary->converter, &c_start_ptr, boundary->c_end, 
+            &o_start_ptr, o_end_ptr, NULL, TRUE, &u_status );
+    if (U_FAILURE(u_status))
+    {
+        fprintf(stderr, "ICU Error: %s.\n", u_errorName(u_status));
         status = OLY_ERR_LIB;
     }
     return status;

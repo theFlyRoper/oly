@@ -22,6 +22,7 @@
 #define OLY_NODE_H 1
 
 #include "oly/common.h"
+#include <stdbool.h>
 #include <math.h>
 
 BEGIN_C_DECLS
@@ -43,23 +44,35 @@ typedef enum oly_node_value_type_enum {
 struct oly_data_source_node_struct;
 typedef struct oly_data_source_node_struct OlyNode;
 
-extern void reset_node( OlyNode *node );
-extern OlyNode *new_oly_ds_node( OlyStatus *status );
-extern OlyNodeValue *new_node_value( void );
-extern void     close_oly_ds_node( OlyNode *node );
-extern OlyStatus  descend_one_level( OlyNode **node );
-extern OlyStatus  ascend_one_level ( OlyNode **node );
-extern OChar *get_node_key(OlyNode *node, OlyStatus *status);
-extern unsigned char node_has_key(OlyNode *node);
-extern OlyStatus unset_node_has_key(OlyNode *node);
-extern OlyStatus set_node_tuple(OlyNode *node, int64_t tuple);
-extern int64_t get_node_tuple(OlyNode *node, OlyStatus *status);
-extern int64_t get_parent_tuple(OlyNode *node, OlyStatus *status);
-extern OlyStatus copy_node(OlyNode *source, OlyNode *dest);
+struct oly_node_queue_struct;
+typedef struct oly_node_queue_struct OlyNodeQueue;
+
+/* OlyNodeQueue functions */
+OlyStatus open_node_queue(OlyNodeQueue **new_queue);
+void close_node_queue(OlyNodeQueue *free_me);
+
+void close_oly_ds_node(OlyNode *node);
+
+OlyStatus reset_node( OlyNode *node );
+
+OlyStatus descend_one_level( OlyNode **node );
+OlyStatus ascend_one_level ( OlyNode **node );
+OlyStatus unset_node_has_key(OlyNode *node);
+OlyStatus set_node_tuple(OlyNode *node, int64_t tuple);
+OlyStatus set_node_parent( OlyNode *node, OlyNode *parent );
+OlyStatus copy_node(OlyNode *source, OlyNode *dest);
 
 /* node value functions */
-extern OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type);
-extern OlyStatus set_node_string_value(OlyNodeValue *output, const OChar *value);
+OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type);
+OlyStatus set_node_string_value(OlyNode *output, const OChar *value);
+
+OlyStatus new_node_value( OlyNodeValue **new_node_value);
+OlyStatus new_oly_node( OlyNode **new_node );
+OlyStatus get_node_key(OlyNode *node, OChar **key_out);
+OlyStatus node_has_key(OlyNode *node);
+OlyStatus get_node_tuple(OlyNode *node, int64_t *tuple_out );
+OlyStatus get_node_parent( OlyNode *node, OlyNode **parent);
+
 
 END_C_DECLS
 

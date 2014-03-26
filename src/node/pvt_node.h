@@ -33,16 +33,24 @@ union oly_node_value_union {
     double               float_value;
 };
 
-
 struct oly_data_source_node_struct 
 {
     unsigned short       depth;
-    unsigned char        has_key;
+    bool                 has_key;
     OlyNodeValueType     vt;
-    OlyNodeValue         value;
     int64_t              tuple;
+    OlyNodeValue         value;
     OlyNode             *parent_node;
     OChar               *key;
+};
+
+struct oly_node_queue_struct 
+{
+    size_t        node_queue_size;
+    size_t        free_nodes;
+    OlyNode      *buffer_start;
+    OlyNode      *work_area_start;
+    OlyNode      *work_area_end;
 };
 
 END_C_DECLS

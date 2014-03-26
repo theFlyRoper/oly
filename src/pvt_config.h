@@ -3,7 +3,6 @@
 #define SRC_PVT_LOAD_CONFIG_H 1
 
 #include "oly/common.h"
-#include <stdbool.h>
 
 BEGIN_C_DECLS
 

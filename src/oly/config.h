@@ -1,4 +1,4 @@
-/* oly/config.h - Basic functions, IO and other stuff. License GPL2+ {{{
+/* oly/config.h - configuration functions License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#ifndef SRC_OLY_LOAD_CONFIG_H
-#define SRC_OLY_LOAD_CONFIG_H 1
+#ifndef SRC_OLY_CONFIG_H
+#define SRC_OLY_CONFIG_H 1
 
 #include "oly/common.h"
 #include "oly/state.h"
@@ -26,25 +26,31 @@
 
 BEGIN_C_DECLS
 
+typedef enum oly_config_items_enum {
+    OLY_CONFIG_BOUNDARY_BUFFER_MAX,
+    OLY_CONFIG_MAIN_STRING_BUFFER_MAX,
+    OLY_CONFIG_NODE_QUEUE_MAX,
+    OLY_CONFIG_NODE_LIST_MAX
+} OlyConfigItem;
+
 typedef struct OlyConfig_struct OlyConfig;
 
-typedef void (*OlyHandler)(char *input);
 extern OlyConfig * load_config( OlyStatus *status );
 
-/* if null is passed, it allocates a new structure. 
-extern OlyStatus *update_from_char( OlyConfig *conf, char * key,
-        char *value );
+size_t get_boundary_buffer_max(void);
+size_t get_main_string_buffer_max(void);
+size_t get_node_queue_max(void);
+size_t get_node_list_max(void);
+/* void *get_config_item(OlyConfigItem record);
 */
-
 struct OlyConfig_struct {
     OChar *key;
     OChar *value;
     /* points to a subnode, such as an array or block. */
     OlyConfig *subnode;
-    OlyHandler handle;    
 };
 
 END_C_DECLS
 
-#endif /* SRC_OLY_LOAD_CONFIG_H */
+#endif /* SRC_OLY_CONFIG_H */
 

@@ -1,4 +1,4 @@
-/* main for csv importer. License GPL2+ {{{
+/* node_queue.c - Oly string buffer functions License GPL 2+{{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,40 +18,36 @@
  * }}} */
 
 #include "oly/common.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pwd.h>
-#include <unistd.h>
+#include "oly/olytypes.h"
 #include <assert.h>
+#include "node/pvt_node.h"
 
-#include "oly/core.h"
-#include "oly/output.h"
-#include "oly/break_rules.h"
-#include "oly/globals.h"
-#include "pvt_core.h"
-/* MAIN */
-int
-main( int argc, char **argv )
+OlyStatus 
+open_node_queue(OlyNodeQueue **strbuf)
 {
-    OlyStatus        status  = OLY_OKAY;
-    char            *locale = NULL, *charset = NULL;
-#ifdef OLYDEV
-    res_disp_flag   flag;
-#endif /* OLYDEV */
-
-    oly = init_oly(argv[0], PKGDATADIR, charset, locale);
-    printf("hi there!\n");
-
-#ifdef OLYDEV
-    init_res_disp_flag(&flag);
-    list_package_locales(OLY_RESOURCE);
-    list_table_resources(get_resource_data(oly->data), &flag, 0);
-#endif /* OLYDEV */
-  
-    HANDLE_STATUS_AND_DIE(status);
-    return EXIT_SUCCESS;
+    OlyStatus status = OLY_OKAY;
+    return status;
 }
 
+void
+close_node_queue(OlyNodeQueue *strbuf)
+{
+    return;
+}
+
+/* copies at most *length OChars into the string buffer. */
+OlyStatus
+enqueue_to_node_queue( OlyNodeQueue *dest, const OChar *source,
+        const size_t length )
+{
+    OlyStatus status = OLY_OKAY;
+    return status;
+};
+
+/* copies at most *length OChars into the destination. *length holds the number of OChars actually provided at the end. dequeue removes them */
+OlyStatus dequeue_from_node_queue(OlyNodeQueue *source, OChar **dest, size_t *length )
+{
+    OlyStatus status = OLY_OKAY;
+    return status;
+}
 

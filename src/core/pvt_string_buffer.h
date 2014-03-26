@@ -1,4 +1,4 @@
-/* boundary.h -- boundary buffer abstract type definitions. License GPL2+ {{{
+/* src/core/pvt_string_buffer.h - Oly main string buffer internals License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -15,24 +15,29 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
- *
  * }}} */
 
-/* the OlyBoundary abstract data type contains the buffer where oly's calls to ICU's
- * character conversion system take place. */
+#ifndef SRC_CORE_PVT_STRING_BUFFER_H
+#define SRC_CORE_PVT_STRING_BUFFER_H 1
 
-#ifndef DATA_SOURCE_BOUNDARY_H
-#define DATA_SOURCE_BOUNDARY_H 1
+#include "oly/common.h"
+#include <stdbool.h>
 
-struct oly_boundary_struct;
-typedef struct oly_boundary_struct OlyBoundary;
+BEGIN_C_DECLS
 
-extern OlyBoundary *open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status);
+struct oly_string_buffer_struct
+{
 
-extern OlyStatus flush_outbound(OlyBoundary *boundary);
-extern OlyStatus flush_inbound(OlyBoundary *boundary);
+    OChar *buffer;
+    OChar *begin_a;
+    OChar *end_a;
+    OChar *begin_b;
+    OChar *end_b;
+    unsigned int  buffer_size;
+    bool    write_to_a;
+};
 
-OlyStatus get_next_scalar( OlyBoundary *boundary, OChar **next );
-extern OlyStatus copy_ochar_buffer( OlyBoundary *source, OlyBoundary *dest );
+END_C_DECLS
 
-#endif /* DATA_SOURCE_BOUNDARY_H */
+#endif /* SRC_CORE_PVT_STRING_BUFFER_H */
+

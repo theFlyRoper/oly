@@ -104,6 +104,9 @@ Oly *init_oly(const char *prog,
     oly_init->data = NULL;
     oly_init->state = NULL;
     oly_init->config = NULL;
+    oly_init->inbound = NULL;
+    oly_init->node_queue = NULL;
+    oly_init->outbound = NULL;
     /* aborts if encounters unusual states or unclosable files */
     clean_io_open();
     if ( cleanenv() != OLY_OKAY )
@@ -163,9 +166,19 @@ Oly *init_oly(const char *prog,
     oly_init->data = init_primary_resource( inner_locale, 
             inner_charset, inner_datadir );
 
-    oly_init->state = new_state( oly_init->data );
-
     init_errmsg(oly_init);
+    
+    oly_init->state         = new_state( oly_init->data );
+    oly_init->status        = OLY_OKAY;
+    oly_init->inbound       = NULL;
+    oly_init->outbound      = NULL;
+    oly_init->status        = open_node_queue(&(oly_init->node_queue));
+    HANDLE_STATUS_AND_DIE(oly_init->status);
+    oly_init->status        = new_oly_node(&(oly_init->node_stack));
+    HANDLE_STATUS_AND_DIE(oly_init->status);
+    oly_init->status        = open_string_buffer(&(oly_init->string_buffer));
+    HANDLE_STATUS_AND_DIE(oly_init->status);
+
     atexit(close_oly);
     return oly_init;
 }

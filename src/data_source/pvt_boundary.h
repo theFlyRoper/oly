@@ -1,4 +1,4 @@
-/* boundary.h -- boundary buffer abstract type definitions. License GPL2+ {{{
+/* pvt_boundary.h -- private boundary definitions. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,21 +18,29 @@
  *
  * }}} */
 
-/* the OlyBoundary abstract data type contains the buffer where oly's calls to ICU's
- * character conversion system take place. */
+#ifndef DATA_SOURCE_PVT_BOUNDARY_H
+#define DATA_SOURCE_PVT_BOUNDARY_H 1
 
-#ifndef DATA_SOURCE_BOUNDARY_H
-#define DATA_SOURCE_BOUNDARY_H 1
+#include "data_source/boundary.h"
 
-struct oly_boundary_struct;
-typedef struct oly_boundary_struct OlyBoundary;
+BEGIN_C_DECLS
 
-extern OlyBoundary *open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status);
+struct oly_boundary_struct
+{
+    OChar           *o_now;
+    OChar           *o_end;
+    OChar           *o_start;
+/*    OChar           *o_flush_break; */
+    char            *c_now;
+    char            *c_end;
+    char            *c_start;
+/*    char            *c_flush_break; */
+    UConverter      *converter;
+};
 
-extern OlyStatus flush_outbound(OlyBoundary *boundary);
-extern OlyStatus flush_inbound(OlyBoundary *boundary);
+END_C_DECLS
 
-OlyStatus get_next_scalar( OlyBoundary *boundary, OChar **next );
-extern OlyStatus copy_ochar_buffer( OlyBoundary *source, OlyBoundary *dest );
+#endif /* DATA_SOURCE_PVT_BOUNDARY_H */
 
-#endif /* DATA_SOURCE_BOUNDARY_H */
+
+

@@ -4,8 +4,8 @@
 <h1>Oly Data Source Interface</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 375e06b3f0,
-2014-03-21
+version 7aa8585c52,
+2014-03-23
 </p>
 <hr>
 <h2><a name="_structures"></a>Structures</h2>

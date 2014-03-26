@@ -1,4 +1,4 @@
-/* boundary.h -- boundary buffer abstract type definitions. License GPL2+ {{{
+/* boundary.h -- boundary abstract type definitions. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,21 +18,17 @@
  *
  * }}} */
 
-/* the OlyBoundary abstract data type contains the buffer where oly's calls to ICU's
- * character conversion system take place. */
+#include "oly/common.h"
+#include "oly/core.h"
+#include "oly/data_source.h"
 
-#ifndef DATA_SOURCE_BOUNDARY_H
-#define DATA_SOURCE_BOUNDARY_H 1
+#ifndef OLY_BOUNDARY_H
+#define OLY_BOUNDARY_H 1
+BEGIN_C_DECLS
 
-struct oly_boundary_struct;
-typedef struct oly_boundary_struct OlyBoundary;
 
-extern OlyBoundary *open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status);
 
-extern OlyStatus flush_outbound(OlyBoundary *boundary);
-extern OlyStatus flush_inbound(OlyBoundary *boundary);
+END_C_DECLS
+#endif /* OLY_BOUNDARY_H */
 
-OlyStatus get_next_scalar( OlyBoundary *boundary, OChar **next );
-extern OlyStatus copy_ochar_buffer( OlyBoundary *source, OlyBoundary *dest );
 
-#endif /* DATA_SOURCE_BOUNDARY_H */

@@ -20,15 +20,6 @@
  * }}} */
 
 #include "oly/common.h"
-#include "oly/olytypes.h"
-#undef DEFAULT_BUFFER_SIZE
-#define DEFAULT_BUFFER_SIZE 1024
-#include "oly/data_source.h"
-#include "oly/node.h"
-#include "oly/core.h"
-#include "oly/globals.h"
-
-#include "node/pvt_node.h"
 
 #ifdef HAVE_SQLITE3
 #include <sqlite3.h>
@@ -37,6 +28,17 @@
 #ifdef HAVE_YAML_H
 #include <yaml.h>
 #endif /* HAVE_YAML_H */
+
+#include "oly/olytypes.h"
+#undef DEFAULT_BUFFER_SIZE
+#define DEFAULT_BUFFER_SIZE 1024
+#include "oly/data_source.h"
+#include "oly/node.h"
+#include "oly/core.h"
+#include "oly/globals.h"
+#include "pvt_data_source.h"
+
+#include "node/pvt_node.h"
 
 #ifdef OLYDEV
     #define DLOG(fmt, args...) printf("%s:%d:%s(): " fmt, __FILE__, \
@@ -90,10 +92,6 @@ extern void close_sqlite_oly( SQLiteOly *close_me );
 extern OlyStatus set_sqlite_sql( SQLiteOly *db, char *sql);
 extern OlyStatus exec_sqlite_sql( SQLiteOly *db );
 extern OlyStatus finalize_sqlite_sql( SQLiteOly *db );
-
-/* Goal here is to figure out the order things
- * must follow so that ICU and other data sources can
- * work together effectively. */
 
 #include "tests/prototypes/incl-yaml_to_sqlite.c"
 int
@@ -256,20 +254,20 @@ yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
                 break;
             case YAML_SEQUENCE_START_EVENT:
                 yaml_status = OLY_YAML_SEQUENCE;
-                enqueue_ds_node( data, ds->event->data.scalar.value,
-                        OLY_NODE_VALUE_TYPE_SEQUENCE);
+                status = push_ds_node( data, OLY_NODE_VALUE_TYPE_SEQUENCE );
                 have_key = 0x0;
                 break;
             case YAML_SEQUENCE_END_EVENT:
-                status = ds_node_rise(data);
+                status = pop_ds_node( data, OLY_NODE_VALUE_TYPE_SEQUENCE );
                 yaml_status = OLY_YAML_OKAY;
                 break;
             case YAML_MAPPING_START_EVENT:  
-                enqueue_ds_node( data, NULL, OLY_NODE_VALUE_TYPE_MAP );
+                status = push_ds_node( data, OLY_NODE_VALUE_TYPE_MAP );
                 have_key = 0x0;
                 break;
             case YAML_MAPPING_END_EVENT:    
                 yaml_status = OLY_YAML_OKAY;
+                status = pop_ds_node( data, OLY_NODE_VALUE_TYPE_MAP );
                 break;
             case YAML_ALIAS_EVENT:  
                 break;
@@ -285,7 +283,7 @@ yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
                     if (enqueue_ds_node( data, ds->event->data.scalar.value,
                             OLY_NODE_VALUE_SCALAR_STRING) != OLY_OKAY)
                     {
-                        status = handle_ds_status( data );
+                        HANDLE_STATUS_AND_RETURN( data->status );
                     };
                     have_key = 0x0;
                 }

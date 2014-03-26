@@ -165,6 +165,18 @@ extern int errno;
 #define CONC(x, y)      x/**/y
 #endif
 
+#ifdef _WIN32
+#   if defined(OLY_DECLARE_STATIC)
+#       define  OLY_DECLARE(type)  type
+#   elif defined(OLY_DECLARE_EXPORT)
+#       define  OLY_DECLARE(type)  __declspec(dllexport) type
+#   else
+#       define  OLY_DECLARE(type)  __declspec(dllimport) type
+#   endif
+#else
+#   define  OLY_DECLARE(type)  type
+#endif
+
 /** MALLOC MACROS */
 BEGIN_C_DECLS
 

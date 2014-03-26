@@ -37,6 +37,7 @@ print_config( OlyStatus *status )
 
     if ( *status != OLY_OKAY )
     {
+        HANDLE_OLY_STATUS(*status);
         return;
     }
     else if ( config_file == NULL )
@@ -234,6 +235,7 @@ find_config_file (OlyStatus *status)
     void        *free_me;
 
     if (*status != OLY_OKAY)
+        HANDLE_OLY_STATUS(*status);
     {
         return NULL;
     }

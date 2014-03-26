@@ -22,6 +22,23 @@
 #define MAX_NODE_DEPTH 16
 #define MAX_KEY_LENGTH (DEFAULT_BUFFER_SIZE/(MAX_NODE_DEPTH))
 
+/* error handling macros */
+#define HANDLE_OLY_STATUS(status, action) \
+    if ( status != OLY_OKAY ) { u_fprintf(u_stderr, "%s:%d:%s(): %S\n", \
+            __FILE__, __LINE__, __func__, get_errmsg( status )); action ; }
+
+#define HANDLE_STATUS_AND_RETURN(status) \
+    HANDLE_OLY_STATUS(status, return status)
+#define HANDLE_STATUS_AND_DIE(status) \
+    HANDLE_OLY_STATUS(status, exit(EXIT_FAILURE))
+#define HANDLE_STATUS_AND_CONTINUE(status) \
+    HANDLE_OLY_STATUS(status, status = OLY_OKAY )
+#define HANDLE_STATUS_AND_CONTINUE(status) \
+    HANDLE_OLY_STATUS(status, status = OLY_OKAY )
+
+BEGIN_C_DECLS
+
+
 /* main oly structure. details in src/pvt_core.h */
 struct  oly_struct; 
 typedef struct oly_struct Oly;
@@ -42,9 +59,13 @@ typedef struct oly_struct Oly;
 typedef enum OlyStatus_enum {
     /* OLY_STATUS_MIN helps map these internal codes into the 
      * external i18n resource files.     */
+    OLY_WARN_BUFFER_AROUND_THE_CORNER=-12,
+    OLY_STATUS_MIN=-12,
+    OLY_STATUS_OFFSET=12,
+    OLY_WARN_BUFFER_EMPTY=-11,
+    OLY_WARN_TOP_LEVEL_NODE=-10,
+    OLY_WARN_NODE_HAS_NO_KEY=-9,
     OLY_WARN_END_OF_ARGS=-8,
-    OLY_STATUS_MIN=-8,
-    OLY_STATUS_OFFSET=8,
     OLY_WARN_DS_BUFFER_DEFAULT=-7,
     OLY_WARN_SHOW_VERSION=-6,
     OLY_WARN_SHOW_HELP=-5,
@@ -82,7 +103,8 @@ typedef enum OlyStatus_enum {
     OLY_ERR_NODE_MUST_HAVE_VALUE=27,
     OLY_ERR_NODE_MUST_NOT_HAVE_VALUE=28,
     OLY_ERR_ILLEGAL_NODE_TYPE=29,
-    OLY_STATUS_MAX=29
+    OLY_ERR_NO_OBJECT=30,
+    OLY_STATUS_MAX=30
 } OlyStatus;
 
 
@@ -92,6 +114,9 @@ extern OFILE *u_stdout;
 extern OFILE *u_stdin;
 extern char **environ; 
 extern Oly *oly;
+
+extern OChar *get_errmsg( OlyStatus status );
+END_C_DECLS
 
 #endif /* !OLY_OLYTYPES_H */
 

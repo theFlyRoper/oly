@@ -31,6 +31,19 @@
 #include "oly/core.h"
 
 static OlyStatus flush_data_source( OlyDataSource *ds );
+static OlyNode *get_current_node( OlyDataSource *ds );
+
+OlyStatus get_data_source_status( OlyDataSource *ds )
+{
+    if (ds == NULL)
+    {
+        return OLY_ERR_NO_OBJECT;
+    }
+    else
+    { 
+        return ds->status;
+    }
+}
 
 OlyStatus
 set_ds_option_required( OlyDataSource *ds, DataSourceOptions option )
@@ -146,7 +159,7 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     size_t           max_key_size = MAX_KEY_LENGTH;
     if (*status != OLY_OKAY)
     {
-        return NULL;
+        HANDLE_OLY_STATUS(*status, return NULL);
     }
 
     if ((ds_type > DS_TYPE_MAX) || (ds_type < DS_TYPE_MIN))
@@ -215,6 +228,18 @@ get_data_charset( OlyDataSource *ds )
     return ds->charset;
 }
 
+OlyStatus set_data_source_direction (OlyDataSource *ds, OlyDSDirection direction)
+{
+    ds->direction = direction ;
+    return OLY_OKAY;
+}
+
+OlyStatus get_data_source_direction (OlyDataSource *ds, OlyDSDirection *direction)
+{
+    *direction = ds->direction;
+    return OLY_OKAY;
+}
+
 OlyStatus 
 close_data_source( OlyDataSource *ds )
 {
@@ -261,6 +286,7 @@ stage_node_key( OlyDataSource *ds, const char *key )
     size_t      key_len = 0;
     if ( ds->status != OLY_OKAY )
     {
+        HANDLE_STATUS_AND_RETURN(ds->status);
         return ds->status;
     }
     if ( key == NULL )
@@ -276,24 +302,20 @@ stage_node_key( OlyDataSource *ds, const char *key )
     return ds->status;
 }
 
-OlyStatus
-handle_ds_status( OlyDataSource *ds )
-{
-    u_fprintf_u(u_stderr, get_errmsg(ds->status));
-    return OLY_OKAY;
-}
-
 /* enqueue_ds_node resets the key along with adding the node to the queue */
 OlyStatus 
 enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
 {
-    size_t       buffer_needed_value = 0, buffer_needed_key = 0;
-    OlyNode     *new_node = NULL;
+    size_t           buffer_needed_value = 0, buffer_needed_key = 0;
+    OlyNode         *new_node = NULL; /* *curr_node = get_current_node(ds); */
+    /* unsigned short   depth; */
     
     if ( ds->status != OLY_OKAY )
     {
+        HANDLE_STATUS_AND_RETURN(ds->status);
         return ds->status;
     }
+    /* depth = get_ */
 
     /* node_count_now must increase, and if it is too big, flush the node list */
     if ( (ds->node_count_now++) >= ds->node_list_size )
@@ -301,20 +323,24 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
         ds->status = flush_data_source(ds);
         if ( ds->status != OLY_OKAY )
         {
+            HANDLE_STATUS_AND_RETURN(ds->status);
             return ds->status;
         }
     }
 
-    new_node = (ds->node_list)[(ds->node_count_now)];
+    new_node = get_current_node(ds);
     ds->status = set_node_tuple( new_node, (ds->sequence++) );
     if ( ds->status != OLY_OKAY )
     {
+        HANDLE_STATUS_AND_RETURN(ds->status);
         return ds->status;
     }
+
     ds->status = set_node_value( new_node, value, type );
-    
+
     if ( ds->status != OLY_OKAY )
     {
+        HANDLE_STATUS_AND_RETURN(ds->status);
         return ds->status;
     }
     
@@ -331,23 +357,32 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
     return ds->status;
 }
 
-OlyStatus flush_data_source( OlyDataSource *ds )
+OlyNode *get_current_node( OlyDataSource *ds )
+{
+    return (ds->node_list)[(ds->node_count_now)];
+}
+
+OlyStatus 
+flush_data_source( OlyDataSource *ds )
 {
     size_t i = 0;
     if ( ds->status != OLY_OKAY )
     {
+        HANDLE_STATUS_AND_RETURN(ds->status);
         return ds->status;
     }
     
     ds->status = flush_inbound( ds->buffer );
     if ( ds->status != OLY_OKAY )
     {
+        HANDLE_STATUS_AND_RETURN(ds->status);
         return ds->status;
     }
     
     ds->status = copy_ochar_buffer( ds->buffer, ds->destination->buffer );
     if ( ds->status != OLY_OKAY )
     {
+        HANDLE_STATUS_AND_RETURN(ds->status);
         return ds->status;
     }
 
@@ -359,6 +394,23 @@ OlyStatus flush_data_source( OlyDataSource *ds )
     
     ds->node_count_now = 0;
     ds->status = (*ds->destination->dispatch)(ds->destination);
+    return ds->status;
+}
+
+OlyStatus 
+push_ds_node(OlyDataSource *ds, OlyNodeValueType node_value_type)
+{
+    OlyNode     *push_node = NULL;
+    ds->status = new_oly_node( &push_node );
+    HANDLE_STATUS_AND_RETURN(ds->status);
+    ds->status = copy_node( get_current_node(ds), push_node );
+    HANDLE_STATUS_AND_RETURN(ds->status);
+    return ds->status;
+}
+
+OlyStatus 
+pop_ds_node(OlyDataSource *ds, OlyNodeValueType node_value_type)
+{
     return ds->status;
 }
 

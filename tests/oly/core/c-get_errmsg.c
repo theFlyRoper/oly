@@ -36,6 +36,10 @@ main( int argc, char **argv ){
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
     char            *locale = "root",  *charset = NULL;
     const char      *results_char[] = {
+                        "OLY_WARN_BUFFER_AROUND_THE_CORNER",
+                        "OLY_WARN_BUFFER_EMPTY",
+                        "OLY_WARN_TOP_LEVEL_NODE",
+                        "OLY_WARN_NODE_HAS_NO_KEY",
                         "OLY_WARN_END_OF_ARGS",
                         "OLY_WARN_DS_BUFFER_DEFAULT",
                         "OLY_WARN_SHOW_VERSION",
@@ -74,6 +78,7 @@ main( int argc, char **argv ){
                         "OLY_ERR_NODE_MUST_HAVE_VALUE",
                         "OLY_ERR_NODE_MUST_NOT_HAVE_VALUE",
                         "OLY_ERR_ILLEGAL_NODE_TYPE",
+                        "OLY_ERR_NO_OBJECT",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

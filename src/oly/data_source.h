@@ -30,7 +30,7 @@ BEGIN_C_DECLS
 struct data_source_struct;
 typedef struct data_source_struct OlyDataSource;
 
-/* dispatch function for filled node buffers. Any data source will have one for incoming and one for outgoing. May be used elsewhere later. */
+/* dispatch function for filled node buffers. All data sources will have one. May be used elsewhere later. */
 typedef OlyStatus (* OlyDispatch)( OlyDataSource *destination ); 
 
 /* gets the amount of space remaining in the input buffer. */
@@ -65,12 +65,6 @@ typedef enum oly_data_format_enum {
     TABLE_DATA_SOURCE
 } OlyDataFormat;
 
-typedef enum oly_ds_function_type_enum {
-    OLYDS_INIT_FUNCTION,
-    OLYDS_OPEN_FUNCTION,
-    OLYDS_DELETE_FUNCTION
-} OlyDSFunctionType;
-
 typedef enum data_source_type_enum {
     YAML_FILE = 0,
     DS_TYPE_MIN = 0,
@@ -87,7 +81,6 @@ typedef enum data_source_options_enum {
     DSOPT_MAX = 0x1
 } DataSourceOptions;
 
-extern OlyStatus  push_ds_node(OlyDataSource *ds, void *value, OlyNodeValueType node_value_type);
 
 extern OlyStatus check_data_option( OlyDataSource *ds, DataSourceOptions ds_opt);
 extern OlyStatus set_ds_dispatch_function( OlyDataSource *ds, OlyDispatch function);
@@ -107,6 +100,9 @@ extern OlyStatus set_data_option( OlyDataSource *ds,
         const DataSourceOptions option, const char *value );
 extern char *get_data_option( OlyDataSource *ds, const DataSourceOptions option,
         OlyStatus *status );
+extern OlyStatus get_data_source_status( OlyDataSource *ds );
+extern OlyStatus set_data_source_direction (OlyDataSource *ds, OlyDSDirection direction);
+extern OlyStatus get_data_source_direction (OlyDataSource *ds, OlyDSDirection *direction);
 
 /* normally these locale and charset functions should not be necessary,
  * since we can usually deduce this information from the data source itself. */
@@ -116,7 +112,11 @@ extern OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
 extern OlyStatus stage_node_key( OlyDataSource *ds, const char *key );
 extern OlyStatus enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type);
 extern OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node );
-extern OlyStatus handle_ds_status( OlyDataSource *ds );
+
+/* push_ds_node: descends a level and starts a sequence or mapping. */
+extern OlyStatus push_ds_node(OlyDataSource *ds, OlyNodeValueType node_value_type);
+/* pop_ds_node: ascends a level and finishes a sequence or mapping. */
+extern OlyStatus pop_ds_node(OlyDataSource *ds, OlyNodeValueType node_value_type);
 
 /* retrieve locale or charset from the data source. */
 char *get_data_charset( OlyDataSource *ds );

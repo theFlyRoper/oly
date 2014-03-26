@@ -18,42 +18,46 @@
  *
  * }}} */
 
+#include "oly/common.h"
+#include "oly/olytypes.h"
 #include "node/pvt_node.h"
 
-OlyNode *
-new_oly_ds_node( OlyStatus *status )
+OlyStatus 
+new_oly_node( OlyNode **new_node )
 {
-    OlyNode        *new_node = NULL;
-    UErrorCode      u_status = U_ZERO_ERROR;
-    if (*status != OLY_OKAY)
+    OlyStatus       status = OLY_OKAY;
+    OlyNode         *new_node_local = NULL;
+    HANDLE_STATUS_AND_RETURN(status);
+    new_node_local = omalloc(sizeof(OlyNode));
+    if ( new_node_local == NULL )
     {
-        return NULL;
+        status = OLY_ERR_NOMEM;
+        HANDLE_STATUS_AND_RETURN(status);
     }
-    new_node = omalloc(sizeof(OlyNode));
-    if ( new_node == NULL )
-    {
-        *status = OLY_ERR_NOMEM;
-        return NULL;
-    }
+    new_node_local->depth             = 0;
+    new_node_local->vt                = OLY_NODE_VALUE_TYPE_UNSET;
+    new_node_local->tuple             = 0;
+    new_node_local->key               = NULL;
+    new_node_local->parent_node       = NULL;
     
-    new_node->depth             = 0;
-    new_node->vt                = OLY_NODE_VALUE_TYPE_UNSET;
-    new_node->tuple             = 0;
-    new_node->key               = NULL;
-    new_node->parent_node       = NULL;
-    
-    (new_node->value).string_value = NULL;
-    
-    return new_node;
+    (new_node_local->value).string_value = NULL;
+    (*new_node) = new_node_local;
+    return status;
 }
 
-OlyNodeValue *
-new_node_value( void )
+OlyStatus
+new_node_value( OlyNodeValue **new_node_value)
 {
-    return ocalloc(1,sizeof(OlyNodeValue));
+    OlyStatus status = OLY_OKAY;
+    (*new_node_value) = (OlyNodeValue *)ocalloc(1,sizeof(OlyNodeValue));
+    if ((*new_node_value) == NULL)
+    {
+        status = OLY_ERR_NOMEM;
+    }
+    return status;
 }
 
-void
+OlyStatus
 reset_node( OlyNode *node )
 {
     node->depth             = 0;
@@ -62,13 +66,12 @@ reset_node( OlyNode *node )
     node->key               = NULL;
     node->parent_node       = NULL;
     (node->value).string_value = NULL;
+    return OLY_OKAY;
 }
 
 void 
 close_oly_ds_node( OlyNode *node )
 {
-    OlyStatus status = OLY_OKAY;
-
     if (((node->value).string_value) != NULL)
     {
         free((node->value).string_value);
@@ -89,14 +92,14 @@ descend_one_level( OlyNode **node )
 {
     OlyStatus  status = OLY_OKAY;
     OlyNode *next_node = NULL;
-    if (((*node)->current_level + 1) > MAX_NODE_DEPTH)
+    if (((*node)->depth + 1) > MAX_NODE_DEPTH)
     {
         status = OLY_ERR_NODES_TOO_DEEP;
         return status;
     }
-    next_node = new_oly_ds_node( &status );
+    status = new_oly_node( &next_node );
     next_node->parent_node = *node;
-    next_node->current_level = ((*node)->current_level + 1);
+    next_node->depth = ((*node)->depth + 1);
     *node = next_node;
     return status;
 }
@@ -106,7 +109,7 @@ ascend_one_level( OlyNode **node )
 {
     OlyStatus  status = OLY_OKAY;
     OlyNode *next_node = NULL;
-    if (((*node)->current_level - 1) < 0)
+    if (((*node)->depth - 1) < 0)
     {
         status = OLY_ERR_NODES_TOO_SHALLOW;
         return status;
@@ -116,32 +119,36 @@ ascend_one_level( OlyNode **node )
     return status;
 }
 
-OChar *get_node_key(OlyNode *node, OlyStatus *status)
+OlyStatus
+get_node_key(OlyNode *node, OChar **key_out)
 {
-    if (*status != OLY_OKAY)
+    OlyStatus status = node_has_key(node);
+    if ( OLY_WARN_NODE_HAS_NO_KEY == status )
     {
-        return NULL;
+        key_out = NULL;
     }
     else
     {
-        return node->key;
+        (*key_out) = node->key;
     }
-
+    return status;
 };
 
 /* string values must point to a buffer, so they are set separately. */
-OlyStatus set_node_string_value(OlyNode *output, OChar *value)
+OlyStatus 
+set_node_string_value(OlyNode *output, const OChar *value)
 {
     OlyStatus status = OLY_OKAY;
-    (output->value).string_value = value;
+    (output->value).string_value = (OChar *)value;
     return status;
 }
 
 /* sets the value if node type is float or int and checks for errors. */
-OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
+OlyStatus 
+set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
 {
     OlyStatus status = OLY_OKAY;
-    OlyNodeValue *output = node->value;
+    OlyNodeValue *output = &(node->value);
 
     if ((type <= OLY_NODE_VALUE_MIN) || (type > OLY_NODE_VALUE_MAX))
     {
@@ -155,10 +162,10 @@ OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
             case OLY_NODE_VALUE_SCALAR_STRING:
                 break;
             case OLY_NODE_VALUE_SCALAR_FLOAT:
-                (*output).float_value = (double)*value;
+                (*output).float_value = *((double *)value);
                 break;
             case OLY_NODE_VALUE_SCALAR_INT:
-                (*output).int_value = (long)*value;
+                (*output).int_value = *((long *)value);
                 break;
             default:
                 status = OLY_ERR_NODE_MUST_NOT_HAVE_VALUE;
@@ -180,45 +187,61 @@ OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
     return status;
 }
 
-OlyStatus set_node_tuple(OlyNode *node, int64_t tuple)
+OlyStatus 
+set_node_tuple(OlyNode *node, int64_t tuple)
 {
     node->tuple = tuple;
     return OLY_OKAY;
 };
 
-int64_t get_node_tuple(OlyNode *node, OlyStatus *status)
+OlyStatus
+get_node_tuple(OlyNode *node, int64_t *tuple_out )
 {
-    *status = OLY_OKAY;
-    return node->tuple ;
+    OlyStatus status = OLY_OKAY;
+    (*tuple_out) = node->tuple ;
+    return status;
 };
 
-OlyStatus unset_node_has_key(OlyNode *node)
+OlyStatus 
+unset_node_has_key(OlyNode *node)
 {
-    node->has_key = 0x0;
+    node->has_key = false;
+    return OLY_OKAY;
 };
 
-unsigned char node_has_key(OlyNode *node)
+OlyStatus
+node_has_key(OlyNode *node)
 {
-    return node->has_key;
+    OlyStatus status = OLY_OKAY;
+    if (node->has_key == false)
+    {
+        status = OLY_WARN_NODE_HAS_NO_KEY ;
+    }
+    return status;
 };
 
-int64_t get_parent_tuple(OlyNode *node, OlyStatus *status)
+OlyStatus 
+set_node_parent( OlyNode *node, OlyNode *parent )
 {
-    if (*status != OLY_OKAY)
-    {
-        return -1;
-    }
-    if (node->parent_node != NULL)
-    {
-        return node->parent_node->tuple;
-    }
-    else
-    {
-        return 0;
-    }
+    OlyStatus status = OLY_OKAY;
+    node->parent_node = parent;
+    return status;
 }
 
-OlyStatus copy_node(OlyNode *source, OlyNode *dest)
+OlyStatus
+get_node_parent( OlyNode *node, OlyNode **parent)
+{
+    OlyStatus status = OLY_OKAY;
+    if (node->depth < 1)
+    {
+        status = OLY_OKAY;
+        (*parent) = NULL;
+    }
+    return status;
+}
+
+OlyStatus 
+copy_node(OlyNode *source, OlyNode *dest)
 {
     dest->depth             = source->depth;
     dest->vt                = source->vt;
