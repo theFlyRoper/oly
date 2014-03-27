@@ -102,7 +102,6 @@ length_write_space(OlyStringBuffer *strbuf, size_t *length_out)
     HANDLE_STATUS_AND_RETURN(status);
     diff_read_write = write - read;
 
-    STRBUFLOG;
     /* if read and write are same buffer, then we do the state flip check here. */
     if ((same_read_write >= diff_read_write) )
     {
@@ -305,10 +304,11 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
     get_higher_end(strbuf, &next);
     if (*read >= next)
     {
+        STRBUFLOG;
         switch(strbuf->state)
         {
         case WRITE_B_READ_A:
-            if (strbuf->read_a > strbuf->write_a)
+            if (strbuf->read_a >= strbuf->write_a)
             {
                 strbuf->state = WRITE_B_READ_B;
                 strbuf->read_a = strbuf->buffer_start;
@@ -317,7 +317,7 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
             }
             break;
         case WRITE_A_READ_B:
-            if (strbuf->read_b > strbuf->write_b)
+            if (strbuf->read_b >= strbuf->write_b)
             {
                 strbuf->state = WRITE_A_READ_A;
                 strbuf->read_b = strbuf->buffer_start;
@@ -343,7 +343,6 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
         default:
             break;
         }
-        STRBUFLOG;
         HANDLE_STATUS_AND_RETURN(status);
     }
 
