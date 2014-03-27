@@ -54,7 +54,8 @@ root:table {
         {"LT_ERROR_CONFLICTING_FLAGS"}
     }
     OlyErrors:array {
-        {"OLY_WARN_BUFFER_AROUND_THE_CORNER"}
+        {"OLY_WARN_LONG_STRING"}
+        {"OLY_WARN_BUFFER_WRITE_LOCK"}
         {"OLY_WARN_BUFFER_EMPTY"}
         {"OLY_WARN_TOP_LEVEL_NODE"}
         {"OLY_WARN_NODE_HAS_NO_KEY"}

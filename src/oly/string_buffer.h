@@ -32,9 +32,11 @@ OlyStatus open_string_buffer( OlyStringBuffer **strbuf );
 /* free the string buffer. */
 void close_string_buffer( OlyStringBuffer *strbuf );
 /* copies at most *length OChars into the string buffer. */
-OlyStatus enqueue_to_string_buffer( OlyStringBuffer *dest, const OChar *source, const size_t length );
+OlyStatus reserve_string_buffer( OlyStringBuffer *strbuf, const size_t length );
+OlyStatus enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *length_out );
 /* copies at most *length OChars into the destination. *length holds the number of OChars actually provided at the end. */
-OlyStatus dequeue_from_string_buffer( OlyStringBuffer *source, OChar **dest, size_t *length );
+OlyStatus dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, 
+        const size_t size_in, size_t *length );
 
 END_C_DECLS
 

@@ -22,6 +22,13 @@
 #define MAX_NODE_DEPTH 16
 #define MAX_KEY_LENGTH (DEFAULT_BUFFER_SIZE/(MAX_NODE_DEPTH))
 
+#ifdef OLYDEV
+    #define OLYLOG(fmt, args) printf("%s:%d:%s(): " fmt, __FILE__, \
+                                __LINE__, __func__,args)
+#else
+    #define OLYLOG(fmt, args)
+#endif
+
 /* error handling macros */
 #define HANDLE_OLY_STATUS(status, action) \
     if ( status != OLY_OKAY ) { u_fprintf(u_stderr, "%s:%d:%s(): %S\n", \
@@ -59,9 +66,10 @@ typedef struct oly_struct Oly;
 typedef enum OlyStatus_enum {
     /* OLY_STATUS_MIN helps map these internal codes into the 
      * external i18n resource files.     */
-    OLY_WARN_BUFFER_AROUND_THE_CORNER=-12,
-    OLY_STATUS_MIN=-12,
-    OLY_STATUS_OFFSET=12,
+    OLY_WARN_LONG_STRING=-13,
+    OLY_STATUS_MIN=-13,
+    OLY_STATUS_OFFSET=13,
+    OLY_WARN_BUFFER_WRITE_LOCK=-12,
     OLY_WARN_BUFFER_EMPTY=-11,
     OLY_WARN_TOP_LEVEL_NODE=-10,
     OLY_WARN_NODE_HAS_NO_KEY=-9,

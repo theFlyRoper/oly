@@ -218,6 +218,7 @@ libtestcore_a_CPPFLAGS		= $(CHECK_DEFS)
 check_PROGRAMS 	= 	tests/runtests \
 					tests/oly/core/c-get_errmsg \
 					tests/oly/core/c-basic_functions \
+					tests/oly/core/c-string_buffer \
 					tests/oly/data_source/c-oly_yaml \
 					tests/oly/hash/c-read_sizehash_from_hex \
 					tests/oly/hash/c-get_hashbits \
@@ -271,7 +272,6 @@ tests_oly_data_source_c_oly_yaml_SOURCES = tests/oly/data_source/c-oly_yaml.c \
 tests_oly_data_source_c_oly_yaml_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_data_source_c_oly_yaml_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
 									  tests/tap/libtap.a @YAML_LIBS@ 
-										  
 
 tests_oly_core_c_basic_functions_SOURCES = tests/oly/core/c-basic_functions.c 
 tests_oly_core_c_basic_functions_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
@@ -281,6 +281,13 @@ tests_oly_core_c_basic_functions_LDADD 	= libtestcore.a tests/tap/libtap.a \
 										  @ICUIO_LIBS@ @ICU_LIBS@ 
 tests_oly_core_c_basic_functions_LDFLAGS = -lm
 
+
+tests_oly_core_c_string_buffer_SOURCES = tests/oly/core/c-string_buffer.c 
+tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_string_buffer_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
+										  -ansi -std=gnu99 -Werror=format-security
+tests_oly_core_c_string_buffer_LDADD 	= libtestcore.a tests/tap/libtap.a \
+										  @ICUIO_LIBS@ @ICU_LIBS@ 
 
 ## tests_oly_core_c_oly_config_SOURCES = tests/oly/core/c-oly_config.c \
 ## 									  src/core/oly_mem_string.c \

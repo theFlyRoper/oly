@@ -36,7 +36,8 @@ main( int argc, char **argv ){
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
     char            *locale = "root",  *charset = NULL;
     const char      *results_char[] = {
-                        "OLY_WARN_BUFFER_AROUND_THE_CORNER",
+                        "OLY_WARN_LONG_STRING",
+                        "OLY_WARN_BUFFER_WRITE_LOCK",
                         "OLY_WARN_BUFFER_EMPTY",
                         "OLY_WARN_TOP_LEVEL_NODE",
                         "OLY_WARN_NODE_HAS_NO_KEY",

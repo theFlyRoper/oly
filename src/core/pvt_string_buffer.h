@@ -25,16 +25,25 @@
 
 BEGIN_C_DECLS
 
+typedef enum oly_string_buffer_state_enum {
+    WRITE_A_READ_A,
+    WRITE_B_READ_A,
+    WRITE_B_READ_B,
+    WRITE_A_READ_B
+} OlyStringBufferState;
+
 struct oly_string_buffer_struct
 {
-
-    OChar *buffer;
-    OChar *begin_a;
-    OChar *end_a;
-    OChar *begin_b;
-    OChar *end_b;
-    unsigned int  buffer_size;
-    bool    write_to_a;
+    OChar *buffer_start;
+    OChar *read_a;
+    OChar *write_a;
+    OChar *read_b;
+    OChar *write_b;
+    OChar *buffer_end;
+    OChar *reserve_start;
+    OChar *reserve_end;
+    OlyStringBufferState state;
+    bool  keep_long_strings;
 };
 
 END_C_DECLS

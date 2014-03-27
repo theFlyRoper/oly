@@ -40,13 +40,6 @@
 
 #include "node/pvt_node.h"
 
-#ifdef OLYDEV
-    #define DLOG(fmt, args...) printf("%s:%d:%s(): " fmt, __FILE__, \
-                                __LINE__, __func__,args)
-#else
-    #define DLOG(fmt, args...)
-#endif
-
 static void print_help(void);
 static void usage(void);
 static void print_version(void);

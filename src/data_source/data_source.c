@@ -372,20 +372,6 @@ flush_data_source( OlyDataSource *ds )
         return ds->status;
     }
     
-    ds->status = flush_inbound( ds->buffer );
-    if ( ds->status != OLY_OKAY )
-    {
-        HANDLE_STATUS_AND_RETURN(ds->status);
-        return ds->status;
-    }
-    
-    ds->status = copy_ochar_buffer( ds->buffer, ds->destination->buffer );
-    if ( ds->status != OLY_OKAY )
-    {
-        HANDLE_STATUS_AND_RETURN(ds->status);
-        return ds->status;
-    }
-
     for ( i = 0; ( i < ds->node_count_now ); i++ )
     {
         copy_node( ds->node_list[i], ds->destination->node_list[i] );
@@ -414,6 +400,9 @@ pop_ds_node(OlyDataSource *ds, OlyNodeValueType node_value_type)
     return ds->status;
 }
 
-extern OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node );
+OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node )
+{
+    return OLY_OKAY;
+}
 
 
