@@ -34,46 +34,51 @@
 int
 main( int argc, char **argv )
 {
+    const size_t  buffer_length = 256;
     OlyStatus status = OLY_OKAY;
     const char *count_bytes_files[] = {
-            "/data/spawner_output.txt", ""},
+            "/data/orig_breaks.txt", ""},
             *source_dir = getenv("SOURCE");
-    char     filebuffer[BUFSIZ],  *locale = "root", *charset = "UTF-8";
-    OChar    in_buffer[BUFSIZ], out_buffer[BUFSIZ], *obuff;
+    char     filebuffer[buffer_length],  *locale = "root", *charset = "UTF-8";
+    OChar    in_buffer[buffer_length], out_buffer[buffer_length], *obuff;
     OFILE    *f;
     OlyStringBuffer *strbuf;
-    size_t   size_read = 0, buffer_length = BUFSIZ, total_size_read = 0;
-    size_t   outbuf_size = BUFSIZ, len_out = BUFSIZ;
+    size_t   size_read = 0, total_size_read = 0;
+    size_t   outbuf_size = buffer_length, len_out = buffer_length;
     if (source_dir == NULL)
     {
         fprintf(stderr, "requires SOURCE environment variable, supplied by runtest. Exiting...\n");
         exit(EXIT_FAILURE);
     }
     oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    obuff = out_buffer;
 
     status = open_string_buffer( &strbuf );
     HANDLE_STATUS_AND_DIE(status);
     strcpy(filebuffer, source_dir);
     strcat(filebuffer, count_bytes_files[0]);
     f = u_fopen(filebuffer, "rb", locale, charset);
-    do {
-        size_read = u_file_read(in_buffer, buffer_length, f);
+    while (u_feof(f) != TRUE)
+    {
+        u_fgets(in_buffer, buffer_length, f);
         status = reserve_string_buffer( strbuf, buffer_length );
-        status = enqueue_to_string_buffer(strbuf, (const OChar *)in_buffer, &size_read);
 
         if ((status != OLY_ERR_BUFFER_OVERFLOW) && (status != OLY_WARN_LONG_STRING))
         {
+            status = enqueue_to_string_buffer(strbuf, (const OChar *)in_buffer,
+                    &size_read);
             HANDLE_STATUS_AND_DIE(status);
             total_size_read += size_read;
         }
         else
         {
+            status = OLY_OKAY;
             total_size_read += size_read;
-            obuff = out_buffer;
             status = dequeue_from_string_buffer(strbuf, &obuff, outbuf_size, &len_out);
         }
-    } while ((u_feof(f) != TRUE) && (status != OLY_ERR_BUFFER_OVERFLOW));
-    
+    } ;
+    status = dequeue_from_string_buffer(strbuf, &obuff, outbuf_size, &len_out);
+    printf("total read: %zu, output length: %i\n", total_size_read, u_strlen(obuff));
     HANDLE_STATUS_AND_DIE(status);
 
     exit(EXIT_SUCCESS);

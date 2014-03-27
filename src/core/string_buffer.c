@@ -24,13 +24,36 @@
 #include "oly/string_buffer.h"
 #include "core/pvt_string_buffer.h"
 
-#define STRBUFLOG printf("%s:%d:%s():\n\tbuf2ba: %zu, buf2ea %zu, buf2bb %zu, buf2eb %zu buf to end: %zu\n" \
+#define STRBUFLOG printf("%s:%d:%s():\nbuf2ba: %zu, buf2ea %zu, buf2bb %zu, buf2eb %zu buf to end: %zu, state: %s\n" \
         "", __FILE__, __LINE__, __func__, (strbuf->read_a-strbuf->buffer_start), \
         (strbuf->write_a-strbuf->buffer_start), (strbuf->read_b-strbuf->buffer_start), \
-        (strbuf->write_b-strbuf->buffer_start), (strbuf->buffer_end-strbuf->buffer_start));
+        (strbuf->write_b-strbuf->buffer_start), (strbuf->buffer_end-strbuf->buffer_start), get_state(strbuf))
 
 #define STRCOMMITLOG(str1, arg1, arg2) printf("%s:%d:%s():\n" \
         str1, __FILE__, __LINE__, __func__, arg1, arg2 );
+
+static char *get_state(OlyStringBuffer *strbuf);
+static char *get_state(OlyStringBuffer *strbuf)
+{
+    char *state;
+    switch(strbuf->state)
+    {
+        case WRITE_A_READ_A:
+            state = "WARA";
+            break;
+        case WRITE_A_READ_B:
+            state = "WARB";
+            break;
+        case WRITE_B_READ_B:
+            state = "WBRB";
+            break;
+        case WRITE_B_READ_A:
+            state = "WBRA";
+            break;
+    }
+    return state;
+}
+
 
 /* we never actually need get_lower_start, since the lower start will always be the buffer start. */
 static OlyStatus get_lower_end(OlyStringBuffer *strbuf, OChar **lower_end);
@@ -79,24 +102,31 @@ length_write_space(OlyStringBuffer *strbuf, size_t *length_out)
     HANDLE_STATUS_AND_RETURN(status);
     diff_read_write = write - read;
 
+    STRBUFLOG;
     /* if read and write are same buffer, then we do the state flip check here. */
-    if (same_read_write >= diff_read_write)
+    if ((same_read_write >= diff_read_write) )
     {
         *length_out = same_read_write;
     }
-    else
+    else if ( read == strbuf->buffer_start )
     {
         switch(strbuf->state)
         {
             case WRITE_A_READ_A:
+                STRBUFLOG;
                 strbuf->state = WRITE_B_READ_A;
                 break;
             case WRITE_B_READ_B:
+                STRBUFLOG;
                 strbuf->state = WRITE_A_READ_B;
                 break;
             default:
                 break;
         }
+        *length_out = diff_read_write;
+    }
+    else
+    {
         *length_out = diff_read_write;
     }
     return status;
@@ -106,7 +136,7 @@ static OlyStatus
 is_buffer_empty(OlyStringBuffer *strbuf)
 {
     OlyStatus status = OLY_OKAY;
-    if ((strbuf->read_a == strbuf->buffer_start) && (strbuf->read_b == strbuf->buffer_start))
+    if ((strbuf->write_a == strbuf->buffer_start) && (strbuf->write_b == strbuf->buffer_start))
     {
         status = OLY_WARN_BUFFER_EMPTY ;
     }
@@ -124,7 +154,6 @@ open_string_buffer(OlyStringBuffer **strbuf)
         status = OLY_ERR_NOMEM;
         HANDLE_STATUS_AND_DIE(status);
     }
-    OLYLOG(" max_len: %zu\n", max_len);
     new_buffer->buffer_start = (omalloc( max_len * sizeof(OChar))); 
     if (new_buffer->buffer_start == NULL)
     {
@@ -206,20 +235,24 @@ enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *
     OlyStatus status = OLY_OKAY;
     size_t available = 0, jump_spaces = 2;
 
-    assert((strbuf->reserve_start != NULL) && (strbuf->reserve_end != NULL));
+    if((strbuf->reserve_start == NULL) || (strbuf->reserve_end == NULL))
+    {
+        status = OLY_ERR_NO_RESERVATION;
+        return status;
+    };
 /* Problem here.  If the string fills the buffer, it continues.  If it continues,
- * we need to let the user know. We currently pass back a warning and move
- * the item exactly that amount, preserving the string in its entirety.  */
+ * we need to let the user know. We currently pass back a warning and 
+ * check a variable called keep_long_strings.  If true, we move the
+ * write pointer to exactly the end of the string.  If false, we ignore the long
+ * string. */
     available = (strbuf->reserve_end-strbuf->reserve_start-1);
     u_strncpy(strbuf->reserve_start, string, available);
     *(strbuf->reserve_end) = (OChar)0;
     *length_out = u_strlen(strbuf->reserve_start);
-    STRBUFLOG;
-    STRCOMMITLOG("Available: %zu, *length_out: %zu\n", available, *length_out);
     if ( available < *length_out )
     {
         status = OLY_ERR_BUFFER_OVERFLOW;
-        return status;
+        HANDLE_STATUS_AND_RETURN(status);
     }
     else if ( available == *length_out )
     {
@@ -242,9 +275,6 @@ enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *
     {
         strbuf->write_b += (*length_out + jump_spaces);
     }
-    STRCOMMITLOG("write_a-bufstart: %zu, write_b-bufstart: %zu\n", 
-            strbuf->write_a - strbuf->buffer_start ,
-            strbuf->write_b - strbuf->buffer_start );
     strbuf->reserve_start = NULL;
     strbuf->reserve_end = NULL;
 
@@ -256,36 +286,65 @@ OlyStatus
 dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t size_in,
         size_t *length )
 {
+
     OlyStatus status = OLY_OKAY;
-    OChar *read = ((strbuf->read_a >= strbuf->read_b) ? strbuf->read_a : strbuf->read_b);
+    OChar **read = NULL, *next = NULL;
     status = is_buffer_empty(strbuf);
     HANDLE_STATUS_AND_RETURN(status);
-    STRBUFLOG
-
-    u_strncpy( (*dest), read, size_in ) ;
-    (*length) = u_strlen(*dest);
-
-    if (read == strbuf->read_a)
+    if ((strbuf->state == WRITE_A_READ_A) || (strbuf->state == WRITE_B_READ_A))
     {
-        if (strbuf->read_a+(*length) == strbuf->write_a)
-        {
-            strbuf->read_a = strbuf->buffer_start;
-        }
-        else
-        {
-            strbuf->read_a += (*length);
-        }
+        read = &(strbuf->read_a);
     }
     else
     {
-        if (strbuf->read_b+(*length) == strbuf->write_b)
+        read = &(strbuf->read_b);
+    }
+    u_strncpy( (*dest), (*read), size_in ) ;
+    (*length) = (u_strlen(*dest) + 1);
+    (*read) += (*length);
+    get_higher_end(strbuf, &next);
+    if (*read >= next)
+    {
+        switch(strbuf->state)
         {
-            strbuf->read_b = strbuf->buffer_start;
+        case WRITE_B_READ_A:
+            if (strbuf->read_a > strbuf->write_a)
+            {
+                strbuf->state = WRITE_B_READ_B;
+                strbuf->read_a = strbuf->buffer_start;
+                strbuf->write_a = strbuf->buffer_start;
+                break;
+            }
+            break;
+        case WRITE_A_READ_B:
+            if (strbuf->read_b > strbuf->write_b)
+            {
+                strbuf->state = WRITE_A_READ_A;
+                strbuf->read_b = strbuf->buffer_start;
+                strbuf->write_b = strbuf->buffer_start;
+            }
+            break;
+        case WRITE_A_READ_A:
+            if (strbuf->read_a > strbuf->write_a)
+            {
+                strbuf->read_a = strbuf->buffer_start;
+                strbuf->write_a = strbuf->buffer_start;
+                strbuf->state = WRITE_A_READ_B;
+            }
+            break;
+        case WRITE_B_READ_B:
+            if (strbuf->read_b > strbuf->write_b)
+            {
+                strbuf->read_b = strbuf->buffer_start;
+                strbuf->write_b = strbuf->buffer_start;
+                strbuf->state = WRITE_B_READ_A;
+            }
+            break;
+        default:
+            break;
         }
-        else
-        {
-            strbuf->read_b += (*length);
-        }
+        STRBUFLOG;
+        HANDLE_STATUS_AND_RETURN(status);
     }
 
     return status;

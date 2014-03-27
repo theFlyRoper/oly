@@ -98,6 +98,7 @@ root:table {
         {"OLY_ERR_NODE_MUST_NOT_HAVE_VALUE"}
         {"OLY_ERR_ILLEGAL_NODE_TYPE"}
         {"OLY_ERR_NO_OBJECT"}
+        {"OLY_ERR_NO_RESERVATION"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

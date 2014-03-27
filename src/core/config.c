@@ -61,7 +61,7 @@ get_main_string_buffer_max(void)
     size_t max_buffer;
     if (is_config_loaded() == false)
     {
-        max_buffer = (size_t)(BUFSIZ*8);
+        max_buffer = (size_t)(1024);
     }
     return max_buffer;
 }
