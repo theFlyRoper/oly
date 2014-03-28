@@ -27,6 +27,11 @@ BEGIN_C_DECLS
 struct oly_string_buffer_struct;
 typedef struct oly_string_buffer_struct OlyStringBuffer;
 
+#ifdef DEBUG_STRING_BUFFER
+/* help debug values for pointers and state changes */
+void report_values(OlyStringBuffer *strbuf, const char *function);
+void report_values_green(OlyStringBuffer *strbuf, const char *function);
+#endif
 /* create the main string buffer */
 OlyStatus open_string_buffer( OlyStringBuffer **strbuf );
 /* free the string buffer. */

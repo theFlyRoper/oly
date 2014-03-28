@@ -36,19 +36,6 @@ print_stderr_char_color(BashColors fg, BashColors bg, BashAttr attr, const char 
     reset();
 }
 
-void
-print_stdout_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text)
-{
-	fprintf(u_stdout, "%c[%d;%d;%dm%s", 0x1B, attr, fg + 30, bg + 40, text);
-    reset();
-}
-
-void
-print_stderr_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text)
-{
-	fprintf(u_stderr, "%c[%d;%d;%dm%s", 0x1B, attr, fg + 30, bg + 40, text);
-    reset();
-}
 
 static void
 reset( void )

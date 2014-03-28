@@ -167,6 +167,7 @@ libhash_a_CFLAGS				= $(SHA3_CFLAGS)
 ## libhash_a_LIBADD					= lib/sha_three/libo64_hash.a
 
 liboly_dev_a_SOURCES	=	src/debug/list_icu_countries.c \
+							src/debug/bash_printing.c \
 						src/debug/list_table_resources.c \
 						src/debug/list_array_resources.c \
 						src/debug/level_indent.c \
@@ -282,11 +283,14 @@ tests_oly_core_c_basic_functions_LDADD 	= libtestcore.a tests/tap/libtap.a \
 tests_oly_core_c_basic_functions_LDFLAGS = -lm
 
 
-tests_oly_core_c_string_buffer_SOURCES = tests/oly/core/c-string_buffer.c 
-tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_core_c_string_buffer_SOURCES = tests/oly/core/c-string_buffer.c \
+										 src/core/string_buffer.c \
+										 src/debug/bash_printing.c 
+tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS) \
+										  -DDEBUG_STRING_BUFFER=1
 tests_oly_core_c_string_buffer_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
 										  -ansi -std=gnu99 -Werror=format-security
-tests_oly_core_c_string_buffer_LDADD 	= libtestcore.a tests/tap/libtap.a \
+tests_oly_core_c_string_buffer_LDADD 	= tests/tap/libtap.a libtestcore.a \
 										  @ICUIO_LIBS@ @ICU_LIBS@ 
 
 ## tests_oly_core_c_oly_config_SOURCES = tests/oly/core/c-oly_config.c \

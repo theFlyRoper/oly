@@ -18,41 +18,19 @@
  * }}} */
 
 #include "oly/common.h"
+#include <assert.h>
+
 #include "oly/config.h"
 #include "oly/olytypes.h"
-#include <assert.h>
 #include "oly/string_buffer.h"
 #include "core/pvt_string_buffer.h"
 
-#define STRBUFLOG printf("%s:%d:%s():\nbuf2ba: %zu, buf2ea %zu, buf2bb %zu, buf2eb %zu buf to end: %zu, state: %s\n" \
-        "", __FILE__, __LINE__, __func__, (strbuf->read_a-strbuf->buffer_start), \
-        (strbuf->write_a-strbuf->buffer_start), (strbuf->read_b-strbuf->buffer_start), \
-        (strbuf->write_b-strbuf->buffer_start), (strbuf->buffer_end-strbuf->buffer_start), get_state(strbuf))
-
+#include "oly/oly_dev.h"
 #define STRCOMMITLOG(str1, arg1, arg2) printf("%s:%d:%s():\n" \
         str1, __FILE__, __LINE__, __func__, arg1, arg2 );
 
-static char *get_state(OlyStringBuffer *strbuf);
-static char *get_state(OlyStringBuffer *strbuf)
-{
-    char *state;
-    switch(strbuf->state)
-    {
-        case WRITE_A_READ_A:
-            state = "WARA";
-            break;
-        case WRITE_A_READ_B:
-            state = "WARB";
-            break;
-        case WRITE_B_READ_B:
-            state = "WBRB";
-            break;
-        case WRITE_B_READ_A:
-            state = "WBRA";
-            break;
-    }
-    return state;
-}
+static OlyStatus get_lower_end(OlyStringBuffer *strbuf, OChar **lower_end);
+
 
 
 /* we never actually need get_lower_start, since the lower start will always be the buffer start. */
@@ -67,21 +45,21 @@ static OlyStatus get_lower_end(OlyStringBuffer *strbuf, OChar **lower_end)
     OlyStatus status = OLY_OKAY;
     (*lower_end) = (( strbuf->write_a <= strbuf->write_b ) ? strbuf->write_a : strbuf->write_b );
     return status;
-};
+}
 
 static OlyStatus get_higher_end(OlyStringBuffer *strbuf, OChar **higher_end)
 {
     OlyStatus status = OLY_OKAY;
     (*higher_end) = (( strbuf->write_b >= strbuf->write_a ) ? strbuf->write_b : strbuf->write_a );
     return status;
-};
+}
 
 static OlyStatus get_higher_start(OlyStringBuffer *strbuf, OChar **higher_start)
 {
     OlyStatus status = OLY_OKAY;
     (*higher_start) = (( strbuf->read_b >= strbuf->read_a ) ? strbuf->read_b : strbuf->read_a );
     return status;
-};
+}
 
 
 /* fills in length and changes the state for write if needed. */
@@ -109,19 +87,26 @@ length_write_space(OlyStringBuffer *strbuf, size_t *length_out)
     }
     else if ( read == strbuf->buffer_start )
     {
+#ifdef DEBUG_STRING_BUFFER
+        report_values_green(strbuf, __func__);
+#endif
         switch(strbuf->state)
         {
             case WRITE_A_READ_A:
-                STRBUFLOG;
                 strbuf->state = WRITE_B_READ_A;
                 break;
             case WRITE_B_READ_B:
-                STRBUFLOG;
                 strbuf->state = WRITE_A_READ_B;
+                break;
+            case EMPTY:
+                strbuf->state = WRITE_A_READ_A;
                 break;
             default:
                 break;
         }
+#ifdef DEBUG_STRING_BUFFER
+        report_values(strbuf, __func__);
+#endif
         *length_out = diff_read_write;
     }
     else
@@ -223,7 +208,7 @@ reserve_string_buffer( OlyStringBuffer *strbuf, const size_t length )
     }
     strbuf->reserve_end = (strbuf->reserve_start + (length+1));
     return status;
-};
+}
 
 /* adds the OChar string to the buffer.  If the input string is the same 
  * length as allocated space, it returns OLY_WARN_LONG_STRING and leaves the write pointer alone, otherwise it moves the write pointer past the 
@@ -278,7 +263,7 @@ enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *
     strbuf->reserve_end = NULL;
 
     return status;
-};
+}
 
 /* copies at most *length OChars into the destination. *length holds the number of OChars actually provided at the end. dequeue removes them */
 OlyStatus 
@@ -289,7 +274,12 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
     OlyStatus status = OLY_OKAY;
     OChar **read = NULL, *next = NULL;
     status = is_buffer_empty(strbuf);
-    HANDLE_STATUS_AND_RETURN(status);
+    if (status == OLY_WARN_BUFFER_EMPTY)
+    {
+        strbuf->state = EMPTY;
+        u_strcpy( (*dest), (OChar *)"") ;
+        return status;
+    }
     if ((strbuf->state == WRITE_A_READ_A) || (strbuf->state == WRITE_B_READ_A))
     {
         read = &(strbuf->read_a);
@@ -299,12 +289,14 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
         read = &(strbuf->read_b);
     }
     u_strncpy( (*dest), (*read), size_in ) ;
-    (*length) = (u_strlen(*dest) + 1);
+    (*length) = (u_strlen(*dest) + 2);
     (*read) += (*length);
     get_higher_end(strbuf, &next);
     if (*read >= next)
     {
-        STRBUFLOG;
+#ifdef DEBUG_STRING_BUFFER
+        report_values_green(strbuf, __func__);
+#endif
         switch(strbuf->state)
         {
         case WRITE_B_READ_A:
@@ -325,7 +317,7 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
             }
             break;
         case WRITE_A_READ_A:
-            if (strbuf->read_a > strbuf->write_a)
+            if (strbuf->read_a >= strbuf->write_a)
             {
                 strbuf->read_a = strbuf->buffer_start;
                 strbuf->write_a = strbuf->buffer_start;
@@ -333,7 +325,7 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
             }
             break;
         case WRITE_B_READ_B:
-            if (strbuf->read_b > strbuf->write_b)
+            if (strbuf->read_b >= strbuf->write_b)
             {
                 strbuf->read_b = strbuf->buffer_start;
                 strbuf->write_b = strbuf->buffer_start;
@@ -341,11 +333,74 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
             }
             break;
         default:
+            strbuf->read_b = strbuf->buffer_start;
+            strbuf->write_b = strbuf->buffer_start;
+            strbuf->read_a = strbuf->buffer_start;
+            strbuf->write_a = strbuf->buffer_start;
             break;
         }
+#ifdef DEBUG_STRING_BUFFER
+        report_values(strbuf, __func__);
+#endif
         HANDLE_STATUS_AND_RETURN(status);
     }
 
     return status;
 }
+
+#ifdef DEBUG_STRING_BUFFER
+static char *get_state(OlyStringBuffer *strbuf);
+
+extern char displaybuff[BUFSIZ];
+char displaybuff[BUFSIZ];
+static void report_values_color(OlyStringBuffer *strbuf, const char *function, unsigned int color);
+
+void 
+report_values_color(OlyStringBuffer *strbuf, const char *function, unsigned int color)
+{
+    sprintf(displaybuff, "f: %s, state: %s, buf2ba: %zu, buf2ea %zu, buf2bb %zu, buf2eb %zu, total: %zu\n", function, get_state(strbuf),
+        (strbuf->read_a-strbuf->buffer_start),
+        (strbuf->write_a-strbuf->buffer_start),
+        (strbuf->read_b-strbuf->buffer_start),
+        (strbuf->write_b-strbuf->buffer_start),
+        (strbuf->buffer_end-strbuf->buffer_start));
+    print_stdout_char_color( color, BLACK, BRIGHT, displaybuff);
+}
+
+static void report_values_color(OlyStringBuffer *strbuf, const char *function, unsigned int color);
+void report_values_green(OlyStringBuffer *strbuf, const char *function)
+{
+    report_values_color(strbuf, function, GREEN);
+}
+
+void report_values(OlyStringBuffer *strbuf, const char *function)
+{
+    report_values_color(strbuf, function, RED);
+}
+
+static char *get_state(OlyStringBuffer *strbuf)
+{
+    char *state;
+    switch(strbuf->state)
+    {
+        case WRITE_A_READ_A:
+            state = "WARA";
+            break;
+        case WRITE_A_READ_B:
+            state = "WARB";
+            break;
+        case WRITE_B_READ_B:
+            state = "WBRB";
+            break;
+        case WRITE_B_READ_A:
+            state = "WBRA";
+            break;
+        case EMPTY:
+            state = "EMPTY";
+            break;
+    }
+    return state;
+}
+
+#endif 
 
