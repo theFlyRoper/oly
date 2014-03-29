@@ -63,9 +63,9 @@ main( int argc, char **argv )
     f = u_fopen(filebuffer, "rb", locale, charset);
     while (u_feof(f) != TRUE)
     {
+
         u_fgets(in_buffer, buffer_length, f);
         status = reserve_string_buffer( strbuf, buffer_length );
-
         if ((status == OLY_ERR_BUFFER_OVERFLOW) || (status == OLY_WARN_LONG_STRING))
         {
             while (status != OLY_WARN_BUFFER_EMPTY)
@@ -74,13 +74,11 @@ main( int argc, char **argv )
                 u_fprintf_u(u_stdout, obuff);
             }
             status = OLY_OKAY;
+            status = reserve_string_buffer( strbuf, buffer_length );
         }
-        else
-        {
-            total_size_read += size_read;
-            status = enqueue_to_string_buffer(strbuf, (const OChar *)in_buffer,
-                    &size_read);
-        }
+        total_size_read += size_read;
+        status = enqueue_to_string_buffer(strbuf, (const OChar *)in_buffer,
+                &size_read);
     } ;
     
     while (status != OLY_WARN_BUFFER_EMPTY)

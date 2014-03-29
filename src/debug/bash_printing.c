@@ -21,6 +21,8 @@
 #include "oly/olytypes.h"
 #include "oly/oly_dev.h"
 
+U_STRING_DECL(colorstr, "%c[%d;%d;%dm%s", 14); 
+
 static void reset( void );
 void
 print_stdout_char_color(BashColors fg, BashColors bg, BashAttr attr, const char *text)
@@ -36,6 +38,21 @@ print_stderr_char_color(BashColors fg, BashColors bg, BashAttr attr, const char 
     reset();
 }
 
+void
+print_stdout_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text)
+{
+    U_STRING_INIT(colorstr, "%c[%d;%d;%dm%s", 14); 
+	u_fprintf_u(u_stdout, colorstr, 0x1B, attr, fg + 30, bg + 40, text);
+    reset();
+}
+
+void
+print_stderr_OChar_color(BashColors fg, BashColors bg, BashAttr attr, const OChar *text)
+{
+    U_STRING_INIT(colorstr, "%c[%d;%d;%dm%s", 14); 
+	u_fprintf_u(u_stderr, colorstr, 0x1B, attr, fg + 30, bg + 40, text);
+    reset();
+}
 
 static void
 reset( void )

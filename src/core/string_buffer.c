@@ -217,8 +217,8 @@ OlyStatus
 enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *length_out )
 {
     OlyStatus status = OLY_OKAY;
-    size_t available = 0, jump_spaces = 2;
-
+    size_t available = 0;
+    OChar  *copier = NULL;
     if((strbuf->reserve_start == NULL) || (strbuf->reserve_end == NULL))
     {
         status = OLY_ERR_NO_RESERVATION;
@@ -229,35 +229,30 @@ enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *
  * check a variable called keep_long_strings.  If true, we move the
  * write pointer to exactly the end of the string.  If false, we ignore the long
  * string. */
+    copier = strbuf->reserve_start;
     available = (strbuf->reserve_end-strbuf->reserve_start-1);
-    u_strncpy(strbuf->reserve_start, string, available);
-    *(strbuf->reserve_end) = (OChar)0;
-    *length_out = u_strlen(strbuf->reserve_start);
-    if ( available < *length_out )
-    {
-        status = OLY_ERR_BUFFER_OVERFLOW;
-        HANDLE_STATUS_AND_RETURN(status);
-    }
-    else if ( available == *length_out )
+
+    while ((*(copier++) = *(string++)) != 0 && ( copier < strbuf->reserve_end))
+        ;
+    *(strbuf->reserve_end) = 0;
+    *length_out = (copier - strbuf->reserve_start);
+    if ( available == *length_out )
     {
         status = OLY_WARN_LONG_STRING;
-        if (true == strbuf->keep_long_strings)
-        {
-            jump_spaces = 1;
-        }
-        else
+        if (false == strbuf->keep_long_strings)
         {
             return status;
         }
     }
+    copier++;
     
     if ((strbuf->state == WRITE_A_READ_A) || (strbuf->state == WRITE_A_READ_B))
     {
-        strbuf->write_a += (*length_out + jump_spaces);
+        strbuf->write_a = copier;
     }
     else
     {
-        strbuf->write_b += (*length_out + jump_spaces);
+        strbuf->write_b = copier;
     }
     strbuf->reserve_start = NULL;
     strbuf->reserve_end = NULL;

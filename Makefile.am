@@ -286,10 +286,12 @@ tests_oly_core_c_basic_functions_LDFLAGS = -lm
 tests_oly_core_c_string_buffer_SOURCES = tests/oly/core/c-string_buffer.c \
 										 src/core/string_buffer.c \
 										 src/debug/bash_printing.c 
-tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS) \
-										  -DDEBUG_STRING_BUFFER=1
+tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS) 
+## 										  this def adds the debug functions.
+##										  They are not needed for the test.
+##										  -DDEBUG_STRING_BUFFER=1
 tests_oly_core_c_string_buffer_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
-										  -ansi -std=gnu99 -Werror=format-security
+										  -ansi -std=gnu99 -Werror=format-security 
 tests_oly_core_c_string_buffer_LDADD 	= tests/tap/libtap.a libtestcore.a \
 										  @ICUIO_LIBS@ @ICU_LIBS@ 
 
