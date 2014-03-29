@@ -29,8 +29,7 @@ typedef enum oly_string_buffer_state_enum {
     WRITE_A_READ_A,
     WRITE_B_READ_A,
     WRITE_B_READ_B,
-    WRITE_A_READ_B,
-    EMPTY
+    WRITE_A_READ_B
 } OlyStringBufferState;
 
 struct oly_string_buffer_struct

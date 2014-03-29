@@ -36,12 +36,15 @@ void report_values_green(OlyStringBuffer *strbuf, const char *function);
 OlyStatus open_string_buffer( OlyStringBuffer **strbuf );
 /* free the string buffer. */
 void close_string_buffer( OlyStringBuffer *strbuf );
-/* copies at most *length OChars into the string buffer. */
+/* reserves length space or returns OLY_ERR_BUFFER_OVERFLOW */
 OlyStatus reserve_string_buffer( OlyStringBuffer *strbuf, const size_t length );
+/* copies at most *length OChars into the string buffer. */
 OlyStatus enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *length_out );
 /* copies at most *length OChars into the destination. *length holds the number of OChars actually provided at the end. */
 OlyStatus dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, 
         const size_t size_in, size_t *length );
+/* Puts amount of space available into length_out. */
+OlyStatus space_available(OlyStringBuffer *strbuf, size_t *length_out);
 
 END_C_DECLS
 

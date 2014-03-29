@@ -40,8 +40,6 @@
     HANDLE_OLY_STATUS(status, exit(EXIT_FAILURE))
 #define HANDLE_STATUS_AND_CONTINUE(status) \
     HANDLE_OLY_STATUS(status, status = OLY_OKAY )
-#define HANDLE_STATUS_AND_CONTINUE(status) \
-    HANDLE_OLY_STATUS(status, status = OLY_OKAY )
 
 BEGIN_C_DECLS
 
@@ -113,7 +111,8 @@ typedef enum OlyStatus_enum {
     OLY_ERR_ILLEGAL_NODE_TYPE=29,
     OLY_ERR_NO_OBJECT=30,
     OLY_ERR_NO_RESERVATION=31,
-    OLY_STATUS_MAX=31
+    OLY_ERR_STRING_BUFFER_STATE=32,
+    OLY_STATUS_MAX=32
 } OlyStatus;
 
 

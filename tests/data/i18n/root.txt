@@ -99,6 +99,7 @@ root:table {
         {"OLY_ERR_ILLEGAL_NODE_TYPE"}
         {"OLY_ERR_NO_OBJECT"}
         {"OLY_ERR_NO_RESERVATION"}
+        {"OLY_ERR_STRING_BUFFER_STATE"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

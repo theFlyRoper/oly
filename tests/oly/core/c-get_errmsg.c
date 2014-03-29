@@ -81,6 +81,7 @@ main( int argc, char **argv ){
                         "OLY_ERR_ILLEGAL_NODE_TYPE",
                         "OLY_ERR_NO_OBJECT",
                         "OLY_ERR_NO_RESERVATION",
+                        "OLY_ERR_STRING_BUFFER_STATE",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;
