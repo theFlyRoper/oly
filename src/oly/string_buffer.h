@@ -27,12 +27,6 @@ BEGIN_C_DECLS
 
 struct oly_string_buffer_struct;
 typedef struct oly_string_buffer_struct OlyStringBuffer;
-
-#ifdef DEBUG_STRING_BUFFER
-/* help debug values for pointers and state changes */
-void report_values(OlyStringBuffer *strbuf, const char *function);
-void report_values_green(OlyStringBuffer *strbuf, const char *function);
-#endif
 /* create the main string buffer */
 OlyStatus open_string_buffer( OlyStringBuffer **strbuf );
 /* free the string buffer. */
@@ -46,6 +40,12 @@ OlyStatus dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest,
         const size_t size_in, size_t *length );
 /* Puts amount of space available into length_out. */
 OlyStatus space_available(OlyStringBuffer *strbuf, size_t *length_out);
+
+#ifdef DEBUG_STRING_BUFFER
+/* help debug values for pointers and state changes */
+void report_values(OlyStringBuffer *strbuf, const char *function);
+void report_values_green(OlyStringBuffer *strbuf, const char *function);
+#endif
 
 END_C_DECLS
 

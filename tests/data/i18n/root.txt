@@ -100,6 +100,8 @@ root:table {
         {"OLY_ERR_NO_OBJECT"}
         {"OLY_ERR_NO_RESERVATION"}
         {"OLY_ERR_STRING_BUFFER_STATE"}
+        {"OLY_ERR_NODE_QUEUE_FULL"}
+        {"OLY_ERR_NODE_QUEUE_EMPTY"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

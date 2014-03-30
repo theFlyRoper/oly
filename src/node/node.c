@@ -87,38 +87,6 @@ close_oly_ds_node( OlyNode *node )
     return;
 }
 
-OlyStatus  
-descend_one_level( OlyNode **node )
-{
-    OlyStatus  status = OLY_OKAY;
-    OlyNode *next_node = NULL;
-    if (((*node)->depth + 1) > MAX_NODE_DEPTH)
-    {
-        status = OLY_ERR_NODES_TOO_DEEP;
-        return status;
-    }
-    status = new_oly_node( &next_node );
-    next_node->parent_node = *node;
-    next_node->depth = ((*node)->depth + 1);
-    *node = next_node;
-    return status;
-}
-
-OlyStatus  
-ascend_one_level( OlyNode **node )
-{
-    OlyStatus  status = OLY_OKAY;
-    OlyNode *next_node = NULL;
-    if (((*node)->depth - 1) < 0)
-    {
-        status = OLY_ERR_NODES_TOO_SHALLOW;
-        return status;
-    }
-    next_node = (*node)->parent_node ;
-    (*node) = next_node;
-    return status;
-}
-
 OlyStatus
 get_node_key(OlyNode *node, OChar **key_out)
 {
@@ -220,28 +188,20 @@ node_has_key(OlyNode *node)
     return status;
 };
 
-OlyStatus 
-set_node_parent( OlyNode *node, OlyNode *parent )
-{
-    OlyStatus status = OLY_OKAY;
-    node->parent_node = parent;
-    return status;
-}
-
 OlyStatus
-get_node_parent( OlyNode *node, OlyNode **parent)
+get_node_parent( const OlyNode *node, OlyNode **parent)
 {
     OlyStatus status = OLY_OKAY;
     if (node->depth < 1)
     {
-        status = OLY_OKAY;
+        status = OLY_ERR_NODES_TOO_SHALLOW;
         (*parent) = NULL;
     }
     return status;
 }
 
 OlyStatus 
-copy_node(OlyNode *source, OlyNode *dest)
+copy_node(const OlyNode *source, OlyNode *dest)
 {
     dest->depth             = source->depth;
     dest->vt                = source->vt;
@@ -252,5 +212,50 @@ copy_node(OlyNode *source, OlyNode *dest)
     return OLY_OKAY ;
 }
 
+OlyStatus 
+push_node(OlyNode **stack, OlyNode *node )
+{
+    OlyStatus status = OLY_OKAY;
+    OlyNode   *stack_copy;
+    status = new_oly_node( &stack_copy );
+    HANDLE_STATUS_AND_RETURN(status);
+    (node->depth)++;
+    if ((*stack) != NULL)
+    {
+        node->parent_node = (*stack);
+    }
+    status = copy_node( node, stack_copy );
+    HANDLE_STATUS_AND_RETURN(status);
+    (*stack) = stack_copy;
+    return status;
+}
+
+OlyStatus 
+pop_node( OlyNode **stack, OlyNode **node_out )
+{
+    OlyStatus status = OLY_OKAY;
+    OlyNode *old_stack;
+    old_stack = (*stack);
+    if ((*stack)->parent_node != NULL)
+    {
+        (*stack) = (*stack)->parent_node;
+    }
+    else 
+    {
+        status = OLY_ERR_NODES_TOO_SHALLOW;
+        return status;
+    }
+
+    if (node_out != NULL)
+    {
+        (*node_out) = old_stack;
+    }
+    else
+    {
+        close_oly_ds_node( old_stack );
+    }
+
+    return status;
+}
 
 

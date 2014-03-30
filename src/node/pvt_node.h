@@ -46,11 +46,12 @@ struct oly_data_source_node_struct
 
 struct oly_node_queue_struct 
 {
-    size_t        node_queue_size;
-    size_t        free_nodes;
-    OlyNode      *buffer_start;
-    OlyNode      *work_area_start;
-    OlyNode      *work_area_end;
+    size_t        queue_size;
+    OlyNode      *in;
+    OlyNode      *out;
+    OlyNode      *stack;
+    OlyNode      *queue_start;
+    OlyNode      *queue_end;
 };
 
 END_C_DECLS
