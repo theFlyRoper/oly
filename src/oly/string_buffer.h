@@ -21,7 +21,8 @@
 #define SRC_OLY_STRING_BUFFER_H 1
 
 #include "oly/common.h"
-/* oly uses a bip buffer.  Not the most efficient, space wise, but easy to implement and understand */
+/* oly uses a bipartite buffer.  Not the most efficient, space wise, but 
+ * good with chunked data, relatively easy to implement and to understand */
 BEGIN_C_DECLS
 
 struct oly_string_buffer_struct;

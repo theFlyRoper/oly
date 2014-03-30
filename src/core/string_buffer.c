@@ -110,14 +110,14 @@ space_available(OlyStringBuffer *strbuf, size_t *space_available)
             strbuf->state = WRITE_A_READ_B;
             *space_available = space_at_start;
         }
+#ifdef DEBUG_STRING_BUFFER
+        report_values(strbuf, __func__);
+#endif
     }
     else
     {
         length_at_start(strbuf, space_available);
     }
-#ifdef DEBUG_STRING_BUFFER
-        report_values(strbuf, __func__);
-#endif
     return status;
 }
 
@@ -157,7 +157,10 @@ reserve_string_buffer( OlyStringBuffer *strbuf, const size_t length )
         return status;
     }
     status = space_available(strbuf, &available);
-    HANDLE_STATUS_AND_RETURN(status);
+    if ( status != OLY_OKAY )
+    {
+        return status;
+    }
     if ( available < (length+1) )
     {
         status = OLY_ERR_BUFFER_OVERFLOW;
@@ -203,11 +206,11 @@ enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *
         return status;
     }
     copier = strbuf->reserve_start;
-    available = (strbuf->reserve_end-strbuf->reserve_start-1);
+    available = ((strbuf->reserve_end - strbuf->reserve_start) - 1);
 
     while ((*(copier++) = *(string++)) != 0 && ( copier < strbuf->reserve_end))
         ;
-    *(strbuf->reserve_end) = 0;
+    *copier = 0;
     *length_out = (copier - strbuf->reserve_start);
     if ( available == *length_out )
     {
@@ -231,20 +234,24 @@ enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *
     return status;
 }
 
-/* copies at most *length OChars into the destination. *length holds the number of OChars actually provided at the end. dequeue removes them 
- * dequeue only leads to WRITE_A_READ_A and WRITE_B_READ_B from empty. */
+/* copies at most *length OChars into the destination. *length holds the number of 
+ * OChars actually provided at the end. dequeue removes them from the output
+ * buffer if successful.  returns OLY_WARN_BUFFER_EMPTY if the buffer is empty,
+ * and OLY_ERR_BUFFER_OVERFLOW if there was not enough space in the output buffer.
+ * if there was not enough space, sets initial OChar in output buffer to zero (null).
+ * Dequeue only leads to WRITE_A_READ_A and WRITE_B_READ_B
+ * when it reads the end of the current part. */
 OlyStatus 
 dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t size_in,
         size_t *length )
 {
-
     OlyStatus status = OLY_OKAY;
-    OChar **read = NULL, *next = NULL;
+    OChar **read = NULL, *next = NULL, *copier = (*dest), *stop = ((*dest) + size_in);
     status = is_buffer_empty(strbuf);
     if (status == OLY_WARN_BUFFER_EMPTY)
     {
         strbuf->state = WRITE_A_READ_A;
-        u_strcpy( (*dest), (OChar *)"") ;
+        (**dest) = (OChar)0;
         return status;
     }
     if ((strbuf->state == WRITE_A_READ_A) || (strbuf->state == WRITE_B_READ_A))
@@ -255,9 +262,18 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
     {
         read = &(strbuf->read_b);
     }
-    u_strncpy( (*dest), (*read), size_in ) ;
-    (*length) = (u_strlen(*dest) + 2);
-    (*read) += (*length);
+    next = (*read);
+    while (((*(copier++) = *(next++)) != 0) && ( copier < stop ))
+        ;
+    
+    if (copier >= (stop - 1))
+    {
+        status = OLY_ERR_BUFFER_OVERFLOW;
+        (**dest) = (OChar)0;
+        return status;
+    }
+    (*length) = (copier - (*dest));
+    (*read) += (*length + 1);
     get_higher_end(strbuf, &next);
     if (*read >= next)
     {
@@ -299,15 +315,9 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
             }
             break;
         }
-#ifdef DEBUG_STRING_BUFFER
-        report_values(strbuf, __func__);
-#endif
-        HANDLE_STATUS_AND_RETURN(status);
     }
-
     return status;
 }
-
 
 OlyStatus 
 open_string_buffer(OlyStringBuffer **strbuf)

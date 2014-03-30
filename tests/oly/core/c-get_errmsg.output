@@ -1,4 +1,4 @@
-1..53
+1..54
 # From the smallest to one bigger than biggest error number.
 ok 1 - Item: -13, err: OLY_WARN_LONG_STRING
 ok 2 - Item: -12, err: OLY_WARN_BUFFER_WRITE_LOCK
@@ -45,15 +45,16 @@ ok 42 - Item: 28, err: OLY_ERR_NODE_MUST_NOT_HAVE_VALUE
 ok 43 - Item: 29, err: OLY_ERR_ILLEGAL_NODE_TYPE
 ok 44 - Item: 30, err: OLY_ERR_NO_OBJECT
 ok 45 - Item: 31, err: OLY_ERR_NO_RESERVATION
-ok 46 - Item: 32, err: OLY_ERR_UNKNOWN
+ok 46 - Item: 32, err: OLY_ERR_STRING_BUFFER_STATE
+ok 47 - Item: 33, err: OLY_ERR_UNKNOWN
 # One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.
-ok 47 - Number: -14
+ok 48 - Number: -14
 # A few wildly outlandish numbers.  Powers of -17!
-ok 48 - Number: 289
-ok 49 - Number: -4,913
-ok 50 - Number: 83,521
-ok 51 - Number: -1,419,857
+ok 49 - Number: 289
+ok 50 - Number: -4,913
+ok 51 - Number: 83,521
+ok 52 - Number: -1,419,857
 # Hex digits, mwaha
-ok 52 - Number: 43,690, submitted: �
-ok 53 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
-# All 53 tests successful or skipped
+ok 53 - Number: 43,690, submitted: �
+ok 54 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
+# All 54 tests successful or skipped
