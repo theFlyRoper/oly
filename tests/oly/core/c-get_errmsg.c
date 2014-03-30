@@ -87,8 +87,9 @@ main( int argc, char **argv ){
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;
+    OlyStatus        status;
     
-    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    status = init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
     
     for ( i = 0; (i<=num_tests); i++)
     {

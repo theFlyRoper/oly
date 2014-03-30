@@ -26,6 +26,7 @@
 #include <yaml.h>
 
 #include "oly/data_source.h"
+#include "data_source/boundary.h"
 #include "pvt_data_source.h"
 #include "oly/oly_dev.h"
 #include "oly/core.h"
@@ -405,4 +406,14 @@ OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node )
     return OLY_OKAY;
 }
 
+OlyStatus open_ds_boundary( OlyDataSource *ds, char *charset )
+{
+    ds->status = get_max_buffer_size(ds);
+    if (ds->status == OLY_WARN_DS_BUFFER_DEFAULT)
+    {
+        ds->status = OLY_OKAY;
+    }
+    ds->status = open_oly_boundary(charset, ds->max_buffer_size, &(ds->buffer));
+    return ds->status;
+}
 

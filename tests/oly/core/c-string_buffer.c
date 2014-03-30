@@ -67,10 +67,10 @@ main( int argc, char **argv )
                 7, 6, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 
                 9, 10, 11, 12, 10, 6, 5, 4, 3, 2, 1, 0}
                 ;
-
-    obuff = (OChar *)ocalloc(buffer_length, sizeof(OChar));
     U_STRING_INIT(empty, "", 1); 
     U_STRING_INIT(too_long, "Antidisestablishmentarianism\0", 29); 
+
+    obuff = (OChar *)ocalloc(buffer_length, sizeof(OChar));
     size_read = 0;
     rows_read = 0;
     total_size_read = 0;
@@ -81,7 +81,7 @@ main( int argc, char **argv )
         fprintf(stderr, "requires SOURCE environment variable, supplied by runtest. Exiting...\n");
         exit(EXIT_FAILURE);
     }
-    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    status = init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
     prepare_file(source_dir, count_bytes_files[0], &f);
     
     plan( rows_read + 90 );

@@ -100,13 +100,13 @@ main( int argc, char **argv )
                         "foreign key (node_id) references node(id),\n"
                         "foreign key (parent_node_id) references node(id)"
                         "unique (node_id, parent_node_id));";
-    OlyBoundary     *oly_bound;
     YAMLOly         *yaml_data;
     SQLiteOly       *sqlite_data;
-    OlyDataSource   *ds;
+    OlyDataSource   *yaml_ds;
+    OlyDataSource   *sqlite_ds;
     size_t           buffer_size = DEFAULT_BUFFER_SIZE;
 
-    oly     = init_oly(argv[0], locdir, charset, locale);
+    status = init_oly(argv[0], locdir, charset, locale, &oly );
     status  = get_options(argc, argv);
 
     switch (status)
@@ -126,15 +126,12 @@ main( int argc, char **argv )
             pick_up_phone_booth_and_die(status);
     }
 
-    ds          = new_data_source( YAML_FILE , &status );
-    set_max_buffer_size( ds, buffer_size );
-    set_data_charset( ds, charset );
-    oly_bound = open_oly_boundary(get_data_charset(ds), get_max_buffer_size(ds), &status);
-    
-    if (oly_bound == NULL)
-    {
-        pick_up_phone_booth_and_die(status);
-    }
+    yaml_ds = new_data_source( YAML_FILE , &status );
+    sqlite_ds = new_data_source( SQLITE_FILE , &status );
+    set_max_buffer_size( yaml_ds, buffer_size );
+    set_data_charset( yaml_ds, charset );
+    set_max_buffer_size( sqlite_ds, buffer_size );
+    set_data_charset( sqlite_ds, charset );
 
     strcpy(name_buffer, DATASOURCEDIR); 
     strcat(name_buffer, yaml_file);

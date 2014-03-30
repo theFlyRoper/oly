@@ -32,6 +32,7 @@ static void print_version(void);
 /* MAIN */
 int
 main( int argc, char **argv ){
+    OlyStatus status = OLY_OKAY;
     char            *locale = NULL, *locdir=PKGDATADIR,
                     *charset = NULL, c, *find_me = NULL;
     res_disp_flag   flag;
@@ -103,7 +104,7 @@ main( int argc, char **argv ){
         }
     }
     
-    oly = init_oly(argv[0], locdir, charset, locale);
+    status = init_oly(argv[0], locdir, charset, locale, &oly );
     if (flag.badopt == 1) 
     {
         printf("Error: unrecognized option.");
@@ -145,7 +146,7 @@ main( int argc, char **argv ){
         list_table_resources(get_resource_data(oly->data), &flag, 0);
     }
   
-    if (U_FAILURE(u_status)) {
+    if ((U_FAILURE(u_status)) || status != OLY_OKAY) {
         exit(EXIT_FAILURE);
     } else {
         exit(EXIT_SUCCESS);

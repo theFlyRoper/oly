@@ -198,6 +198,7 @@ libcore_a_SOURCES	=	src/resources/get_resource_data.c \
 						src/core/oly_mem_string.c \
 						src/core/olystate.c \
 						src/data_source/data_source.c \
+						src/data_source/boundary.c \
 						src/data_source/get_ltdl_errmsg.c 
 
 ##					src/core/config.c \

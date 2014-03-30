@@ -83,8 +83,8 @@ static char *istrdup (const char *string);
  * 1. Does not load config right now.  It should, once config is implemented.
  */
 
-Oly *init_oly(const char *prog, 
-        const char *datadir, const char *charset, const char *locale )
+OlyStatus init_oly(const char *prog, 
+        const char *datadir, const char *charset, const char *locale, Oly **oly_out)
 {
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
@@ -176,9 +176,10 @@ Oly *init_oly(const char *prog,
     HANDLE_STATUS_AND_DIE(oly_init->status);
     oly_init->status        = open_string_buffer(&(oly_init->string_buffer));
     HANDLE_STATUS_AND_DIE(oly_init->status);
-
+    (*oly_out)              = oly_init;
     atexit(close_oly);
-    return oly_init;
+
+    return oly_init->status;
 }
 
 void *

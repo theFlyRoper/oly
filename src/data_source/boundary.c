@@ -21,9 +21,10 @@
 #include "oly/olytypes.h"
 #include "data_source/pvt_boundary.h"
 
-OlyBoundary *
-open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
+OlyStatus
+open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
 {
+    OlyStatus    status = OLY_OKAY;
     UErrorCode   u_status = U_ZERO_ERROR;
     size_t       o_size = 0, c_size = 0, max_characters = 0, min_char_size = 0;
     char        *break_ptr;
@@ -92,8 +93,9 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status)
     /* o_size and c_size contain exact multiples of the size of their respective character sets. */
     assert( ( o_size % sizeof(OChar) ) == 0 );
     assert( ( c_size % min_char_size ) == 0 );
+    (*bind) = oly_bound;
 
-    return oly_bound;
+    return status;
 };
 
 OlyStatus

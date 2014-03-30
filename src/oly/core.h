@@ -35,8 +35,8 @@ BEGIN_C_DECLS
 struct passwd;
 
 /* constructor */
-extern Oly      *init_oly(const char *prog, 
-        const char *datadir, const char *charset, const char *locale);
+OlyStatus init_oly(const char *prog, 
+        const char *datadir, const char *charset, const char *locale, Oly **oly_out);
 
 extern OChar    *get_ltdl_errmsg( int status );
 extern size_t    memory_left_now(void);

@@ -27,7 +27,8 @@
 struct oly_boundary_struct;
 typedef struct oly_boundary_struct OlyBoundary;
 
-extern OlyBoundary *open_oly_boundary(char *charset, size_t buffer_max_size, OlyStatus *status);
+OlyStatus open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind);
+void close_oly_boundary(OlyBoundary **bind);
 
 extern OlyStatus flush_outbound(OlyBoundary *boundary);
 extern OlyStatus flush_inbound(OlyBoundary *boundary);

@@ -47,12 +47,12 @@ main( int argc, char **argv )
     struct  stat sts;
     time_t  now;
     FILE    *f;
+    init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
     if (source_dir == NULL)
     {
         fprintf(stderr, "requires SOURCE environment variable, supplied by runtest. Exiting...\n");
         exit(EXIT_FAILURE);
     }
-    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
     plan(16);
     diag("----- Testing oly_timestamp function. -----");
     time(&now);

@@ -44,7 +44,7 @@ main( int argc, char **argv )
         printf("Could not load yaml file %s. Exiting...\n", files[record]);
         exit(EXIT_FAILURE);
     }
-    oly             = init_oly( argv[0], TEST_PKGDATADIR, charset, locale );
+    status = init_oly( argv[0], TEST_PKGDATADIR, charset, locale, &oly);
     load_yaml( &status, ds );
     /*    print_yaml( &status , ds ); */
     printf("\n");
