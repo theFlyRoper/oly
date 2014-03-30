@@ -43,7 +43,7 @@ main( int argc, char **argv ){
     data_length         hash_length ;
     int                 strcmp_val;
     char            *locale = (char *)"root",  *charset = NULL;
-    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
   
     if (argc != 3) 
     {
@@ -77,6 +77,5 @@ main( int argc, char **argv ){
     }
     printf("Success!\n");
     return EXIT_SUCCESS;
-    
 }
 
