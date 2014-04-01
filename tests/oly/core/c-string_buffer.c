@@ -54,7 +54,7 @@ main( int argc, char **argv )
     },
             *source_dir = getenv("SOURCE");
     char     *locale = "root", *charset = "UTF-8";
-    OChar   *obuff;
+    OChar   *obuff, *result;
     size_t  enqueue_count = 0, dequeue_count = 0, dequeue_out = 0, iterations = 0;
     OFILE    *f;
     OlyStringBuffer *strbuf;
@@ -87,12 +87,16 @@ main( int argc, char **argv )
     plan( rows_read + 90 );
     diag("---- tests for OlyStringBuffer data structure. ----");
     
-    diag("OlyStringBuffer depends on function get_main_string_buffer_max.  It should return 1024 for these tests, because these tests were designed at that number.");
-    if( 1024 != get_main_string_buffer_max())
-    {
-        bail("get_main_string_buffer_max: it should return 1024.");
-    }
+    diag("OlyStringBuffer tests require a buffer size of 1024, minus 2, 1 for buffer end, and 1 more because space_available always counts one less than actual available.  It should return 1024 for these tests, because these tests were designed at that number.");
     status = open_string_buffer( &strbuf );
+    
+    space_available(strbuf, &iterations);
+    
+    if( 1022 != iterations)
+    {
+        bail("space available in strbuf: %zu", iterations);
+    }
+    iterations = 0;
     is_int(status, OLY_OKAY, "confirm open_string_buffer returns OLY_OKAY");
 
     size_read = 0; 
@@ -117,7 +121,7 @@ main( int argc, char **argv )
     is_int(OLY_OKAY, status, "Check results for reserve.");
     status = reserve_string_buffer( strbuf, buffer_length );
     is_int(OLY_WARN_BUFFER_WRITE_LOCK, status, "Gives OLY_WARN_BUFFER_WRITE_LOCK if enqueue has not been called after reserve.");
-    status = enqueue_to_string_buffer(strbuf, empty, &size_read);
+    status = enqueue_to_string_buffer(strbuf, empty, &result, &size_read);
     is_int(status, OLY_OKAY, "Enqueue to string buffer status for empty string.");
     is_int(0, size_read, "Empty string.");
     status = reserve_string_buffer( strbuf, (get_main_string_buffer_max()*2) );
@@ -125,7 +129,7 @@ main( int argc, char **argv )
     status = dequeue_from_string_buffer(strbuf, &obuff, outbuf_size, &len_out);
     is_int(OLY_WARN_BUFFER_EMPTY, status, "confirm dequeue returns empty.");
     status = reserve_string_buffer( strbuf, buffer_length );
-    status = enqueue_to_string_buffer(strbuf, too_long, &size_read);
+    status = enqueue_to_string_buffer(strbuf, too_long, &result, &size_read);
     size_read = 5;
     status = dequeue_from_string_buffer(strbuf, &obuff, size_read, &len_out);
     is_int(OLY_ERR_BUFFER_OVERFLOW, status, "dequeue returns OLY_ERR_BUFFER_OVERFLOW for a too-small output buffer.");
@@ -169,7 +173,7 @@ static OlyStatus
 enqueue_rows(OlyStringBuffer *strbuf, OFILE *f, size_t rows, size_t *rows_enqueued)
 {
     OlyStatus status = OLY_OKAY;
-    OChar    in_buffer[buffer_length];
+    OChar    in_buffer[buffer_length], *out_string;
     *rows_enqueued = 0;
     do {
         status = reserve_string_buffer( strbuf, buffer_length );
@@ -178,7 +182,7 @@ enqueue_rows(OlyStringBuffer *strbuf, OFILE *f, size_t rows, size_t *rows_enqueu
         {
             u_fgets(in_buffer, buffer_length, f);
             status = enqueue_to_string_buffer(strbuf, (const OChar *)in_buffer, 
-                    &len_out);
+                    &out_string, &len_out);
             (*rows_enqueued)++;
             total_size_read += len_out;
         }

@@ -130,6 +130,7 @@ resex_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 yaml_to_sqlite_CFLAGS		= $(DEV_CFLAGS)
 yaml_to_sqlite_SOURCES		= tests/prototypes/yaml_to_sqlite.c \
 							  src/data_source/boundary.c \
+							  src/core/oly_run.c \
 							  src/node/node.c
 yaml_to_sqlite_LDFLAGS		= @SQLITE3_LDFLAGS@
 yaml_to_sqlite_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
@@ -201,8 +202,6 @@ libcore_a_SOURCES	=	src/resources/get_resource_data.c \
 						src/data_source/boundary.c \
 						src/data_source/get_ltdl_errmsg.c 
 
-##					src/core/config.c \
-
 libcore_a_CPPFLAGS			= $(AM_CPPFLAGS)	
 libcore_a_CFLAGS			= $(DEV_CFLAGS) 
 
@@ -214,8 +213,6 @@ CHECK_DEFS	= @DEFS@ @DEV_DEF@ \
 
 libtestcore_a_SOURCES		= $(libcore_a_SOURCES)
 libtestcore_a_CPPFLAGS		= $(CHECK_DEFS) 
-
-## tests/oly/core/c-oly_config \
 
 check_PROGRAMS 	= 	tests/runtests \
 					tests/oly/core/c-get_errmsg \
@@ -287,7 +284,7 @@ tests_oly_core_c_basic_functions_LDFLAGS = -lm
 tests_oly_core_c_string_buffer_SOURCES = tests/oly/core/c-string_buffer.c \
 										 src/core/string_buffer.c \
 										 src/debug/bash_printing.c 
-tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS) 
+tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS) -DTEST_STRBUF=1
 ##										  -DDEBUG_STRING_BUFFER=1
 ## 										  this def adds the debug functions.
 ##										  They are not needed for the test.
@@ -295,14 +292,6 @@ tests_oly_core_c_string_buffer_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
 										  -ansi -std=gnu99 -Werror=format-security 
 tests_oly_core_c_string_buffer_LDADD 	= tests/tap/libtap.a libtestcore.a \
 										  @ICUIO_LIBS@ @ICU_LIBS@ 
-
-## tests_oly_core_c_oly_config_SOURCES = tests/oly/core/c-oly_config.c \
-## 									  src/core/oly_mem_string.c \
-## 									  src/debug/bash_printing.c 
-## tests_oly_core_c_oly_config_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
-## tests_oly_core_c_oly_config_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
-## 									  tests/tap/libtap.a @YAML_LIBS@ 
-## 
 
 check-local: check-i18n $(check_PROGRAMS) 
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \

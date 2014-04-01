@@ -31,8 +31,6 @@
 #include "oly/oly_dev.h"
 #include "oly/core.h"
 
-static OlyStatus flush_data_source( OlyDataSource *ds );
-static OlyNode *get_current_node( OlyDataSource *ds );
 
 OlyStatus get_data_source_status( OlyDataSource *ds )
 {
@@ -81,9 +79,19 @@ set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option )
 }
 
 OlyStatus 
+run_ds_dispatch_function( OlyDataSource *ds )
+{
+    OlyStatus status = OLY_OKAY;
+    status = (*ds->dispatch)(ds);
+    return status;
+}
+
+OlyStatus 
 set_ds_dispatch_function( OlyDataSource *ds, OlyDispatch function)
 {
-    return OLY_OKAY;
+    OlyStatus status = OLY_OKAY;
+    ds->dispatch = function;
+    return status;
 }
 
 size_t 
@@ -106,10 +114,8 @@ get_max_buffer_size(OlyDataSource *ds)
 OlyStatus
 set_max_buffer_size(OlyDataSource *ds, size_t mbuff)
 {
-
     if (mbuff == 0)
     {
-
         ds->status = OLY_WARN_DS_BUFFER_DEFAULT;
         ds->max_buffer_size = DEFAULT_BUFFER_SIZE;
     }
@@ -180,11 +186,15 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     retval->required_settings = 0x0;
     retval->locale = NULL;
     retval->charset = NULL;
-    retval->key_staging = ocalloc((max_key_size), 1);
+    retval->key_staging = ocalloc((max_key_size), sizeof(char));
     retval->key_stage_max_length = (max_key_size-1);
-    retval->node_list_size = (size_t)MAX_NODE_DEPTH;
-    retval->node_count_now = (size_t)0;
-    retval->node_list = (OlyNode **)ocalloc(retval->node_list_size, sizeof(OlyNode *));
+    retval->max_buffer_size = DEFAULT_BUFFER_SIZE;
+    retval->external_scalar = ocalloc((max_key_size), sizeof(char));
+    retval->internal_scalar = ocalloc((max_key_size), sizeof(OChar));
+    retval->boundary = NULL;
+    retval->sequence = 0;
+    *status = new_oly_node(&(retval->node));
+    retval->data = NULL;
 
 /*  retval->init_function = NULL;
     retval->open_function = NULL;
@@ -269,6 +279,10 @@ close_data_source( OlyDataSource *ds )
         free_me = (void *)ds->charset;
         OFREE(free_me);
     }
+    if ( ds->boundary != NULL )
+    {
+        close_oly_boundary(ds->boundary);
+    }
     free_me = (void *)ds;
     OFREE(free_me);
     return OLY_OKAY;
@@ -307,113 +321,155 @@ stage_node_key( OlyDataSource *ds, const char *key )
 OlyStatus 
 enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
 {
-    size_t           buffer_needed_value = 0, buffer_needed_key = 0;
+    size_t           buffer_needed_value = 0, buffer_needed_key = 0, length = 0;
     OlyNode         *new_node = NULL; /* *curr_node = get_current_node(ds); */
+    bool             has_string = false;
     /* unsigned short   depth; */
-    
-    if ( ds->status != OLY_OKAY )
-    {
-        HANDLE_STATUS_AND_RETURN(ds->status);
-        return ds->status;
-    }
+    HANDLE_STATUS_AND_RETURN(ds->status);
     /* depth = get_ */
-
-    /* node_count_now must increase, and if it is too big, flush the node list */
-    if ( (ds->node_count_now++) >= ds->node_list_size )
-    {
-        ds->status = flush_data_source(ds);
-        if ( ds->status != OLY_OKAY )
-        {
-            HANDLE_STATUS_AND_RETURN(ds->status);
-            return ds->status;
-        }
-    }
-
-    new_node = get_current_node(ds);
+    new_node = ds->node;
+    reset_node(new_node);
     ds->status = set_node_tuple( new_node, (ds->sequence++) );
-    if ( ds->status != OLY_OKAY )
-    {
-        HANDLE_STATUS_AND_RETURN(ds->status);
-        return ds->status;
-    }
-
-    ds->status = set_node_value( new_node, value, type );
-
-    if ( ds->status != OLY_OKAY )
-    {
-        HANDLE_STATUS_AND_RETURN(ds->status);
-        return ds->status;
-    }
+    HANDLE_STATUS_AND_RETURN(ds->status);
     
-    /* if value is str, check length. */
-    if (( type == OLY_NODE_VALUE_SCALAR_STRING ) && ( ds->status == OLY_OKAY ))
-    {
-        buffer_needed_value += (strlen( (char *)value ) + 1);
-    }
     /* if key *value != \0, append it to the converter buffer and set *key to \0. */
     if ( ( *(ds->key_staging) != '\0' ) && ( ds->status == OLY_OKAY ) )
     {
-        buffer_needed_key += (strlen( ds->key_staging ) + 1);
+        has_string = true;
+        buffer_needed_key += strlen( ds->key_staging );
+        ds->status = put_scalar_in( ds->boundary , (const char *)ds->key_staging,
+                buffer_needed_key );
     }
-    return ds->status;
-}
 
-OlyNode *get_current_node( OlyDataSource *ds )
-{
-    return (ds->node_list)[(ds->node_count_now)];
-}
-
-OlyStatus 
-flush_data_source( OlyDataSource *ds )
-{
-    size_t i = 0;
-    if ( ds->status != OLY_OKAY )
+    switch (type)
     {
+        case OLY_NODE_VALUE_TYPE_MAP:
+            ds->status = descend_one_level(ds->node);
+            break;
+        case OLY_NODE_VALUE_TYPE_SEQUENCE:
+            ds->status = descend_one_level(ds->node);
+            break;
+        case OLY_NODE_VALUE_SCALAR_STRING:
+            /* if value is str, check length. */
+            buffer_needed_value += (strlen( (char *)value ) + 1);
+            ds->status = put_scalar_in( ds->boundary , (const char *)value ,
+                    buffer_needed_value );
+        default:
+            ds->status = set_node_value( new_node, value, type );
+            break;
+    }
+    HANDLE_STATUS_AND_RETURN(ds->status);
+   
+    if ( has_string == true )
+    {
+        ds->status = flush_inbound( ds->boundary );
+    }
+
+    if  (*(ds->key_staging) != '\0')
+    {
+        *(ds->key_staging) = '\0';
+        ds->status = get_scalar_out( ds->boundary, &(ds->internal_scalar), &length);
+        if (ds->status != OLY_WARN_BOUNDARY_RESET)
+        {
+            ds->status = OLY_OKAY;
+        }
         HANDLE_STATUS_AND_RETURN(ds->status);
-        return ds->status;
+        ds->status = set_node_key(ds->node, (const OChar *)ds->internal_scalar);
+        HANDLE_STATUS_AND_RETURN(ds->status);
     }
-    
-    for ( i = 0; ( i < ds->node_count_now ); i++ )
+    else
     {
-        copy_node( ds->node_list[i], ds->destination->node_list[i] );
-        reset_node( ds->node_list[i] );
+        set_node_key(ds->node, NULL);
     }
+
+    if (OLY_NODE_VALUE_SCALAR_STRING == type)
+    {
+        ds->status = get_scalar_out( ds->boundary, &(ds->internal_scalar), &length);
+        if (ds->status != OLY_WARN_BOUNDARY_RESET)
+        {
+            ds->status = OLY_OKAY;
+        }
+        HANDLE_STATUS_AND_RETURN(ds->status);
+        ds->status = set_node_string_value(ds->node, (const OChar *)ds->internal_scalar);
+        HANDLE_STATUS_AND_RETURN(ds->status);
+    }
+    ds->status = OLY_WARN_NODE_PRODUCED;
     
-    ds->node_count_now = 0;
-    ds->status = (*ds->destination->dispatch)(ds->destination);
     return ds->status;
 }
 
-OlyStatus 
-push_ds_node(OlyDataSource *ds, OlyNodeValueType node_value_type)
+void
+reset_ds_status ( OlyDataSource *ds )
 {
-    OlyNode     *push_node = NULL;
-    ds->status = new_oly_node( &push_node );
-    HANDLE_STATUS_AND_RETURN(ds->status);
-    ds->status = copy_node( get_current_node(ds), push_node );
-    HANDLE_STATUS_AND_RETURN(ds->status);
-    return ds->status;
+    ds->status = OLY_OKAY;
 }
 
 OlyStatus 
-pop_ds_node(OlyDataSource *ds, OlyNodeValueType node_value_type)
+get_boundary( OlyDataSource *ds, OlyBoundary **bound )
 {
+    ds->status = OLY_OKAY;
+    (*bound) = ds->boundary;
     return ds->status;
 }
+
+/* Used by oly internal to collect and dispense nodes to and from its internal queue. */
+OlyStatus collect_nodes( OlyDataSource *ds, OlyNode **node_out)
+{
+    OlyStatus status = OLY_OKAY;
+    (*node_out) = ds->node;
+    return status;
+}
+OlyStatus dispense_nodes( OlyDataSource *ds, OlyNode *node_in)
+{
+    OlyStatus status = OLY_OKAY;
+    ds->node = node_in;
+    return status;
+}
+
+
+/* enqueue and dequeue are for external interfaces. */
 
 OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node )
 {
-    return OLY_OKAY;
+    return ds->status;
 }
 
-OlyStatus open_ds_boundary( OlyDataSource *ds, char *charset )
+OlyStatus open_ds_boundary( OlyDataSource *ds )
 {
-    ds->status = get_max_buffer_size(ds);
-    if (ds->status == OLY_WARN_DS_BUFFER_DEFAULT)
-    {
-        ds->status = OLY_OKAY;
-    }
-    ds->status = open_oly_boundary(charset, ds->max_buffer_size, &(ds->buffer));
+    ds->status = open_oly_boundary(ds->charset, ds->max_buffer_size,
+            &(ds->boundary));
     return ds->status;
+}
+
+OlyStatus set_ds_data( OlyDataSource *ds, void *data )
+{
+    OlyStatus status = OLY_OKAY;
+    if (data == NULL)
+    {
+        status = OLY_ERR_NO_OBJECT;
+    }
+    ds->data = data;
+    return status;
+}
+
+void *get_ds_data( OlyDataSource *ds )
+{
+    return ds->data;
+}
+
+OlyStatus 
+ds_descend( OlyDataSource *ds )
+{
+    OlyStatus  status = OLY_OKAY;
+    ds->status = descend_one_level(ds->node);
+    return status;
+}
+
+OlyStatus
+ds_ascend( OlyDataSource *ds )
+{
+    OlyStatus  status = OLY_OKAY;
+    status = ascend_one_level(ds->node);
+    return status;
 }
 

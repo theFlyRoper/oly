@@ -58,6 +58,7 @@ extern OlyStatus set_inbound_data_source( OlyDataSource *ds );
 extern OlyStatus set_outbound_data_source( OlyDataSource *ds );
 extern OlyStatus get_inbound_data_source( OlyDataSource **ds );
 extern OlyStatus get_outbound_data_source( OlyDataSource **ds );
+extern OlyStatus oly_run( void );
 
 OlyStatus set_status(OlyState *state, const OlyStatus status);
 OlyStatus get_status(OlyState *state);

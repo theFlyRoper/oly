@@ -1,6 +1,6 @@
 1..302
 # ---- tests for OlyStringBuffer data structure. ----
-# OlyStringBuffer depends on function get_main_string_buffer_max.  It should return 1024 for these tests, because these tests were designed at that number.
+# OlyStringBuffer tests require a buffer size of 1024, minus 2, 1 for buffer end, and 1 more because space_available always counts one less than actual available.  It should return 1024 for these tests, because these tests were designed at that number.
 ok 1 - confirm open_string_buffer returns OLY_OKAY
 # File test: UTF-8-demo.txt (thx, Markus Kuhn! <3 <3)
 ok 2 - Row: 0

@@ -41,12 +41,12 @@ struct data_source_struct {
     char                 *key_staging;
     size_t                key_stage_max_length;
     int64_t               sequence;
-    OlyBoundary          *buffer;
-    OlyNode             **node_list;
-    size_t                node_count_now;
-    size_t                node_list_size;
-    OlyDispatch          *dispatch;
-    OlyDataSource        *destination;
+    char                 *external_scalar;
+    OChar                *internal_scalar;
+    OlyBoundary          *boundary;
+    OlyNode              *node;
+    OlyStatus           (*dispatch)(OlyDataSource *ds);
+    void                 *data;
 };
 
 END_C_DECLS

@@ -22,6 +22,9 @@
 #include "oly/olytypes.h"
 #include "node/pvt_node.h"
 
+static void
+print_node_value(OlyNodeValue nv, OlyNodeValueType type);
+
 OlyStatus 
 new_oly_node( OlyNode **new_node )
 {
@@ -39,11 +42,52 @@ new_oly_node( OlyNode **new_node )
     new_node_local->tuple             = 0;
     new_node_local->key               = NULL;
     new_node_local->parent_node       = NULL;
+    new_node_local->has_key           = false;
+    new_node_local->collection_end    = false;
     
     (new_node_local->value).string_value = NULL;
     (*new_node) = new_node_local;
     return status;
 }
+
+void
+print_node( OlyNode *n )
+{
+    if (n->key != NULL)
+    {
+        u_fprintf(u_stdout, "Key: ");
+        u_fprintf_u(u_stdout, n->key);
+    }
+    u_fprintf(u_stdout, " Tuple: %lli, Depth: %u, ", n->tuple, n->depth);
+    print_node_value(n->value, n->vt);
+}
+
+static void
+print_node_value(OlyNodeValue nv, OlyNodeValueType type)
+{
+    switch ( type )
+    {
+        case OLY_NODE_VALUE_SCALAR_STRING:
+            u_fprintf(u_stdout, "STRING: \"%.40S\"\n", nv.string_value);
+            break;
+        case OLY_NODE_VALUE_SCALAR_FLOAT:
+            printf("FLOAT: (%f)\n", nv.float_value);
+            break;
+        case OLY_NODE_VALUE_SCALAR_INT:
+            printf("INT: (%li)\n", nv.int_value);
+            break;
+        case OLY_NODE_VALUE_TYPE_MAP:
+            printf("MAP\n");
+            break;
+        case OLY_NODE_VALUE_TYPE_SEQUENCE:
+            printf("SEQUENCE\n");
+            break;
+        default:
+            break;
+    }
+
+}
+
 
 OlyStatus
 new_node_value( OlyNodeValue **new_node_value)
@@ -66,12 +110,20 @@ reset_node( OlyNode *node )
     node->key               = NULL;
     node->parent_node       = NULL;
     (node->value).string_value = NULL;
+    node->has_key           = false;
+    node->collection_end    = false;
     return OLY_OKAY;
 }
 
 void 
 close_oly_ds_node( OlyNode *node )
 {
+    if (node->collection_end == true)
+    {
+        close_oly_ds_node(node->parent_node);
+    }
+    /* string values handled in stringbuffer */
+    /*
     if (((node->value).string_value) != NULL)
     {
         free((node->value).string_value);
@@ -80,6 +132,7 @@ close_oly_ds_node( OlyNode *node )
     {
         free(node->key);
     }
+    */
     if (node != NULL)
     {
         free(node);
@@ -108,6 +161,14 @@ set_node_string_value(OlyNode *output, const OChar *value)
 {
     OlyStatus status = OLY_OKAY;
     (output->value).string_value = (OChar *)value;
+    return status;
+}
+/* sets the key value*/
+OlyStatus 
+set_node_key(OlyNode *output, const OChar *key_in)
+{
+    OlyStatus status = OLY_OKAY;
+    output->key = (OChar *)key_in;
     return status;
 }
 
@@ -258,4 +319,29 @@ pop_node( OlyNode **stack, OlyNode **node_out )
     return status;
 }
 
+OlyStatus  
+descend_one_level( OlyNode *node )
+{
+    OlyStatus  status = OLY_OKAY;
+    if ((node->depth + 1) > MAX_NODE_DEPTH)
+    {
+        status = OLY_ERR_NODES_TOO_DEEP;
+        return status;
+    }
+    (node->depth)++;
+    return status;
+}
+
+OlyStatus  
+ascend_one_level( OlyNode *node )
+{
+    OlyStatus  status = OLY_OKAY;
+    if ((node->depth - 1) < 0)
+    {
+        status = OLY_ERR_NODES_TOO_SHALLOW;
+        return status;
+    }
+    (node->depth)--;
+    return status;
+}
 

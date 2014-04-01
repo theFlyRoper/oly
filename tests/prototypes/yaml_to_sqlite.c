@@ -40,13 +40,28 @@
 
 #include "node/pvt_node.h"
 
+#define CHECK_IF_NULL(item) \
+    if (item == NULL) { \
+        status = OLY_ERR_NO_OBJECT; \
+        PICK_UP_PHONE_BOOTH_AND_DIE(status); }
+
+#define INBOUND_NODE_CHECK(status, ds) \
+    do { if ((status != OLY_OKAY) && (status != OLY_WARN_NODE_PRODUCED)) \
+            { u_fprintf(u_stderr, "%s:%d:%s(): %S\n", \
+            __FILE__, __LINE__, __func__, get_errmsg(status)); \
+                return status; } \
+        else if (status == OLY_WARN_NODE_PRODUCED ){ \
+            reset_ds_status(ds);}} while (0)
+
 static void print_help(void);
 static void usage(void);
 static void print_version(void);
-static void pick_up_phone_booth_and_die( OlyStatus status );
 static char *locdir = PKGDATADIR, *locale = "root", *charset = "UTF-8", 
     *yaml_file = "/tests/data/every_token.yaml", 
     *sqlite_file = "/tests/data/test_sqlite.sqlite3";
+
+OlyStatus yaml_inbound(OlyDataSource *data);
+OlyStatus sqlite_outbound(OlyDataSource *data);
 
 static void yaml_input_ofile(yaml_parser_t *parser, OFILE *file);
 static int ofile_read_handler(void *data, 
@@ -123,9 +138,10 @@ main( int argc, char **argv )
             break;
         default:
             usage();
-            pick_up_phone_booth_and_die(status);
+            PICK_UP_PHONE_BOOTH_AND_DIE(status);
     }
 
+    /* set up the data sources */
     yaml_ds = new_data_source( YAML_FILE , &status );
     sqlite_ds = new_data_source( SQLITE_FILE , &status );
     set_max_buffer_size( yaml_ds, buffer_size );
@@ -133,15 +149,17 @@ main( int argc, char **argv )
     set_max_buffer_size( sqlite_ds, buffer_size );
     set_data_charset( sqlite_ds, charset );
 
+    status =  set_inbound_data_source( yaml_ds );
+    PICK_UP_PHONE_BOOTH_AND_DIE(status);
+    status =  set_outbound_data_source( sqlite_ds );
+    PICK_UP_PHONE_BOOTH_AND_DIE(status);
+
     strcpy(name_buffer, DATASOURCEDIR); 
     strcat(name_buffer, yaml_file);
     yaml_data = open_yaml_oly((const char *)name_buffer, (const char *)charset, 
                         (const char *)locale, &status );
     
-    if (status != OLY_OKAY)
-    {
-        pick_up_phone_booth_and_die(status);
-    }
+    PICK_UP_PHONE_BOOTH_AND_DIE(status);
     
     strcpy(name_buffer, DATASOURCEDIR); 
     strcat(name_buffer, sqlite_file);
@@ -149,10 +167,7 @@ main( int argc, char **argv )
     sqlite_data = open_sqlite_oly((const char *)name_buffer, (const char *)charset, 
                         (const char *)locale, &status );
     
-    if (status != OLY_OKAY)
-    {
-        pick_up_phone_booth_and_die(status);
-    }
+    PICK_UP_PHONE_BOOTH_AND_DIE(status);
    
     /* here we create the node and node_relation table */
     set_sqlite_sql( sqlite_data, create_table_node );
@@ -160,9 +175,17 @@ main( int argc, char **argv )
     finalize_sqlite_sql( sqlite_data );
     printf("built the node and node_relation tables.\n");
     
+    set_ds_dispatch_function( yaml_ds, yaml_inbound );
+    set_ds_dispatch_function( sqlite_ds, sqlite_outbound );
+    set_ds_data( yaml_ds, (void *)yaml_data );
+    set_ds_data( sqlite_ds, (void *)sqlite_data );
+    open_ds_boundary(yaml_ds);
+    open_ds_boundary(sqlite_ds);
 
-    close_yaml_oly( yaml_data );
+    status = oly_run();
+
     close_sqlite_oly( sqlite_data );
+    close_yaml_oly( yaml_data );
 
     if (status == OLY_OKAY)
     {
@@ -170,7 +193,7 @@ main( int argc, char **argv )
     }
     else
     {
-        pick_up_phone_booth_and_die(status);
+        PICK_UP_PHONE_BOOTH_AND_DIE(status);
     }
 }
 
@@ -178,9 +201,7 @@ YAMLOly *
 open_yaml_oly( const char *file, const char *charset, const char *locale, 
         OlyStatus *status )
 {
-
     YAMLOly     *yaml_data = (YAMLOly *)omalloc(sizeof(YAMLOly));
-
     yaml_data->parser = omalloc(sizeof(yaml_parser_t));
     yaml_data->token = omalloc(sizeof(yaml_token_t));
     yaml_data->event = omalloc(sizeof(yaml_event_t));
@@ -220,11 +241,34 @@ typedef enum oly_yaml_status_enum {
 } OlyYAMLStatus;
 
 OlyStatus
-yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
+yaml_inbound(OlyDataSource *data)
 {
-    OlyStatus           status      = OLY_OKAY;
-    OlyYAMLStatus       yaml_status = OLY_YAML_OKAY;
-    unsigned char       have_key    = 0x0;
+    OlyStatus            status      = OLY_OKAY;
+    OlyYAMLStatus        yaml_status = OLY_YAML_OKAY;
+    unsigned char        have_key    = 0x0;
+    static bool          have_data   = false;
+    static bool          is_done     = false;
+    static YAMLOly      *ds = NULL;
+    CHECK_IF_NULL(data ) ;
+    if (is_done == true)
+    {
+        status = OLY_ERR_DS_EOF;
+        return status;
+    }
+
+    if (ds == NULL)
+    {
+        if ( have_data == false )
+        {
+            ds = (YAMLOly *)get_ds_data( data );
+        }
+        else
+        {
+            status = OLY_ERR_NO_OBJECT; 
+            PICK_UP_PHONE_BOOTH_AND_DIE(status); 
+        }
+    }
+    
     do {
         if (!yaml_parser_parse(ds->parser, ds->event))
         {
@@ -243,21 +287,27 @@ yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
             case YAML_DOCUMENT_END_EVENT:   
                 break;
             case YAML_SEQUENCE_START_EVENT:
+                status = enqueue_ds_node( data, NULL, OLY_NODE_VALUE_TYPE_SEQUENCE ) ;
+                INBOUND_NODE_CHECK(status, data);
                 yaml_status = OLY_YAML_SEQUENCE;
-                status = push_ds_node( data, OLY_NODE_VALUE_TYPE_SEQUENCE );
                 have_key = 0x0;
+                printf("SeqStart\n");
                 break;
             case YAML_SEQUENCE_END_EVENT:
-                status = pop_ds_node( data, OLY_NODE_VALUE_TYPE_SEQUENCE );
+                status = ds_ascend( data );
                 yaml_status = OLY_YAML_OKAY;
+                printf("SeqEnd\n");
                 break;
             case YAML_MAPPING_START_EVENT:  
-                status = push_ds_node( data, OLY_NODE_VALUE_TYPE_MAP );
+                status = enqueue_ds_node( data, NULL, OLY_NODE_VALUE_TYPE_MAP ) ;
+                INBOUND_NODE_CHECK(status, data);
                 have_key = 0x0;
+                printf("MapStart\n");
                 break;
             case YAML_MAPPING_END_EVENT:    
+                status = ds_ascend( data );
                 yaml_status = OLY_YAML_OKAY;
-                status = pop_ds_node( data, OLY_NODE_VALUE_TYPE_MAP );
+                printf("MapEnd\n");
                 break;
             case YAML_ALIAS_EVENT:  
                 break;
@@ -270,11 +320,9 @@ yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
                 }
                 else 
                 {
-                    if (enqueue_ds_node( data, ds->event->data.scalar.value,
-                            OLY_NODE_VALUE_SCALAR_STRING) != OLY_OKAY)
-                    {
-                        HANDLE_STATUS_AND_RETURN( data->status );
-                    };
+                    status = enqueue_ds_node( data, ds->event->data.scalar.value,
+                            OLY_NODE_VALUE_SCALAR_STRING);
+                    INBOUND_NODE_CHECK(status, data);
                     have_key = 0x0;
                 }
                 break;
@@ -287,13 +335,12 @@ yaml_to_nodes(YAMLOly *ds, OlyDataSource *data)
         {
             yaml_event_delete(ds->event);
         }
-    } while( ds->event->type != YAML_STREAM_END_EVENT ) ;
+        else
+        {
+            is_done = true;
+        }
+    } while (( ds->event->type != YAML_STREAM_END_EVENT ) && ( status != OLY_WARN_NODE_PRODUCED ));
     return status;
-}
-
-void
-yaml_next(YAMLOly *ds)
-{
 }
 
 SQLiteOly *
@@ -319,11 +366,15 @@ open_sqlite_oly( const char *file, const char *charset, const char *locale,
 void 
 close_sqlite_oly( SQLiteOly *close_me )
 {
-    if (close_me->prepped != NULL)
-    {
-        sqlite3_finalize( close_me->prepped );
-    }
     sqlite3_close(close_me->data);
+}
+
+
+OlyStatus
+sqlite_outbound( OlyDataSource *ds )
+{
+    OlyStatus status = OLY_OKAY;
+    return status;
 }
 
 OlyStatus
@@ -410,3 +461,4 @@ yaml_input_ofile(yaml_parser_t *parser, OFILE *file)
 
     parser->input.file = (FILE *)file;
 }
+

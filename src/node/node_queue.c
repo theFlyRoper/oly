@@ -28,13 +28,16 @@ open_node_queue(OlyNodeQueue **q)
 {
     OlyStatus status = OLY_OKAY;
     OlyNodeQueue *new_queue;
+    size_t           max_key_size = MAX_KEY_LENGTH;
     new_queue = (OlyNodeQueue *)omalloc(sizeof(OlyNodeQueue));
+    new_queue->key_max_length = max_key_size;
     new_queue->queue_size = get_node_queue_max();
     new_queue->stack = NULL;
     new_queue->queue_start = (OlyNode *)omalloc(new_queue->queue_size / sizeof(OlyNode));
     new_queue->queue_end = (new_queue->queue_start + (new_queue->queue_size / sizeof(OlyNode)));
     new_queue->in = new_queue->queue_start;
     new_queue->out = new_queue->queue_start;
+    status         = open_string_buffer(&(new_queue->string_buffer));
     *q = new_queue;
     return status;
 }
@@ -53,29 +56,66 @@ close_node_queue(OlyNodeQueue *q)
     free(q->queue_start);
     q->in = NULL;
     q->out = NULL;
+    close_string_buffer(q->string_buffer);
     free(q);
     return;
 }
 
-/*  */
 OlyStatus
 enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
 {
     OlyStatus status = OLY_OKAY;
+    OlyNode   *s, *prev;
+    OChar     *result;
+    size_t      key_len = 0;
+    prev = (q->in);
+    /* step in ptr fwd if not at end, or back to beginning if at end. Keep behind queue_end, else ERR */
     if (((q->out <= q->in) && (q->in < q->queue_end)) 
         || ((q->queue_start <= q->in) && (q->in < q->out) && (q->in+1 != q->out)))
     {
         q->in++;
-        copy_node(n, q->in);
     }
     else if ((q->in == q->queue_end) && (q->out != q->queue_start))
     {
         q->in = q->queue_start;
-        copy_node(n, q->in);
     }
     else
     {
         status = OLY_ERR_NODE_QUEUE_FULL;
+    }
+    HANDLE_STATUS_AND_RETURN(status);
+    copy_node(n, q->in);
+
+    if (q->in->depth > prev->depth)
+    {
+        status = push_node(&(q->stack), prev);
+        HANDLE_STATUS_AND_RETURN(status);
+    }
+    else if (q->in->depth < prev->depth)
+    {
+        prev->collection_end = true;
+        status = pop_node(&(q->stack), &s );
+        HANDLE_STATUS_AND_RETURN(status);
+    }
+    q->in->parent_node = q->stack ;
+    
+    if  (q->in->key != NULL)
+    {
+        key_len = u_strlen(q->in->key);
+        status = reserve_string_buffer( q->string_buffer, key_len );
+        HANDLE_STATUS_AND_RETURN(status);
+        status = enqueue_to_string_buffer(q->string_buffer, (q->in->key), &result, &key_len);
+        HANDLE_STATUS_AND_RETURN(status);
+    }
+
+    if (OLY_NODE_VALUE_SCALAR_STRING == q->in->vt )
+    {
+        key_len = u_strlen((q->in->value).string_value);
+        status = reserve_string_buffer( q->string_buffer, key_len );
+        HANDLE_STATUS_AND_RETURN(status);
+        status = enqueue_to_string_buffer(q->string_buffer, (q->in->value).string_value, &result, &key_len);
+        u_fputs(((q->in->value).string_value), u_stdout);
+        HANDLE_STATUS_AND_RETURN(status);
     }
     return status;
 };
@@ -83,9 +123,11 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
 /* */
 OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out)
 {
+    OlyNode   *prev;
     OlyStatus status = OLY_OKAY;
+    prev = (q->out);
     if (((q->queue_start <= q->out) && (q->out < q->in))
-        || ((q->in < q->out) &&(q->out < q->queue_end)))
+        || ((q->in < q->out) && (q->out < q->queue_end)))
     {
         q->out++;
         copy_node(q->out, (*node_out));
@@ -99,6 +141,7 @@ OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out)
     {
         status = OLY_ERR_NODE_QUEUE_EMPTY;
     }
+    reset_node(prev);
     return status;
 };
 

@@ -53,11 +53,13 @@ OlyStatus get_outbound_data_source( OlyDataSource **ds )
 
 OlyStatus enqueue_node_list(OlyNode **node_list, size_t node_count)
 {
-    return OLY_OKAY;
+    OlyStatus status = OLY_OKAY;
+    return status;
 }
 
 OlyStatus dequeue_node_list( OlyNode **node_list, size_t capacity, size_t node_count )
 {
-    return OLY_OKAY;
+    OlyStatus status = OLY_OKAY;
+    return status;
 }
 

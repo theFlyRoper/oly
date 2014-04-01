@@ -36,6 +36,9 @@ main( int argc, char **argv ){
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
     char            *locale = "root",  *charset = NULL;
     const char      *results_char[] = {
+                        "OLY_WARN_NODE_CONSUMED",
+                        "OLY_WARN_NODE_PRODUCED",
+                        "OLY_WARN_BOUNDARY_RESET",
                         "OLY_WARN_LONG_STRING",
                         "OLY_WARN_BUFFER_WRITE_LOCK",
                         "OLY_WARN_BUFFER_EMPTY",
@@ -84,6 +87,7 @@ main( int argc, char **argv ){
                         "OLY_ERR_STRING_BUFFER_STATE",
                         "OLY_ERR_NODE_QUEUE_FULL",
                         "OLY_ERR_NODE_QUEUE_EMPTY",
+                        "OLY_ERR_DS_EOF",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

@@ -51,7 +51,7 @@ get_boundary_buffer_max(void)
     size_t max_buffer;
     if (is_config_loaded() == false)
     {
-        max_buffer = (size_t)(BUFSIZ*4);
+        max_buffer = (size_t)(BUFSIZ);
     }
     return max_buffer;
 }
@@ -61,7 +61,7 @@ get_main_string_buffer_max(void)
     size_t max_buffer;
     if (is_config_loaded() == false)
     {
-        max_buffer = (size_t)(1024);
+        max_buffer = (size_t)(BUFSIZ*8);
     }
     return max_buffer;
 }

@@ -22,6 +22,7 @@
 #define DATA_SOURCE_PVT_NODE_H 1
 
 #include "oly/node.h"
+#include "oly/string_buffer.h"
 
 BEGIN_C_DECLS
 
@@ -37,6 +38,7 @@ struct oly_data_source_node_struct
 {
     unsigned short       depth;
     bool                 has_key;
+    bool                 collection_end;
     OlyNodeValueType     vt;
     int64_t              tuple;
     OlyNodeValue         value;
@@ -46,12 +48,14 @@ struct oly_data_source_node_struct
 
 struct oly_node_queue_struct 
 {
-    size_t        queue_size;
-    OlyNode      *in;
-    OlyNode      *out;
-    OlyNode      *stack;
-    OlyNode      *queue_start;
-    OlyNode      *queue_end;
+    size_t           queue_size;
+    size_t           key_max_length;
+    OlyNode         *in;
+    OlyNode         *out;
+    OlyNode         *stack;
+    OlyNode         *queue_start;
+    OlyNode         *queue_end;
+    OlyStringBuffer *string_buffer;
 };
 
 END_C_DECLS

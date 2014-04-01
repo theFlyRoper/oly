@@ -42,6 +42,7 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
      * delineate the two areas. 
      * Consertative and wastes a bit of the end of the buffer.
      * Better that then overflows. */
+    
     oly_bound->converter   = ucnv_open( charset, &u_status );
     min_char_size = ucnv_getMinCharSize(oly_bound->converter) ;
     max_characters  = (buffer_max_size / ( min_char_size + sizeof(OChar)));
@@ -55,8 +56,8 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
      * because the char buffers are actually pointing to different 
      * character sets, although we only expect to find max_characters characters in it,
      * as they are char pointers we must move it the correct number of chars. */
-    oly_bound->c_now = (char *)omalloc( o_size +c_size +min_char_size +sizeof(OChar));
-    oly_bound->c_start          = oly_bound->c_now;
+    oly_bound->c_start = (char *)omalloc( o_size +c_size +min_char_size +sizeof(OChar));
+    oly_bound->c_now            = oly_bound->c_start;
     oly_bound->c_end            = ((oly_bound->c_now + 
                 ((max_characters*min_char_size)- min_char_size*2)));
 
@@ -98,14 +99,30 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
     return status;
 };
 
+void
+close_oly_boundary(OlyBoundary *bind)
+{
+    ucnv_close(bind->converter);
+    free(bind->c_start);
+    free(bind);
+    return;
+}
+
 OlyStatus
 flush_inbound( OlyBoundary *boundary )
 {
     OlyStatus status = OLY_OKAY;
-    UErrorCode  u_status;
-    OChar       *o_start_ptr =  boundary->o_start;
-    const char  *c_end_ptr   = (boundary->c_now + strlen( boundary->c_now )),
+    UErrorCode   u_status = U_ZERO_ERROR;
+    OChar       *o_start_ptr =  NULL;
+    const char  *c_end_ptr   =  boundary->c_now,
                 *c_start_ptr =  boundary->c_start;
+
+    o_start_ptr =  boundary->o_start;
+    if (c_end_ptr == c_start_ptr)
+    {
+        status = OLY_WARN_BUFFER_EMPTY;
+        return status;
+    }
 
     ucnv_toUnicode( boundary->converter,
         &o_start_ptr, boundary->o_end, &c_start_ptr, c_end_ptr, NULL,
@@ -113,9 +130,13 @@ flush_inbound( OlyBoundary *boundary )
 
     if (U_FAILURE(u_status))
     {
-        fprintf(stderr, "ICU Error: %s.\n",
-                u_errorName(u_status));
+        fprintf(stderr, "ICU Error: %s.\n", u_errorName(u_status));
         status = OLY_ERR_LIB;
+    }
+    else
+    {
+        boundary->c_now = boundary->c_start;
+        boundary->o_now = boundary->o_start;
     }
     return status;
 }
@@ -128,6 +149,11 @@ flush_outbound( OlyBoundary *boundary )
     const OChar       *o_start_ptr = boundary->o_start,
                 *o_end_ptr   = (boundary->o_now + strlen( boundary->c_now ));
     char        *c_start_ptr = boundary->c_start;
+    if (o_end_ptr == o_start_ptr)
+    {
+        status = OLY_WARN_BUFFER_EMPTY;
+        return status;
+    }
     
     ucnv_fromUnicode ( boundary->converter, &c_start_ptr, boundary->c_end, 
             &o_start_ptr, o_end_ptr, NULL, FALSE, &u_status );
@@ -140,17 +166,71 @@ flush_outbound( OlyBoundary *boundary )
 }
 
 OlyStatus
-copy_ochar_buffer( OlyBoundary *source, OlyBoundary *dest )
+copy_ochar_buffer( OlyBoundary *source, OChar *dest, size_t limit )
 {
-    u_memcpy(source->o_start, dest->o_start, (source->o_end - source->o_start) );
+    u_memcpy(source->o_start, dest, limit );
     return OLY_OKAY;
 }
 
 OlyStatus
-get_next_scalar( OlyBoundary *boundary, OChar **next )
+get_boundary_out_start( OlyBoundary *source, OChar **start )
 {
     OlyStatus status = OLY_OKAY;
-    
+    (*start) = source->o_start;
+    return status;
+}
+
+OlyStatus 
+put_scalar_in( OlyBoundary *boundary, const char *s, size_t len)
+{
+    OlyStatus status = OLY_OKAY;
+    size_t available = 0;
+    available = ( boundary->c_end - boundary->c_now );
+    if (len >= available)
+    {
+        status = OLY_ERR_BUFFER_OVERFLOW;
+        return status;
+    }
+    strncpy(boundary->c_now, s, len);
+    boundary->c_now += len;
+    *(boundary->c_now) = '\0';
+    (boundary->c_now)++;
+    printf("added scalar: \"%s\"\n", boundary->c_now);
+    return status;
+}
+
+OlyStatus clear_boundary(OlyBoundary *boundary)
+{
+    OlyStatus status = OLY_OKAY;
+    boundary->c_now = boundary->c_start;
+    boundary->o_now = boundary->o_start;
+    return status;
+}
+
+OlyStatus
+get_scalar_out( OlyBoundary *boundary, OChar **next, size_t *next_len )
+{
+    OlyStatus status = OLY_OKAY;
+    *next_len = u_strlen(boundary->o_now);
+    if (*next_len == 0)
+    {
+        status = OLY_WARN_BUFFER_EMPTY;
+        (*next) = NULL;
+        return status;
+    }
+    *next_len = (u_strlen(boundary->o_now) + 1);
+    (*next) = boundary->o_now;
+
+    if ((boundary->o_now + *next_len) < boundary->o_end)
+    {
+        boundary->o_now += *next_len;
+    }
+    else 
+    {
+        status = OLY_WARN_BOUNDARY_RESET;
+        *next_len = 0;
+        (*next) = NULL;
+    }
     return status;
 }
 
@@ -158,7 +238,7 @@ OlyStatus
 finish_inbound( OlyBoundary *boundary )
 {
     OlyStatus status = OLY_OKAY;
-    UErrorCode  u_status;
+    UErrorCode   u_status = U_ZERO_ERROR;
     OChar       *o_start_ptr =  boundary->o_start;
     const char  *c_end_ptr   = (boundary->c_now + strlen( boundary->c_now )),
                 *c_start_ptr =  boundary->c_start;
@@ -180,7 +260,7 @@ OlyStatus
 finish_outbound( OlyBoundary *boundary )
 {
     OlyStatus status = OLY_OKAY;
-    UErrorCode  u_status;
+    UErrorCode   u_status = U_ZERO_ERROR;
     const OChar       *o_start_ptr = boundary->o_start,
                 *o_end_ptr   = (boundary->o_now + strlen( boundary->c_now ));
     char        *c_start_ptr = boundary->c_start;

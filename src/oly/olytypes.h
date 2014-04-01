@@ -64,9 +64,12 @@ typedef struct oly_struct Oly;
 typedef enum OlyStatus_enum {
     /* OLY_STATUS_MIN helps map these internal codes into the 
      * external i18n resource files.     */
+    OLY_WARN_NODE_CONSUMED=-16,
+    OLY_STATUS_MIN=-16,
+    OLY_STATUS_OFFSET=16,
+    OLY_WARN_NODE_PRODUCED=-15,
+    OLY_WARN_BOUNDARY_RESET=-14,
     OLY_WARN_LONG_STRING=-13,
-    OLY_STATUS_MIN=-13,
-    OLY_STATUS_OFFSET=13,
     OLY_WARN_BUFFER_WRITE_LOCK=-12,
     OLY_WARN_BUFFER_EMPTY=-11,
     OLY_WARN_TOP_LEVEL_NODE=-10,
@@ -114,7 +117,8 @@ typedef enum OlyStatus_enum {
     OLY_ERR_STRING_BUFFER_STATE=32,
     OLY_ERR_NODE_QUEUE_FULL=33,
     OLY_ERR_NODE_QUEUE_EMPTY=34,
-    OLY_STATUS_MAX=34
+    OLY_ERR_DS_EOF=35,
+    OLY_STATUS_MAX=35
 } OlyStatus;
 
 

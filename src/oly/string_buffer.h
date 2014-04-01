@@ -34,7 +34,7 @@ void close_string_buffer( OlyStringBuffer *strbuf );
 /* reserves length space or returns OLY_ERR_BUFFER_OVERFLOW */
 OlyStatus reserve_string_buffer( OlyStringBuffer *strbuf, const size_t length );
 /* copies at most *length OChars into the string buffer. */
-OlyStatus enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *length_out );
+OlyStatus enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, OChar **result, size_t *length_out );
 /* copies at most *length OChars into the destination. *length holds the number of OChars actually provided at the end. */
 OlyStatus dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, 
         const size_t size_in, size_t *length );

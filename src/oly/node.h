@@ -49,29 +49,32 @@ typedef struct oly_node_queue_struct OlyNodeQueue;
 
 /* OlyNodeQueue functions */
 OlyStatus open_node_queue(OlyNodeQueue **new_queue);
-
 void close_node_queue(OlyNodeQueue *free_me);
+OlyStatus enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n );
+OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out);
 
 OlyStatus unset_node_has_key(OlyNode *node);
 OlyStatus set_node_tuple(OlyNode *node, int64_t tuple);
-OlyStatus set_node_parent( OlyNode *node, OlyNode *parent );
 OlyStatus copy_node(const OlyNode *source, OlyNode *dest);
 OlyStatus reset_node( OlyNode *node );
 
 /* node value functions */
 OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type);
 OlyStatus set_node_string_value(OlyNode *output, const OChar *value);
+OlyStatus set_node_key(OlyNode *output, const OChar *key_in);
 
 OlyStatus new_node_value( OlyNodeValue **new_node_value);
 OlyStatus new_oly_node( OlyNode **new_node );
 void close_oly_ds_node(OlyNode *node);
+void print_node( OlyNode *n );
 
 OlyStatus get_node_key(OlyNode *node, OChar **key_out);
 OlyStatus node_has_key(OlyNode *node);
 OlyStatus get_node_tuple(OlyNode *node, int64_t *tuple_out );
-OlyStatus get_node_parent( const OlyNode *node, OlyNode **parent);
 OlyStatus push_node(OlyNode **stack, OlyNode *node );
 OlyStatus pop_node( OlyNode **stack, OlyNode **node_out );
+OlyStatus descend_one_level( OlyNode *node );
+OlyStatus ascend_one_level ( OlyNode *node );
 
 
 END_C_DECLS

@@ -49,14 +49,15 @@ get_options(int argc, char **argv)
     return status;
 }
 
-static void
-pick_up_phone_booth_and_die( OlyStatus status )
-{
-            u_fprintf(u_stderr, "ERROR: ");
-            u_fprintf_u(u_stderr, get_errmsg(status));
-            u_fprintf(u_stderr, " Exiting...\n");
-            exit(EXIT_FAILURE);
-}
+#define PICK_UP_PHONE_BOOTH_AND_DIE(status) do {\
+    if (status != OLY_OKAY) {\
+        fprintf(stderr, "%s:%d:%s():\n", \
+                __FILE__, __LINE__, __func__); \
+            u_fprintf(u_stderr, "ERROR: \""); \
+            u_fprintf_u(u_stderr, get_errmsg(status)); \
+            u_fprintf(u_stderr, "\" Exiting...\n"); \
+            exit(EXIT_FAILURE); } \
+} while (0)
 
 static void 
 print_help(void)

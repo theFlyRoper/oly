@@ -28,12 +28,15 @@ struct oly_boundary_struct;
 typedef struct oly_boundary_struct OlyBoundary;
 
 OlyStatus open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind);
-void close_oly_boundary(OlyBoundary **bind);
+void close_oly_boundary(OlyBoundary *bind);
 
 extern OlyStatus flush_outbound(OlyBoundary *boundary);
 extern OlyStatus flush_inbound(OlyBoundary *boundary);
+extern OlyStatus clear_boundary(OlyBoundary *boundary);
 
-OlyStatus get_next_scalar( OlyBoundary *boundary, OChar **next );
-extern OlyStatus copy_ochar_buffer( OlyBoundary *source, OlyBoundary *dest );
+OlyStatus get_scalar_out( OlyBoundary *boundary, OChar **next, size_t *next_len );
+OlyStatus put_scalar_in( OlyBoundary *boundary, const char *s, size_t len);
+OlyStatus copy_ochar_buffer( OlyBoundary *source, OChar *dest, size_t limit );
+OlyStatus get_boundary_out_start( OlyBoundary *source, OChar **start );
 
 #endif /* DATA_SOURCE_BOUNDARY_H */

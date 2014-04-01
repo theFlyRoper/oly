@@ -46,7 +46,6 @@ struct oly_struct {
     OlyDataSource            *inbound;
     OlyDataSource            *outbound;
     OlyNodeQueue             *node_queue;
-    OlyStringBuffer          *string_buffer;
 };
 
 END_C_DECLS

@@ -29,34 +29,30 @@
 #define STRCOMMITLOG(str1, arg1, arg2) printf("%s:%d:%s():\n" \
         str1, __FILE__, __LINE__, __func__, arg1, arg2 );
 
-static OlyStatus get_lower_end(OlyStringBuffer *strbuf, OChar **lower_end);
-
-
-
-/* we never actually need get_lower_start, since the lower start will always be the buffer start. */
-static OlyStatus get_lower_end(OlyStringBuffer *strbuf, OChar **lower_end);
-static OlyStatus get_higher_end(OlyStringBuffer *strbuf, OChar **higher_end);
-static OlyStatus get_higher_start(OlyStringBuffer *strbuf, OChar **higher_start);
+/* we never actually need get_lower_read, since the lower read will always be the buffer start. */
+static OlyStatus get_lower_write(OlyStringBuffer *strbuf, OChar **lower_end);
+static OlyStatus get_higher_write(OlyStringBuffer *strbuf, OChar **higher_end);
+static OlyStatus get_higher_read(OlyStringBuffer *strbuf, OChar **higher_start);
 static OlyStatus is_buffer_empty(OlyStringBuffer *strbuf);
 static OlyStatus release_reserve(OlyStringBuffer *strbuf);
 static void length_at_end(OlyStringBuffer *strbuf, size_t *space_at_end);
 static void length_at_start(OlyStringBuffer *strbuf, size_t *space_at_start);
 
-static OlyStatus get_lower_end(OlyStringBuffer *strbuf, OChar **lower_end)
+static OlyStatus get_lower_write(OlyStringBuffer *strbuf, OChar **lower_end)
 {
     OlyStatus status = OLY_OKAY;
     (*lower_end) = (( strbuf->write_a <= strbuf->write_b ) ? strbuf->write_a : strbuf->write_b );
     return status;
 }
 
-static OlyStatus get_higher_end(OlyStringBuffer *strbuf, OChar **higher_end)
+static OlyStatus get_higher_write(OlyStringBuffer *strbuf, OChar **higher_end)
 {
     OlyStatus status = OLY_OKAY;
     (*higher_end) = (( strbuf->write_b >= strbuf->write_a ) ? strbuf->write_b : strbuf->write_a );
     return status;
 }
 
-static OlyStatus get_higher_start(OlyStringBuffer *strbuf, OChar **higher_start)
+static OlyStatus get_higher_read(OlyStringBuffer *strbuf, OChar **higher_start)
 {
     OlyStatus status = OLY_OKAY;
     (*higher_start) = (( strbuf->read_b >= strbuf->read_a ) ? strbuf->read_b : strbuf->read_a );
@@ -67,7 +63,7 @@ static void
 length_at_end(OlyStringBuffer *strbuf, size_t *space_at_end)
 {
     OChar *read, *write;
-    get_higher_end(strbuf, &read);
+    get_higher_write(strbuf, &read);
     write = (strbuf->buffer_end - 1);
     *space_at_end = write - read;
 }
@@ -76,8 +72,8 @@ static void
 length_at_start(OlyStringBuffer *strbuf, size_t *space_at_start)
 {
     OChar *read, *write;
-    get_lower_end(strbuf, &read);
-    get_higher_start(strbuf, &write);
+    get_lower_write(strbuf, &read);
+    get_higher_read(strbuf, &write);
     *space_at_start = write - read;
 }
 
@@ -183,7 +179,7 @@ reserve_string_buffer( OlyStringBuffer *strbuf, const size_t length )
  * length as allocated space, it returns OLY_WARN_LONG_STRING and leaves the write pointer alone, otherwise it moves the write pointer past the 
  * string terminator (that is, '\0'). */
 OlyStatus
-enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *length_out )
+enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, OChar **result, size_t *length_out )
 {
     OlyStatus status = OLY_OKAY;
     size_t available = 0;
@@ -211,6 +207,7 @@ enqueue_to_string_buffer( OlyStringBuffer *strbuf, const OChar *string, size_t *
     while ((*(copier++) = *(string++)) != 0 && ( copier < strbuf->reserve_end))
         ;
     *copier = 0;
+    (*result) = strbuf->reserve_start;
     *length_out = (copier - strbuf->reserve_start);
     if ( available == *length_out )
     {
@@ -274,7 +271,7 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
     }
     (*length) = (copier - (*dest));
     (*read) += (*length + 1);
-    get_higher_end(strbuf, &next);
+    get_higher_write(strbuf, &next);
     if (*read >= next)
     {
 #ifdef DEBUG_STRING_BUFFER
@@ -288,6 +285,7 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
                 strbuf->read_a = strbuf->buffer_start;
                 strbuf->write_a = strbuf->buffer_start;
                 strbuf->state = WRITE_B_READ_B;
+                /* status = OLY_WARN_BUFFER_EMPTY; */
             }
             break;
         case WRITE_B_READ_A:
@@ -304,6 +302,7 @@ dequeue_from_string_buffer(OlyStringBuffer *strbuf, OChar **dest, const size_t s
                 strbuf->read_b = strbuf->buffer_start;
                 strbuf->write_b = strbuf->buffer_start;
                 strbuf->state = WRITE_A_READ_A;
+                /* status = OLY_WARN_BUFFER_EMPTY; */
             }
             break;
         case WRITE_A_READ_B:
@@ -323,13 +322,18 @@ OlyStatus
 open_string_buffer(OlyStringBuffer **strbuf)
 {
     OlyStatus status = OLY_OKAY;
-    size_t max_len = get_main_string_buffer_max() ;
+    size_t max_len = 0;
     OlyStringBuffer *new_buffer = ocalloc(1,sizeof(OlyStringBuffer));
     if (new_buffer == NULL)
     {
         status = OLY_ERR_NOMEM;
         HANDLE_STATUS_AND_DIE(status);
     }
+#ifdef TEST_STRBUF
+    max_len = 1024;
+#else
+    max_len = get_main_string_buffer_max() ;
+#endif
     new_buffer->buffer_start = (omalloc( max_len * sizeof(OChar))); 
     if (new_buffer->buffer_start == NULL)
     {
@@ -368,7 +372,6 @@ close_string_buffer(OlyStringBuffer *strbuf)
         free(strbuf);
     }
 }
-
 
 #ifdef DEBUG_STRING_BUFFER
 static char *get_state(OlyStringBuffer *strbuf);
