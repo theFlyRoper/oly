@@ -296,9 +296,12 @@ set_data_filename( OlyDataSource *ds, const char *filename )
 }
 
 OlyStatus
-stage_node_key( OlyDataSource *ds, const char *key )
+stage_node_key( OlyDataSource *ds, const char *key, size_t key_len )
 {
-    size_t      key_len = 0;
+    if (key_len == 0)
+    {
+        key_len = strlen(key);
+    }
     if ( ds->status != OLY_OKAY )
     {
         HANDLE_STATUS_AND_RETURN(ds->status);
@@ -308,12 +311,11 @@ stage_node_key( OlyDataSource *ds, const char *key )
     {
         ds->status = OLY_ERR_NO_KEY_BUFFER;
     }
-    key_len = ( strlen(key) + 1 );
     if ( key_len >= ds->key_stage_max_length )
     {
         ds->status = OLY_ERR_KEY_STR_TOO_LONG;
     }
-    strncpy(ds->key_staging, key, ds->key_stage_max_length);
+    strncpy(ds->key_staging, key, (key_len +1));
     return ds->status;
 }
 

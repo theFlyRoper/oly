@@ -88,7 +88,7 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
 
     if (q->in->depth > prev->depth)
     {
-        status = push_node(&(q->stack), prev);
+        status = push_node(&(q->stack), (q->in));
         HANDLE_STATUS_AND_RETURN(status);
     }
     
@@ -100,7 +100,16 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         HANDLE_STATUS_AND_RETURN(status);
         depth--;
     }
-    q->in->parent_node = q->stack ;
+    if ((q->in->vt == OLY_NODE_VALUE_TYPE_SEQUENCE ) 
+            || (q->in->vt == OLY_NODE_VALUE_TYPE_MAP ))
+    {
+        q->in->parent_node = q->stack->parent_node ;
+    }
+    else
+    {
+        q->in->parent_node = q->stack ;
+    }
+
     
     if  (q->in->key != NULL)
     {

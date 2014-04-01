@@ -44,6 +44,7 @@ struct oly_data_source_node_struct
     OlyNodeValue         value;
     OlyNode             *parent_node;
     OChar               *key;
+    OChar               *anchor;
 };
 
 struct oly_node_queue_struct 

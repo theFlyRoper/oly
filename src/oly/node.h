@@ -38,7 +38,8 @@ typedef enum oly_node_value_type_enum {
     OLY_NODE_VALUE_SCALAR_STRING = 3,
     OLY_NODE_VALUE_SCALAR_FLOAT = 4,
     OLY_NODE_VALUE_SCALAR_INT = 5,
-    OLY_NODE_VALUE_MAX = 5
+    OLY_NODE_VALUE_ALIAS = 6,
+    OLY_NODE_VALUE_MAX = 6
 } OlyNodeValueType;
 
 struct oly_data_source_node_struct;

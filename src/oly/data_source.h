@@ -102,7 +102,7 @@ extern OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
 extern OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
 
 /* TODO: separate the internal and external functions here. */
-extern OlyStatus stage_node_key( OlyDataSource *ds, const char *key );
+OlyStatus stage_node_key( OlyDataSource *ds, const char *key, size_t key_len );
 /* Used by external interfaces to produce or consume nodes */
 extern OlyStatus enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type);
 extern OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode **node );

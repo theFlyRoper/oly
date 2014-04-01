@@ -314,13 +314,14 @@ yaml_inbound(OlyDataSource *data)
                 yaml_status = OLY_YAML_OKAY;
                 printf("MapEnd\n");
                 break;
-            case YAML_ALIAS_EVENT:  
+            case YAML_ALIAS_EVENT:
                 break;
             case YAML_SCALAR_EVENT:
                 if ( ( have_key == 0x0 ) && ( yaml_status != OLY_YAML_SEQUENCE ) )
                 {
                     status = stage_node_key( data, 
-                        (const char *)ds->event->data.scalar.value );
+                        (const char *)ds->event->data.scalar.value,
+                        (size_t)ds->event->data.scalar.length );
                     have_key = 0x1;
                 }
                 else 

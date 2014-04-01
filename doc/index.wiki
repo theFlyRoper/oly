@@ -1,33 +1,133 @@
-<title>CSV parser goals</title>
+<title>Oly (main page)</title>
 <nowiki>
 <div id="asciidoc">
-<h1>CSV PARSER GOALS</h1>
+<h1>Oly</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
 version c8ea317ad2,
 2014-02-25
 </p>
 <hr>
-<h2><a name="_statement_of_purpose"></a>Statement of Purpose</h2>
-<p>When given a large, arbitrary separated input file, determine:</p>
+<h2><a name="_current_features"></a>Current Features</h2>
+<ul>
+<li>
+<p>
+Internal node queue and string buffer
+</p>
+</li>
+<li>
+<p>
+Node hierarchy preserved and sent through
+</p>
+</li>
+<li>
+<p>
+Data source interface for external sources
+</p>
+</li>
+<li>
+<p>
+Boundary buffers to transfer external encodings/character sets to internal (ICU) encoding and back again.
+</p>
+</li>
+<li>
+<p>
+Storage for several different types of data in each node.
+</p>
+</li>
+<li>
+<p>
+SHA3 hash function built in and ready for use.
+</p>
+</li>
+<li>
+<p>
+Polyglot (that is, translatable) error handling
+</p>
+</li>
+</ul>
+<hr>
+<h2><a name="_wanted_features"></a>Wanted Features</h2>
 <ol type="1">
 <li>
 <p>
-Initial columns
+Internal YAML loading.  YAML will be a data source but built in to Oly.  Will load configuration.
 </p>
 </li>
 <li>
 <p>
-Appropriate database data types
+Configuration file loading and storage
 </p>
 </li>
 <li>
 <p>
-Quotation status
+External node interface with char pointers
+</p>
+</li>
+<li>
+<p>
+Alias and anchor handling
+</p>
+</li>
+<li>
+<p>
+Use hashing for something; configuration index, maybe?
+</p>
+</li>
+<li>
+<p>
+Table data source input objects.  Columns, rows, tables, etc.
 </p>
 </li>
 </ol>
-<p>For all lines.</p>
-<p><a href="/doc/tip/doc/input_doc.wiki">Input Functions Documentation.</a></p>
+<hr>
+<h2><a name="_problems"></a>Problems</h2>
+<ol type="1">
+<li>
+<p>
+Remove unneeded data source and node functions.  Define clearer boundaries between these objects.
+</p>
+</li>
+<li>
+<p>
+String buffer has some problems.  Runs too many times.  Could use debugging.
+</p>
+</li>
+<li>
+<p>
+Bring doc and lib Makefile.am into main directory.
+</p>
+</li>
+<li>
+<p>
+Flesh out data source dequeue and extract functions.
+</p>
+</li>
+<li>
+<p>
+Remove unused errors.
+</p>
+</li>
+<li>
+<p>
+Do something with state.  Begin Oly scripting language work, perhaps?
+</p>
+</li>
+<li>
+<p>
+Organize functions in files better.
+</p>
+</li>
+<li>
+<p>
+Clean up core library.  All tests link to core, core is huge.  Lighten it.
+</p>
+</li>
+<li>
+<p>
+Verify destructor functions free all memory, and that they are called when they should be.
+</p>
+</li>
+</ol>
 </div>
 </nowiki>
