@@ -67,7 +67,7 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
     OlyStatus status = OLY_OKAY;
     OlyNode   *s, *prev;
     OChar     *result;
-    size_t      key_len = 0;
+    size_t      key_len = 0, depth = 0;
     prev = (q->in);
     /* step in ptr fwd if not at end, or back to beginning if at end. Keep behind queue_end, else ERR */
     if (((q->out <= q->in) && (q->in < q->queue_end)) 
@@ -91,20 +91,24 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         status = push_node(&(q->stack), prev);
         HANDLE_STATUS_AND_RETURN(status);
     }
-    else if (q->in->depth < prev->depth)
+    
+    depth = prev->depth;
+    while (q->in->depth < depth)
     {
         prev->collection_end = true;
         status = pop_node(&(q->stack), &s );
         HANDLE_STATUS_AND_RETURN(status);
+        depth--;
     }
     q->in->parent_node = q->stack ;
     
     if  (q->in->key != NULL)
     {
         key_len = u_strlen(q->in->key);
-        status = reserve_string_buffer( q->string_buffer, key_len );
+        status = reserve_string_buffer( q->string_buffer, (key_len+2) );
         HANDLE_STATUS_AND_RETURN(status);
         status = enqueue_to_string_buffer(q->string_buffer, (q->in->key), &result, &key_len);
+        q->in->key = result;
         HANDLE_STATUS_AND_RETURN(status);
     }
 
@@ -115,6 +119,7 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         HANDLE_STATUS_AND_RETURN(status);
         status = enqueue_to_string_buffer(q->string_buffer, (q->in->value).string_value, &result, &key_len);
         HANDLE_STATUS_AND_RETURN(status);
+        (q->in->value).string_value = result;
     }
     return status;
 };
@@ -129,17 +134,16 @@ OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out)
         || ((q->in < q->out) && (q->out < q->queue_end)))
     {
         q->out++;
-        copy_node(q->out, (*node_out));
     }
     else if (q->out == q->queue_end)
     {
         q->out = q->queue_start;
-        copy_node(q->out, (*node_out));
     }
     else
     {
         status = OLY_ERR_NODE_QUEUE_EMPTY;
     }
+    copy_node(q->out, (*node_out));
     reset_node(prev);
     return status;
 };

@@ -57,8 +57,14 @@ print_node( OlyNode *n )
     {
         u_fprintf(u_stdout, "Key: ");
         u_fprintf_u(u_stdout, n->key);
+        u_fprintf(u_stdout," ");
     }
-    u_fprintf(u_stdout, " Tuple: %lli, Depth: %u, ", n->tuple, n->depth);
+    if (n->parent_node != NULL)
+    {
+        u_fprintf(u_stdout, "Parent %lli, ", n->parent_node->tuple);
+    }
+
+    u_fprintf(u_stdout, "Tuple: %lli, Depth: %u, ", n->tuple, n->depth);
     print_node_value(n->value, n->vt);
 }
 
@@ -83,6 +89,7 @@ print_node_value(OlyNodeValue nv, OlyNodeValueType type)
             printf("SEQUENCE\n");
             break;
         default:
+            printf("UNKNOWN\n");
             break;
     }
 
@@ -137,6 +144,14 @@ close_oly_ds_node( OlyNode *node )
         free(node);
     }
     return;
+}
+
+OlyStatus
+get_node_string_value(OlyNode *node, OChar **value_out)
+{
+    OlyStatus status = OLY_OKAY;
+    (*value_out) = (node->value).string_value ;
+    return status;
 }
 
 OlyStatus
@@ -231,6 +246,13 @@ get_node_tuple(OlyNode *node, int64_t *tuple_out )
 };
 
 OlyStatus 
+set_node_has_key(OlyNode *node)
+{
+    node->has_key = true;
+    return OLY_OKAY;
+};
+
+OlyStatus 
 unset_node_has_key(OlyNode *node)
 {
     node->has_key = false;
@@ -257,6 +279,7 @@ get_node_parent( const OlyNode *node, OlyNode **parent)
         status = OLY_ERR_NODES_TOO_SHALLOW;
         (*parent) = NULL;
     }
+    (*parent) = node->parent_node;
     return status;
 }
 
@@ -279,7 +302,6 @@ push_node(OlyNode **stack, OlyNode *node )
     OlyNode   *stack_copy;
     status = new_oly_node( &stack_copy );
     HANDLE_STATUS_AND_RETURN(status);
-    (node->depth)++;
     if ((*stack) != NULL)
     {
         node->parent_node = (*stack);

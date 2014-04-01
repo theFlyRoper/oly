@@ -335,29 +335,28 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
     /* if key *value != \0, append it to the converter buffer and set *key to \0. */
     if ( ( *(ds->key_staging) != '\0' ) && ( ds->status == OLY_OKAY ) )
     {
+        set_node_has_key(new_node);
         has_string = true;
         buffer_needed_key += strlen( ds->key_staging );
-        ds->status = put_scalar_in( ds->boundary , (const char *)ds->key_staging,
+        ds->status = put_char_in( ds->boundary , (const char *)ds->key_staging,
                 buffer_needed_key );
     }
 
     switch (type)
     {
-        case OLY_NODE_VALUE_TYPE_MAP:
-            ds->status = descend_one_level(ds->node);
-            break;
-        case OLY_NODE_VALUE_TYPE_SEQUENCE:
-            ds->status = descend_one_level(ds->node);
-            break;
         case OLY_NODE_VALUE_SCALAR_STRING:
             /* if value is str, check length. */
             buffer_needed_value += (strlen( (char *)value ) + 1);
-            ds->status = put_scalar_in( ds->boundary , (const char *)value ,
+            ds->status = put_char_in( ds->boundary , (const char *)value ,
                     buffer_needed_value );
+            break;
+        case OLY_NODE_VALUE_TYPE_MAP:
+        case OLY_NODE_VALUE_TYPE_SEQUENCE:
+            ds->status = descend_one_level(ds->node);
         default:
-            ds->status = set_node_value( new_node, value, type );
             break;
     }
+    ds->status = set_node_value( new_node, value, type );
     HANDLE_STATUS_AND_RETURN(ds->status);
    
     if ( has_string == true )
@@ -368,7 +367,7 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
     if  (*(ds->key_staging) != '\0')
     {
         *(ds->key_staging) = '\0';
-        ds->status = get_scalar_out( ds->boundary, &(ds->internal_scalar), &length);
+        ds->status = get_ochar_out( ds->boundary, &(ds->internal_scalar), &length);
         if (ds->status != OLY_WARN_BOUNDARY_RESET)
         {
             ds->status = OLY_OKAY;
@@ -384,7 +383,7 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
 
     if (OLY_NODE_VALUE_SCALAR_STRING == type)
     {
-        ds->status = get_scalar_out( ds->boundary, &(ds->internal_scalar), &length);
+        ds->status = get_ochar_out( ds->boundary, &(ds->internal_scalar), &length);
         if (ds->status != OLY_WARN_BOUNDARY_RESET)
         {
             ds->status = OLY_OKAY;
@@ -419,6 +418,8 @@ OlyStatus collect_nodes( OlyDataSource *ds, OlyNode **node_out)
     (*node_out) = ds->node;
     return status;
 }
+
+/* TODO: flesh these out and turn them in to proper dequeues! */
 OlyStatus dispense_nodes( OlyDataSource *ds, OlyNode *node_in)
 {
     OlyStatus status = OLY_OKAY;
@@ -429,8 +430,11 @@ OlyStatus dispense_nodes( OlyDataSource *ds, OlyNode *node_in)
 
 /* enqueue and dequeue are for external interfaces. */
 
-OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode *node )
+OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode **node )
 {
+    OChar *key;
+    (*node) = ds->node;
+    get_node_key(*node, &key) ;
     return ds->status;
 }
 

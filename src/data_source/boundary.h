@@ -34,8 +34,8 @@ extern OlyStatus flush_outbound(OlyBoundary *boundary);
 extern OlyStatus flush_inbound(OlyBoundary *boundary);
 extern OlyStatus clear_boundary(OlyBoundary *boundary);
 
-OlyStatus get_scalar_out( OlyBoundary *boundary, OChar **next, size_t *next_len );
-OlyStatus put_scalar_in( OlyBoundary *boundary, const char *s, size_t len);
+OlyStatus get_ochar_out( OlyBoundary *boundary, OChar **next, size_t *next_len );
+OlyStatus put_char_in( OlyBoundary *boundary, const char *s, size_t len);
 OlyStatus copy_ochar_buffer( OlyBoundary *source, OChar *dest, size_t limit );
 OlyStatus get_boundary_out_start( OlyBoundary *source, OChar **start );
 

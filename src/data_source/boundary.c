@@ -181,7 +181,7 @@ get_boundary_out_start( OlyBoundary *source, OChar **start )
 }
 
 OlyStatus 
-put_scalar_in( OlyBoundary *boundary, const char *s, size_t len)
+put_char_in( OlyBoundary *boundary, const char *s, size_t len)
 {
     OlyStatus status = OLY_OKAY;
     size_t available = 0;
@@ -207,7 +207,7 @@ OlyStatus clear_boundary(OlyBoundary *boundary)
 }
 
 OlyStatus
-get_scalar_out( OlyBoundary *boundary, OChar **next, size_t *next_len )
+get_ochar_out( OlyBoundary *boundary, OChar **next, size_t *next_len )
 {
     OlyStatus status = OLY_OKAY;
     *next_len = u_strlen(boundary->o_now);

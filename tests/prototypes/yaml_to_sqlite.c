@@ -108,8 +108,8 @@ main( int argc, char **argv )
     OlyStatus        status = OLY_OKAY;
     char             name_buffer[BUFSIZ];
     char            *create_table_node = "create table node (id integer primary key,"
-                        "\nkey text, value text);\n"
-                        "create table node_relation (\n"
+                        "\nkey text, value text);\n",
+                    *create_table_node_relation = "create table node_relation (\n"
                         "id integer primary key,\n"
                         "node_id integer not null, parent_node_id integer not null,\n"
                         "foreign key (node_id) references node(id),\n"
@@ -173,6 +173,9 @@ main( int argc, char **argv )
     set_sqlite_sql( sqlite_data, create_table_node );
     exec_sqlite_sql( sqlite_data );
     finalize_sqlite_sql( sqlite_data );
+    set_sqlite_sql( sqlite_data, create_table_node_relation );
+    exec_sqlite_sql( sqlite_data );
+    finalize_sqlite_sql( sqlite_data );
     printf("built the node and node_relation tables.\n");
     
     set_ds_dispatch_function( yaml_ds, yaml_inbound );
@@ -183,6 +186,8 @@ main( int argc, char **argv )
     open_ds_boundary(sqlite_ds);
 
     status = oly_run();
+    
+    finalize_sqlite_sql( sqlite_data );
 
     close_sqlite_oly( sqlite_data );
     close_yaml_oly( yaml_data );
@@ -369,11 +374,104 @@ close_sqlite_oly( SQLiteOly *close_me )
     sqlite3_close(close_me->data);
 }
 
-
 OlyStatus
-sqlite_outbound( OlyDataSource *ds )
+sqlite_outbound( OlyDataSource *data )
 {
-    OlyStatus status = OLY_OKAY;
+    OlyStatus status      = OLY_OKAY;
+    int sqlite_return   ;
+    int64_t     tuple, parent_tuple;
+    size_t      length = -1;
+    static bool          have_data   = false;
+    static bool          is_done     = false;
+    sqlite3_stmt *prepped = NULL;
+    char *insert_node_relation = "insert into node_relation (node_id,"
+                        "parent_node_id)"
+                        "values (:id, :parent);",
+                    *insert_node = "insert into node (id, key, value)"
+                        "values (:id, :key, :value);";
+    OChar               *key, *value;
+    char                *unused;
+    static SQLiteOly    *ds = NULL;
+    OlyNode *node, *parent;
+    CHECK_IF_NULL(data) ;
+    if (is_done == true)
+    {
+        status = OLY_ERR_DS_EOF;
+        return status;
+    }
+    if (ds == NULL)
+    {
+        if ( have_data == false )
+        {
+            ds = (SQLiteOly *)get_ds_data( data );
+        }
+        else
+        {
+            status = OLY_ERR_NO_OBJECT; 
+            PICK_UP_PHONE_BOOTH_AND_DIE(status); 
+        }
+    }
+
+    status = dequeue_ds_node( data, &node );
+    get_node_tuple(node, &tuple);
+    get_node_parent(node, &parent);
+    if (parent != NULL)
+    {
+        get_node_tuple(parent, &parent_tuple);
+    }
+    else
+    {
+        parent_tuple = 0;
+    }
+    length = strlen(insert_node)+1;
+    
+    sqlite3_prepare_v2( ds->data, insert_node, length, &(ds->prepped), 
+            (const char **)&unused );
+    
+    get_node_key(node, &key);
+    get_node_string_value(node, &value);
+    sqlite_return = sqlite3_bind_int(ds->prepped, 1, tuple);
+    if (key != NULL)
+    {
+        sqlite_return = sqlite3_bind_text16(ds->prepped, 2, (void *)key, -1, NULL);
+    }
+    else
+    {
+        sqlite_return = sqlite3_bind_null(ds->prepped, 2);
+    }
+    if (value != NULL)
+    {
+        sqlite_return = sqlite3_bind_text16(ds->prepped, 3, (void *)value, -1, NULL);
+    }
+    else
+    {
+        sqlite_return = sqlite3_bind_null(ds->prepped, 3);
+    }
+    
+    sqlite_return = sqlite3_step( ds->prepped );
+    if (sqlite_return != SQLITE_DONE)
+    {
+        printf("SQLite err: %s\n", sqlite3_errmsg( ds->data ));
+        status = OLY_ERR_SQLITE ;
+    }
+    sqlite3_finalize( ds->prepped );
+    length = strlen(insert_node_relation)+1;
+    
+    sqlite3_prepare_v2( ds->data, insert_node_relation, length, &prepped, 
+            (const char **) &unused );
+    
+    sqlite_return = sqlite3_bind_int(prepped, 1, tuple);
+    sqlite_return = sqlite3_bind_int(prepped, 2, parent_tuple);
+    sqlite_return = sqlite3_step( prepped );
+    if (sqlite_return != SQLITE_DONE)
+    {
+        printf("SQLite err: %s\n", sqlite3_errmsg( ds->data ));
+        status = OLY_ERR_SQLITE ;
+    }
+    sqlite3_finalize(prepped );
+    status = OLY_WARN_NODE_CONSUMED;
+    
+
     return status;
 }
 
@@ -385,7 +483,7 @@ set_sqlite_sql( SQLiteOly *db, char *sql)
     db->raw_sql = sql;
     sqlite3_stmt *prepped = NULL;
     OlyStatus status = OLY_OKAY;
-    if ( sqlite3_prepare_v2( db->data, sql, len, &prepped, &unused ) != SQLITE_OK )
+    if ( sqlite3_prepare_v2( db->data, sql, (len+1), &prepped, &unused ) != SQLITE_OK )
     {
         printf("SQLite err: %s\n", sqlite3_errmsg( db->data ));
         status = OLY_ERR_SQLITE;
