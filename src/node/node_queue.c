@@ -114,7 +114,6 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         status = reserve_string_buffer( q->string_buffer, key_len );
         HANDLE_STATUS_AND_RETURN(status);
         status = enqueue_to_string_buffer(q->string_buffer, (q->in->value).string_value, &result, &key_len);
-        u_fputs(((q->in->value).string_value), u_stdout);
         HANDLE_STATUS_AND_RETURN(status);
     }
     return status;

@@ -195,7 +195,6 @@ put_scalar_in( OlyBoundary *boundary, const char *s, size_t len)
     boundary->c_now += len;
     *(boundary->c_now) = '\0';
     (boundary->c_now)++;
-    printf("added scalar: \"%s\"\n", boundary->c_now);
     return status;
 }
 

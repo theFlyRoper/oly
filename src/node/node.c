@@ -104,7 +104,6 @@ new_node_value( OlyNodeValue **new_node_value)
 OlyStatus
 reset_node( OlyNode *node )
 {
-    node->depth             = 0;
     node->vt                = OLY_NODE_VALUE_TYPE_UNSET;
     node->tuple             = 0;
     node->key               = NULL;
