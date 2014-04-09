@@ -42,8 +42,8 @@ main( int argc, char **argv ){
     const unsigned char *read_me = (const unsigned char *)argv[2];
     data_length         hash_length ;
     int                 strcmp_val;
-    char            *locale = (char *)"root",  *charset = NULL;
-    init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
+    char            *locale = (char *)"root",  *encoding = NULL;
+    init_oly(argv[0], TEST_PKGDATADIR, encoding, locale, &oly);
   if (argc != 3) 
   {
     printf("2 args\n");

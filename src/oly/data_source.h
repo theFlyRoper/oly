@@ -66,7 +66,7 @@ typedef enum data_source_type_enum {
 } DataSourceType;
 
 /* data_source_options: used to describe which options are required and which are not. 
- * locale and charset are not listed because they are valid for any data source. */
+ * locale and encoding are not listed because they are valid for any data source. */
 typedef enum data_source_options_enum {
     DSOPT_FILE_NAME = 0x0,
     DSOPT_CONNECTION_STRING = 0x1,
@@ -88,7 +88,7 @@ void reset_ds_status( OlyDataSource *ds );
 extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );
 /* Marks a data source option flag as unused.  Data source initializing function should call. */
 extern OlyStatus set_ds_option_unused( OlyDataSource *ds, DataSourceOptions option );
-/* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
+/* to simplify maintenance of the data source options besides locale, encoding and direction, we call set_data_option */
 extern OlyStatus set_data_option( OlyDataSource *ds, 
         const DataSourceOptions option, const char *value );
 extern char *get_data_option( OlyDataSource *ds, const DataSourceOptions option,
@@ -96,10 +96,10 @@ extern char *get_data_option( OlyDataSource *ds, const DataSourceOptions option,
 extern OlyStatus get_data_source_status( OlyDataSource *ds );
 extern OlyStatus set_data_source_direction (OlyDataSource *ds, OlyDSDirection direction);
 
-/* normally these locale and charset functions should not be necessary,
+/* normally these locale and encoding functions should not be necessary,
  * since we can usually deduce this information from the data source itself. */
 extern OlyStatus set_data_locale( OlyDataSource *ds, const char *locale );
-extern OlyStatus set_data_charset( OlyDataSource *ds, const char *charset );
+extern OlyStatus set_data_encoding( OlyDataSource *ds, const char *encoding );
 
 /* TODO: separate the internal and external functions here. */
 OlyStatus stage_node_key( OlyDataSource *ds, const char *key, size_t key_len );
@@ -116,8 +116,8 @@ OlyStatus ds_ascend(OlyDataSource *ds);
 OlyStatus collect_nodes( OlyDataSource *ds, OlyNode **node_out);
 OlyStatus dispense_nodes( OlyDataSource *ds, OlyNode *node_in);
 
-/* retrieve locale or charset from the data source. */
-char *get_data_charset( OlyDataSource *ds );
+/* retrieve locale or encoding from the data source. */
+char *get_data_encoding( OlyDataSource *ds );
 char *get_data_locale( OlyDataSource *ds );
 void *get_ds_data( OlyDataSource *ds );
 OlyStatus set_ds_data( OlyDataSource *ds, void *data);

@@ -56,7 +56,7 @@
 static void print_help(void);
 static void usage(void);
 static void print_version(void);
-static char *locdir = PKGDATADIR, *locale = "root", *charset = "UTF-8", 
+static char *locdir = PKGDATADIR, *locale = "root", *encoding = "UTF-8", 
     *yaml_file = "/tests/data/every_token.yaml", 
     *sqlite_file = "/tests/data/test_sqlite.sqlite3";
 
@@ -71,7 +71,7 @@ OlyStatus get_options( int argc, char **argv );
 
 typedef struct sqlite_oly_struct {
     char            *file_name;
-    char            *charset;
+    char            *encoding;
     char            *locale;
     sqlite3         *data;
     sqlite3_stmt    *prepped;
@@ -81,7 +81,7 @@ typedef struct sqlite_oly_struct {
 typedef struct yaml_oly_struct {
     char    *file_name;
     char    *locale;
-    char    *charset;
+    char    *encoding;
     OFILE   *data;
     yaml_parser_t *parser ;
     yaml_token_t  *token;
@@ -90,11 +90,11 @@ typedef struct yaml_oly_struct {
 
 extern OlyStatus delete_file(char *file);
 
-extern YAMLOly *open_yaml_oly( const char *file, const char *charset, 
+extern YAMLOly *open_yaml_oly( const char *file, const char *encoding, 
         const char *locale, OlyStatus *status );
 extern void close_yaml_oly( YAMLOly *close_me );
 
-extern SQLiteOly *open_sqlite_oly( const char *file, const char *charset, 
+extern SQLiteOly *open_sqlite_oly( const char *file, const char *encoding, 
         const char *locale, OlyStatus *status );
 extern void close_sqlite_oly( SQLiteOly *close_me );
 extern OlyStatus set_sqlite_sql( SQLiteOly *db, char *sql);
@@ -121,7 +121,7 @@ main( int argc, char **argv )
     OlyDataSource   *sqlite_ds;
     size_t           buffer_size = DEFAULT_BUFFER_SIZE;
 
-    status = init_oly(argv[0], locdir, charset, locale, &oly );
+    status = init_oly(argv[0], locdir, encoding, locale, &oly );
     status  = get_options(argc, argv);
 
     switch (status)
@@ -145,9 +145,9 @@ main( int argc, char **argv )
     yaml_ds = new_data_source( YAML_FILE , &status );
     sqlite_ds = new_data_source( SQLITE_FILE , &status );
     set_max_buffer_size( yaml_ds, buffer_size );
-    set_data_charset( yaml_ds, charset );
+    set_data_encoding( yaml_ds, encoding );
     set_max_buffer_size( sqlite_ds, buffer_size );
-    set_data_charset( sqlite_ds, charset );
+    set_data_encoding( sqlite_ds, encoding );
 
     status =  set_inbound_data_source( yaml_ds );
     PICK_UP_PHONE_BOOTH_AND_DIE(status);
@@ -156,7 +156,7 @@ main( int argc, char **argv )
 
     strcpy(name_buffer, DATASOURCEDIR); 
     strcat(name_buffer, yaml_file);
-    yaml_data = open_yaml_oly((const char *)name_buffer, (const char *)charset, 
+    yaml_data = open_yaml_oly((const char *)name_buffer, (const char *)encoding, 
                         (const char *)locale, &status );
     
     PICK_UP_PHONE_BOOTH_AND_DIE(status);
@@ -164,7 +164,7 @@ main( int argc, char **argv )
     strcpy(name_buffer, DATASOURCEDIR); 
     strcat(name_buffer, sqlite_file);
     delete_file(name_buffer);
-    sqlite_data = open_sqlite_oly((const char *)name_buffer, (const char *)charset, 
+    sqlite_data = open_sqlite_oly((const char *)name_buffer, (const char *)encoding, 
                         (const char *)locale, &status );
     
     PICK_UP_PHONE_BOOTH_AND_DIE(status);
@@ -203,7 +203,7 @@ main( int argc, char **argv )
 }
 
 YAMLOly *
-open_yaml_oly( const char *file, const char *charset, const char *locale, 
+open_yaml_oly( const char *file, const char *encoding, const char *locale, 
         OlyStatus *status )
 {
     YAMLOly     *yaml_data = (YAMLOly *)omalloc(sizeof(YAMLOly));
@@ -211,9 +211,9 @@ open_yaml_oly( const char *file, const char *charset, const char *locale,
     yaml_data->token = omalloc(sizeof(yaml_token_t));
     yaml_data->event = omalloc(sizeof(yaml_event_t));
     yaml_data->file_name = (char *)file;
-    yaml_data->charset = (char *)charset;
+    yaml_data->encoding = (char *)encoding;
     yaml_data->locale = (char *)locale;
-    yaml_data->data = (OFILE *)u_fopen( file, "rd", locale, charset ); 
+    yaml_data->data = (OFILE *)u_fopen( file, "rd", locale, encoding ); 
     if ( yaml_data->data == NULL )
     {
         *status = OLY_ERR_FILE_NOT_FOUND ;
@@ -350,14 +350,14 @@ yaml_inbound(OlyDataSource *data)
 }
 
 SQLiteOly *
-open_sqlite_oly( const char *file, const char *charset, const char *locale, 
+open_sqlite_oly( const char *file, const char *encoding, const char *locale, 
         OlyStatus *status )
 {
     SQLiteOly       *sqlite_data = (SQLiteOly *)omalloc(sizeof(SQLiteOly));
     sqlite3         *database ;
    
     sqlite_data->file_name  = (char *)file;
-    sqlite_data->charset    = (char *)charset;
+    sqlite_data->encoding    = (char *)encoding;
     sqlite_data->locale     = (char *)locale;
     if ( sqlite3_open(file, &database) != SQLITE_OK )
     {

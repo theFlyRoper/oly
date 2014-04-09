@@ -53,7 +53,7 @@ main( int argc, char **argv )
         "/data/UTF-8-demo.txt", "/data/realistic_data.txt", ""
     },
             *source_dir = getenv("SOURCE");
-    char     *locale = "root", *charset = "UTF-8";
+    char     *locale = "root", *encoding = "UTF-8";
     OChar   *obuff, *result;
     size_t  enqueue_count = 0, dequeue_count = 0, dequeue_out = 0, iterations = 0;
     OFILE    *f;
@@ -81,7 +81,7 @@ main( int argc, char **argv )
         fprintf(stderr, "requires SOURCE environment variable, supplied by runtest. Exiting...\n");
         exit(EXIT_FAILURE);
     }
-    status = init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
+    status = init_oly(argv[0], TEST_PKGDATADIR, encoding, locale, &oly);
     prepare_file(source_dir, count_bytes_files[0], &f);
     
     plan( rows_read + 90 );
@@ -219,7 +219,7 @@ prepare_file(const char *source_dir, const char this_file[], OFILE **f)
     OChar in_buffer[buffer_length], *obuff;
     strcpy(filebuffer, source_dir);
     strcat(filebuffer, this_file);
-    *f = u_fopen(filebuffer, "rb", char_default_locale(), char_default_charset());
+    *f = u_fopen(filebuffer, "rb", char_default_locale(), char_default_encoding());
     if( *f == NULL )
     {
         sysbail("test file %s not found!", filebuffer);

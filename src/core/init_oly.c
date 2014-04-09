@@ -62,11 +62,11 @@ static char *init_locale (const char *locale);
 /* collects the startup character set / encoding / codepoint from the env or system 
  * Note that if the U_CHARSET_IS_UTF8 C preprocessor marker is defined,
  * ICU will always return UTF-8 as the default character set. */
-static char *init_charset (const char * preset);
+static char *init_encoding (const char * preset);
 /* Initializes the ICU resource and sets up OChar versions
- * of the locale, charset and datadir. */
+ * of the locale, encoding and datadir. */
 static OlyResource *init_primary_resource(const char *locale, 
-        const char *charset, const char *datadir);
+        const char *encoding, const char *datadir);
 /* initializes ICU IO */
 static void init_io(const char *locale, const char *codepage);
 /* cleans up after Oly.  May need work. */
@@ -84,13 +84,13 @@ static char *istrdup (const char *string);
  */
 
 OlyStatus init_oly(const char *prog, 
-        const char *datadir, const char *charset, const char *locale, Oly **oly_out)
+        const char *datadir, const char *encoding, const char *locale, Oly **oly_out)
 {
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
 #endif /* HAVE_UNICODE_USTDIO_H */
     OChar           *transfer = NULL;
-    char            *inner_charset, *inner_locale, 
+    char            *inner_encoding, *inner_locale, 
                     *inner_prog     = istrdup(prog),
                     *inner_datadir  = istrdup(datadir)
                     ;
@@ -158,13 +158,13 @@ OlyStatus init_oly(const char *prog,
 
     /* u_stderr, u_stdout, u_stdin */
     inner_locale    = init_locale(locale);
-    inner_charset   = init_charset(charset);
-    init_io(inner_locale, inner_charset);
+    inner_encoding   = init_encoding(encoding);
+    init_io(inner_locale, inner_encoding);
 
     /* the ICU constructors take char arguments, which is
-     * what init_locale and init_charset provide. */
+     * what init_locale and init_encoding provide. */
     oly_init->data = init_primary_resource( inner_locale, 
-            inner_charset, inner_datadir );
+            inner_encoding, inner_datadir );
 
     init_errmsg(oly_init);
     
@@ -235,14 +235,14 @@ init_locale (const char *locale)
 }
 
 char *
-init_charset (const char * preset)
+init_encoding (const char * preset)
 {
 #ifdef HAVE_UNICODE_UCNV_H
     /* Currently, Oly builds with U_CHARSET_IS_UTF8, which means
-     * this function always returns UTF-8 for default charset.
+     * this function always returns UTF-8 for default encoding.
      * This is good in that it simplifies use, but bad in that
-     * when built on a system where the default charset is not
-     * utf-8, we will have to check the charset of all inbound
+     * when built on a system where the default encoding is not
+     * utf-8, we will have to check the encoding of all inbound
      * files.
      *
      * Cross that bridge later.
@@ -266,7 +266,7 @@ init_charset (const char * preset)
 }
 
 OlyResource *
-init_primary_resource(const char *locale, const char *charset, 
+init_primary_resource(const char *locale, const char *encoding, 
         const char *datadir)
 {
     OlyResource *res = (OlyResource *)imalloc(sizeof(OlyResource));
@@ -274,8 +274,8 @@ init_primary_resource(const char *locale, const char *charset,
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode      u_status  = U_ZERO_ERROR;
     res->locale  = u_uastrcpy(n, locale);
-    n = (OChar *)icalloc(strlen(charset), sizeof(OChar));
-    res->charset = u_uastrcpy(n, charset);
+    n = (OChar *)icalloc(strlen(encoding), sizeof(OChar));
+    res->encoding = u_uastrcpy(n, encoding);
     res->resource = (ResourceData *)ures_open(datadir, locale, &u_status);
     if (U_FAILURE(u_status)) 
     {

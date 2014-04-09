@@ -34,7 +34,7 @@ main( int argc, char **argv ){
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
-    char            *locale = "root",  *charset = NULL;
+    char            *locale = "root",  *encoding = NULL;
     const char      *results_char[] = {
                         "OLY_WARN_NODE_CONSUMED",
                         "OLY_WARN_NODE_PRODUCED",
@@ -93,7 +93,7 @@ main( int argc, char **argv ){
     UErrorCode       u_status  = U_ZERO_ERROR;
     OlyStatus        status;
     
-    status = init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
+    status = init_oly(argv[0], TEST_PKGDATADIR, encoding, locale, &oly);
     
     for ( i = 0; (i<=num_tests); i++)
     {

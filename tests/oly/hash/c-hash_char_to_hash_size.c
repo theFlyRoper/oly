@@ -45,9 +45,9 @@ main( int argc, char **argv ){
     charhash              input;
     const unsigned char  *hash_me = (const unsigned char *)argv[1];
     sizehash              result;
-    char            *locale = (char *)"root",  *charset = NULL;
+    char            *locale = (char *)"root",  *encoding = NULL;
     data_length           hash_length ;
-    init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
+    init_oly(argv[0], TEST_PKGDATADIR, encoding, locale, &oly);
   
     if (argc != 2) {
         printf("Takes 1 argument, to be hashed. exiting...");

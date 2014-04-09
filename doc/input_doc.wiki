@@ -92,7 +92,7 @@ oly_analyze_file
 <dd>
 <p>
 Figure out the character set for the input using
-  the ICU charset figgerin' api.
+  the ICU encoding figgerin' api.
 </p>
 </dd>
 <dt>

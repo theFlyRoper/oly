@@ -82,13 +82,13 @@ ostr_to_cstr(char *c, size_t buffer_size, const OChar *o)
 #endif /* HAVE_UNICODE_USTDIO_H */
 }
 
-/* The resource data charset for oly serves as the default charset throughout,
+/* The resource data encoding for oly serves as the default encoding throughout,
  * since the Oly object is the primary object throughout the program. */
 
 OChar *
-get_default_charset( void )
+get_default_encoding( void )
 {
-    return get_charset(oly->data);
+    return get_encoding(oly->data);
 }
 
 OChar *
@@ -115,7 +115,7 @@ get_oly_resource( Oly *oly )
     return get_resource_data(oly->data);
 }
 
-const char *char_default_charset( void )
+const char *char_default_encoding( void )
 {
     return ucnv_getDefaultName 	( );
 }

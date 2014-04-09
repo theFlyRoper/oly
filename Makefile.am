@@ -186,7 +186,7 @@ libcore_a_SOURCES	=	src/resources/get_resource_data.c \
 						src/resources/open_resource.c \
 						src/resources/close_resource.c \
 						src/resources/new_resource.c \
-						src/resources/get_charset.c \
+						src/resources/get_encoding.c \
 						src/resources/get_locale.c \
 						src/core/basic_functions.c \
 						src/core/dispatch.c \

@@ -22,7 +22,7 @@
 #include "data_source/pvt_boundary.h"
 
 OlyStatus
-open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
+open_oly_boundary(char *encoding, size_t buffer_max_size, OlyBoundary **bind)
 {
     OlyStatus    status = OLY_OKAY;
     UErrorCode   u_status = U_ZERO_ERROR;
@@ -43,14 +43,14 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
      * Consertative and wastes a bit of the end of the buffer.
      * Better that then overflows. */
     
-    oly_bound->converter   = ucnv_open( charset, &u_status );
+    oly_bound->converter   = ucnv_open( encoding, &u_status );
     min_char_size = ucnv_getMinCharSize(oly_bound->converter) ;
     max_characters  = (buffer_max_size / ( min_char_size + sizeof(OChar)));
     o_size          = (( max_characters * sizeof(OChar) ) - sizeof(OChar));
     c_size          = (( max_characters * min_char_size ) - min_char_size);
 
     /* normally the ICU converter API only uses 6 pointers, 
-     * 3 for the outside charset (c_) and 3 for the ICU internal
+     * 3 for the outside encoding (c_) and 3 for the ICU internal
      * UChar structures (o_).  The flush_break pointers are 
      * there to hold the spot for higher nodes. 
      * because the char buffers are actually pointing to different 

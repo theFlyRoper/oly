@@ -48,7 +48,7 @@ typedef union oly_hash_union {
 
 int
 main (void){
-    char            *locale = (char *)"root",  *charset = NULL;
+    char            *locale = (char *)"root",  *encoding = NULL;
     oly_hash    test1 = {{0xEFBEADBAED0BEDFE}}, 
                 test2 = {{0xEDEDDE00EDADBE00}},
                 test3 = {{0xED0BEDFEADDEEDDE}};

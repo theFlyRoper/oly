@@ -260,7 +260,7 @@ find_config_file (OlyStatus *status)
                 strcpy( result, token );
                 strcat( result, basename );
                 return_file = u_fopen( result, "rb", 
-                        char_default_locale(), char_default_charset() );
+                        char_default_locale(), char_default_encoding() );
             }
             else
             {

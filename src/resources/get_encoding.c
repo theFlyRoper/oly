@@ -1,4 +1,4 @@
-/* get_charset.c - retrieve charset string from resource. License GPL2+ {{{
+/* get_encoding.c - retrieve encoding string from resource. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 #include "pvt_resources.h"
 
 OChar *
-get_charset(OlyResource *res)
+get_encoding(OlyResource *res)
 { 
-    return res->charset;
+    return res->encoding;
 }
 

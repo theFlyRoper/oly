@@ -41,7 +41,7 @@ static YAMLTokenMark *preflight_yaml( OlyStatus *status , OlyDataSource *ds );
 void
 load_yaml( OlyStatus *status , OlyDataSource *ds )
 {
-    OFILE               *yaml_file  = u_fopen( ds->filename, "rd", ds->locale, ds->charset );
+    OFILE               *yaml_file  = u_fopen( ds->filename, "rd", ds->locale, ds->encoding );
     yaml_parser_t        config_parser ;
 
     yaml_event_t         event;
@@ -117,7 +117,7 @@ load_yaml( OlyStatus *status , OlyDataSource *ds )
 YAMLTokenMark *
 preflight_yaml( OlyStatus *status , OlyDataSource *ds )
 {
-    OFILE *yaml_file = u_fopen( ds->filename, "rd", ds->locale, ds->charset );
+    OFILE *yaml_file = u_fopen( ds->filename, "rd", ds->locale, ds->encoding );
     yaml_parser_t        config_parser ;
     yaml_token_t         token;
     YAMLTokenMark           *token_mark = new_token_mark();
@@ -235,7 +235,7 @@ print_preflight_count(YAMLTokenMark *token_mark, int level)
 void
 print_yaml( OlyStatus *status , OlyDataSource *ds )
 {
-    OFILE *yaml_file   = u_fopen( ds->filename, "rd", ds->locale, ds->charset );
+    OFILE *yaml_file   = u_fopen( ds->filename, "rd", ds->locale, ds->encoding );
     yaml_parser_t        config_parser ;
     yaml_token_t         token;
     YAMLTokenMark           *token_mark = new_token_mark();

@@ -36,12 +36,12 @@ int
 main( int argc, char **argv )
 {
     OlyStatus        status  = OLY_OKAY;
-    char            *locale = NULL, *charset = NULL, *locdir = PKGDATADIR;
+    char            *locale = NULL, *encoding = NULL, *locdir = PKGDATADIR;
 #ifdef OLYDEV
     res_disp_flag   flag;
 #endif /* OLYDEV */
 
-    status = init_oly(argv[0], locdir, charset, locale, &oly );
+    status = init_oly(argv[0], locdir, encoding, locale, &oly );
     printf("hi there!\n");
 
 #ifdef OLYDEV

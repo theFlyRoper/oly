@@ -1,5 +1,5 @@
 wants_locale        : en_US
-wants_charset       : UTF-8
+wants_encoding       : UTF-8
 # these are actual high number unicode codepoints, I am testing 
 # how accurate ICU + libyaml is.
 unicode_symbol_source       : "http://www.marathon-studios.com/unicode/categories/So/Other_Symbol"

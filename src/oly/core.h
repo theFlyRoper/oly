@@ -36,7 +36,7 @@ struct passwd;
 
 /* constructor */
 OlyStatus init_oly(const char *prog, 
-        const char *datadir, const char *charset, const char *locale, Oly **oly_out);
+        const char *datadir, const char *encoding, const char *locale, Oly **oly_out);
 
 extern OChar    *get_ltdl_errmsg( int status );
 extern size_t    memory_left_now(void);
@@ -45,12 +45,12 @@ extern size_t    getMemorySize( void );
 extern OlyStatus count_file_bytes(FILE *file, size_t *file_size);
 
 extern double oly_timestamp( void ) ;
-extern OChar *get_default_charset( void );
+extern OChar *get_default_encoding( void );
 extern OChar *get_default_locale( void );
 extern const OChar *get_program_name( void );
 extern const OChar *get_resource_dir( void );
 extern ResourceData *get_oly_resource( Oly *oly );
-extern const char *char_default_charset( void );
+extern const char *char_default_encoding( void );
 extern const char *char_default_locale( void );
 extern OlyStatus get_OChar_args(OChar ***result, char **source, 
         int32_t argc);

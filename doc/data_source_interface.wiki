@@ -184,11 +184,11 @@ http://www.gnu.org/software/src-highlite -->
 <pre><tt><span style="color: #009900">char</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_locale</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 <dt>
-get_oly_ds_charset
+get_oly_ds_encoding
 </dt>
 <dd>
 <p>
-Retrieve data source charset information. Intent here is to use the native data source metadata to find the charset information.
+Retrieve data source encoding information. Intent here is to use the native data source metadata to find the encoding information.
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
@@ -196,7 +196,7 @@ Retrieve data source charset information. Intent here is to use the native data 
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #009900">char</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_charset</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<pre><tt><span style="color: #009900">char</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_encoding</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
 </dd>
 </dl>
 <h3><a name="_open_questions"></a>Open Questions</h3>

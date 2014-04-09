@@ -38,9 +38,9 @@ close_resource(OlyResource *res)
         free_me = (void *)res->locale;
         OFREE(free_me);
     }
-    if (res->charset != NULL) 
+    if (res->encoding != NULL) 
     {
-        free_me = (void *)res->charset;
+        free_me = (void *)res->encoding;
         OFREE(free_me);
     }
     OFREE(res);

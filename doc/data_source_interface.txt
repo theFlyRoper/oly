@@ -139,12 +139,12 @@ get_oly_ds_locale:: Retrieve data source locale information.  Intent here is to 
 char *get_oly_ds_locale(OlyDataSource *ds, OlyStatus *status);
 ----
 +
-get_oly_ds_charset:: Retrieve data source charset information. Intent here is to use the native data source metadata to find the charset information.
+get_oly_ds_encoding:: Retrieve data source encoding information. Intent here is to use the native data source metadata to find the encoding information.
 +
 .definition
 [source,c]
 ----
-char *get_oly_ds_charset(OlyDataSource *ds, OlyStatus *status);
+char *get_oly_ds_encoding(OlyDataSource *ds, OlyStatus *status);
 ----
 
 Open Questions

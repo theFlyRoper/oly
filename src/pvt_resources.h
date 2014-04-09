@@ -24,7 +24,7 @@ BEGIN_C_DECLS
 struct OlyResource_struct
 {
     OChar                   *locale;
-    OChar                   *charset;
+    OChar                   *encoding;
     int                      array_offset;
     ResourceData            *resource;
 };

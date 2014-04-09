@@ -31,7 +31,7 @@ int
 main( int argc, char **argv )
 {
     OlyStatus        status = OLY_OKAY;
-    char            *locale = (char *)"root",  *charset = NULL;
+    char            *locale = (char *)"root",  *encoding = NULL;
     const char      *files[] = {
                         "tests/data/long_json.json",
                         "tests/data/every_token.yaml"
@@ -44,7 +44,7 @@ main( int argc, char **argv )
         printf("Could not load yaml file %s. Exiting...\n", files[record]);
         exit(EXIT_FAILURE);
     }
-    status = init_oly( argv[0], TEST_PKGDATADIR, charset, locale, &oly);
+    status = init_oly( argv[0], TEST_PKGDATADIR, encoding, locale, &oly);
     load_yaml( &status, ds );
     /*    print_yaml( &status , ds ); */
     printf("\n");

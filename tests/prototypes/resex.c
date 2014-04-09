@@ -34,7 +34,7 @@ int
 main( int argc, char **argv ){
     OlyStatus status = OLY_OKAY;
     char            *locale = NULL, *locdir=PKGDATADIR,
-                    *charset = NULL, c, *find_me = NULL;
+                    *encoding = NULL, c, *find_me = NULL;
     res_disp_flag   flag;
     UErrorCode      u_status  = U_ZERO_ERROR;
     
@@ -104,7 +104,7 @@ main( int argc, char **argv ){
         }
     }
     
-    status = init_oly(argv[0], locdir, charset, locale, &oly );
+    status = init_oly(argv[0], locdir, encoding, locale, &oly );
     if (flag.badopt == 1) 
     {
         printf("Error: unrecognized option.");
@@ -127,7 +127,7 @@ main( int argc, char **argv ){
         u_fprintf(u_stdout, "Default IO locale: %S\n",
                    get_default_locale() );
         u_fprintf(u_stdout, "Default IO encoding: %S\n",
-                   get_default_charset() );
+                   get_default_encoding() );
 
         exit(EXIT_SUCCESS);
     }

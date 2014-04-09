@@ -5,12 +5,12 @@ ok 1 - Two times should be close enough.
 ok 2 - File: /data/orig_breaks.txt
 ok 3 - File: /data/spawner_output.txt
 ok 4 - File: /data/zh_romance_of_three_kingdoms.txt
-# ----- Testing get_default_locale and get_default_charset function. -----
+# ----- Testing get_default_locale and get_default_encoding function. -----
 ok 5 - For this test, default locale should be root.
-ok 6 - For this test, default charset should be UTF-8.
-# ----- Testing char_default_locale and char_default_charset function. -----
+ok 6 - For this test, default encoding should be UTF-8.
+# ----- Testing char_default_locale and char_default_encoding function. -----
 ok 7 - For this test, default locale should be root.
-ok 8 - For this test, default charset should be UTF-8.
+ok 8 - For this test, default encoding should be UTF-8.
 # ----- ostr_to_cstr and cstr_to_ostr -----
 ok 9 - Char to ochar with space, BUFSIZ = 8,192
 ok 10 - Char to ochar with tiny buffer of 5 characters.
