@@ -47,7 +47,6 @@ new_state( OlyResource *master )
     return state; 
 }
 
-
 OlyStatus
 set_status(OlyState *state, const OlyStatus status)
 {
@@ -59,3 +58,4 @@ OlyStatus
 get_status(OlyState *s){
   return s->status;
 }
+

@@ -1,8 +1,8 @@
-CSV PARSER GOALS
-================
-:description: CSV parser goal notes and structure.
+Oly
+===
+:description: Oly data mover goals and timeline
 :keywords:    Oly, CSV parser, goals, import, text
-:title:       CSV parser goals
+:title:       Oly (main page)
 :icons:
 ifdef::is_standalone[]
 :iconsdir:  icons
@@ -14,21 +14,38 @@ ifdef::is_fossil[]
 :iconsdir:  /doc/tip/doc/icons
 :imagesdir: /doc/tip/doc/images
 :icons:
-link:/doc/tip/doc/index.wiki[Back to Home.]
 endif::is_fossil[]
 
-Statement of Purpose
---------------------
-When given a large, arbitrary separated input file, determine:
+Current Features
+----------------
+* Internal node queue and string buffer
+* Node hierarchy preserved and sent through
+* Data source interface for external sources
+* Boundary buffers to transfer external encodings/character sets to internal (ICU) encoding and back again.
+* Storage for several different types of data in each node.
+* SHA3 hash function built in and ready for use.
+* Polyglot (that is, translatable) error handling
 
-. Initial columns
-. Appropriate database data types
-. Quotation status
+Wanted Features
+---------------
+. Internal YAML loading.  YAML will be a data source but built in to Oly.  Will load configuration.
+. Configuration file loading and storage
+. External node interface with char pointers
+. Alias and anchor handling
+. Use hashing for something; configuration index, maybe?
+. Table data source input objects.  Columns, rows, tables, etc.
 
-For all lines.
-
-link:/doc/tip/doc/input_doc.wiki[Input Functions Documentation.]
+Problems
+--------
+. Remove unneeded data source and node functions.  Define clearer boundaries between these objects.
+. String buffer has some problems.  Runs too many times.  Could use debugging.
+. Bring doc and lib Makefile.am into main directory.
+. Flesh out data source dequeue and extract functions.
+. Remove unused errors.
+. Do something with state.  Begin Oly scripting language work, perhaps?
+. Organize functions in files better.
+. Clean up core library.  All tests link to core, core is huge.  Lighten it.
+. Verify destructor functions free all memory, and that they are called when they should be.
 
 
 // vim: set syntax=asciidoc:
-

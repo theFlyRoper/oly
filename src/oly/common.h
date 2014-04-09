@@ -20,7 +20,7 @@
 #ifndef OLY_COMMON_H
 #define OLY_COMMON_H 1
 
-#if HAVE_CONFIG_H
+#ifdef HAVE_CONFIG_H
 #  include "olyconf.h"
 #endif
 /** HEADERS */
@@ -36,12 +36,16 @@
 #  include <strings.h>
 #endif /*STDC_HEADERS*/
 
-#if HAVE_UNISTD_H
+#ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
 
-#if HAVE_SYS_WAIT_H
+#ifdef HAVE_SYS_WAIT_H
 #  include <sys/wait.h>
+#endif
+
+#ifdef HAVE_LIBYAML 
+#  include <yaml.h>
 #endif
 
 #include <time.h>
@@ -106,10 +110,6 @@ typedef UConverter OlyConverter;
 extern int errno;
 #endif
 
-#ifndef BUFSIZ
-#define BUFSIZ 8192
-#endif
-
 /** FUNCTIONS AND SYSTEM MACROS  */
 
 #ifndef EXIT_SUCCESS
@@ -138,8 +138,6 @@ extern int errno;
 #  define END_C_DECLS
 #endif
 
-
-
 #ifdef __GNUC__
 #  ifndef const
 #    define const       __const
@@ -167,6 +165,18 @@ extern int errno;
 #define CONC(x, y)      x/**/y
 #endif
 
+#ifdef _WIN32
+#   if defined(OLY_DECLARE_STATIC)
+#       define  OLY_DECLARE(type)  type
+#   elif defined(OLY_DECLARE_EXPORT)
+#       define  OLY_DECLARE(type)  __declspec(dllexport) type
+#   else
+#       define  OLY_DECLARE(type)  __declspec(dllimport) type
+#   endif
+#else
+#   define  OLY_DECLARE(type)  type
+#endif
+
 /** MALLOC MACROS */
 BEGIN_C_DECLS
 
@@ -180,7 +190,6 @@ BEGIN_C_DECLS
 #define OFREE(stale) do { \
         if (stale) { free (stale);  stale = 0; } \
         } while (0)
-
 
 extern void *ocalloc    (size_t num, size_t size);
 extern void *omalloc    (size_t num);

@@ -30,34 +30,70 @@
 int
 main( int argc, char **argv ){
     const int       num_tests = ( 
-            OLY_STATUS_MAX + OLY_STATUS_OFFSET );
+            OLY_STATUS_MAX + OLY_STATUS_OFFSET + 1 );
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
-    OChar          **results = (OChar **) ocalloc (
-                                num_tests, sizeof(OChar));
-        
-    char            *locale = (char *)"root",  *charset = NULL;
-    const char     *results_char[] = {
-                        "OLY_WARN_REINIT\0",
-                        "OLY_WARN_LIB\0",
-                        "OLY_WARN_EXIT\0",
-                        "OLY_OKAY\0",
-                        "OLY_ERR_UNKNOWN\0",
-                        "OLY_ERR_SYS\0",
-                        "OLY_ERR_LIB\0",
-                        "OLY_ERR_INIT\0",
-                        "OLY_ERR_NOMEM\0",
-                        "OLY_ERR_NOPWD\0",
-                        "OLY_ERR_NOUSER\0",
-                        "OLY_ERR_FILEIO\0",
-                        "OLY_ERR_READHEX\0",
-                        "OLY_ERR_HASH\0",
-                        "OLY_ERR_BADARG\0",
-                        "OLY_ERR_UNKNOWN\0"
+    OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
+    char            *locale = "root",  *charset = NULL;
+    const char      *results_char[] = {
+                        "OLY_WARN_NODE_CONSUMED",
+                        "OLY_WARN_NODE_PRODUCED",
+                        "OLY_WARN_BOUNDARY_RESET",
+                        "OLY_WARN_LONG_STRING",
+                        "OLY_WARN_BUFFER_WRITE_LOCK",
+                        "OLY_WARN_BUFFER_EMPTY",
+                        "OLY_WARN_TOP_LEVEL_NODE",
+                        "OLY_WARN_NODE_HAS_NO_KEY",
+                        "OLY_WARN_END_OF_ARGS",
+                        "OLY_WARN_DS_BUFFER_DEFAULT",
+                        "OLY_WARN_SHOW_VERSION",
+                        "OLY_WARN_SHOW_HELP",
+                        "OLY_WARN_DSOPT_NOT_USED",
+                        "OLY_WARN_REINIT",
+                        "OLY_WARN_LIB",
+                        "OLY_WARN_EXIT",
+                        "OLY_OKAY",
+                        "OLY_ERR_UNKNOWN",
+                        "OLY_ERR_SYS",
+                        "OLY_ERR_LIB",
+                        "OLY_ERR_INIT",
+                        "OLY_ERR_NOMEM",
+                        "OLY_ERR_NOPWD",
+                        "OLY_ERR_NOUSER",
+                        "OLY_ERR_FILEIO",
+                        "OLY_ERR_READHEX",
+                        "OLY_ERR_HASH",
+                        "OLY_ERR_BADARG",
+                        "OLY_ERR_BUFFER_OVERFLOW",
+                        "OLY_ERR_FILE_NOT_FOUND",
+                        "OLY_ERR_CONFIG_FILE_NOT_FOUND",
+                        "OLY_ERR_LIBYAML_INIT",
+                        "OLY_ERR_NODES_TOO_DEEP",
+                        "OLY_ERR_NODES_TOO_SHALLOW",
+                        "OLY_ERR_UNKNOWN_FUNCTION_TYPE",
+                        "OLY_ERR_DS_OPTION_CONFLICT",
+                        "OLY_ERR_LTDL_UNKNOWN",
+                        "OLY_ERR_LTDL_ERR",
+                        "OLY_ERR_YAML_PARSE",
+                        "OLY_ERR_SQLITE_INIT",
+                        "OLY_ERR_SQLITE",
+                        "OLY_ERR_KEY_STR_TOO_LONG",
+                        "OLY_ERR_NO_KEY_BUFFER",
+                        "OLY_ERR_NODE_MUST_HAVE_VALUE",
+                        "OLY_ERR_NODE_MUST_NOT_HAVE_VALUE",
+                        "OLY_ERR_ILLEGAL_NODE_TYPE",
+                        "OLY_ERR_NO_OBJECT",
+                        "OLY_ERR_NO_RESERVATION",
+                        "OLY_ERR_STRING_BUFFER_STATE",
+                        "OLY_ERR_NODE_QUEUE_FULL",
+                        "OLY_ERR_NODE_QUEUE_EMPTY",
+                        "OLY_ERR_DS_EOF",
+                        "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;
+    OlyStatus        status;
     
-    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    status = init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
     
     for ( i = 0; (i<=num_tests); i++)
     {
@@ -65,9 +101,9 @@ main( int argc, char **argv ){
     }
     
     set_status(oly->state, OLY_OKAY);
-    plan( num_tests + 11 );
+    plan( num_tests + 8 );
 
-    diag("From the smallest to the biggest error number.");
+    diag("From the smallest to one bigger than biggest error number.");
     for ( i = 0; (i<=num_tests); i++)
     {
         is_unicode_string(results[i], get_errmsg(i-OLY_STATUS_OFFSET), 
@@ -78,7 +114,7 @@ main( int argc, char **argv ){
     diag("One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.");
     is_unicode_string((results[unknown_num]), 
             get_errmsg(OLY_STATUS_MIN-1), "Number: %i",
-            (i-OLY_STATUS_OFFSET));
+            (OLY_STATUS_MIN-1));
     diag("A few wildly outlandish numbers.  Powers of -17!");
     for ( i = 289; (i<1000000); (i)*=(-17) )
     {
@@ -87,16 +123,7 @@ main( int argc, char **argv ){
                 get_errmsg(i), "Number: %i", i);
     }
     
-    diag("Letters and inappropriate hex digits YES MWAHAHAHAHAHA");
-    i = 'a';
-    is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c", i, i);
-    i = '9';
-    is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c", i, i);
-    i = ' ';
-    is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
-            get_errmsg(i), "Number: %i, submitted: %c (space)", i, i);
+    diag("Hex digits, mwaha");
     i = 0xAAAA;
     is_unicode_string(results[(OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET)],
             get_errmsg(i), "Number: %i, submitted: %c", i, i);
@@ -110,3 +137,4 @@ main( int argc, char **argv ){
         exit(EXIT_SUCCESS);
     }
 }
+

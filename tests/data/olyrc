@@ -1,0 +1,21 @@
+wants_locale        : en_US
+wants_charset       : UTF-8
+# these are actual high number unicode codepoints, I am testing 
+# how accurate ICU + libyaml is.
+unicode_symbol_source       : "http://www.marathon-studios.com/unicode/categories/So/Other_Symbol"
+musical_symbols:
+    alto_clef                   : 𝄡
+    treble_clef                 : 𝄞
+mahjong_tiles :
+    mahjong_tile_spring         : 🀦
+    mahjong_tile_east_wind      : 🀀
+    mahjong_tile_red_dragon     : 🀄
+angry_face                  : 😠
+playing_card_eight_of_clubs : 🃘
+square_fm                   : ㎙
+square_km                   : ㎞
+square_rad                  : ㎭
+square_era_name_taisyou     : ㍽
+coptic_symbol_khi_ro        : ⳩
+coptic_symbol_stauros       : ⳧
+

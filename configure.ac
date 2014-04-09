@@ -50,10 +50,13 @@ AC_CONFIG_HEADERS([src/olyconf.h:src/olyconf-h.in])
 dnl questions address
 AC_SUBST(FAQ_ADDR,[maintainer@fakesite.com])
 
+LT_CONFIG_LTDL_DIR([lib/libltdl])
+
 dnl Architecture, target and host checks 
 dnl must run early, otherwise, we won't know our host system.
 
-AC_CANONICAL_HOST
+dnl off because it does nothing as of 3-13-2014
+dnl AC_CANONICAL_HOST
 
 dnl Determine the platform type and cache its value.
 dnl Oly includes the source code for SHA-3, optimized 
@@ -79,16 +82,15 @@ dnl simple configuration level debug mode, define in makefile.am
 
 AC_ARG_ENABLE(debug,
     [AS_HELP_STRING([--enable-debug],
-                    [enables debug defines (default is no).])],
+                    [enables debug defines (default is no).  This includes pointing data at tests/data/, a building a dev library called liboly_dev.a and adding -ggdb3 to CFLAGS, along with ifdefs in the code.])],
                     [enable_debug=yes],
                     [enable_debug=no])
 
-AS_IF([test "x$enable_debug" != xyes],,
+AS_IF([test "x$enable_debug" != xyes],
+       AC_SUBST(GDB_FLAG,["-g1"]),
       [AC_SUBST(DEV_DEF,["-DOLYDEV=1"])
-       AC_SUBST(DEV_CFLAGS,["-ggdb3"])])
-
-AS_IF([test "x$enable_debug" != xyes],,
-      [AC_SUBST(DEV_LIB,["liboly_dev.a"])])
+       AC_SUBST(GDB_FLAG,["-g3"])
+       AC_SUBST(DEV_LIB,["liboly_dev.a"])])
 
 AM_CONDITIONAL(DEBUG_MODE,
                [test "x$enable_debug" == xyes])
@@ -101,6 +103,8 @@ AC_PROG_CC_C99
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MKDIR_P
+AC_PATH_PROG([PKGCONFIG],[pkg-config],[])
+PKG_PROG_PKG_CONFIG([0.18])
 
 AC_PATH_PROG([RMV],[rm],[])
 AC_PATH_PROG([GENRB],[genrb],[])
@@ -108,7 +112,8 @@ AC_PATH_PROG([PKGDATA],[pkgdata],[])
 
 AM_PROG_CC_C_O
 
-LT_INIT
+LT_INIT([dlopen])
+LTDL_INIT([nonrecursive])
 
 dnl checks for libraries 
 
@@ -118,26 +123,24 @@ dnl ICUIO_LIBS and ICULAYOUT_LIBS
 OLY_CHECK_ICU([4.8],[],[])
 
 dnl time checks.
-AC_SEARCH_LIBS([clock_gettime],[rt posix4])
+AC_SEARCH_LIBS([clock_gettime], [rt posix4])
 
-AC_CHECK_LIB([yaml], [yaml_get_version])
+PKG_CHECK_MODULES([YAML], [yaml-0.1 > 0.1.4])
+
+AX_LIB_SQLITE3([3.7.0])
 
 dnl checks for header files 
-AC_INCLUDES_DEFAULT()
 
 AC_HEADER_SYS_WAIT()
 
 dnl checks for ICU headers at the end; check as needed.
-dnl                  sqlite3.h \
 AC_CHECK_HEADERS([locale.h paths.h sys/stat.h time.h \
+                  sqlite3.h yaml.h \
                   unicode/ustdio.h unicode/umsg.h unicode/ures.h \
                   unicode/ubrk.h unicode/ucnv.h \
                   unicode/ustring.h unicode/usprep.h])
 
 AC_TYPE_PID_T
-
-AC_FUNC_MALLOC
-AM_WITH_DMALLOC
 
 dnl ACX_PTHREAD
 
@@ -202,7 +205,7 @@ AC_DEFINE([U_HIDE_INTERNAL_API],[1],
 
 AC_DEFINE([U_HIDE_SYSTEM_API],[1],
           [ICU API 3 of 3: Parts of API intended only 
-           for use at a system level.]) 
+           for use at a system level.])
 
 AC_DEFINE([UNISTR_FROM_STRING_EXPLICIT],[explicit],
           [Recommended setting from ICU documentation; stipulates 

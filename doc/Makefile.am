@@ -19,15 +19,15 @@
 ## MA 02110-1301, USA.
 
 
-MAINTAINERCLEANFILES 	= maintainer-clean-local $(HTMLPAGES) 
+MAINTAINERCLEANFILES 	= $(HTMLPAGES) 
 
-CLEANFILES						= $(HTMLPAGES) man/reverse.1 man/reverse.pdf
+CLEANFILES			= 
 
-DISTCLEANFILES				= $(WIKIPAGES)
+DISTCLEANFILES		= $(WIKIPAGES)
 
-SUFFIXES							= .wiki
+SUFFIXES			= .wiki
 
-.PHONY: html htmlrebuild wikirebuild atool-clean wiki
+.PHONY: html-local htmlrebuild wikirebuild atool-clean wiki
 
 wikirebuild:
 	rm -f $(WIKIPAGES)
@@ -47,11 +47,9 @@ distclean-local: html-local
 atool-clean: 
 		rm -rf Makefile.in Makefile
 
-TXTFILES							=	index.txt \
-												input_doc.txt \
-												code_standards.txt \
-												inline_in_automake.txt \
-												bibliography.txt
+TXTFILES				=	index.txt input_doc.txt code_standards.txt \
+							inline_in_automake.txt bibliography.txt glossary.txt \
+							data_source_interface.txt
 
 WIKIPAGES							= $(TXTFILES:txt=wiki)
 HTMLPAGES							= $(TXTFILES:txt=html)
@@ -66,25 +64,17 @@ ADOC_REVISION	= "`fossil finfo --limit 1 -b $< | \
 ADOC_REVDATE 	= "`fossil finfo --limit 1 -b $< | \
 								grep -o '[0-9]*-[0-9]*-[0-9]*'`"
 
-ADOCFLAGS		 					= -a email=@FAQ_ADDR@ \
-												-a website=@PACKAGE_URL@ \
-												-a iconsdir=$(adoc_icons_dir) \
-												-a imagesdir=$(adoc_images_dir) \
-												-a revdate=$(ADOC_REVDATE) \
-												-a 'newline=\n' \
-												-a revision=$(ADOC_REVISION) \
-												--conf-file conf/fossil.conf
+ADOCFLAGS	= -a email=@FAQ_ADDR@ -a website=@PACKAGE_URL@ \
+			-a iconsdir=$(adoc_icons_dir) -a imagesdir=$(adoc_images_dir) \
+			-a revdate=$(ADOC_REVDATE) -a 'newline=\n' \
+			-a revision=$(ADOC_REVISION) --conf-file conf/fossil.conf
 
-HTMLFLAGS		 					= -a email=@FAQ_ADDR@ \
-												-a website=@PACKAGE_URL@ \
-												-a iconsdir=icons \
-												-a imagesdir=images \
-												-a data-uri \
-												-a revdate=$(ADOC_REVDATE) \
-												-a revision=$(ADOC_REVISION) \
-												--conf-file conf/asciidoc.conf
+HTMLFLAGS	= -a email=@FAQ_ADDR@ -a website=@PACKAGE_URL@ \
+			-a iconsdir=icons -a imagesdir=images -a data-uri \
+			-a revdate=$(ADOC_REVDATE) -a revision=$(ADOC_REVISION) \
+			--conf-file conf/asciidoc.conf
 
-AD1										=	a2x
+AD1		=	a2x
 
 .txt.1:
 	$(AD1) --doctype=manpage --format=manpage $<
@@ -95,11 +85,8 @@ AD1										=	a2x
 .txt.html: 
 	$(ASCIIDOC) --backend html5 --doctype article $(HTMLFLAGS) -o $@ $<
 
-dist_man_MANS 				= man/reverse.1
-
 ## generating an asciidoc definition for today
-
 dist_doc_DATA					= $(HTMLPAGES)
 
-EXTRA_DIST 						= $(TXTFILES)
+EXTRA_DIST 						= $(TXTFILES) man/oly.1
 

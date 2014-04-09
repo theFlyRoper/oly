@@ -19,12 +19,13 @@
 
 #include "oly/common.h"
 #include "oly/core.h"
-#include "pvt_core.h"
+#include "core/pvt_init_errmsg.h"
+
 /* the error handler stays separate to minimize the risk of errors
  * within it.  Also, no other part of Oly needs access to the message
  * data.
  */
-static const ResourceData * const init_messages(void);
+static const ResourceData * const init_messages(Oly *oly);
 
 static const ResourceData * message_data;
 /* do not call before initializing main oly structure. 
@@ -32,16 +33,14 @@ static const ResourceData * message_data;
  * main oly structure has been destroyed and if that
  * happened, there are bigger problems.
  */
+
 OChar *get_errmsg( OlyStatus status )
 {
     int len = 0;
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
     OChar* result = NULL;
-    if (message_data == NULL) 
-    {
-        message_data = init_messages();
-    }
+
     if ((status < OLY_STATUS_MIN) 
             || (status > OLY_STATUS_MAX))
     {
@@ -56,10 +55,17 @@ OChar *get_errmsg( OlyStatus status )
                 (status + OLY_STATUS_OFFSET), &len, &u_status );
     }
     
-    if (U_FAILURE(u_status))
+    if (u_status == U_MISSING_RESOURCE_ERROR )
     {
-        /* this should not fail but who knows, stranger things 
-         * have happened.
+        u_status = U_ZERO_ERROR;
+        result = (OChar *)ures_getStringByIndex( message_data, 
+            (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
+            &len, &u_status );
+    }
+    else if (U_FAILURE(u_status))
+    {
+        /* This will catch when we forget to update the list of errors in root.txt, 
+         * or any other ICU error.
          */
         fprintf(stderr, "ICU Error: %s.\n",
                 u_errorName(u_status));
@@ -68,12 +74,26 @@ OChar *get_errmsg( OlyStatus status )
     return result; 
 }
 
-static const ResourceData * const init_messages(void)
+OlyStatus init_errmsg(Oly *oly)
+{
+    OlyStatus status = OLY_OKAY;
+    if (message_data == NULL) 
+    {
+        message_data = init_messages(oly);
+    }
+    else
+    {
+        status = OLY_WARN_REINIT;
+    }
+    return status;
+}
+
+static const ResourceData * const init_messages(Oly *oly)
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
     ResourceData *retval = (ResourceData *)ures_getByKey(
-            (UResourceBundle *)get_resource_data(oly->data), 
+            (UResourceBundle *)get_oly_resource(oly), 
             "OlyErrors", NULL, &u_status);
     if (U_FAILURE(u_status)) 
     {

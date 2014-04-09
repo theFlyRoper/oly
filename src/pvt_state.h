@@ -34,7 +34,6 @@ struct OlyState_struct{
 };
 
 extern OlyStatus reset_liberror(OlyState *s);
-extern OlyBoolean message_buffer_has_room(OlyState *s);
 
 END_C_DECLS
 #endif /* SRC_PVT_STATE_H */

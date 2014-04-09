@@ -1,5 +1,0 @@
-1..3
-ok 1 - File: /data/orig_breaks.txt
-ok 2 - File: /data/spawner_output.txt
-ok 3 - File: /data/zh_romance_of_three_kingdoms.txt
-# All 3 tests successful or skipped

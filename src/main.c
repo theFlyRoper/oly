@@ -36,12 +36,13 @@ int
 main( int argc, char **argv )
 {
     OlyStatus        status  = OLY_OKAY;
-    char            *locale = NULL, *charset = NULL;
+    char            *locale = NULL, *charset = NULL, *locdir = PKGDATADIR;
 #ifdef OLYDEV
     res_disp_flag   flag;
 #endif /* OLYDEV */
 
-    oly = init_oly(argv[0], PKGDATADIR, charset, locale);
+    status = init_oly(argv[0], locdir, charset, locale, &oly );
+    printf("hi there!\n");
 
 #ifdef OLYDEV
     init_res_disp_flag(&flag);
@@ -49,11 +50,8 @@ main( int argc, char **argv )
     list_table_resources(get_resource_data(oly->data), &flag, 0);
 #endif /* OLYDEV */
   
-    if (status != OLY_OKAY) {
-        return EXIT_FAILURE;
-    } else {
-        return EXIT_SUCCESS;
-    }
+    HANDLE_STATUS_AND_DIE(status);
+    return EXIT_SUCCESS;
 }
 
 

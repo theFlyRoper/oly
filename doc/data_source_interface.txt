@@ -1,0 +1,233 @@
+Oly Data Source Interface
+=========================
+:description: Oly data source interface
+:keywords:    Oly, interface, module, libltdl, stream, metadata
+:title:       Oly Data Source Inteface
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:toc2:
+endif::is_standalone[]
+ifdef::is_fossil[]
+:iconsdir:  /doc/tip/doc/icons
+:imagesdir: /doc/tip/doc/images
+link:/doc/tip/doc/index.wiki[Back to Home.]
+endif::is_fossil[]
+
+Structures
+----------
+
+Boundary (buffer)
+~~~~~~~~~~~~~~~~~
+Called boundary because it should translate from the source encoding to the Oly internal encoding.
+
+.definition
+[source,c]
+----
+struct oly_boundary_struct;
+typedef struct oly_boundary_struct OlyBoundary;
+
+struct oly_boundary_struct
+{
+    OChar           *o_now;
+    OChar           *o_end;
+    OChar           *o_start;
+    OChar           *o_flush_break;
+    char            *c_now;
+    char            *c_end;
+    char            *c_start;
+    char            *c_flush_break;
+    size_t          nodes
+    UConverter      *converter;
+};
+----
+
+Node
+~~~~
+Node must know about buffers.  Node type determines how many character strings the node will look for.  This also means we must keep nodes handy.
+
+.definition
+[source,c]
+----
+struct oly_data_source_node_struct;
+typedef struct oly_data_source_node_struct OlyNode;
+
+struct oly_data_source_node_struct 
+{
+    unsigned short       current_level;
+    OlyNodeValueType     vt;
+    OChar               *key;
+    /* for debugging.  Remove later. */
+    char                *char_key;
+    OlyDSValue          *value;
+    OlyNode             *parent_node;
+    unsigned long long   tuple;
+    OlyDataSource       *ds;
+    OFILE               *large_object_file;
+}
+----
+
+Functions
+---------
+
+Required functions
+~~~~~~~~~~~~~~~~~~
+
+.Must be defined
+open_oly_ds_stream:: Try to connect to the data source.  If successful, open the stream from the data source.  
++
+.definition
+[source,c]
+----
+OlyStatus open_oly_ds_stream(OlyDataSource *ds);
+----
++
+close_oly_ds_stream:: Flush the current stream buffers in the stream direction, stop any queries against this stream and free any pointers allocated by the stream.
++
+.definition
+[source,c]
+----
+OlyStatus close_oly_ds_stream(OlyDataSource *ds);
+----
++
+get_oly_ds_error_message:: See <<_open_questions,open questions>>.
+
+Required Table Data Functions 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+get_oly_ds_row:: Return a pointer to exactly one row in a table data structure.  Should be buffered properly.
++
+.definition
+[source,c]
+----
+OlyDSRow *get_oly_ds_row(OlyDataSource *ds, OlyStatus *status);
+----
++
+get_oly_ds_column:: Return a pointer to exactly one column in a table data structure.  Should be buffered properly.  A column may take many buffers to fully express.  This may not actually happen, since a column may not be terribly worthwhile to retrieve.
++
+.definition
+[source,c]
+----
+OlyDSColumn *get_oly_ds_column(OlyDataSource *ds, OlyStatus *status);
+----
+
+Required Collection Data Functions 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+get_oly_ds_next_node:: Return a pointer to the next node in the collection.  The Node data structure includes an integer indicating how deep in the collection we are.
++
+.definition
+[source,c]
+----
+OlyNode *get_oly_ds_next_node(OlyDataSource *ds, OlyStatus *status);
+----
+
+Optional Functions
+~~~~~~~~~~~~~~~~~~
+get_oly_ds_metadata:: Retrieve metadata at granularity specified.  Will go into greater detail once this is more firmly defined.  Must be thread-safe.  This function is not firmly defined now, as of 3-19-2013.
++
+.definition
+[source,c]
+----
+OlyDSMetadata *get_oly_ds_metadata(OlyDataSource *ds, OlyStatus *status);
+----
++
+get_oly_ds_locale:: Retrieve data source locale information.  Intent here is to use the native data source metadata to find the locale information.
++
+.definition
+[source,c]
+----
+char *get_oly_ds_locale(OlyDataSource *ds, OlyStatus *status);
+----
++
+get_oly_ds_charset:: Retrieve data source charset information. Intent here is to use the native data source metadata to find the charset information.
++
+.definition
+[source,c]
+----
+char *get_oly_ds_charset(OlyDataSource *ds, OlyStatus *status);
+----
+
+Open Questions
+~~~~~~~~~~~~~~
+
+. Should error numbers be defined by Oly or by the data source?  I think Oly.
+. However, there will be data source errors that Oly cannot predict.  Thus, "get_oly_ds_error_message" should return those.
+
+Data Stream
+-----------
+
+. The stream will use the Oly data source conversion functions to get the data into a state friendly to Oly.  
+. Stream direction must be in or out.  To use one data source in both directions, open two streams.
+. Stream will checkpoint in a way that makes sense.  This depends on whether it is writing to a table or a document type data source.
+. Stream will use data source's native functionality to ensure whatever data was written is atomic.
+. Oly will recover to last checkpoint in the event of a sudden stop.
+
+
+Structures
+----------
+
+Collection-centered data
+~~~~~~~~~~~~~~~~~~~~~~~~
+As of 3-19-2013, Oly's collection-centered data processing is not concerned about type.  This may change in the future.
+
+Collection
+^^^^^^^^^^
+A collection holds tuples or keys, each of which references values.  At a macro level, collection-centered data will be a collection of tuples, keys, collections and values.
+
+Node
+^^^^
+For Oly, a node points to a key or a tuple and the type of node within.  Node is taken from http://www.yaml.org/spec/1.2/spec.html#representation//[yaml], and Oly nodes can contain a collection (mapping or sequence) or a scalar value.
+
+Tuple
+^^^^^
+A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.
+
+Key
+^^^
+A scalar identifier for a value.  A type of node.
+
+Value
+^^^^^
+A collection or a scalar.  Must have a node.
+
+Scalar
+^^^^^^
+Term from http://www.yaml.org/spec/1.2/spec.html#scalar//[yaml], which defines it as " an opaque datum that can be presented as a series of zero or more Unicode characters."  Can be a key or a value.
+
+Table-centered data
+~~~~~~~~~~~~~~~~~~~
+
+Table
+^^^^^
+A row and column based data storage structure.  A CSV file would be a good example.
+
+Row
+^^^
+One row of a table.
+
+Column
+^^^^^^
+One typed column, identifiable by either its name or its number.  If type is not provided, for now, Oly assumes the type is "text".
+
+Metadata
+~~~~~~~~
+What information should be here?
+
+. Data source direction (in or out)
+. Oly data source buffer size
+. Threads?
+. Connection information?
+
+Data Source to Structure Maps
+-----------------------------
+
+ICU Resource Bundle
+~~~~~~~~~~~~~~~~~~~
+
+* Resource bundle -> collection.
+* Key -> key
+* Index -> tuple
+* Array -> collection (with tuples only)
+* Table -> collection (with keys only)
+
+// vim: set syntax=asciidoc:

@@ -27,52 +27,105 @@ OlyStatus
 count_file_bytes(FILE *file, size_t *file_size)
 {
     fpos_t pos;
-    set_status(oly->state, OLY_OKAY);
+    OlyStatus status = OLY_OKAY;
     fseek(file, 0, SEEK_END);
     if (fgetpos(file, &pos) != 0) 
     {
-        set_status(oly->state, OLY_ERR_FILEIO);
+        status = OLY_ERR_FILEIO;
     }
     *file_size = (size_t)ftello(file);
     fseek(file, 0, SEEK_SET);
-    return get_status(oly->state);
+    return status;
 }
 
-/* transforms a c string to an OChar string. always null terminated. */
+/* transforms a c string to an OChar string. Always returns 
+ * something which is null terminated. o must not be null and buffer_size must be
+ * greater than 1.  c may be null.  The function will return an empty string
+ * in that case. */
 OChar *
 cstr_to_ostr(OChar *o, size_t buffer_size, const char *c)
 {
     OChar    *superzero = (o + buffer_size);
-    assert((c != NULL) && (o != NULL) && (buffer_size > 1));
+    assert((o != NULL) && (buffer_size > 1));
+    *superzero = '\0';
+    if (o == NULL)
+    {
+        *o = 0x0;
+        superzero = o+1;
+        *superzero = 0x0;
+        return o;
+    }
     *superzero = '\0';
 #ifdef HAVE_UNICODE_USTDIO_H
     return (OChar *)u_uastrncpy((UChar *)o, c, (buffer_size-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
 }
 
-/* back the other way. */
+/* transforms an OChar string into a c string. Always returns 
+ * something which is null terminated. o must not be null and buffer_size must be
+ * greater than 1.  c may be null or empty.  The function will return an empty string
+ * in that case. */
 char  *
 ostr_to_cstr(char *c, size_t buffer_size, const OChar *o)
 {
     char    *superzero = (c+buffer_size);
-    assert((c != NULL) && (o != NULL) && (buffer_size > 1));
+    assert((c != NULL) && (buffer_size > 1));
     *superzero = '\0';
+
+    if (o == NULL)
+    {
+        *c = '\0';
+        return c;
+    }
 #ifdef HAVE_UNICODE_USTDIO_H
     return u_austrncpy(c, (UChar *)o, (buffer_size-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
 }
 
-
 /* The resource data charset for oly serves as the default charset throughout,
  * since the Oly object is the primary object throughout the program. */
-OChar *get_default_charset( void )
+
+OChar *
+get_default_charset( void )
 {
     return get_charset(oly->data);
 }
 
-OChar *get_default_locale( void )
+OChar *
+get_default_locale( void )
 {
     return get_locale(oly->data);
+}
+
+const OChar *
+get_program_name( void )
+{
+    return (const OChar *)oly->program_name;
+}
+
+const OChar *
+get_resource_dir( void )
+{
+    return (const OChar *)oly->resource_dir;
+}
+
+ResourceData *
+get_oly_resource( Oly *oly )
+{
+    return get_resource_data(oly->data);
+}
+
+const char *char_default_charset( void )
+{
+    return ucnv_getDefaultName 	( );
+}
+
+const char *char_default_locale( void )
+{
+    UErrorCode u_status;
+    const char * retval = ures_getLocaleByType(get_resource_data(oly->data), 
+            ULOC_ACTUAL_LOCALE, &u_status );
+    return retval;
 }
 
 /* http://linux.die.net/man/2/clock_gettime 
@@ -142,3 +195,4 @@ double RealElapsedTime(void) { // granularity about 50 microsecs on my machine
 #endif
 */
 }
+

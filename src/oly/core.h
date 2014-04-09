@@ -24,6 +24,7 @@
 #include "oly/config.h"
 #include "oly/state.h"
 #include "oly/resources.h"
+#include "oly/data_source.h"
 
 #ifndef OLY_SMALL_BUFFER
 #define OLY_SMALL_BUFFER 256
@@ -34,20 +35,30 @@ BEGIN_C_DECLS
 struct passwd;
 
 /* constructor */
-extern Oly *init_oly(const char *prog, 
-        const char *datadir, const char *charset, const char *locale);
+OlyStatus init_oly(const char *prog, 
+        const char *datadir, const char *charset, const char *locale, Oly **oly_out);
 
-extern OChar *get_errmsg( OlyStatus status );
-extern size_t   memory_left_now(void);
-extern size_t   getMemorySize( void );
+extern OChar    *get_ltdl_errmsg( int status );
+extern size_t    memory_left_now(void);
+extern size_t    getMemorySize( void );
 
 extern OlyStatus count_file_bytes(FILE *file, size_t *file_size);
 
 extern double oly_timestamp( void ) ;
 extern OChar *get_default_charset( void );
 extern OChar *get_default_locale( void );
+extern const OChar *get_program_name( void );
+extern const OChar *get_resource_dir( void );
+extern ResourceData *get_oly_resource( Oly *oly );
+extern const char *char_default_charset( void );
+extern const char *char_default_locale( void );
 extern OlyStatus get_OChar_args(OChar ***result, char **source, 
         int32_t argc);
+extern OlyStatus set_inbound_data_source( OlyDataSource *ds );
+extern OlyStatus set_outbound_data_source( OlyDataSource *ds );
+extern OlyStatus get_inbound_data_source( OlyDataSource **ds );
+extern OlyStatus get_outbound_data_source( OlyDataSource **ds );
+extern OlyStatus oly_run( void );
 
 OlyStatus set_status(OlyState *state, const OlyStatus status);
 OlyStatus get_status(OlyState *state);

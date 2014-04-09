@@ -1,3 +1,5 @@
+TESTING:
+It would be nice to test the oly_timestamp function better.  Right now it only confirms that it returns a value and that it agrees (roughly) with the time() function.  The test can be found at tests/oly/core/c-basic_functions.
 
 PORTING:
 Oly tries to use sensible types as much as possible, but does not always succeed.  Here are some key points:

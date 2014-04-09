@@ -47,7 +47,7 @@ main( int argc, char **argv ){
     sizehash              result;
     char            *locale = (char *)"root",  *charset = NULL;
     data_length           hash_length ;
-    oly = init_oly(argv[0], TEST_PKGDATADIR, charset, locale);
+    init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
   
     if (argc != 2) {
         printf("Takes 1 argument, to be hashed. exiting...");

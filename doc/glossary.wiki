@@ -1,0 +1,125 @@
+<title>Glossary</title>
+<nowiki>
+<div id="asciidoc">
+<h1>Glossary</h1>
+<p>
+<tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
+version 0f71aa1190,
+2014-03-19
+</p>
+<hr>
+<h2><a name="_glossary"></a>Glossary</h2>
+<dl>
+<dt>
+<a name="glossary_collection_centered"></a>Collection-centered system
+</dt>
+<dd>
+<p>
+Many <a href="https://en.wikipedia.org/wiki/Non-relational_database">non-relational</a> databases store their data in individual collections, which are <a href="https://en.wikipedia.org/wiki/Markup_language">marked up</a> with appropriate information about the data itself.  These collections can then be parsed to extract this data in an organized way.
+</p>
+</dd>
+<dt>
+<a name="glossary_level"></a>Level
+</dt>
+<dd>
+<p>
+In a <a href="#glossary_collection_centered">collection-centered</a> system, <em>level</em> refers to how far we have recursively stepped.
+</p>
+<div class="listingblock">
+<div class="title">In YAML</div>
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-style: italic"><span style="color: #9A1900"># we start at level zero (0)</span></span>
+record_id<span style="color: #990000">:</span> <span style="color: #993399">777</span>
+user<span style="color: #990000">:</span> Amy Examplerecord
+contact_information<span style="color: #990000">:</span>
+    <span style="font-style: italic"><span style="color: #9A1900"># each type of contact information has a sublevel with details about it</span></span>
+    <span style="font-style: italic"><span style="color: #9A1900"># information type is on level one (1), information data is on level two (2)</span></span>
+    address<span style="color: #990000">:</span>
+        <span style="font-style: italic"><span style="color: #9A1900"># address has several parts, so we represent it as a</span></span>
+        <span style="font-style: italic"><span style="color: #9A1900"># sublevel.  We are now at level two (2).</span></span>
+        Street<span style="color: #990000">:</span> <span style="color: #FF0000">"345 Three Four Five way"</span>
+        City<span style="color: #990000">:</span> <span style="color: #FF0000">"Sampletown"</span>
+        State<span style="color: #990000">:</span> <span style="color: #FF0000">"Kenswick"</span>
+        Zipcode<span style="color: #990000">:</span> <span style="color: #FF0000">"00112"</span>
+    email<span style="color: #990000">:</span>
+        <span style="color: #990000">-</span> amy<span style="color: #990000">.</span>examplerecord@freeexampleemail<span style="color: #990000">.</span>com
+        <span style="color: #990000">-</span> the_real_amy_examplerecord@truefact<span style="color: #990000">.</span>com
+    phone<span style="color: #990000">:</span>
+        <span style="color: #990000">-</span> <span style="color: #FF0000">"01-(000) 000-0000"</span>
+<span style="font-style: italic"><span style="color: #9A1900"># since contact information ends there, we return to level 0.</span></span>
+logins<span style="color: #990000">:</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">01</span><span style="color: #990000">-</span><span style="color: #993399">15</span><span style="color: #990000">-</span><span style="color: #993399">2009</span> <span style="color: #993399">11</span><span style="color: #990000">:</span><span style="color: #993399">14</span><span style="color: #990000">:</span><span style="color: #993399">57</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">04</span><span style="color: #990000">-</span><span style="color: #993399">19</span><span style="color: #990000">-</span><span style="color: #993399">2009</span> <span style="color: #993399">12</span><span style="color: #990000">:</span><span style="color: #993399">19</span><span style="color: #990000">:</span><span style="color: #993399">29</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">01</span><span style="color: #990000">-</span><span style="color: #993399">20</span><span style="color: #990000">-</span><span style="color: #993399">2010</span> <span style="color: #993399">22</span><span style="color: #990000">:</span><span style="color: #993399">47</span><span style="color: #990000">:</span><span style="color: #993399">25</span>
+    <span style="color: #990000">-</span> <span style="color: #993399">01</span><span style="color: #990000">-</span><span style="color: #993399">12</span><span style="color: #990000">-</span><span style="color: #993399">2011</span> <span style="color: #993399">21</span><span style="color: #990000">:</span><span style="color: #993399">33</span><span style="color: #990000">:</span><span style="color: #993399">25</span></tt></pre></div></div>
+</dd>
+<dt>
+<a name="glossary_table_centered"></a>Table-centered system
+</dt>
+<dd>
+<p>
+Traditional relational databases store their data in tables, which encapsulate a single <em>type of thing</em> and are then connected to other types of things with relationships.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_table"></a>Table (data source)
+</dt>
+<dd>
+<p>
+A type of data source object.  In a data source, "table" refers to something like a relational database table, with <a href="#glossary_data_source_rows">rows</a> and <a href="#glossary_data_source_columns">columns</a>.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_rows"></a>Row (data source)
+</dt>
+<dd>
+<p>
+A data source row refers to a single <a href="#glossary_data_source_table">table</a> row, that is, a set of <a href="#glossary_data_source_columns">column</a> data corresponding to a single record in a table, however that is identified.  A CSV or other flat file data source is usually defined by newlines, for example.  Relational database systems define query output by row.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_columns"></a>Column (data source)
+</dt>
+<dd>
+<p>
+A data source column refers to a single <a href="#glossary_data_source_table">table</a> column.  Every row should have a marker deliniating every column in a <a href="#glossary_data_source_table">table</a>, although those column records may be empty for any given row.  Ideally, the data source can also provide <a href="#glossary_data_source_types">type</a> information for the columns.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_collection"></a>Collection (data source)
+</dt>
+<dd>
+<p>
+Collections store data like an outline.  A type of data source object.  Each collection will have either <a href="#glossary_data_source_key">keys</a> or <a href="#glossary_data_source_tuple">tuples</a>, and each of those should have a <a href="#glossary_data_source_value">value</a>.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_key"></a>Key (data source)
+</dt>
+<dd>
+<p>
+A text identifier for a  <a href="#glossary_data_source_value">value</a>.  In oly, all keys will be unique within a collection, but many data sources do not require keys to be unique.  Compare to <a href="#glossary_data_source_tuple">tuples</a>.
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_tuple"></a>Tuple (data source)
+</dt>
+<dd>
+<p>
+An ordered, integer identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_key">keys</a>.  See the wikipedia page on <a href="https://en.wikipedia.org/wiki/Tuple">tuples</a> for details.  We use the term this way in Oly to avoid using terms like "index" for these items; an index in a relational database is not the same thing as an array index.  Tuples
+</p>
+</dd>
+<dt>
+<a name="glossary_data_source_value"></a>Value (data source)
+</dt>
+<dd>
+<p>
+Data that corresponds to a <a href="#glossary_data_source_key">key</a> or an <a href="#glossary_data_source_tuple">tuple</a>.  Can have a <a href="#glossary_data_source_types">type</a>.  Will be either a scalar value or another <a href="#glossary_data_source_collection">collection</a>.
+</p>
+</dd>
+</dl>
+</div>
+</nowiki>

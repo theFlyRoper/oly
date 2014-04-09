@@ -3,8 +3,6 @@
 #define SRC_PVT_LOAD_CONFIG_H 1
 
 #include "oly/common.h"
-#include "oly/state.h"
-#include "oly/resources.h"
 
 BEGIN_C_DECLS
 
