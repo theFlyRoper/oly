@@ -31,6 +31,28 @@ root:table {
         Display:string{"Show current version information for Oly."}
       }
     }
+    OlyConfig:table {
+        OlyMain:array {
+            {"MAIN_CONFIG_UNKNOWN"}
+            {"MAIN_MAX_STRING_BUFFER_SIZE"}
+            {"MAIN_MAX_BOUNDARY_BUFFER_SIZE"}
+            {"MAIN_MAX_NODE_LIST_SIZE"}
+            {"MAIN_MAX_HASH_TABLE_SIZE"}
+        }
+        OlyDataSource:array {
+            {"DATA_SOURCE_CONFIG_UNKNOWN"}
+            {"DATA_SOURCE_NAME"}
+            {"DATA_SOURCE_DIRECTION"}
+            {"DATA_SOURCE_MODULE"}
+            {"DATA_SOURCE_FILE_NAME"}
+            {"DATA_SOURCE_IP_ADDRESS"}
+            {"DATA_SOURCE_PORT"}
+            {"DATA_SOURCE_USER_NAME"}
+            {"DATA_SOURCE_CONNECTION"}
+            {"DATA_SOURCE_SCHEMA_NAME"}
+            {"DATA_SOURCE_TABLE_NAME"}
+        }
+    }
     libltdlErrors:array {
         {"LT_ERROR_UNKNOWN"}
         {"LT_ERROR_DLOPEN_NOT_SUPPORTED"}
