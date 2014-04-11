@@ -23,7 +23,7 @@
 #include "node/pvt_node.h"
 
 static void
-print_node_value(OlyNodeValue nv, OlyNodeValueType type);
+print_node_value(OlyNodeValue nv, OlyTagType type);
 
 OlyStatus 
 new_oly_node( OlyNode **new_node )
@@ -38,7 +38,7 @@ new_oly_node( OlyNode **new_node )
         HANDLE_STATUS_AND_RETURN(status);
     }
     new_node_local->depth             = 0;
-    new_node_local->vt                = OLY_NODE_VALUE_TYPE_UNSET;
+    new_node_local->vt                = OLY_TAG_TYPE_UNSET;
     new_node_local->tuple             = 0;
     new_node_local->key               = NULL;
     new_node_local->parent_node       = NULL;
@@ -69,23 +69,23 @@ print_node( OlyNode *n )
 }
 
 static void
-print_node_value(OlyNodeValue nv, OlyNodeValueType type)
+print_node_value(OlyNodeValue nv, OlyTagType type)
 {
     switch ( type )
     {
-        case OLY_NODE_VALUE_SCALAR_STRING:
+        case OLY_TAG_SCALAR_STRING:
             u_fprintf(u_stdout, "STRING: \"%.40S\"\n", nv.string_value);
             break;
-        case OLY_NODE_VALUE_SCALAR_FLOAT:
+        case OLY_TAG_SCALAR_FLOAT:
             printf("FLOAT: (%f)\n", nv.float_value);
             break;
-        case OLY_NODE_VALUE_SCALAR_INT:
+        case OLY_TAG_SCALAR_INT:
             printf("INT: (%li)\n", nv.int_value);
             break;
-        case OLY_NODE_VALUE_TYPE_MAP:
+        case OLY_TAG_TYPE_MAP:
             printf("MAP\n");
             break;
-        case OLY_NODE_VALUE_TYPE_SEQUENCE:
+        case OLY_TAG_TYPE_SEQUENCE:
             printf("SEQUENCE\n");
             break;
         default:
@@ -111,7 +111,7 @@ new_node_value( OlyNodeValue **new_node_value)
 OlyStatus
 reset_node( OlyNode *node )
 {
-    node->vt                = OLY_NODE_VALUE_TYPE_UNSET;
+    node->vt                = OLY_TAG_TYPE_UNSET;
     node->tuple             = 0;
     node->key               = NULL;
     node->parent_node       = NULL;
@@ -188,12 +188,12 @@ set_node_key(OlyNode *output, const OChar *key_in)
 
 /* sets the value if node type is float or int and checks for errors. */
 OlyStatus 
-set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
+set_node_value(OlyNode *node, void *value, OlyTagType type)
 {
     OlyStatus status = OLY_OKAY;
     OlyNodeValue *output = &(node->value);
 
-    if ((type <= OLY_NODE_VALUE_MIN) || (type > OLY_NODE_VALUE_MAX))
+    if ((type <= OLY_TAG_MIN) || (type > OLY_TAG_MAX))
     {
         status = OLY_ERR_ILLEGAL_NODE_TYPE ;
     }
@@ -202,12 +202,12 @@ set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
     {
         switch ( type )
         {
-            case OLY_NODE_VALUE_SCALAR_STRING:
+            case OLY_TAG_SCALAR_STRING:
                 break;
-            case OLY_NODE_VALUE_SCALAR_FLOAT:
+            case OLY_TAG_SCALAR_FLOAT:
                 (*output).float_value = *((double *)value);
                 break;
-            case OLY_NODE_VALUE_SCALAR_INT:
+            case OLY_TAG_SCALAR_INT:
                 (*output).int_value = *((long *)value);
                 break;
             default:
@@ -219,8 +219,8 @@ set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
     {
         switch ( type )
         {
-            case OLY_NODE_VALUE_TYPE_MAP:
-            case OLY_NODE_VALUE_TYPE_SEQUENCE:
+            case OLY_TAG_TYPE_MAP:
+            case OLY_TAG_TYPE_SEQUENCE:
                 break;
             default:
                 status = OLY_ERR_NODE_MUST_HAVE_VALUE;

@@ -321,7 +321,7 @@ stage_node_key( OlyDataSource *ds, const char *key, size_t key_len )
 
 /* enqueue_ds_node resets the key along with adding the node to the queue */
 OlyStatus 
-enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
+enqueue_ds_node( OlyDataSource *ds, void *value, OlyTagType type)
 {
     size_t           buffer_needed_value = 0, buffer_needed_key = 0, length = 0;
     OlyNode         *new_node = NULL; /* *curr_node = get_current_node(ds); */
@@ -346,14 +346,14 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
 
     switch (type)
     {
-        case OLY_NODE_VALUE_SCALAR_STRING:
+        case OLY_TAG_SCALAR_STRING:
             /* if value is str, check length. */
             buffer_needed_value += (strlen( (char *)value ) + 1);
             ds->status = put_char_in( ds->boundary , (const char *)value ,
                     buffer_needed_value );
             break;
-        case OLY_NODE_VALUE_TYPE_MAP:
-        case OLY_NODE_VALUE_TYPE_SEQUENCE:
+        case OLY_TAG_TYPE_MAP:
+        case OLY_TAG_TYPE_SEQUENCE:
             ds->status = descend_one_level(ds->node);
         default:
             break;
@@ -383,7 +383,7 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
         set_node_key(ds->node, NULL);
     }
 
-    if (OLY_NODE_VALUE_SCALAR_STRING == type)
+    if (OLY_TAG_SCALAR_STRING == type)
     {
         ds->status = get_ochar_out( ds->boundary, &(ds->internal_scalar), &length);
         if (ds->status != OLY_WARN_BOUNDARY_RESET)

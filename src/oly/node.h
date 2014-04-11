@@ -30,17 +30,21 @@ BEGIN_C_DECLS
 union oly_node_value_union;
 typedef union oly_node_value_union OlyNodeValue;
 
-typedef enum oly_node_value_type_enum {
-    OLY_NODE_VALUE_TYPE_UNSET = 0,
-    OLY_NODE_VALUE_MIN = 0,
-    OLY_NODE_VALUE_TYPE_MAP = 1,
-    OLY_NODE_VALUE_TYPE_SEQUENCE = 2,
-    OLY_NODE_VALUE_SCALAR_STRING = 3,
-    OLY_NODE_VALUE_SCALAR_FLOAT = 4,
-    OLY_NODE_VALUE_SCALAR_INT = 5,
-    OLY_NODE_VALUE_ALIAS = 6,
-    OLY_NODE_VALUE_MAX = 6
-} OlyNodeValueType;
+/* basic types.  Oly guarantees these will be available. */
+typedef enum oly_tag_type_enum {
+    OLY_TAG_TYPE_UNSET = 0,
+    OLY_TAG_MIN = 0,
+    OLY_TAG_TYPE_MAP = 1,
+    OLY_TAG_TYPE_SEQUENCE = 2,
+    OLY_TAG_SCALAR_NULL = 3,
+    OLY_TAG_SCALAR_BOOL = 4,
+    OLY_TAG_SCALAR_INT = 5,
+    OLY_TAG_SCALAR_UINT = 6,
+    OLY_TAG_SCALAR_FLOAT = 7,
+    OLY_TAG_SCALAR_STRING = 8,
+    OLY_TAG_ALIAS = 9,
+    OLY_TAG_MAX = 9
+} OlyTagType;
 
 struct oly_data_source_node_struct;
 typedef struct oly_data_source_node_struct OlyNode;
@@ -59,7 +63,7 @@ OlyStatus copy_node(const OlyNode *source, OlyNode *dest);
 OlyStatus reset_node( OlyNode *node );
 
 /* node value functions */
-OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type);
+OlyStatus set_node_value(OlyNode *node, void *value, OlyTagType type);
 OlyStatus set_node_string_value(OlyNode *output, const OChar *value);
 OlyStatus set_node_key(OlyNode *output, const OChar *key_in);
 

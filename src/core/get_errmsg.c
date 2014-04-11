@@ -44,7 +44,6 @@ OChar *get_errmsg( OlyStatus status )
     if ((status < OLY_STATUS_MIN) 
             || (status > OLY_STATUS_MAX))
     {
-        u_status = U_ZERO_ERROR;
         result = (OChar *)ures_getStringByIndex( message_data, 
             (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
             &len, &u_status );

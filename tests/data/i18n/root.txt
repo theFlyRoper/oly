@@ -31,6 +31,19 @@ root:table {
         Display:string{"Show current version information for Oly."}
       }
     }
+// regular expressions for the yaml/json core schema. http://www.yaml.org/spec/1.2/spec.html#schema/core/
+    InferTagRegExp:array{
+      {"(null|Null|NULL|~)"} // Null
+      {"(true|True|TRUE)"} // Boolean true
+      {"(false|False|FALSE)"} // Boolean false
+      {"[-+]?[0-9]+"} // Integer base 10
+      {"0o[0-7]+"} // Integer base 8
+      {"0x[0-9a-fA-F]+"} // Integer base 16
+      {"[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?"} // floating point
+      {"[-+]?(\.inf|\.Inf|\.INF)"} // infinity
+      {" \.nan | \.NaN | \.NAN"}  // not a number 
+      {"*"} // string (default)
+    }
     OlyConfig:table {
         OlyMain:array {
             {"MAIN_CONFIG_UNKNOWN"}

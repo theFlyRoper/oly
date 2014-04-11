@@ -27,28 +27,34 @@
 BEGIN_C_DECLS
 
 typedef enum oly_config_items_enum {
-    OLY_CONFIG_BOUNDARY_BUFFER_MAX,
-    OLY_CONFIG_MAIN_STRING_BUFFER_MAX,
-    OLY_CONFIG_NODE_QUEUE_MAX,
-    OLY_CONFIG_NODE_LIST_MAX
+    OLY_CONFIG_MAIN_MIN=0,
+    OLY_CONFIG_BOUNDARY_BUFFER_MAX=0,
+    OLY_CONFIG_MAIN_STRING_BUFFER_MAX=1,
+    OLY_CONFIG_NODE_QUEUE_MAX=2,
+    OLY_CONFIG_NODE_LIST_MAX=3,
+    OLY_CONFIG_MAIN_MAX=3
 } OlyConfigItem;
+
+typedef enum oly_config_value_type {
+    STRING_VALUE;
+    INT_VALUE;
+    FLOAT_VALUE;
+} OlyConfigValueType;
+
+typedef union oly_config_value_union {
+    OChar               *string_value;
+    long long            int_value;
+    double               float_value;
+} OlyConfigValue;
 
 typedef struct OlyConfig_struct OlyConfig;
 
-extern OlyConfig * load_config( OlyStatus *status );
+extern OlyStatus * load_config( OlyConfig **config );
 
-size_t get_boundary_buffer_max(void);
-size_t get_main_string_buffer_max(void);
-size_t get_node_queue_max(void);
-size_t get_node_list_max(void);
-/* void *get_config_item(OlyConfigItem record);
-*/
+/* OlyStatus get_config_item(OlyConfigValue *item); */
 struct OlyConfig_struct {
-    OChar *key;
-    OChar *value;
-    /* points to a subnode, such as an array or block. */
-    OlyConfig *subnode;
-};
+    OlyConfigValue **value;
+} OlyConfig;
 
 END_C_DECLS
 

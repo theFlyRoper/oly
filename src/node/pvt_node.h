@@ -26,11 +26,16 @@
 
 BEGIN_C_DECLS
 
+/* TODO: long, unsigned long and double are not pointers and may align differently.
+ * This union should be space efficient above all, so figure out how to ensure
+ * these data types all line up, ideally without a cast.  On 64 bit linux,
+ * long, unsigned long and double work nicely.  */
 union oly_node_value_union {
     OChar               *string_value;
     FILE                *large_binary_file;
     OFILE               *large_text_file;
     long                 int_value;
+    unsigned long        uint_value;
     double               float_value;
 };
 
@@ -39,7 +44,7 @@ struct oly_data_source_node_struct
     unsigned short       depth;
     bool                 has_key;
     bool                 collection_end;
-    OlyNodeValueType     vt;
+    OlyTagType     vt;
     int64_t              tuple;
     OlyNodeValue         value;
     OlyNode             *parent_node;

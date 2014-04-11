@@ -104,7 +104,7 @@ extern OlyStatus set_data_encoding( OlyDataSource *ds, const char *encoding );
 /* TODO: separate the internal and external functions here. */
 OlyStatus stage_node_key( OlyDataSource *ds, const char *key, size_t key_len );
 /* Used by external interfaces to produce or consume nodes */
-extern OlyStatus enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type);
+extern OlyStatus enqueue_ds_node( OlyDataSource *ds, void *value, OlyTagType type);
 extern OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode **node );
 
 /* ds_descend: descends a level */

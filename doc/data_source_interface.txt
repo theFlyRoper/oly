@@ -56,7 +56,7 @@ typedef struct oly_data_source_node_struct OlyNode;
 struct oly_data_source_node_struct 
 {
     unsigned short       current_level;
-    OlyNodeValueType     vt;
+    OlyTagType     vt;
     OChar               *key;
     /* for debugging.  Remove later. */
     char                *char_key;

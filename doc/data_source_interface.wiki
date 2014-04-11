@@ -47,7 +47,7 @@ http://www.gnu.org/software/src-highlite -->
 <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_data_source_node_struct</span>
 <span style="color: #FF0000">{</span>
     <span style="color: #009900">unsigned</span> <span style="color: #009900">short</span>       current_level<span style="color: #990000">;</span>
-    <span style="color: #008080">OlyNodeValueType</span>     vt<span style="color: #990000">;</span>
+    <span style="color: #008080">OlyTagType</span>     vt<span style="color: #990000">;</span>
     <span style="color: #008080">OChar</span>               <span style="color: #990000">*</span>key<span style="color: #990000">;</span>
     <span style="font-style: italic"><span style="color: #9A1900">/* for debugging.  Remove later. */</span></span>
     <span style="color: #009900">char</span>                <span style="color: #990000">*</span>char_key<span style="color: #990000">;</span>

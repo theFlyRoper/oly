@@ -18,10 +18,96 @@
  * }}} */
 
 #include "oly/common.h"
+#include "oly/core.h"
 #include "oly/olytypes.h"
 #include <stdbool.h>
 #include "pvt_config.h"
-#include "node/pvt_node.h"
+
+/* the error handler stays separate to minimize the risk of errors
+ * within it.  Also, no other part of Oly needs access to the config
+ * data.
+ */
+static const ResourceData * const init_main_config(void);
+
+static const ResourceData * config_data;
+
+OlyStatus get_config_item( )
+{
+    int len = 0;
+#ifdef HAVE_UNICODE_URES_H
+    UErrorCode u_status = U_ZERO_ERROR;
+    OChar* result = NULL;
+
+    if ((status < OLY_STATUS_MIN) 
+            || (status > OLY_STATUS_MAX))
+    {
+        result = (OChar *)ures_getStringByIndex( config_data, 
+            (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
+            &len, &u_status );
+    }
+    else
+    {
+        result = (OChar *)ures_getStringByIndex( config_data, 
+                (status + OLY_STATUS_OFFSET), &len, &u_status );
+    }
+    
+    if (u_status == U_MISSING_RESOURCE_ERROR )
+    {
+        u_status = U_ZERO_ERROR;
+        result = (OChar *)ures_getStringByIndex( config_data, 
+            (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
+            &len, &u_status );
+    }
+    else if (U_FAILURE(u_status))
+    {
+        /* This will catch when we forget to update the list of errors in root.txt, 
+         * or any other ICU error.
+         */
+        fprintf(stderr, "ICU Error: %s.\n",
+                u_errorName(u_status));
+    }
+#endif /* HAVE_UNICODE_URES_H */
+    return result; 
+}
+
+OlyStatus init_config(Oly *oly)
+{
+    OlyStatus status = OLY_OKAY;
+    if (config_data == NULL) 
+    {
+        config_data = init_main_config();
+    }
+    else
+    {
+        status = OLY_WARN_REINIT;
+    }
+    return status;
+}
+
+static const ResourceData * const init_configs()
+{
+#ifdef HAVE_UNICODE_URES_H
+    UErrorCode u_status = U_ZERO_ERROR;
+    ResourceData *retval = NULL;
+    UResourceBundle *firstval = ures_getByKey((UResourceBundle *)get_oly_resource(oly), 
+            "OlyConfig", NULL, &u_status);
+    if (U_FAILURE(u_status)) 
+    {
+        printf("Error configs not found! Status: %s.\n",
+                u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    retval = (ResourceData *)ures_getByKey(firstval,
+            "OlyMain", NULL, &u_status);
+    if (U_FAILURE(u_status)) 
+    {
+        printf("Error configs not found! Status: %s.\n",
+                u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    return retval;
+#endif /* HAVE_UNICODE_URES_H */
+}
 
 static bool is_config_loaded(void);
 
@@ -44,45 +130,4 @@ void *get_config_item(OlyConfigItem record)
     return item;
 }
 */
-
-size_t
-get_boundary_buffer_max(void)
-{
-    size_t max_buffer;
-    if (is_config_loaded() == false)
-    {
-        max_buffer = (size_t)(BUFSIZ);
-    }
-    return max_buffer;
-}
-size_t
-get_main_string_buffer_max(void)
-{
-    size_t max_buffer;
-    if (is_config_loaded() == false)
-    {
-        max_buffer = (size_t)(BUFSIZ*8);
-    }
-    return max_buffer;
-}
-size_t
-get_node_queue_max(void)
-{
-    size_t max_buffer;
-    if (is_config_loaded() == false)
-    {
-        max_buffer = (size_t)(BUFSIZ*sizeof(OlyNode)*2);
-    }
-    return max_buffer;
-}
-size_t
-get_node_list_max(void)
-{
-    size_t max_buffer;
-    if (is_config_loaded() == false)
-    {
-        max_buffer = (size_t)(BUFSIZ*sizeof(OlyNode));
-    }
-    return max_buffer;
-}
 

@@ -292,7 +292,7 @@ yaml_inbound(OlyDataSource *data)
             case YAML_DOCUMENT_END_EVENT:   
                 break;
             case YAML_SEQUENCE_START_EVENT:
-                status = enqueue_ds_node( data, NULL, OLY_NODE_VALUE_TYPE_SEQUENCE ) ;
+                status = enqueue_ds_node( data, NULL, OLY_TAG_TYPE_SEQUENCE ) ;
                 INBOUND_NODE_CHECK(status, data);
                 yaml_status = OLY_YAML_SEQUENCE;
                 have_key = 0x0;
@@ -304,7 +304,7 @@ yaml_inbound(OlyDataSource *data)
                 printf("SeqEnd\n");
                 break;
             case YAML_MAPPING_START_EVENT:  
-                status = enqueue_ds_node( data, NULL, OLY_NODE_VALUE_TYPE_MAP ) ;
+                status = enqueue_ds_node( data, NULL, OLY_TAG_TYPE_MAP ) ;
                 INBOUND_NODE_CHECK(status, data);
                 have_key = 0x0;
                 printf("MapStart\n");
@@ -327,7 +327,7 @@ yaml_inbound(OlyDataSource *data)
                 else 
                 {
                     status = enqueue_ds_node( data, ds->event->data.scalar.value,
-                            OLY_NODE_VALUE_SCALAR_STRING);
+                            OLY_TAG_SCALAR_STRING);
                     INBOUND_NODE_CHECK(status, data);
                     have_key = 0x0;
                 }

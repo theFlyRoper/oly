@@ -100,8 +100,8 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         HANDLE_STATUS_AND_RETURN(status);
         depth--;
     }
-    if ((q->in->vt == OLY_NODE_VALUE_TYPE_SEQUENCE ) 
-            || (q->in->vt == OLY_NODE_VALUE_TYPE_MAP ))
+    if ((q->in->vt == OLY_TAG_TYPE_SEQUENCE ) 
+            || (q->in->vt == OLY_TAG_TYPE_MAP ))
     {
         q->in->parent_node = q->stack->parent_node ;
     }
@@ -121,7 +121,7 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         HANDLE_STATUS_AND_RETURN(status);
     }
 
-    if (OLY_NODE_VALUE_SCALAR_STRING == q->in->vt )
+    if (OLY_TAG_SCALAR_STRING == q->in->vt )
     {
         key_len = u_strlen((q->in->value).string_value);
         status = reserve_string_buffer( q->string_buffer, key_len );
