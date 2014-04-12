@@ -27,7 +27,7 @@
 #include "oly/hash.h"
 #include "oly/state.h"
 static uint32_t 
-char_to_uint32(const charhash c)
+char_to_uint32(const hash c)
 {
   uint32_t        i = 0, j = (sizeof(uint32_t)-1);
   uint32_t        res = 0;

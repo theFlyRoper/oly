@@ -88,7 +88,7 @@ dist_check_DATA	= tests/TESTS tests/data/olyrc \
 			tests/oly/core/c-get_errmsg.output \
 			tests/oly/hash/c-char_to_size.output \
 			tests/oly/hash/sh-get_hashbits.output \
-			tests/oly/hash/sh-read_charhash_from_hex.output \
+			tests/oly/hash/sh-read_hash_from_hex.output \
 			tests/oly/hash/sh-read_sizehash_from_hex.output \
 			tests/oly/hash/c-get_str_hashlen.output \
 			tests/oly/hash/sh-hash_char_to_hash_size.output 
@@ -150,9 +150,9 @@ noinst_LIBRARIES	=	liboly_dev.a libcore.a libhash.a libtestcore.a
 
 
 libhash_a_SOURCES	=	src/hash/char_to_size.c \
-						src/hash/write_hex_from_charhash.c \
+						src/hash/write_hex_from_hash.c \
 						src/hash/write_hex_from_sizehash.c \
-						src/hash/read_charhash_from_hex.c \
+						src/hash/read_hash_from_hex.c \
 						src/hash/read_sizehash_from_hex.c \
 						src/hash/get_str_hashlen.c \
 						src/hash/get_hashbits.c \
@@ -224,7 +224,7 @@ check_PROGRAMS 	= 	tests/runtests \
  					tests/oly/hash/c-get_str_hashlen \
  					tests/oly/hash/c-char_to_size \
  					tests/oly/hash/c-hash_char_to_hash_size \
- 					tests/oly/hash/c-read_charhash_from_hex 
+ 					tests/oly/hash/c-read_hash_from_hex 
 
 tests_runtests_CPPFLAGS 		= $(CHECK_DEFS) 
 check_LIBRARIES 				=	tests/tap/libtap.a
@@ -240,9 +240,9 @@ tests_oly_hash_c_get_hashbits_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_get_hashbits_LDADD = tests/tap/libtap.a \
 									libtestcore.a libhash.a \
 									@YAML_LIBS@ @LIBLTDL@
-tests_oly_hash_c_read_charhash_from_hex_SOURCES  = tests/oly/hash/c-read_charhash_from_hex.c 
-tests_oly_hash_c_read_charhash_from_hex_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_read_charhash_from_hex_LDADD 	= tests/tap/libtap.a \
+tests_oly_hash_c_read_hash_from_hex_SOURCES  = tests/oly/hash/c-read_hash_from_hex.c 
+tests_oly_hash_c_read_hash_from_hex_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_read_hash_from_hex_LDADD 	= tests/tap/libtap.a \
 						libtestcore.a libhash.a @ICUIO_LIBS@
 tests_oly_hash_c_read_sizehash_from_hex_SOURCES = tests/oly/hash/c-read_sizehash_from_hex.c 
 tests_oly_hash_c_read_sizehash_from_hex_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)

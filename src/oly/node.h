@@ -22,32 +22,14 @@
 #define OLY_NODE_H 1
 
 #include "oly/common.h"
+#include "oly/tag.h"
 #include <stdbool.h>
 #include <math.h>
 
 BEGIN_C_DECLS
 
-union oly_node_value_union;
-typedef union oly_node_value_union OlyNodeValue;
-
-/* basic types.  Oly guarantees these will be available. */
-typedef enum oly_tag_type_enum {
-    OLY_TAG_TYPE_UNSET = 0,
-    OLY_TAG_MIN = 0,
-    OLY_TAG_TYPE_MAP = 1,
-    OLY_TAG_TYPE_SEQUENCE = 2,
-    OLY_TAG_SCALAR_NULL = 3,
-    OLY_TAG_SCALAR_BOOL = 4,
-    OLY_TAG_SCALAR_INT = 5,
-    OLY_TAG_SCALAR_UINT = 6,
-    OLY_TAG_SCALAR_FLOAT = 7,
-    OLY_TAG_SCALAR_STRING = 8,
-    OLY_TAG_ALIAS = 9,
-    OLY_TAG_MAX = 9
-} OlyTagType;
-
-struct oly_data_source_node_struct;
-typedef struct oly_data_source_node_struct OlyNode;
+struct oly_node_struct;
+typedef struct oly_node_struct OlyNode;
 
 struct oly_node_queue_struct;
 typedef struct oly_node_queue_struct OlyNodeQueue;

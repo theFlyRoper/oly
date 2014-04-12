@@ -41,10 +41,10 @@ http://www.gnu.org/software/src-highlite -->
 by Lorenzo Bettini
 http://www.lorenzobettini.it
 http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_data_source_node_struct</span><span style="color: #990000">;</span>
-<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_data_source_node_struct</span> OlyNode<span style="color: #990000">;</span>
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_node_struct</span><span style="color: #990000">;</span>
+<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_node_struct</span> OlyNode<span style="color: #990000">;</span>
 
-<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_data_source_node_struct</span>
+<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_node_struct</span>
 <span style="color: #FF0000">{</span>
     <span style="color: #009900">unsigned</span> <span style="color: #009900">short</span>       current_level<span style="color: #990000">;</span>
     <span style="color: #008080">OlyTagType</span>     vt<span style="color: #990000">;</span>

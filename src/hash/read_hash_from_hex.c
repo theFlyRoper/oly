@@ -1,4 +1,4 @@
-/* read_charhash_from_hex.c - Read hex ascii and make a charhash. License GPL2+ {{{
+/* read_hash_from_hex.c - Read hex ascii and make a hash. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@
 #include "oly/hash.h"
 
 OlyStatus 
-read_charhash_from_hex  (const char *s, charhash c, OlyState *state)
+read_hash_from_hex  (const char *s, hash c, OlyState *state)
 {
   int   i = 0;
   if (strlen(s) < ((OLY_HASH_BITS/(CHAR_BIT/2))))

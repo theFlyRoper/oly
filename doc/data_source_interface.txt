@@ -50,10 +50,10 @@ Node must know about buffers.  Node type determines how many character strings t
 .definition
 [source,c]
 ----
-struct oly_data_source_node_struct;
-typedef struct oly_data_source_node_struct OlyNode;
+struct oly_node_struct;
+typedef struct oly_node_struct OlyNode;
 
-struct oly_data_source_node_struct 
+struct oly_node_struct 
 {
     unsigned short       current_level;
     OlyTagType     vt;

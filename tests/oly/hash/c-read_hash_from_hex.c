@@ -36,8 +36,8 @@
 
 int
 main( int argc, char **argv ){
-    charhash            input;
-    charhash            read;
+    hash            input;
+    hash            read;
     const unsigned char *hash_me = (const unsigned char *)argv[1];
     const unsigned char *read_me = (const unsigned char *)argv[2];
     data_length         hash_length ;
@@ -49,9 +49,9 @@ main( int argc, char **argv ){
     printf("2 args\n");
     exit(EXIT_FAILURE);
   }
-  if (OLY_OKAY != read_charhash_from_hex (read_me, read, oly))
+  if (OLY_OKAY != read_hash_from_hex (read_me, read, oly))
   {
-    printf("Problem with reading the charhash.\n%s",read);
+    printf("Problem with reading the hash.\n%s",read);
     exit(EXIT_FAILURE);
   }
   if (OLY_OKAY != get_str_hashlen(hash_me, &hash_length)) 
@@ -67,9 +67,9 @@ main( int argc, char **argv ){
   strcmp_val = memcmp(input,read,(size_t)(OLY_HASH_BITS/CHAR_BIT));
   if (strcmp_val!=0) {
     printf("Input and read are different.  Value read:\n");
-    print_hex_from_charhash(read, oly);
+    print_hex_from_hash(read, oly);
     printf("\nValue hashed:\n");
-    print_hex_from_charhash(input, oly);
+    print_hex_from_hash(input, oly);
     printf("\nStrcmp_val: %i\n", strcmp_val);
     exit(EXIT_FAILURE);
   }

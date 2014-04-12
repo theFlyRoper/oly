@@ -1,0 +1,15 @@
+#! /bin/sh
+#
+# Copyright 2014 Oly Project
+#
+# See LICENSE for licensing terms.
+
+# Load the test library.
+. "$SOURCE/tap/libtap.sh"
+
+# Plan test.
+plan 4
+ok_program 'Zero args.' 1 '2 args' "$BUILD/oly/hash/c-read_hash_from_hex"
+ok_program '3 args.' 1 '2 args' "$BUILD/oly/hash/c-read_hash_from_hex" "FOOM" "BOOM" "DOOM"
+ok_program 'Try number 1' 0 'Success!' "$BUILD/oly/hash/c-read_hash_from_hex" "Periwinkle Twibbet Grip Alabaster" "8fbdb5236c6335607e0fd885d9e4a5c99f8b6aeaef8001d069a6b528b42bdee5"
+ok_program 'Try number 2' 0 'Success!' "$BUILD/oly/hash/c-read_hash_from_hex" 'Ectoentropic antidisestablishmentarianism' "e63706cc8cc7ed9240009336b4c5fb9484013f044ad9cc5c0ad39b4f8eb4428e" 

@@ -36,9 +36,9 @@ typedef enum oly_config_items_enum {
 } OlyConfigItem;
 
 typedef enum oly_config_value_type {
-    STRING_VALUE;
-    INT_VALUE;
-    FLOAT_VALUE;
+    STRING_VALUE,
+    INT_VALUE,
+    FLOAT_VALUE
 } OlyConfigValueType;
 
 typedef union oly_config_value_union {
@@ -54,7 +54,7 @@ extern OlyStatus * load_config( OlyConfig **config );
 /* OlyStatus get_config_item(OlyConfigValue *item); */
 struct OlyConfig_struct {
     OlyConfigValue **value;
-} OlyConfig;
+};
 
 END_C_DECLS
 
