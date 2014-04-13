@@ -29,12 +29,11 @@ BEGIN_C_DECLS
 /* OlyNodeValue lives in tags */
 struct oly_node_struct 
 {
-    int64_t              tuple;
+    int64_t              node_id;
     OlyNodeValue         value;
     OlyNodeKey          *key;
     OlyNodeAnchor       *anchor;
     unsigned short       depth;
-    bool                 has_key;
 };
 
 struct oly_node_queue_struct 

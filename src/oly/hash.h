@@ -18,11 +18,14 @@
 #ifndef OLY_OLY_HASH_H
 #define OLY_OLY_HASH_H 1
 
+#include "oly/common.h"
+
 #include <string.h>
 #include <limits.h>
+#include <math.h>
 
 #include <lib/sha_three/KeccakNISTInterface.h>
-#include "oly/state.h"
+#include "oly/olytypes.h"
 
 /* the NIST interface for SHA 3 defines a few simple data types, 
  * which Oly will use for any other hash function as well.
@@ -31,21 +34,21 @@
  *    data_length (from NIST DataLength)
  *    hash_return (from NIST HashReturn)
  *    hash_state
- * Oly uses 256 bit hashing.  It uses an array of 32 chars, using one char per hash table expansion.
+ * Oly uses 224 bit hashing.  It uses an array of 32 chars, using one char per hash table expansion, minus one bit per char.
  *
  */
-#define OLY_HASH_BITS 256 
-#define SIZE_HASH (OLY_HASH_BITS/(SIZEOF_SIZE_T*CHAR_BIT))
-#define CHAR_HASH (OLY_HASH_BITS/CHAR_BIT)
 
-/* little endian = low byte leftmost. big endian = low byte rightmost. */
+#define OLY_HASH_BITS 224
+#define CHAR_HASH ((OLY_HASH_BITS/CHAR_BIT) + (32/CHAR_BIT))
+#define OLY_MASK 0x128
 
-typedef size_t        sizehash[SIZE_HASH];
 typedef unsigned char hash[CHAR_HASH];
 
 typedef HashReturn hash_return;
 typedef BitSequence bit_sequence;
 typedef DataLength data_length;
+struct oly_hash_table_struct;
+typedef struct oly_hash_table_struct OlyHashTable;
 
 OlyStatus get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
 OlyStatus get_str_hashlen(const unsigned char *c, data_length *result);

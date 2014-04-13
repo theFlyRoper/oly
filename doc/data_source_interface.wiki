@@ -53,7 +53,7 @@ http://www.gnu.org/software/src-highlite -->
     <span style="color: #009900">char</span>                <span style="color: #990000">*</span>char_key<span style="color: #990000">;</span>
     <span style="color: #008080">OlyDSValue</span>          <span style="color: #990000">*</span>value<span style="color: #990000">;</span>
     <span style="color: #008080">OlyNode</span>             <span style="color: #990000">*</span>parent_node<span style="color: #990000">;</span>
-    <span style="color: #009900">unsigned</span> <span style="color: #009900">long</span> <span style="color: #009900">long</span>   tuple<span style="color: #990000">;</span>
+    <span style="color: #009900">unsigned</span> <span style="color: #009900">long</span> <span style="color: #009900">long</span>   node_id<span style="color: #990000">;</span>
     <span style="color: #008080">OlyDataSource</span>       <span style="color: #990000">*</span>ds<span style="color: #990000">;</span>
     <span style="color: #008080">OFILE</span>               <span style="color: #990000">*</span>large_object_file<span style="color: #990000">;</span>
 <span style="color: #FF0000">}</span></tt></pre></div></div>
@@ -246,11 +246,11 @@ Oly will recover to last checkpoint in the event of a sudden stop.
 <h3><a name="_collection_centered_data"></a>Collection-centered data</h3>
 <p>As of 3-19-2013, Oly&#8217;s collection-centered data processing is not concerned about type.  This may change in the future.</p>
 <h4><a name="_collection"></a>Collection</h4>
-<p>A collection holds tuples or keys, each of which references values.  At a macro level, collection-centered data will be a collection of tuples, keys, collections and values.</p>
+<p>A collection holds node_ids or keys, each of which references values.  At a macro level, collection-centered data will be a collection of node_ids, keys, collections and values.</p>
 <h4><a name="_node_2"></a>Node</h4>
-<p>For Oly, a node points to a key or a tuple and the type of node within.  Node is taken from <a href="http://www.yaml.org/spec/1.2/spec.html#representation//">yaml</a>, and Oly nodes can contain a collection (mapping or sequence) or a scalar value.</p>
-<h4><a name="_tuple"></a>Tuple</h4>
-<p>A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.</p>
+<p>For Oly, a node points to a key or a node_id and the type of node within.  Node is taken from <a href="http://www.yaml.org/spec/1.2/spec.html#representation//">yaml</a>, and Oly nodes can contain a collection (mapping or sequence) or a scalar value.</p>
+<h4><a name="_node_id"></a>Tuple</h4>
+<p>A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending node_ids within a single collection.  Within a collection, node_ids must be unique; a non-unique node_id in a collection must be handled by Oly or the data source itself.</p>
 <h4><a name="_key"></a>Key</h4>
 <p>A scalar identifier for a value.  A type of node.</p>
 <h4><a name="_value"></a>Value</h4>
@@ -304,12 +304,12 @@ Key &#8594; key
 </li>
 <li>
 <p>
-Index &#8594; tuple
+Index &#8594; node_id
 </p>
 </li>
 <li>
 <p>
-Array &#8594; collection (with tuples only)
+Array &#8594; collection (with node_ids only)
 </p>
 </li>
 <li>

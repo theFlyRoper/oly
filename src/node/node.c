@@ -39,7 +39,7 @@ new_oly_node( OlyNode **new_node )
     }
     new_node_local->depth             = 0;
     new_node_local->vt                = OLY_TAG_TYPE_UNSET;
-    new_node_local->tuple             = 0;
+    new_node_local->node_id             = 0;
     new_node_local->key               = NULL;
     new_node_local->parent_node       = NULL;
     new_node_local->has_key           = false;
@@ -61,10 +61,10 @@ print_node( OlyNode *n )
     }
     if (n->parent_node != NULL)
     {
-        u_fprintf(u_stdout, "Parent %lli, ", n->parent_node->tuple);
+        u_fprintf(u_stdout, "Parent %lli, ", n->parent_node->node_id);
     }
 
-    u_fprintf(u_stdout, "Tuple: %lli, Depth: %u, ", n->tuple, n->depth);
+    u_fprintf(u_stdout, "Tuple: %lli, Depth: %u, ", n->node_id, n->depth);
     print_node_value(n->value, n->vt);
 }
 
@@ -112,7 +112,7 @@ OlyStatus
 reset_node( OlyNode *node )
 {
     node->vt                = OLY_TAG_TYPE_UNSET;
-    node->tuple             = 0;
+    node->node_id             = 0;
     node->key               = NULL;
     node->parent_node       = NULL;
     (node->value).string_value = NULL;
@@ -231,17 +231,17 @@ set_node_value(OlyNode *node, void *value, OlyTagType type)
 }
 
 OlyStatus 
-set_node_tuple(OlyNode *node, int64_t tuple)
+set_node_node_id(OlyNode *node, int64_t node_id)
 {
-    node->tuple = tuple;
+    node->node_id = node_id;
     return OLY_OKAY;
 };
 
 OlyStatus
-get_node_tuple(OlyNode *node, int64_t *tuple_out )
+get_node_node_id(OlyNode *node, int64_t *node_id_out )
 {
     OlyStatus status = OLY_OKAY;
-    (*tuple_out) = node->tuple ;
+    (*node_id_out) = node->node_id ;
     return status;
 };
 
@@ -288,7 +288,7 @@ copy_node(const OlyNode *source, OlyNode *dest)
 {
     dest->depth             = source->depth;
     dest->vt                = source->vt;
-    dest->tuple             = source->tuple;
+    dest->node_id             = source->node_id;
     dest->key               = source->key;
     dest->parent_node       = source->parent_node;
     dest->value             = source->value;

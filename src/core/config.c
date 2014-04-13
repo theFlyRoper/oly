@@ -28,33 +28,19 @@
  * data.
  */
 static const ResourceData * const init_main_config(void);
-
 static const ResourceData * config_data;
 
-OlyStatus get_config_item( )
+OlyStatus get_config_item( OChar **result, OChar *key )
 {
+    OlyStatus status = OLY_OKAY;
     int len = 0;
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
-    OChar* result = NULL;
-
-    if ((status < OLY_STATUS_MIN) 
-            || (status > OLY_STATUS_MAX))
-    {
-        result = (OChar *)ures_getStringByIndex( config_data, 
-            (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
-            &len, &u_status );
-    }
-    else
-    {
-        result = (OChar *)ures_getStringByIndex( config_data, 
-                (status + OLY_STATUS_OFFSET), &len, &u_status );
-    }
-    
+    *result = get_errmsg(OLY_ERR_UNKNOWN);
     if (u_status == U_MISSING_RESOURCE_ERROR )
     {
         u_status = U_ZERO_ERROR;
-        result = (OChar *)ures_getStringByIndex( config_data, 
+        *result = (OChar *)ures_getStringByIndex( config_data, 
             (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
             &len, &u_status );
     }
@@ -67,7 +53,7 @@ OlyStatus get_config_item( )
                 u_errorName(u_status));
     }
 #endif /* HAVE_UNICODE_URES_H */
-    return result; 
+    return status; 
 }
 
 OlyStatus init_config(Oly *oly)
@@ -84,7 +70,7 @@ OlyStatus init_config(Oly *oly)
     return status;
 }
 
-static const ResourceData * const init_configs()
+static const ResourceData * const init_main_config(void)
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
@@ -107,13 +93,6 @@ static const ResourceData * const init_configs()
     }
     return retval;
 #endif /* HAVE_UNICODE_URES_H */
-}
-
-static bool is_config_loaded(void);
-
-bool is_config_loaded(void)
-{
-    return false;
 }
 
 /*

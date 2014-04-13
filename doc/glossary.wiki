@@ -93,7 +93,7 @@ A data source column refers to a single <a href="#glossary_data_source_table">ta
 </dt>
 <dd>
 <p>
-Collections store data like an outline.  A type of data source object.  Each collection will have either <a href="#glossary_data_source_key">keys</a> or <a href="#glossary_data_source_tuple">tuples</a>, and each of those should have a <a href="#glossary_data_source_value">value</a>.
+Collections store data like an outline.  A type of data source object.  Each collection will have either <a href="#glossary_data_source_key">keys</a> or <a href="#glossary_data_source_node_id">node_ids</a>, and each of those should have a <a href="#glossary_data_source_value">value</a>.
 </p>
 </dd>
 <dt>
@@ -101,15 +101,15 @@ Collections store data like an outline.  A type of data source object.  Each col
 </dt>
 <dd>
 <p>
-A text identifier for a  <a href="#glossary_data_source_value">value</a>.  In oly, all keys will be unique within a collection, but many data sources do not require keys to be unique.  Compare to <a href="#glossary_data_source_tuple">tuples</a>.
+A text identifier for a  <a href="#glossary_data_source_value">value</a>.  In oly, all keys will be unique within a collection, but many data sources do not require keys to be unique.  Compare to <a href="#glossary_data_source_node_id">node_ids</a>.
 </p>
 </dd>
 <dt>
-<a name="glossary_data_source_tuple"></a>Tuple (data source)
+<a name="glossary_data_source_node_id"></a>Tuple (data source)
 </dt>
 <dd>
 <p>
-An ordered, integer identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_key">keys</a>.  See the wikipedia page on <a href="https://en.wikipedia.org/wiki/Tuple">tuples</a> for details.  We use the term this way in Oly to avoid using terms like "index" for these items; an index in a relational database is not the same thing as an array index.  Tuples
+An ordered, integer identifier for a  <a href="#glossary_data_source_value">value</a>.  Compare to <a href="#glossary_data_source_key">keys</a>.  See the wikipedia page on <a href="https://en.wikipedia.org/wiki/Tuple">node_ids</a> for details.  We use the term this way in Oly to avoid using terms like "index" for these items; an index in a relational database is not the same thing as an array index.  Tuples
 </p>
 </dd>
 <dt>
@@ -117,7 +117,7 @@ An ordered, integer identifier for a  <a href="#glossary_data_source_value">valu
 </dt>
 <dd>
 <p>
-Data that corresponds to a <a href="#glossary_data_source_key">key</a> or an <a href="#glossary_data_source_tuple">tuple</a>.  Can have a <a href="#glossary_data_source_types">type</a>.  Will be either a scalar value or another <a href="#glossary_data_source_collection">collection</a>.
+Data that corresponds to a <a href="#glossary_data_source_key">key</a> or an <a href="#glossary_data_source_node_id">node_id</a>.  Can have a <a href="#glossary_data_source_types">type</a>.  Will be either a scalar value or another <a href="#glossary_data_source_collection">collection</a>.
 </p>
 </dd>
 </dl>

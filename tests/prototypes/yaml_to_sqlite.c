@@ -380,7 +380,7 @@ sqlite_outbound( OlyDataSource *data )
 {
     OlyStatus status      = OLY_OKAY;
     int sqlite_return   ;
-    int64_t     tuple, parent_tuple;
+    int64_t     node_id, parent_node_id;
     size_t      length = -1;
     static bool          have_data   = false;
     static bool          is_done     = false;
@@ -414,15 +414,15 @@ sqlite_outbound( OlyDataSource *data )
     }
 
     status = dequeue_ds_node( data, &node );
-    get_node_tuple(node, &tuple);
+    get_node_node_id(node, &node_id);
     get_node_parent(node, &parent);
     if (parent != NULL)
     {
-        get_node_tuple(parent, &parent_tuple);
+        get_node_node_id(parent, &parent_node_id);
     }
     else
     {
-        parent_tuple = 0;
+        parent_node_id = 0;
     }
     length = strlen(insert_node)+1;
     
@@ -431,7 +431,7 @@ sqlite_outbound( OlyDataSource *data )
     
     get_node_key(node, &key);
     get_node_string_value(node, &value);
-    sqlite_return = sqlite3_bind_int(ds->prepped, 1, tuple);
+    sqlite_return = sqlite3_bind_int(ds->prepped, 1, node_id);
     if (key != NULL)
     {
         sqlite_return = sqlite3_bind_text16(ds->prepped, 2, (void *)key, -1, NULL);
@@ -461,8 +461,8 @@ sqlite_outbound( OlyDataSource *data )
     sqlite3_prepare_v2( ds->data, insert_node_relation, length, &prepped, 
             (const char **) &unused );
     
-    sqlite_return = sqlite3_bind_int(prepped, 1, tuple);
-    sqlite_return = sqlite3_bind_int(prepped, 2, parent_tuple);
+    sqlite_return = sqlite3_bind_int(prepped, 1, node_id);
+    sqlite_return = sqlite3_bind_int(prepped, 2, parent_node_id);
     sqlite_return = sqlite3_step( prepped );
     if (sqlite_return != SQLITE_DONE)
     {

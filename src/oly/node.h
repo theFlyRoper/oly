@@ -40,7 +40,7 @@ void close_node_queue(OlyNodeQueue *free_me);
 OlyStatus enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n );
 OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out);
 
-OlyStatus set_node_tuple(OlyNode *node, int64_t tuple);
+OlyStatus set_node_node_id(OlyNode *node, int64_t node_id);
 OlyStatus copy_node(const OlyNode *source, OlyNode *dest);
 OlyStatus reset_node( OlyNode *node );
 
@@ -61,7 +61,7 @@ OlyStatus unset_node_has_key(OlyNode *node);
 OlyStatus get_node_parent( const OlyNode *node, OlyNode **parent);
 OlyStatus get_node_string_value(OlyNode *node, OChar **value_out);
 OlyStatus get_node_key(OlyNode *node, OChar **key_out);
-OlyStatus get_node_tuple(OlyNode *node, int64_t *tuple_out );
+OlyStatus get_node_node_id(OlyNode *node, int64_t *node_id_out );
 OlyStatus push_node(OlyNode **stack, OlyNode *node );
 OlyStatus pop_node( OlyNode **stack, OlyNode **node_out );
 OlyStatus descend_one_level( OlyNode *node );

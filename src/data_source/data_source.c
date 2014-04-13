@@ -331,7 +331,7 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyTagType type)
     /* depth = get_ */
     new_node = ds->node;
     reset_node(new_node);
-    ds->status = set_node_tuple( new_node, (ds->sequence++) );
+    ds->status = set_node_node_id( new_node, (ds->sequence++) );
     HANDLE_STATUS_AND_RETURN(ds->status);
     
     /* if key *value != \0, append it to the converter buffer and set *key to \0. */

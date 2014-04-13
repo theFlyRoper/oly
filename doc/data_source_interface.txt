@@ -62,7 +62,7 @@ struct oly_node_struct
     char                *char_key;
     OlyDSValue          *value;
     OlyNode             *parent_node;
-    unsigned long long   tuple;
+    unsigned long long   node_id;
     OlyDataSource       *ds;
     OFILE               *large_object_file;
 }
@@ -172,15 +172,15 @@ As of 3-19-2013, Oly's collection-centered data processing is not concerned abou
 
 Collection
 ^^^^^^^^^^
-A collection holds tuples or keys, each of which references values.  At a macro level, collection-centered data will be a collection of tuples, keys, collections and values.
+A collection holds node_ids or keys, each of which references values.  At a macro level, collection-centered data will be a collection of node_ids, keys, collections and values.
 
 Node
 ^^^^
-For Oly, a node points to a key or a tuple and the type of node within.  Node is taken from http://www.yaml.org/spec/1.2/spec.html#representation//[yaml], and Oly nodes can contain a collection (mapping or sequence) or a scalar value.
+For Oly, a node points to a key or a node_id and the type of node within.  Node is taken from http://www.yaml.org/spec/1.2/spec.html#representation//[yaml], and Oly nodes can contain a collection (mapping or sequence) or a scalar value.
 
 Tuple
 ^^^^^
-A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending tuples within a single collection.  Within a collection, tuples must be unique; a non-unique tuple in a collection must be handled by Oly or the data source itself.
+A numeric identifier for a value and a type of node.  If the source data actually has values for these, Oly will try to preserve them.  If no values are available, then oly will assign ascending node_ids within a single collection.  Within a collection, node_ids must be unique; a non-unique node_id in a collection must be handled by Oly or the data source itself.
 
 Key
 ^^^
@@ -226,8 +226,8 @@ ICU Resource Bundle
 
 * Resource bundle -> collection.
 * Key -> key
-* Index -> tuple
-* Array -> collection (with tuples only)
+* Index -> node_id
+* Array -> collection (with node_ids only)
 * Table -> collection (with keys only)
 
 // vim: set syntax=asciidoc:
