@@ -23,7 +23,7 @@
 #include <stdbool.h>
 #include "pvt_config.h"
 
-static const ResourceData * const init_main_config(void);
+static const ResourceData *init_main_config(void);
 static OlyStatus load_config_file( OlyConfig **config, FILE *file );
 static const ResourceData * config_data;
 /* stores the type for each OlyConfigItem, in order */

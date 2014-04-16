@@ -352,8 +352,8 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyTagType type)
             ds->status = put_char_in( ds->boundary , (const char *)value ,
                     buffer_needed_value );
             break;
-        case OLY_TAG_TYPE_MAP:
-        case OLY_TAG_TYPE_SEQUENCE:
+        case OLY_TAG_COMPLEX_MAP:
+        case OLY_TAG_COMPLEX_SEQUENCE:
             ds->status = descend_one_level(ds->node);
         default:
             break;

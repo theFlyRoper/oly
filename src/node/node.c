@@ -82,10 +82,10 @@ print_node_value(OlyNodeValue nv, OlyTagType type)
         case OLY_TAG_SCALAR_INT:
             printf("INT: (%li)\n", nv.int_value);
             break;
-        case OLY_TAG_TYPE_MAP:
+        case OLY_TAG_COMPLEX_MAP:
             printf("MAP\n");
             break;
-        case OLY_TAG_TYPE_SEQUENCE:
+        case OLY_TAG_COMPLEX_SEQUENCE:
             printf("SEQUENCE\n");
             break;
         default:
@@ -195,7 +195,7 @@ set_node_value(OlyNode *node, void *value, OlyTagType type)
 
     if ((type <= OLY_TAG_MIN) || (type > OLY_TAG_MAX))
     {
-        status = OLY_ERR_ILLEGAL_NODE_TYPE ;
+        status = OLY_ERR_ILLEGAL_TAG ;
     }
     node->vt = type;
     if ( value != NULL )
@@ -219,8 +219,8 @@ set_node_value(OlyNode *node, void *value, OlyTagType type)
     {
         switch ( type )
         {
-            case OLY_TAG_TYPE_MAP:
-            case OLY_TAG_TYPE_SEQUENCE:
+            case OLY_TAG_COMPLEX_MAP:
+            case OLY_TAG_COMPLEX_SEQUENCE:
                 break;
             default:
                 status = OLY_ERR_NODE_MUST_HAVE_VALUE;

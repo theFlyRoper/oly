@@ -100,8 +100,8 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         HANDLE_STATUS_AND_RETURN(status);
         depth--;
     }
-    if ((q->in->vt == OLY_TAG_TYPE_SEQUENCE ) 
-            || (q->in->vt == OLY_TAG_TYPE_MAP ))
+    if ((q->in->vt == OLY_TAG_COMPLEX_SEQUENCE ) 
+            || (q->in->vt == OLY_TAG_COMPLEX_MAP ))
     {
         q->in->parent_node = q->stack->parent_node ;
     }

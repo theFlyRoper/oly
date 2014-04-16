@@ -28,29 +28,31 @@
 struct oly_node_value_struct;
 typedef struct oly_node_value_struct OlyNodeValue;
 
-/* basic types.  Oly guarantees these will be available. */
+/* basic types.  Oly guarantees these will be available. Any further types
+ * are descended from OLY_TAG_COMPLEX_MAP and OLY_TAG_COMPLEX_SEQUENCE, and contain
+ * combinations of the basic types. */
 typedef enum oly_tag_type_enum {
-    OLY_TAG_TYPE_UNSET = 0,
-    OLY_TAG_MIN = 0,
-    OLY_TAG_TYPE_MAP = 1,
-    OLY_TAG_TYPE_SEQUENCE = 2,
-    OLY_TAG_ALIAS = 3,
-    OLY_TAG_SCALAR_NULL = 4,
-    OLY_TAG_SCALAR_BOOL = 5,
-    OLY_TAG_SCALAR_INT = 6,
-    OLY_TAG_SCALAR_UINT = 7,
-    OLY_TAG_SCALAR_FLOAT = 8,
-    OLY_TAG_SCALAR_STRING = 9,
-    OLY_TAG_FILE_TEXT = 10,
-    OLY_TAG_FILE_BINARY = 11,
-    OLY_TAG_MAX = 11
+    OLY_TAG_SCALAR_NULL,
+    OLY_TAG_SCALAR_BOOL,
+    OLY_TAG_SCALAR_INT,
+    OLY_TAG_SCALAR_UINT,
+    OLY_TAG_SCALAR_FLOAT,
+    OLY_TAG_SCALAR_INFINITY,
+    OLY_TAG_SCALAR_NOT_A_NUMBER,
+    OLY_TAG_SCALAR_STRING,
+    OLY_TAG_ALIAS,
+    OLY_TAG_FILE_TEXT,
+    OLY_TAG_FILE_BINARY,
+    OLY_TAG_COMPLEX_MAP,
+    OLY_TAG_COMPLEX_SEQUENCE,
+    OLY_TAG_TYPE_UNSET,
+    OLY_TAG_MAX
 } OlyTagType;
 
 typedef struct oly_tag_struct
 {
-  OChar *name;
-  int (*verify)(OlyNodeValue *);
-  OlyStatus (* convert)(OlyNodeValue *input, OlyNodeValue **output);
+  OlyStatus (* check)(OChar *input);
+  OlyStatus (* import)(OlyNodeValue *input, OlyNodeValue **output);
   OlyTagType internal_type;
 } OlyTag;
 

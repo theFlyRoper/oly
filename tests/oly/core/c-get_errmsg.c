@@ -81,7 +81,7 @@ main( int argc, char **argv ){
                         "OLY_ERR_NO_KEY_BUFFER",
                         "OLY_ERR_NODE_MUST_HAVE_VALUE",
                         "OLY_ERR_NODE_MUST_NOT_HAVE_VALUE",
-                        "OLY_ERR_ILLEGAL_NODE_TYPE",
+                        "OLY_ERR_ILLEGAL_TAG",
                         "OLY_ERR_NO_OBJECT",
                         "OLY_ERR_NO_RESERVATION",
                         "OLY_ERR_STRING_BUFFER_STATE",

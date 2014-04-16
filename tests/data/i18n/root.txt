@@ -32,8 +32,8 @@ root:table {
       }
     }
 // regular expressions for the yaml/json core schema. http://www.yaml.org/spec/1.2/spec.html#schema/core/
-    InferTagRegExp:array{
-      {"(null|Null|NULL|~)"} // Null
+    SimpleTagRegExp:array{
+      {"(null|Null|NULL|~)"} // Null (spot 0)
       {"(true|True|TRUE)"} // Boolean true
       {"(false|False|FALSE)"} // Boolean false
       {"[-+]?[0-9]+"} // Integer base 10
@@ -41,15 +41,12 @@ root:table {
       {"0x[0-9a-fA-F]+"} // Integer base 16
       {"[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?"} // floating point
       {"[-+]?(\.inf|\.Inf|\.INF)"} // infinity
-      {" \.nan | \.NaN | \.NAN"}  // not a number 
+      {"(\.nan|\.NaN|\.NAN)"}  // not a number 
       {"*"} // string (default)
     }
     OlyConfig:table {
         OlyMain:array {
-            {
-                {"MAIN_CONFIG_UNKNOWN"}
-
-            }
+            {"MAIN_CONFIG_UNKNOWN"}
             {"MAIN_MAX_STRING_BUFFER_SIZE"}
             {"MAIN_MAX_BOUNDARY_BUFFER_SIZE"}
             {"MAIN_MAX_NODE_LIST_SIZE"}
@@ -137,7 +134,7 @@ root:table {
         {"OLY_ERR_NO_KEY_BUFFER"}
         {"OLY_ERR_NODE_MUST_HAVE_VALUE"}
         {"OLY_ERR_NODE_MUST_NOT_HAVE_VALUE"}
-        {"OLY_ERR_ILLEGAL_NODE_TYPE"}
+        {"OLY_ERR_ILLEGAL_TAG"}
         {"OLY_ERR_NO_OBJECT"}
         {"OLY_ERR_NO_RESERVATION"}
         {"OLY_ERR_STRING_BUFFER_STATE"}
