@@ -4,8 +4,8 @@
 <h1>Glossary</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 0f71aa1190,
-2014-03-19
+version 3083a49856,
+2014-04-13
 </p>
 <hr>
 <h2><a name="_glossary"></a>Glossary</h2>

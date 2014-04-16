@@ -121,7 +121,6 @@ typedef enum OlyStatus_enum {
     OLY_STATUS_MAX=35
 } OlyStatus;
 
-
 /* OFILE IO */
 extern OFILE *u_stderr;
 extern OFILE *u_stdout;

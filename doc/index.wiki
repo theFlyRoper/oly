@@ -4,8 +4,8 @@
 <h1>Oly</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version c8ea317ad2,
-2014-02-25
+version 73407c1dc1,
+2014-04-09
 </p>
 <hr>
 <h2><a name="_current_features"></a>Current Features</h2>

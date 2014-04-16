@@ -28,6 +28,7 @@
  * data.
  */
 static const ResourceData * const init_main_config(void);
+static OlyStatus load_config_file( OlyConfig **config, FILE *file );
 static const ResourceData * config_data;
 
 OlyStatus get_config_item( OChar **result, OChar *key )
@@ -95,6 +96,164 @@ static const ResourceData * const init_main_config(void)
 #endif /* HAVE_UNICODE_URES_H */
 }
 
+OlyStatus load_config( OlyConfig **config )
+{
+    OlyStatus    status = OLY_OKAY;
+    size_t       length = strlen(SYSCONFDIR) + 1;
+    char         path[BUFSIZ], filename[BUFSIZ], *token = NULL,
+                *marker = NULL, sep[1] = ":", *config_file = "olyrc.yaml";
+    bool         file_loaded = false;
+    FILE        *file = NULL;
+    
+    if (length > BUFSIZ) 
+    {
+        status = OLY_ERR_BUFFER_OVERFLOW;
+    }
+    HANDLE_ERROR_AND_DIE(status);
+    path[BUFSIZ-1] = '\0';
+
+    strcpy(filename, getenv("HOME"));
+    strcat(filename, "/.");
+    strcat(filename, config_file);
+    file = fopen(filename, "rb");
+    if ( file == NULL ) 
+    {
+        status = OLY_ERR_CONFIG_FILE_NOT_FOUND;
+    }
+
+    if (status == OLY_OKAY)
+    {
+        status = load_config_file( config, file );
+        if (status == OLY_OKAY)
+        {
+            file_loaded = true;
+        }
+    }
+    strncpy(path, SYSCONFDIR, (BUFSIZ-1));
+    
+    for (token = strtok_r(path, sep, &marker); token; 
+            token = strtok_r(NULL, sep, &marker))
+    {
+        if (status == OLY_ERR_CONFIG_FILE_NOT_FOUND) 
+        {
+            status = OLY_OKAY;
+        }
+
+        strcpy(filename, token);
+        strcat(filename, "/");
+        strcat(filename, config_file);
+        file = fopen(filename, "rb");
+        if( file == NULL ) 
+        {
+            status = OLY_ERR_CONFIG_FILE_NOT_FOUND;
+        }
+
+        if (status == OLY_OKAY)
+        {
+            status = load_config_file( config, file );
+            if (status == OLY_OKAY)
+            {
+                file_loaded = true;
+            }
+        }
+    }
+    
+    return status; 
+}
+
+OlyStatus load_config_file( OlyConfig **config, FILE *file )
+{
+    OlyStatus status = OLY_OKAY;
+{
+    OlyStatus            status      = OLY_OKAY;
+    bool                 is_done     = false;
+    yaml_parser_t parser ;
+    yaml_event_t  event;
+    if ( yaml_parser_initialize( (parser) ) != 1 )
+    {
+        status = OLY_ERR_LIBYAML_INIT;
+        return status;
+    };
+    yaml_parser_set_input_file(parser, file);
+    
+    do {
+        if (!yaml_parser_parse(parser, event))
+        {
+            printf("Parser error %d\n", parser->error);
+            exit(EXIT_FAILURE);
+        }
+        switch(event->type)
+        {
+            /* Stream start/end */
+            case YAML_STREAM_START_EVENT: 
+                break;
+            case YAML_STREAM_END_EVENT:   
+                break;
+            case YAML_DOCUMENT_START_EVENT: 
+                break;
+            case YAML_DOCUMENT_END_EVENT:   
+                break;
+            case YAML_SEQUENCE_START_EVENT:
+                status = enqueue_ds_node( data, NULL, OLY_TAG_TYPE_SEQUENCE ) ;
+                INBOUND_NODE_CHECK(status, data);
+                yaml_status = OLY_YAML_SEQUENCE;
+                have_key = 0x0;
+                printf("SeqStart\n");
+                break;
+            case YAML_SEQUENCE_END_EVENT:
+                status = ds_ascend( data );
+                yaml_status = OLY_YAML_OKAY;
+                printf("SeqEnd\n");
+                break;
+            case YAML_MAPPING_START_EVENT:  
+                status = enqueue_ds_node( data, NULL, OLY_TAG_TYPE_MAP ) ;
+                INBOUND_NODE_CHECK(status, data);
+                have_key = 0x0;
+                printf("MapStart\n");
+                break;
+            case YAML_MAPPING_END_EVENT:    
+                status = ds_ascend( data );
+                yaml_status = OLY_YAML_OKAY;
+                printf("MapEnd\n");
+                break;
+            case YAML_ALIAS_EVENT:
+                break;
+            case YAML_SCALAR_EVENT:
+                if ( ( have_key == 0x0 ) && ( yaml_status != OLY_YAML_SEQUENCE ) )
+                {
+                    status = stage_node_key( data, 
+                        (const char *)event->data.scalar.value,
+                        (size_t)event->data.scalar.length );
+                    have_key = 0x1;
+                }
+                else 
+                {
+                    status = enqueue_ds_node( data, event->data.scalar.value,
+                            OLY_TAG_SCALAR_STRING);
+                    INBOUND_NODE_CHECK(status, data);
+                    have_key = 0x0;
+                }
+                break;
+            case YAML_NO_EVENT: 
+                break;
+            default: 
+                break;
+        }
+        if( event->type != YAML_STREAM_END_EVENT )
+        {
+            yaml_event_delete(event);
+        }
+        else
+        {
+            is_done = true;
+        }
+    } while (( event->type != YAML_STREAM_END_EVENT ) && ( status != OLY_WARN_NODE_PRODUCED ));
+    return status;
+}
+    return status; 
+}
+
+OlyStatus set_config_item(
 /*
 void *get_config_item(OlyConfigItem record)
 {
