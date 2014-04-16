@@ -88,6 +88,8 @@ main( int argc, char **argv ){
                         "OLY_ERR_NODE_QUEUE_FULL",
                         "OLY_ERR_NODE_QUEUE_EMPTY",
                         "OLY_ERR_DS_EOF",
+                        "OLY_ERR_CONFIG_ITEM_NOT_FOUND",
+                        "OLY_ERR_CONFIG_UNKNOWN",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;

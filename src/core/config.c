@@ -23,14 +23,18 @@
 #include <stdbool.h>
 #include "pvt_config.h"
 
-/* the error handler stays separate to minimize the risk of errors
- * within it.  Also, no other part of Oly needs access to the config
- * data.
- */
 static const ResourceData * const init_main_config(void);
 static OlyStatus load_config_file( OlyConfig **config, FILE *file );
 static const ResourceData * config_data;
-
+/* stores the type for each OlyConfigItem, in order */
+static const OlyConfigValueType type[OLY_CONFIG_ITEM_MAX] =
+{
+    INT_VALUE,
+    INT_VALUE,
+    INT_VALUE,
+    INT_VALUE
+};
+    
 OlyStatus get_config_item( OChar **result, OChar *key )
 {
     OlyStatus status = OLY_OKAY;
@@ -47,14 +51,34 @@ OlyStatus get_config_item( OChar **result, OChar *key )
     }
     else if (U_FAILURE(u_status))
     {
-        /* This will catch when we forget to update the list of errors in root.txt, 
-         * or any other ICU error.
-         */
         fprintf(stderr, "ICU Error: %s.\n",
                 u_errorName(u_status));
     }
 #endif /* HAVE_UNICODE_URES_H */
     return status; 
+}
+{ 
+    UErrorCode      u_status = U_ZERO_ERROR;
+    int32_t         i = 0;
+    UResourceBundle *subres = NULL;
+    char            indent_buffer[BUFSIZ];
+    
+    for (i = 0; i<ures_getSize(res); i++) {
+        subres = ures_getByIndex (res, i, subres, &u_status);
+        if (U_FAILURE(u_status)) {
+            fprintf(stderr, "Err: %s\n",
+                    u_errorName(u_status));
+            exit(1);
+        }
+        if (URES_NONE != flag_check(subres, flag)) {
+            printf("%s%8i - %s: ", 
+                    level_indent(indent_buffer, BUFSIZ, level), i, 
+                    get_resource_type(subres));
+            flag_res_display(subres, flag, level);
+        }
+    }
+    printf("\n");
+    ures_close(subres);
 }
 
 OlyStatus init_config(Oly *oly)
@@ -163,26 +187,24 @@ OlyStatus load_config( OlyConfig **config )
 
 OlyStatus load_config_file( OlyConfig **config, FILE *file )
 {
-    OlyStatus status = OLY_OKAY;
-{
     OlyStatus            status      = OLY_OKAY;
-    bool                 is_done     = false;
+    OlyConfigItem        item = OLY_CONFIG_UNSET;
     yaml_parser_t parser ;
     yaml_event_t  event;
-    if ( yaml_parser_initialize( (parser) ) != 1 )
+    if ( yaml_parser_initialize( &parser ) != 1 )
     {
         status = OLY_ERR_LIBYAML_INIT;
         return status;
     };
-    yaml_parser_set_input_file(parser, file);
+    yaml_parser_set_input_file( &parser, file);
     
     do {
-        if (!yaml_parser_parse(parser, event))
+        if (!yaml_parser_parse(&parser, &event))
         {
-            printf("Parser error %d\n", parser->error);
+            printf("Parser error %d\n", parser.error);
             exit(EXIT_FAILURE);
         }
-        switch(event->type)
+        switch(event.type)
         {
             /* Stream start/end */
             case YAML_STREAM_START_EVENT: 
@@ -194,44 +216,29 @@ OlyStatus load_config_file( OlyConfig **config, FILE *file )
             case YAML_DOCUMENT_END_EVENT:   
                 break;
             case YAML_SEQUENCE_START_EVENT:
-                status = enqueue_ds_node( data, NULL, OLY_TAG_TYPE_SEQUENCE ) ;
-                INBOUND_NODE_CHECK(status, data);
-                yaml_status = OLY_YAML_SEQUENCE;
-                have_key = 0x0;
-                printf("SeqStart\n");
-                break;
             case YAML_SEQUENCE_END_EVENT:
-                status = ds_ascend( data );
-                yaml_status = OLY_YAML_OKAY;
-                printf("SeqEnd\n");
-                break;
             case YAML_MAPPING_START_EVENT:  
-                status = enqueue_ds_node( data, NULL, OLY_TAG_TYPE_MAP ) ;
-                INBOUND_NODE_CHECK(status, data);
-                have_key = 0x0;
-                printf("MapStart\n");
-                break;
             case YAML_MAPPING_END_EVENT:    
-                status = ds_ascend( data );
-                yaml_status = OLY_YAML_OKAY;
-                printf("MapEnd\n");
+                printf("Config support for collections not implemented yet.\n");
+                status = OLY_ERR_CONFIG_UNKNOWN;
                 break;
             case YAML_ALIAS_EVENT:
                 break;
             case YAML_SCALAR_EVENT:
-                if ( ( have_key == 0x0 ) && ( yaml_status != OLY_YAML_SEQUENCE ) )
+                if ( item == OLY_CONFIG_UNSET )
                 {
                     status = stage_node_key( data, 
-                        (const char *)event->data.scalar.value,
-                        (size_t)event->data.scalar.length );
+                        (const char *)event.data.scalar.value,
+                        (size_t)event.data.scalar.length );
                     have_key = 0x1;
                 }
                 else 
                 {
-                    status = enqueue_ds_node( data, event->data.scalar.value,
+                    status = enqueue_ds_node( data, event.data.scalar.value,
                             OLY_TAG_SCALAR_STRING);
                     INBOUND_NODE_CHECK(status, data);
                     have_key = 0x0;
+                    item = OLY_CONFIG_UNSET;
                 }
                 break;
             case YAML_NO_EVENT: 
@@ -239,21 +246,59 @@ OlyStatus load_config_file( OlyConfig **config, FILE *file )
             default: 
                 break;
         }
-        if( event->type != YAML_STREAM_END_EVENT )
-        {
-            yaml_event_delete(event);
-        }
-        else
-        {
-            is_done = true;
-        }
-    } while (( event->type != YAML_STREAM_END_EVENT ) && ( status != OLY_WARN_NODE_PRODUCED ));
-    return status;
-}
+        yaml_event_delete(event);
+    item = OLY_CONFIG_UNSET;
+    } while ( event.type != YAML_STREAM_END_EVENT );
     return status; 
 }
 
-OlyStatus set_config_item(
+OlyStatus set_config_value( OlyConfig **config, OlyConfigItem item, 
+    OlyConfigValue *value )
+{
+
+}
+
+OlyStatus
+find_config_item( const char *find_in, OlyConfigItem *item_out )
+{
+    UErrorCode u_status = U_ZERO_ERROR;
+    const int32_t array_end = ures_countArrayItems(config_data, NULL, &u_status),
+          str_length = BUFSIZ, i = 0;
+    char  config_string[BUFSIZ], *config_dest = NULL;
+    bool  found = false;
+    if (U_FAILURE(u_status))
+    {
+        status = OLY_ERR_CONFIG_UNKNOWN;
+        return status;
+    }
+    
+    for (i = 0; ((i < array_end) && (found == false)); i++)
+    {
+        config_dest = ures_getUTF8StringByIndex(config_data, i, config_string,
+                &str_length, FALSE, &u_status);
+        if (config_dest == NULL){
+            status = OLY_ERR_CONFIG_ITEM_NOT_FOUND;
+            break;
+        }
+        if (U_FAILURE(u_status))
+        {
+            status = OLY_ERR_CONFIG_UNKNOWN;
+            break;
+        }
+        if (strcmp((const char *)config_dest, find_in) == 0)
+        {
+            *item_out = (OlyConfigItem)i;
+            found = true;
+        }
+        str_length = BUFSIZ;
+    }
+    if (found == false)
+    {
+        status = OLY_ERR_CONFIG_ITEM_NOT_FOUND;
+    }
+    return status;
+}
+
 /*
 void *get_config_item(OlyConfigItem record)
 {

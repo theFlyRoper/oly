@@ -46,7 +46,10 @@ root:table {
     }
     OlyConfig:table {
         OlyMain:array {
-            {"MAIN_CONFIG_UNKNOWN"}
+            {
+                {"MAIN_CONFIG_UNKNOWN"}
+
+            }
             {"MAIN_MAX_STRING_BUFFER_SIZE"}
             {"MAIN_MAX_BOUNDARY_BUFFER_SIZE"}
             {"MAIN_MAX_NODE_LIST_SIZE"}
@@ -141,6 +144,8 @@ root:table {
         {"OLY_ERR_NODE_QUEUE_FULL"}
         {"OLY_ERR_NODE_QUEUE_EMPTY"}
         {"OLY_ERR_DS_EOF"}
+        {"OLY_ERR_CONFIG_ITEM_NOT_FOUND"}
+        {"OLY_ERR_CONFIG_UNKNOWN"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

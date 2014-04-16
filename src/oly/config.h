@@ -27,20 +27,12 @@
 BEGIN_C_DECLS
 
 typedef enum oly_config_items_enum {
-    OLY_CONFIG_ITEM_MIN=0,
-    OLY_CONFIG_BOUNDARY_BUFFER_MAX=0,
-    OLY_CONFIG_MAIN_STRING_BUFFER_MAX=1,
-    OLY_CONFIG_NODE_QUEUE_MAX=2,
-    OLY_CONFIG_NODE_LIST_MAX=3,
-    OLY_CONFIG_ITEM_MAX=3
+    OLY_CONFIG_BOUNDARY_BUFFER_MAX,
+    OLY_CONFIG_MAIN_STRING_BUFFER_MAX,
+    OLY_CONFIG_NODE_QUEUE_MAX,
+    OLY_CONFIG_NODE_LIST_MAX,
+    OLY_CONFIG_ITEM_MAX
 } OlyConfigItem;
-
-typedef enum oly_config_object_enum {
-    OLY_CONFIG_OBJECT_MIN=0,
-    OLY_CONFIG_MAIN=0,
-    OLY_CONFIG_DATA_SOURCE=1,
-    OLY_CONFIG_OBJECT_MAX=1
-} OlyConfigObject;
 
 typedef enum oly_config_value_type {
     STRING_VALUE,
@@ -48,10 +40,13 @@ typedef enum oly_config_value_type {
     FLOAT_VALUE
 } OlyConfigValueType;
 
-typedef union oly_config_value_union {
-    OChar               *string_value;
-    long long            int_value;
-    double               float_value;
+typedef struct oly_config_value_struct {
+    union oly_config_value_union {
+        OChar               *string_value;
+        long long            int_value;
+        double               float_value;
+    };
+    OlyConfigValueType type;
 } OlyConfigValue;
 
 struct OlyConfig_struct {
@@ -59,6 +54,9 @@ struct OlyConfig_struct {
 } OlyConfig;
 
 OlyStatus load_config( OlyConfig **config );
+OlyStatus find_config_item( OChar *source, OlyConfigItem *item);
+OlyStatus set_config_value( OlyConfig **config, OlyConfigItem item, 
+    OlyConfigValue *value );
 
 /* OlyStatus get_config_item(OlyConfigValue *item); */
 
