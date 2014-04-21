@@ -115,6 +115,14 @@ get_oly_resource( Oly *oly )
     return get_resource_data(oly->data);
 }
 
+OlyStatus
+get_main_config( OlyConfig **config )
+{
+    OlyStatus status = OLY_OKAY;
+    *config = oly->config;
+    return status;
+}
+
 const char *char_default_encoding( void )
 {
     return ucnv_getDefaultName 	( );

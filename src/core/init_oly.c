@@ -31,19 +31,17 @@
 #include "pvt_resources.h"
 #include "core/pvt_init_errmsg.h"
 
-/* since resource must have non-i18n error handling
+/* pre init functions. 
+ * since resource must have non-i18n error handling
  * before it is available it only makes sense to have a 
  * special constructor available here.
- */
-
-/* pre init functions.  None of these should be called anywhere else, which is why they are all static. */
-
-/* get_home, cleanenv, open_devnull and clean_io_open
+ *
+ * get_home, cleanenv, open_devnull and clean_io_open
  * are adapted from the Secure Programming 
  * Cookbook, John Viega and Matt Messier.
  * 2003, O'Reilly Press, 
  * ISBN: 0-596-00394-3
- */
+ **/
 
 /* verifies we can open /dev/null, just in case some malicious user has 
  * hijacked all the file streams in order to capture stdout or stderr. */
@@ -78,13 +76,8 @@ static void *icalloc (size_t num, size_t size);
 /* pre-init, non-i18n strdup wrapper with out-of-memory checks. */
 static char *istrdup (const char *string);
 
-/* TODO:
- * This is organized enough right now, but it can be a lot tighter.
- * 1. Does not load config right now.  It should, once config is implemented.
- */
-
 OlyStatus init_oly(const char *prog, 
-        const char *datadir, const char *encoding, const char *locale, Oly **oly_out)
+        const char *datadir, const char *encoding, const char *locale)
 {
 #ifdef HAVE_UNICODE_USTDIO_H
     UErrorCode       u_status = U_ZERO_ERROR; 
@@ -95,18 +88,18 @@ OlyStatus init_oly(const char *prog,
                     *inner_datadir  = istrdup(datadir)
                     ;
     int32_t          len = 0;
-    Oly             *oly_init = (Oly *)imalloc(sizeof(Oly));
+    oly = (Oly *)imalloc(sizeof(Oly));
     
     assert(inner_prog != NULL && inner_datadir != NULL);
     
-    oly_init->program_name = NULL;
-    oly_init->resource_dir = NULL;
-    oly_init->data = NULL;
-    oly_init->state = NULL;
-    oly_init->config = NULL;
-    oly_init->inbound = NULL;
-    oly_init->node_queue = NULL;
-    oly_init->outbound = NULL;
+    oly->program_name = NULL;
+    oly->resource_dir = NULL;
+    oly->data = NULL;
+    oly->state = NULL;
+    oly->config = NULL;
+    oly->inbound = NULL;
+    oly->node_queue = NULL;
+    oly->outbound = NULL;
     /* aborts if encounters unusual states or unclosable files */
     clean_io_open();
     if ( cleanenv() != OLY_OKAY )
@@ -135,7 +128,7 @@ OlyStatus init_oly(const char *prog,
     transfer = (UChar *)icalloc(len, sizeof(OChar));
     u_uastrncpy(transfer, basename(inner_prog), (len-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
-    oly_init->program_name = (const OChar *)transfer;
+    oly->program_name = (const OChar *)transfer;
     /*  attach data directory */
     len = (strlen(inner_datadir)+1);
     if (len == 0)
@@ -148,7 +141,7 @@ OlyStatus init_oly(const char *prog,
     transfer = (UChar *)icalloc(len, sizeof(OChar));
     u_uastrncpy(transfer, inner_datadir, (len-1));
 #endif /* HAVE_UNICODE_USTDIO_H */
-    oly_init->resource_dir = (const OChar *)transfer;
+    oly->resource_dir = (const OChar *)transfer;
 #ifdef HAVE_UNICODE_USTDIO_H
     /* u_setDataDirectory tells ICU where to look for custom app data.  It is not needed
      * for the internal app data for ICU, which lives in a shared library. 
@@ -163,21 +156,22 @@ OlyStatus init_oly(const char *prog,
 
     /* the ICU constructors take char arguments, which is
      * what init_locale and init_encoding provide. */
-    oly_init->data = init_primary_resource( inner_locale, 
+    oly->data = init_primary_resource( inner_locale, 
             inner_encoding, inner_datadir );
 
-    init_errmsg(oly_init);
+    init_errmsg(oly);
     
-    oly_init->state         = new_state( oly_init->data );
-    oly_init->status        = OLY_OKAY;
-    oly_init->inbound       = NULL;
-    oly_init->outbound      = NULL;
-    oly_init->status        = open_node_queue(&(oly_init->node_queue));
-    HANDLE_STATUS_AND_DIE(oly_init->status);
-    (*oly_out)              = oly_init;
+    oly->state          = new_state( oly->data );
+    oly->status         = OLY_OKAY;
+    oly->inbound        = NULL;
+    oly->outbound       = NULL;
+    oly->status         = load_config(&(oly->config));
+    HANDLE_STATUS_AND_DIE(oly->status);
+    oly->status        = open_node_queue(&(oly->node_queue));
+    HANDLE_STATUS_AND_DIE(oly->status);
     atexit(close_oly);
 
-    return oly_init->status;
+    return oly->status;
 }
 
 void *

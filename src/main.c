@@ -41,8 +41,7 @@ main( int argc, char **argv )
     res_disp_flag   flag;
 #endif /* OLYDEV */
 
-    status = init_oly(argv[0], locdir, encoding, locale, &oly );
-    printf("hi there!\n");
+    status = init_oly(argv[0], locdir, encoding, locale);
 
 #ifdef OLYDEV
     init_res_disp_flag(&flag);

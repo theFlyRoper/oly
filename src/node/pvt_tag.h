@@ -30,21 +30,20 @@ BEGIN_C_DECLS
  * This union should be space efficient above all, so figure out how to ensure
  * these data types all line up, ideally without a cast.  On 64 bit linux,
  * long, unsigned long and double work nicely.  */
-union oly_node_value_union 
-{
-  OlyNode             **collection_value;
-  OChar                *string_value;
-  FILE                 *large_binary_file;
-  OFILE                *large_text_file;
-  double                float_value;
-  long                  int_value;
-  unsigned long         uint_value;
-};
 
 struct oly_node_value_struct
 {
-  OlyTagType   type;
-  OlyNodeValue  value;
+    union oly_node_value_union 
+    {
+        OlyNode             **collection_value;
+        OChar                *string_value;
+        FILE                 *large_binary_file;
+        OFILE                *large_text_file;
+        double                float_value;
+        long                  int_value;
+        unsigned long         uint_value;
+    } value;
+    OlyTagType   type;
 };
 
 END_C_DECLS

@@ -17,7 +17,10 @@
  * MA 02110-1301, USA.
  * }}} */
 
-#include ""
+#include "oly/common.h"
+#include "oly/olytypes.h"
+#include "oly/node.h"
+#include "oly/tag.h"
 
 
 #define basic_tag_list \
@@ -47,7 +50,20 @@ basic_tag_list
 } ;
 #undef TAG_FACTORY
 
-static URegularExpression simple_regexp[ OLY_TAG_SCALAR_STRING+1 ];
+typedef enum oly_tag_check_enum {
+    OLY_TAG_CHECK_NULL,
+    OLY_TAG_CHECK_BOOL_TRUE,
+    OLY_TAG_CHECK_BOOL_FALSE,
+    OLY_TAG_CHECK_INT,
+    OLY_TAG_CHECK_UINT_OCT,
+    OLY_TAG_CHECK_UINT_HEX,
+    OLY_TAG_CHECK_FLOAT,
+    OLY_TAG_CHECK_INFINITY,
+    OLY_TAG_CHECK_NOT_A_NUMBER,
+    OLY_TAG_CHECK_STRING
+} OlyTagCheck;
+
+static URegularExpression *simple_regexp[ OLY_TAG_CHECK_STRING+1 ];
 
 static const ResourceData *init_tag_regexp(Oly *oly);
 
@@ -62,14 +78,13 @@ OlyStatus init_regexp_data(Oly *oly)
     pe.line = 0;
     pe.offset = 0;
 
-    for (i = 0; i <= OLY_TAG_SCALAR_STRING; i++)
+    for (i = 0; i <= OLY_TAG_CHECK_STRING; i++)
     {
         regexp = (OChar *)ures_getStringByIndex( regexp_data, 
                 i, &len, &u_status );
         if (U_FAILURE(u_status))
         {
-            fprintf(stderr, "ICU Error in OLY_TAG: %s.\n",
-                    u_errorName(u_status));
+            fprintf(stderr, "ICU Error in OLY_TAG: %s.\n", u_errorName(u_status));
             status = OLY_ERR_ILLEGAL_TAG;
         }
         simple_regexp[i] = uregex_open(regexp, -1, 0, &pe, &u_status);
@@ -84,7 +99,7 @@ static ResourceData *init_tag_regexp(Oly *oly)
     ResourceData *retval = (ResourceData *)ures_getByKey(
             (UResourceBundle *)get_oly_resource(oly), 
             "SimpleTagRegExp", NULL, &u_status);
-    if (U_FAILURE(u_status)) 
+    if (U_FAILURE(u_status))
     {
         printf("Error tag_regexp not found! Status: %s.\n",
                 u_errorName(u_status));
@@ -97,19 +112,62 @@ static ResourceData *init_tag_regexp(Oly *oly)
 static OlyStatus
 check_tag_null(OChar *input)
 {
-    void uregex_setText 	( 	URegularExpression *  	regexp,
-		const UChar *  	text,
-		int32_t  	textLength,
-		UErrorCode *  	status 
-	) 	
-    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    OlyStatus   status = OLY_OKAY;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_NULL], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag null, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_NULL], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+
     return status;
 }
 
 static OlyStatus
 check_tag_bool(OChar *input)
 {
-    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    OlyStatus   status = OLY_OKAY;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_BOOL_FALSE], input, -1, &u_status );
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_BOOL_FALSE], -1,  &u_status ) == TRUE )
+    {
+        return status;
+    }
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_BOOL_TRUE], input, -1, &u_status );
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_BOOL_TRUE], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
     return status;
 }
 
@@ -117,6 +175,19 @@ static OlyStatus
 check_tag_int(OChar *input)
 {
     OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_INT], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag int, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_INT], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
     return status;
 }
 
@@ -124,6 +195,30 @@ static OlyStatus
 check_tag_uint(OChar *input)
 {
     OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_UINT_OCT], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag uint hex, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_UINT_HEX], -1,  &u_status ) == TRUE )
+    {
+        return status;
+    }
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag uint oct, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_UINT_HEX], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
     return status;
 }
 
@@ -131,6 +226,19 @@ static OlyStatus
 check_tag_float(OChar *input)
 {
     OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_FLOAT], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag float, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_FLOAT], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
     return status;
 }
 
@@ -138,6 +246,19 @@ static OlyStatus
 check_tag_infinity(OChar *input)
 {
     OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_INFINITY], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag float, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_INFINITY], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
     return status;
 }
 
@@ -145,6 +266,19 @@ static OlyStatus
 check_tag_nan(OChar *input)
 {
     OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_NOT_A_NUMBER], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag float, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_NOT_A_NUMBER], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
     return status;
 }
 

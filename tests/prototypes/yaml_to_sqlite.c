@@ -121,7 +121,7 @@ main( int argc, char **argv )
     OlyDataSource   *sqlite_ds;
     size_t           buffer_size = DEFAULT_BUFFER_SIZE;
 
-    status = init_oly(argv[0], locdir, encoding, locale, &oly );
+    status = init_oly(argv[0], locdir, encoding, locale);
     status  = get_options(argc, argv);
 
     switch (status)

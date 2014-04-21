@@ -36,7 +36,7 @@ struct passwd;
 
 /* constructor */
 OlyStatus init_oly(const char *prog, 
-        const char *datadir, const char *encoding, const char *locale, Oly **oly_out);
+        const char *datadir, const char *encoding, const char *locale);
 
 extern OChar    *get_ltdl_errmsg( int status );
 extern size_t    memory_left_now(void);
@@ -62,6 +62,7 @@ extern OlyStatus oly_run( void );
 
 OlyStatus set_status(OlyState *state, const OlyStatus status);
 OlyStatus get_status(OlyState *state);
+OlyStatus get_main_config(OlyConfig **c);
 
 END_C_DECLS
 

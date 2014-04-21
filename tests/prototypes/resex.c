@@ -104,7 +104,7 @@ main( int argc, char **argv ){
         }
     }
     
-    status = init_oly(argv[0], locdir, encoding, locale, &oly );
+    status = init_oly(argv[0], locdir, encoding, locale);
     if (flag.badopt == 1) 
     {
         printf("Error: unrecognized option.");

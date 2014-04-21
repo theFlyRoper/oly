@@ -37,15 +37,15 @@ new_oly_node( OlyNode **new_node )
         status = OLY_ERR_NOMEM;
         HANDLE_STATUS_AND_RETURN(status);
     }
-    new_node_local->depth             = 0;
-    new_node_local->vt                = OLY_TAG_TYPE_UNSET;
-    new_node_local->node_id             = 0;
-    new_node_local->key               = NULL;
-    new_node_local->parent_node       = NULL;
-    new_node_local->has_key           = false;
-    new_node_local->collection_end    = false;
+    new_node_local->depth           = 0;
+    new_node_local->value.type      = OLY_TAG_TYPE_UNSET;
+    new_node_local->node_id         = 0;
+    new_node_local->key             = NULL;
+    new_node_local->parent_node     = NULL;
+    new_node_local->collection_end  = false;
+    new_node_local->has_key         = false;
     
-    (new_node_local->value).string_value = NULL;
+    new_node_local->value.value.string_value = NULL;
     (*new_node) = new_node_local;
     return status;
 }
@@ -65,7 +65,7 @@ print_node( OlyNode *n )
     }
 
     u_fprintf(u_stdout, "Tuple: %lli, Depth: %u, ", n->node_id, n->depth);
-    print_node_value(n->value, n->vt);
+    print_node_value(n->value, n->value.type);
 }
 
 static void
@@ -74,13 +74,13 @@ print_node_value(OlyNodeValue nv, OlyTagType type)
     switch ( type )
     {
         case OLY_TAG_SCALAR_STRING:
-            u_fprintf(u_stdout, "STRING: \"%.40S\"\n", nv.string_value);
+            u_fprintf(u_stdout, "STRING: \"%.40S\"\n", nv.value.string_value);
             break;
         case OLY_TAG_SCALAR_FLOAT:
-            printf("FLOAT: (%f)\n", nv.float_value);
+            printf("FLOAT: (%f)\n", nv.value.float_value);
             break;
         case OLY_TAG_SCALAR_INT:
-            printf("INT: (%li)\n", nv.int_value);
+            printf("INT: (%li)\n", nv.value.int_value);
             break;
         case OLY_TAG_COMPLEX_MAP:
             printf("MAP\n");
@@ -111,12 +111,11 @@ new_node_value( OlyNodeValue **new_node_value)
 OlyStatus
 reset_node( OlyNode *node )
 {
-    node->vt                = OLY_TAG_TYPE_UNSET;
+    node->value.type                = OLY_TAG_TYPE_UNSET;
     node->node_id             = 0;
     node->key               = NULL;
     node->parent_node       = NULL;
-    (node->value).string_value = NULL;
-    node->has_key           = false;
+    node->value.value.string_value = NULL;
     node->collection_end    = false;
     return OLY_OKAY;
 }
@@ -150,7 +149,7 @@ OlyStatus
 get_node_string_value(OlyNode *node, OChar **value_out)
 {
     OlyStatus status = OLY_OKAY;
-    (*value_out) = (node->value).string_value ;
+    (*value_out) = node->value.value.string_value ;
     return status;
 }
 
@@ -174,7 +173,7 @@ OlyStatus
 set_node_string_value(OlyNode *output, const OChar *value)
 {
     OlyStatus status = OLY_OKAY;
-    (output->value).string_value = (OChar *)value;
+    output->value.value.string_value = (OChar *)value;
     return status;
 }
 /* sets the key value*/
@@ -193,11 +192,11 @@ set_node_value(OlyNode *node, void *value, OlyTagType type)
     OlyStatus status = OLY_OKAY;
     OlyNodeValue *output = &(node->value);
 
-    if ((type <= OLY_TAG_MIN) || (type > OLY_TAG_MAX))
+    if ((type < 0) || (type > OLY_TAG_MAX))
     {
         status = OLY_ERR_ILLEGAL_TAG ;
     }
-    node->vt = type;
+    node->value.type = type;
     if ( value != NULL )
     {
         switch ( type )
@@ -205,10 +204,10 @@ set_node_value(OlyNode *node, void *value, OlyTagType type)
             case OLY_TAG_SCALAR_STRING:
                 break;
             case OLY_TAG_SCALAR_FLOAT:
-                (*output).float_value = *((double *)value);
+                (*output).value.float_value = *((double *)value);
                 break;
             case OLY_TAG_SCALAR_INT:
-                (*output).int_value = *((long *)value);
+                (*output).value.int_value = *((long *)value);
                 break;
             default:
                 status = OLY_ERR_NODE_MUST_NOT_HAVE_VALUE;
@@ -287,8 +286,7 @@ OlyStatus
 copy_node(const OlyNode *source, OlyNode *dest)
 {
     dest->depth             = source->depth;
-    dest->vt                = source->vt;
-    dest->node_id             = source->node_id;
+    dest->node_id           = source->node_id;
     dest->key               = source->key;
     dest->parent_node       = source->parent_node;
     dest->value             = source->value;

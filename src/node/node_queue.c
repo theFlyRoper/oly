@@ -29,9 +29,11 @@ open_node_queue(OlyNodeQueue **q)
     OlyStatus status = OLY_OKAY;
     OlyNodeQueue *new_queue;
     size_t           max_key_size = MAX_KEY_LENGTH;
+    int64_t          queue_size = 0;
     new_queue = (OlyNodeQueue *)omalloc(sizeof(OlyNodeQueue));
     new_queue->key_max_length = max_key_size;
-    new_queue->queue_size = get_node_queue_max();
+    get_main_config_int(OLY_CONFIG_NODE_QUEUE_MAX, &queue_size);
+    new_queue->queue_size = (size_t)queue_size;
     new_queue->stack = NULL;
     new_queue->queue_start = (OlyNode *)omalloc(new_queue->queue_size / sizeof(OlyNode));
     new_queue->queue_end = (new_queue->queue_start + (new_queue->queue_size / sizeof(OlyNode)));
@@ -100,8 +102,8 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         HANDLE_STATUS_AND_RETURN(status);
         depth--;
     }
-    if ((q->in->vt == OLY_TAG_COMPLEX_SEQUENCE ) 
-            || (q->in->vt == OLY_TAG_COMPLEX_MAP ))
+    if ((q->in->value.type == OLY_TAG_COMPLEX_SEQUENCE ) 
+            || (q->in->value.type == OLY_TAG_COMPLEX_MAP ))
     {
         q->in->parent_node = q->stack->parent_node ;
     }
@@ -109,7 +111,6 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
     {
         q->in->parent_node = q->stack ;
     }
-
     
     if  (q->in->key != NULL)
     {
@@ -121,14 +122,14 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         HANDLE_STATUS_AND_RETURN(status);
     }
 
-    if (OLY_TAG_SCALAR_STRING == q->in->vt )
+    if (OLY_TAG_SCALAR_STRING == q->in->value.type )
     {
-        key_len = u_strlen((q->in->value).string_value);
+        key_len = u_strlen(q->in->value.value.string_value);
         status = reserve_string_buffer( q->string_buffer, key_len );
         HANDLE_STATUS_AND_RETURN(status);
-        status = enqueue_to_string_buffer(q->string_buffer, (q->in->value).string_value, &result, &key_len);
+        status = enqueue_to_string_buffer(q->string_buffer, q->in->value.value.string_value, &result, &key_len);
         HANDLE_STATUS_AND_RETURN(status);
-        (q->in->value).string_value = result;
+        q->in->value.value.string_value = result;
     }
     return status;
 };

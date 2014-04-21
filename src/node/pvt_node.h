@@ -23,16 +23,20 @@
 
 #include "oly/node.h"
 #include "oly/string_buffer.h"
+#include "node/pvt_tag.h"
 
 BEGIN_C_DECLS
 
-/* OlyNodeValue lives in tags */
+/* OlyNodeValue can be found in src/node/tag.c */
 struct oly_node_struct 
 {
     int64_t              node_id;
     OlyNodeValue         value;
-    OlyNodeKey          *key;
-    OlyNodeAnchor       *anchor;
+    OlyNode             *parent_node;
+    OChar               *key;
+    OChar               *anchor;
+    bool                 collection_end;
+    bool                 has_key;
     unsigned short       depth;
 };
 

@@ -26,6 +26,7 @@
 
 #include <lib/sha_three/KeccakNISTInterface.h>
 #include "oly/olytypes.h"
+#include "oly/state.h"
 
 /* the NIST interface for SHA 3 defines a few simple data types, 
  * which Oly will use for any other hash function as well.
@@ -40,6 +41,7 @@
 
 #define OLY_HASH_BITS 224
 #define CHAR_HASH ((OLY_HASH_BITS/CHAR_BIT) + (32/CHAR_BIT))
+#define SIZE_HASH (OLY_HASH_BITS/(SIZEOF_SIZE_T*CHAR_BIT))
 #define OLY_MASK 0x128
 
 typedef unsigned char hash[CHAR_HASH];

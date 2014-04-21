@@ -95,7 +95,7 @@ main( int argc, char **argv ){
     UErrorCode       u_status  = U_ZERO_ERROR;
     OlyStatus        status;
     
-    status = init_oly(argv[0], TEST_PKGDATADIR, encoding, locale, &oly);
+    status = init_oly(argv[0], TEST_PKGDATADIR, encoding, locale);
     
     for ( i = 0; (i<=num_tests); i++)
     {
