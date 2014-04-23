@@ -23,7 +23,6 @@
 
 #include "oly/node.h"
 #include "oly/string_buffer.h"
-#include "node/pvt_tag.h"
 
 BEGIN_C_DECLS
 
@@ -37,6 +36,8 @@ struct oly_node_struct
     OChar               *anchor;
     bool                 collection_end;
     bool                 has_key;
+    int                  key_length;
+    int                  value_length;
     unsigned short       depth;
 };
 

@@ -32,7 +32,7 @@ open_node_queue(OlyNodeQueue **q)
     int64_t          queue_size = 0;
     new_queue = (OlyNodeQueue *)omalloc(sizeof(OlyNodeQueue));
     new_queue->key_max_length = max_key_size;
-    get_main_config_int(OLY_CONFIG_NODE_QUEUE_MAX, &queue_size);
+    get_main_config_int(OLY_CONFIG_MAIN_NODE_QUEUE_MAX, &queue_size);
     new_queue->queue_size = (size_t)queue_size;
     new_queue->stack = NULL;
     new_queue->queue_start = (OlyNode *)omalloc(new_queue->queue_size / sizeof(OlyNode));
@@ -132,7 +132,7 @@ enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n )
         q->in->value.value.string_value = result;
     }
     return status;
-};
+}
 
 /* */
 OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out)
@@ -156,5 +156,6 @@ OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out)
     copy_node(q->out, (*node_out));
     reset_node(prev);
     return status;
-};
+}
+
 

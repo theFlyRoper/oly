@@ -59,6 +59,9 @@ extern OlyStatus set_outbound_data_source( OlyDataSource *ds );
 extern OlyStatus get_inbound_data_source( OlyDataSource **ds );
 extern OlyStatus get_outbound_data_source( OlyDataSource **ds );
 extern OlyStatus oly_run( void );
+OlyStatus enqueue_node_list(OlyNode **node_list, size_t node_count);
+OlyStatus dequeue_node_list( OlyNode **node_list, size_t capacity, size_t node_count );
+OlyStatus open_config_item( OlyConfig *config );
 
 OlyStatus set_status(OlyState *state, const OlyStatus status);
 OlyStatus get_status(OlyState *state);

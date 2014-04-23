@@ -165,9 +165,9 @@ OlyStatus init_oly(const char *prog,
     oly->status         = OLY_OKAY;
     oly->inbound        = NULL;
     oly->outbound       = NULL;
-    oly->status         = load_config(&(oly->config));
+    oly->status         = load_main_config(&(oly->config));
     HANDLE_STATUS_AND_DIE(oly->status);
-    oly->status        = open_node_queue(&(oly->node_queue));
+    oly->status         = open_node_queue(&(oly->node_queue));
     HANDLE_STATUS_AND_DIE(oly->status);
     atexit(close_oly);
 

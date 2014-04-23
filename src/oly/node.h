@@ -28,9 +28,7 @@
 
 BEGIN_C_DECLS
 
-struct oly_node_struct;
-typedef struct oly_node_struct OlyNode;
-
+/* OlyNode definition is in tag.h */
 struct oly_node_queue_struct;
 typedef struct oly_node_queue_struct OlyNodeQueue;
 
@@ -49,7 +47,7 @@ OlyStatus set_node_value(OlyNode *node, void *value, OlyTagType type);
 OlyStatus set_node_string_value(OlyNode *output, const OChar *value);
 OlyStatus set_node_key(OlyNode *output, const OChar *key_in);
 
-OlyStatus new_node_value( OlyNodeValue **new_node_value);
+OlyStatus new_node_value( OlyNodeValue **new_node );
 OlyStatus new_oly_node( OlyNode **new_node );
 void close_oly_ds_node(OlyNode *node);
 void print_node( OlyNode *n );

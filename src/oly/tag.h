@@ -22,8 +22,16 @@
 #define OLY_TAG_H 1
 
 #include "oly/common.h"
+#include <stdbool.h>
 #include "oly/olytypes.h"
+#include "oly/node.h"
 #include "oly/hash.h"
+
+BEGIN_C_DECLS
+
+/* OlyNode defined in pvt_node.h */
+struct oly_node_struct;
+typedef struct oly_node_struct OlyNode;
 
 struct oly_node_value_struct;
 typedef struct oly_node_value_struct OlyNodeValue;
@@ -49,6 +57,28 @@ typedef enum oly_tag_type_enum {
     OLY_TAG_MAX
 } OlyTagType;
 
+/* TODO: long, unsigned long and double are not pointers and may align differently.
+ * This union should be space efficient above all, so figure out how to ensure
+ * these data types all line up, ideally without a cast.  On 64 bit linux,
+ * long, unsigned long and double work nicely.  */
+
+struct oly_node_value_struct
+{
+
+    union oly_node_value_union 
+    {
+        OlyNode             **collection_value;
+        OChar                *string_value;
+        FILE                 *large_binary_file;
+        OFILE                *large_text_file;
+        double                float_value;
+        long                  int_value;
+        unsigned long         uint_value;
+        bool                  bool_value;
+    } value;
+    OlyTagType   type;
+};
+
 typedef struct oly_tag_struct
 {
   OlyStatus (* check)(OChar *input);
@@ -58,6 +88,7 @@ typedef struct oly_tag_struct
 
 OlyStatus infer_simple_tag( OChar *scalar, OlyTagType *type_out );
 OlyStatus load_tag_table( OlyTag **t, OlyHashTable **tag );
+END_C_DECLS
 
 #endif /* OLY_TAG_H */
 

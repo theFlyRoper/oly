@@ -109,6 +109,32 @@ static ResourceData *init_tag_regexp(Oly *oly)
 #endif /* HAVE_UNICODE_URES_H */
 }
 
+
+OlyStatus infer_simple_tag( OChar *scalar, OlyTagType *type_out )
+{
+    OlyStatus status = OLY_OKAY;
+    int i = 0;
+    for ( i = 0; i <= OLY_TAG_SCALAR_STRING; i++ )
+    {
+        status = basic_tag[i].check(scalar);
+        if (status == OLY_OKAY)
+        {
+            *type_out = (OlyTagType)i;
+            break;
+        } 
+        else if (status == OLY_WARN_TAG_NOT_MATCH)
+        {
+            status = OLY_OKAY;
+        }
+        else
+        {
+            HANDLE_ERROR_AND_RETURN(status);
+        }
+    }
+    return status;
+}
+#undef RESET_WARN
+
 static OlyStatus
 check_tag_null(OChar *input)
 {
@@ -293,13 +319,57 @@ static OlyStatus
 import_tag_null(OChar *input, OlyNodeValue **output)
 {
     OlyStatus status = OLY_OKAY;
+    (*output).value = NULL;
+    (*output).type = OLY_TAG_SCALAR_NULL;
     return status;
 }
 
 static OlyStatus
 import_tag_bool(OChar *input, OlyNodeValue **output)
 {
-    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    OlyStatus   status = OLY_OKAY;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_BOOL_FALSE], input, -1, &u_status );
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_BOOL_FALSE], -1,  &u_status ) == TRUE )
+    {
+        (*output).value.bool_value = false;
+    }
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_BOOL_TRUE], input, -1, &u_status );
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_BOOL_TRUE], -1,  &u_status ) == TRUE )
+    {
+        (*output).value.bool_value = true;
+    }
+    else
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag bool, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if (status == OLY_OKAY)
+    {
+        (*output).type = OLY_TAG_SCALAR_BOOL;
+    }
+
     return status;
 }
 

@@ -97,11 +97,11 @@ print_node_value(OlyNodeValue nv, OlyTagType type)
 
 
 OlyStatus
-new_node_value( OlyNodeValue **new_node_value)
+new_node_value( OlyNodeValue **new_node)
 {
     OlyStatus status = OLY_OKAY;
-    (*new_node_value) = (OlyNodeValue *)ocalloc(1,sizeof(OlyNodeValue));
-    if ((*new_node_value) == NULL)
+    (*new_node) = (OlyNodeValue *)ocalloc(1,sizeof(OlyNodeValue));
+    if ((*new_node) == NULL)
     {
         status = OLY_ERR_NOMEM;
     }
@@ -166,7 +166,7 @@ get_node_key(OlyNode *node, OChar **key_out)
         (*key_out) = node->key;
     }
     return status;
-};
+}
 
 /* string values must point to a buffer, so they are set separately. */
 OlyStatus 
@@ -176,6 +176,7 @@ set_node_string_value(OlyNode *output, const OChar *value)
     output->value.value.string_value = (OChar *)value;
     return status;
 }
+
 /* sets the key value*/
 OlyStatus 
 set_node_key(OlyNode *output, const OChar *key_in)
@@ -234,7 +235,7 @@ set_node_node_id(OlyNode *node, int64_t node_id)
 {
     node->node_id = node_id;
     return OLY_OKAY;
-};
+}
 
 OlyStatus
 get_node_node_id(OlyNode *node, int64_t *node_id_out )
@@ -242,21 +243,21 @@ get_node_node_id(OlyNode *node, int64_t *node_id_out )
     OlyStatus status = OLY_OKAY;
     (*node_id_out) = node->node_id ;
     return status;
-};
+}
 
 OlyStatus 
 set_node_has_key(OlyNode *node)
 {
     node->has_key = true;
     return OLY_OKAY;
-};
+}
 
 OlyStatus 
 unset_node_has_key(OlyNode *node)
 {
     node->has_key = false;
     return OLY_OKAY;
-};
+}
 
 OlyStatus
 node_has_key(OlyNode *node)
@@ -267,7 +268,7 @@ node_has_key(OlyNode *node)
         status = OLY_WARN_NODE_HAS_NO_KEY ;
     }
     return status;
-};
+}
 
 OlyStatus
 get_node_parent( const OlyNode *node, OlyNode **parent)

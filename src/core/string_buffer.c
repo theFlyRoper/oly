@@ -332,7 +332,7 @@ open_string_buffer(OlyStringBuffer **strbuf)
 #ifdef TEST_STRBUF
     max_len = 1024;
 #else
-    status = get_main_config_int(OLY_CONFIG_NODE_QUEUE_MAX, (int64_t *)&max_len);
+    status = get_main_config_int(OLY_CONFIG_MAIN_NODE_QUEUE_MAX, (int64_t *)&max_len);
     HANDLE_STATUS_AND_RETURN(status);
 #endif
     new_buffer->buffer_start = (omalloc( max_len * sizeof(OChar))); 
