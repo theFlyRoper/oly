@@ -82,12 +82,12 @@ struct oly_node_value_struct
 typedef struct oly_tag_struct
 {
   OlyStatus (* check)(OChar *input);
-  OlyStatus (* import)(OlyNodeValue *input, OlyNodeValue **output);
+  OlyStatus (* import)(OChar *input, OlyNodeValue *output);
   OlyTagType internal_type;
 } OlyTag;
 
 OlyStatus infer_simple_tag( OChar *scalar, OlyTagType *type_out );
-OlyStatus load_tag_table( OlyTag **t, OlyHashTable **tag );
+OlyStatus convert_tag( OChar *scalar, OlyTagType *type_out );
 END_C_DECLS
 
 #endif /* OLY_TAG_H */

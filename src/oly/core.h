@@ -66,6 +66,7 @@ OlyStatus open_config_item( OlyConfig *config );
 OlyStatus set_status(OlyState *state, const OlyStatus status);
 OlyStatus get_status(OlyState *state);
 OlyStatus get_main_config(OlyConfig **c);
+OlyStatus init_regexp_data(Oly *oly);
 
 END_C_DECLS
 

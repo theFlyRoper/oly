@@ -34,7 +34,7 @@ main( int argc, char **argv ){
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
-    char            *locale = "root",  *encoding = NULL;
+    char            *locale = (char *)"root",  *encoding = NULL;
     const char      *results_char[] = {
                         "OLY_WARN_NODE_CONSUMED",
                         "OLY_WARN_NODE_PRODUCED",
@@ -96,7 +96,10 @@ main( int argc, char **argv ){
     OlyStatus        status;
     
     status = init_oly(argv[0], TEST_PKGDATADIR, encoding, locale);
-    
+    if (status != OLY_OKAY)
+    {
+      printf("STATUS IS NOT OK.\n");
+    }
     for ( i = 0; (i<=num_tests); i++)
     {
         results[i] = char_to_utf8(results_char[i]);
@@ -110,7 +113,7 @@ main( int argc, char **argv ){
     {
         is_unicode_string(results[i], get_errmsg(i-OLY_STATUS_OFFSET), 
                 "Item: %i, err: %S", 
-                (i-OLY_STATUS_OFFSET), results[i]);
+                (i-OLY_STATUS_OFFSET), (wchar_t *)results[i]);
     }
     
     diag("One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.");

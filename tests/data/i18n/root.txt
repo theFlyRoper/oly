@@ -37,9 +37,9 @@ root:table {
       {"(true|True|TRUE)"} // Boolean true
       {"(false|False|FALSE)"} // Boolean false
       {"[-+]?[0-9]+"} // Integer base 10
-      {"0o[0-7]+"} // Integer base 8
-      {"0x[0-9a-fA-F]+"} // Integer base 16
-      {"[-+]?(\.[0-9]+|[0-9]+(\.[0-9]*)?)([eE][-+]?[0-9]+)?"} // floating point
+      {"0o[0-7]+"} // Integer base 8. converted to unsigned int.
+      {"0x[0-9a-fA-F]+"} // Integer base 16, converted to unsigned int.
+      {"[-+]?(\\\.[0-9]+|[0-9]+(\\\.[0-9]*)?)([eE][-+]?[0-9]+)?"} // floating point
       {"[-+]?(\.inf|\.Inf|\.INF)"} // infinity
       {"(\.nan|\.NaN|\.NAN)"}  // not a number 
       {"*"} // string (default)

@@ -84,6 +84,7 @@ OlyStatus get_boundary( OlyDataSource *ds, OlyBoundary **bound );
 OlyStatus open_ds_boundary( OlyDataSource *ds );
 void reset_ds_status( OlyDataSource *ds );
 OlyStatus set_data_direction( OlyDataSource *ds, OlyDSDirection ds_io);
+OlyStatus get_data_source_direction (OlyDataSource *ds, OlyDSDirection *direction);
 
 /* Marks a data source option flag as required.  Data source initializing function should call. */
 extern OlyStatus set_ds_option_required( OlyDataSource *ds, DataSourceOptions option );

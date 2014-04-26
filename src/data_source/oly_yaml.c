@@ -37,6 +37,7 @@ static void zero_token_mark (YAMLTokenMark *zero_me);
 static YAMLTokenMark *new_token_mark (void);
 static void print_preflight_count(YAMLTokenMark *token_mark, int level);
 static YAMLTokenMark *preflight_yaml( OlyStatus *status , OlyDataSource *ds );
+static void print_yaml( OlyStatus *status , OlyDataSource *ds )
 
 void
 load_yaml( OlyStatus *status , OlyDataSource *ds )
@@ -45,9 +46,9 @@ load_yaml( OlyStatus *status , OlyDataSource *ds )
     yaml_parser_t        config_parser ;
 
     yaml_event_t         event;
-    yaml_token_t         token;
+/*    yaml_token_t         token; */
     YAMLTokenMark       *token_mark = new_token_mark();
-    char                 ultrabuffer[BUFSIZ];
+    /* char                 ultrabuffer[BUFSIZ]; */
 
     zero_token_mark( token_mark );
 

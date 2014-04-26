@@ -110,9 +110,9 @@ get_resource_dir( void )
 }
 
 ResourceData *
-get_oly_resource( Oly *oly )
+get_oly_resource( Oly *oly_res )
 {
-    return get_resource_data(oly->data);
+    return get_resource_data(oly_res->data);
 }
 
 OlyStatus

@@ -169,6 +169,8 @@ OlyStatus init_oly(const char *prog,
     HANDLE_STATUS_AND_DIE(oly->status);
     oly->status         = open_node_queue(&(oly->node_queue));
     HANDLE_STATUS_AND_DIE(oly->status);
+    oly->status         = init_regexp_data(oly);
+    HANDLE_STATUS_AND_DIE(oly->status);
     atexit(close_oly);
 
     return oly->status;
