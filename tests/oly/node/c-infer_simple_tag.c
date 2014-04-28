@@ -20,6 +20,7 @@
  * }}} */
 
 #include "tests/tap/basic.h"
+#include "tests/tap/float.h"
 #include "oly/common.h"
 
 #include <stdbool.h>
@@ -29,6 +30,9 @@
 #include "pvt_core.h"
 
 static OlyStatus check_bool_result(OlyNodeValue v, int extern_test_num);
+static OlyStatus check_int_result(OlyNodeValue v, int extern_test_num);
+static OlyStatus check_uint_result(OlyNodeValue v, int extern_test_num);
+static OlyStatus check_float_result(OlyNodeValue v, int extern_test_num);
 
 int
 main( int argc, char **argv )
@@ -38,26 +42,23 @@ main( int argc, char **argv )
     char            *locale = NULL, *encoding = NULL, *locdir = (char *)PKGDATADIR; 
     OlyNodeValue     check_node;
     const char      *test_tags[] = { 
-                        /* correct null */
+                        /* correct null 0-3*/
                         "NULL", "Null", "null", "~", 
-                        /* a string that should be null */
+                        /* a string that should be null, test 4*/
                         "",
-                        /* null with bad caps, string. */
+                        /* null with bad caps, string. tes 5 */
                         "NuLl", 
-                        /* correct booleans */
+                        /* correct booleans tests 6 - 11 */
                         "True", "TRUE", "true", "False", "FALSE", "false", 
-                        /* fake booleans */
+                        /* fake booleans, 12 - 16 */
                         "FaLsE", "TrUe", "TRue", "FALse", 
                         /* correct decimal integers */
-                        "172398", "444", "-173", "-12974889123576", "+2",
+                        "172398", "444", "-173", "-129748891", "2",
                         /* plus or minus alone. */
                         "-", "+",
                         /* correct unsigned integers, hex */
-                        "0x555",  "0xabbaABBA58", 
-                        /* correct unsigned integers, octal */
-                        "0o271476", "0o0012",
-                        /* bad octal with 9s in it. */
-                        "0o2914906", 
+                        "0x555",  "0xABBA58", 
+                        /* was going to do octal too but then decided not to. It is a headache to implement.  */
                         /* correct floats */
                         "1.1165356", "-3.141592", "99e25", "9.297E33", "2.2812e-21",
                         /* bad floats */
@@ -80,39 +81,35 @@ main( int argc, char **argv )
                         /* a string that should be a null */
                         0,
                         /* null with bad caps, string. */
-                        7,
+                        8,
                         /* correct booleans */
                         1, 1, 1, 1, 1, 1, 
                         /* fake booleans */
-                        7, 7, 7, 7, 
+                        8, 8, 8, 8, 
                         /* correct decimal integers */
                         2, 2, 2, 2, 2,
                         /* plus or minus alone. */
-                        7, 7,
+                        8, 8,
                         /* correct unsigned integers, hex */
                         3, 3,
-                        /* correct unsigned integers, octal */
-                        3, 3,
-                        /* bad octal with 9s in it. */
-                        7,
                         /* correct floats */
                         4, 4, 4, 4, 4,
                         /* fake floats */
-                        7, 7,
+                        8, 8,
                         /* correct inifinity */
                         5, 5, 5,
                         /* bad inifinity */
-                        7, 7,
+                        8, 8,
                         /* correct not-a-number */
-                        6, 6, 6,
-                        /* bad not-a-number */
                         7, 7, 7,
-                        /* High codepoint characters */
-                        7, 7, 7 };
+                        /* bad not-a-number */
+                        8, 8, 8,
+                        /* high codepoint characters */
+                        8, 8, 8 };
     const char      *tag_type_list[] = { "OLY_TAG_SCALAR_NULL", "OLY_TAG_SCALAR_BOOL",
                         "OLY_TAG_SCALAR_INT", "OLY_TAG_SCALAR_UINT", "OLY_TAG_SCALAR_FLOAT",
-                        "OLY_TAG_SCALAR_INFINITY", "OLY_TAG_SCALAR_NOT_A_NUMBER",
-                        "OLY_TAG_SCALAR_STRING" };
+                        "OLY_TAG_SCALAR_PLUS_INFINITY", "OLY_TAG_SCALAR_MINUS_INFINITY", 
+                        "OLY_TAG_SCALAR_NOT_A_NUMBER", "OLY_TAG_SCALAR_STRING" };
     OChar            test_buffer[BUFSIZ];
     int              i = 0;
     UErrorCode u_status = U_ZERO_ERROR;
@@ -133,31 +130,48 @@ main( int argc, char **argv )
             exit(EXIT_FAILURE);
         }
         status = infer_simple_tag(test_buffer, &tag_type);
-        is_int(tag_result[i], tag_type, "%s", tag_type_list[tag_result[i]]);
+        is_int(tag_result[i], tag_type, "test %i, tag name: %s", i, tag_type_list[tag_result[i]]);
         HANDLE_STATUS_AND_DIE(status);
         
-        status = convert_tag(test_buffer,  tag_type);
+        status = convert_tag(test_buffer,  &tag_type, &check_node);
         HANDLE_STATUS_AND_DIE(status);
         switch (tag_type)
         {
             case OLY_TAG_SCALAR_NULL:
                 ok(NULL == check_node.value.string_value, "test %i, check null", i);
-                ok(OLY_TAG_SCALAR_NULL == check_node.type, "test %i, check null", i);
+                ok(OLY_TAG_SCALAR_NULL == check_node.type, "test %i, type null", i);
                 break;
             case OLY_TAG_SCALAR_BOOL:
                 status = check_bool_result(check_node, i);
-                HANDLE_STATUS_AND_DIE(status);                
-
+                HANDLE_STATUS_AND_DIE(status);
+                break;
             case OLY_TAG_SCALAR_INT:
+                status = check_int_result(check_node, i);
+                HANDLE_STATUS_AND_DIE(status);
+                break;
             case OLY_TAG_SCALAR_UINT:
+                status = check_uint_result(check_node, i);
+                HANDLE_STATUS_AND_DIE(status);
+                break;
             case OLY_TAG_SCALAR_FLOAT:
-            case OLY_TAG_SCALAR_INFINITY:
-                ok(NULL == check_node.value.string_value, "test %i, check infinity", i);
-                ok(OLY_TAG_SCALAR_INFINITY == check_node.type, "test %i, check infinity", i);
+                status = check_float_result(check_node, i);
+                HANDLE_STATUS_AND_DIE(status);
+                break;
+            case OLY_TAG_SCALAR_PLUS_INFINITY:
+                ok(NULL == check_node.value.string_value, "test %i, check plus infinity", i);
+                ok(OLY_TAG_SCALAR_PLUS_INFINITY == check_node.type, "test %i, type plus infinity", i);
+                break;
+            case OLY_TAG_SCALAR_MINUS_INFINITY:
+                ok(NULL == check_node.value.string_value, "test %i, check minus infinity", i);
+                ok(OLY_TAG_SCALAR_MINUS_INFINITY == check_node.type, "test %i, type minus infinity", i);
+                break;
             case OLY_TAG_SCALAR_NOT_A_NUMBER:
                 ok(NULL == check_node.value.string_value, "test %i, check not_a_number", i);
-                ok(OLY_TAG_SCALAR_NOT_A_NUMBER == check_node.type, "test %i, check not_a_number", i);
+                ok(OLY_TAG_SCALAR_NOT_A_NUMBER == check_node.type, "test %i, type not_a_number", i);
+                break;
             case OLY_TAG_SCALAR_STRING:
+                ok(test_buffer == check_node.value.string_value, "test %i, check string", i);
+                ok(OLY_TAG_SCALAR_STRING == check_node.type, "test %i, type string", i);
                 break;
             default:
                 break;
@@ -178,11 +192,59 @@ static OlyStatus check_bool_result(OlyNodeValue v, int extern_test_num)
         status = OLY_ERR_BUFFER_OVERFLOW;
         return status;
     }
-
-    ok(v.value.bool_value == bool_results[test], "bool test %i, check bool", extern_test_num);
-    ok(OLY_TAG_SCALAR_NULL == v.type, "test %i, check bool", extern_test_num);
+    ok(v.value.bool_value == bool_results[test], "bool %i, check bool", extern_test_num);
+    is_int(OLY_TAG_SCALAR_BOOL, v.type, "bool %i, tag name", extern_test_num);
     test++;
     return status;
 }
 
+static OlyStatus check_int_result(OlyNodeValue v, int extern_test_num)
+{
+    const long int_results[] = { 172398, 444, -173, -129748891, 2 };
+                        
+    static int test = 0;
+    OlyStatus status = OLY_OKAY;
+    if (test > 4)
+    {
+        status = OLY_ERR_BUFFER_OVERFLOW;
+        return status;
+    }
+    is_int(v.value.int_value, int_results[test], "int %i, check int", extern_test_num);
+    is_int(OLY_TAG_SCALAR_INT, v.type, "int %i, tag name", extern_test_num);
+    test++;
+    return status;
+}
+
+static OlyStatus check_float_result(OlyNodeValue v, int extern_test_num)
+{
+    const double float_results[] = { 1.1165356, -3.141592, 99e25, 9.297E33, 2.2812e-21 };
+    static int test = 0;
+    OlyStatus status = OLY_OKAY;
+    if (test > 4)
+    {
+        status = OLY_ERR_BUFFER_OVERFLOW;
+        return status;
+    }
+    is_double(v.value.float_value, float_results[test], 0.0, "float %i, check value", extern_test_num);
+    is_int(OLY_TAG_SCALAR_FLOAT, v.type, "float %i, tag name", extern_test_num);
+    test++;
+    return status;
+}
+
+static OlyStatus check_uint_result(OlyNodeValue v, int extern_test_num)
+{
+    const unsigned long uint_results[] = { 0x555, 0xABBA58 };
+                        
+    static int test = 0;
+    OlyStatus status = OLY_OKAY;
+    if (test > 1)
+    {
+        status = OLY_ERR_BUFFER_OVERFLOW;
+        return status;
+    }
+    is_int((long)uint_results[test], (long)v.value.uint_value, "uint %i, check uint", extern_test_num);
+    is_int(OLY_TAG_SCALAR_UINT, v.type, "uint %i, tag name", extern_test_num);
+    test++;
+    return status;
+}
 

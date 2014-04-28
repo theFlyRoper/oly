@@ -19,6 +19,7 @@
 
 #include "oly/common.h"
 #include <unicode/uregex.h>
+#include <unicode/unum.h>
 
 #include "oly/olytypes.h"
 #include "oly/core.h"
@@ -34,7 +35,8 @@ typedef enum oly_tag_check_enum {
     OLY_TAG_CHECK_UINT_OCT,
     OLY_TAG_CHECK_UINT_HEX,
     OLY_TAG_CHECK_FLOAT,
-    OLY_TAG_CHECK_INFINITY,
+    OLY_TAG_CHECK_PLUS_INFINITY,
+    OLY_TAG_CHECK_MINUS_INFINITY,
     OLY_TAG_CHECK_NOT_A_NUMBER,
     OLY_TAG_CHECK_STRING
 } OlyTagCheck;
@@ -45,7 +47,8 @@ typedef enum oly_tag_check_enum {
     TAG_FACTORY(int, OLY_TAG_SCALAR_INT) \
     TAG_FACTORY(uint, OLY_TAG_SCALAR_UINT) \
     TAG_FACTORY(float, OLY_TAG_SCALAR_FLOAT) \
-    TAG_FACTORY(infinity, OLY_TAG_SCALAR_INFINITY) \
+    TAG_FACTORY(plus_inf, OLY_TAG_SCALAR_PLUS_INFINITY) \
+    TAG_FACTORY(minus_inf, OLY_TAG_SCALAR_MINUS_INFINITY) \
     TAG_FACTORY(nan, OLY_TAG_SCALAR_NOT_A_NUMBER) \
     TAG_FACTORY(string, OLY_TAG_SCALAR_STRING)
 
@@ -65,9 +68,9 @@ static const OlyTag basic_tag[OLY_TAG_SCALAR_STRING+1] = {
 basic_tag_list
 } ;
 #undef TAG_FACTORY
-
+/* Create a formatter for the selected locale */
 static URegularExpression *simple_regexp[ OLY_TAG_CHECK_STRING ];
-
+static UNumberFormat *num_import;
 static ResourceData *init_tag_regexp(Oly *oly);
 
 OlyStatus init_regexp_data(Oly *oly_data)
@@ -77,9 +80,18 @@ OlyStatus init_regexp_data(Oly *oly_data)
     ResourceData *tag_regexp_data = init_tag_regexp(oly_data);
     OChar *regexp = NULL;
     int32_t i = 0, len = 0;
+    const char *locale = char_default_locale( );
     UParseError pe;
     pe.line = 0;
     pe.offset = 0;
+    
+    num_import = unum_open( UNUM_DECIMAL, 0, 0, (char *)locale, &pe, &u_status );
+    if (U_FAILURE(u_status)) {
+        fprintf(stderr, "unum_open, Errname: %s, line %d, column %d\n", 
+                u_errorName(status), (int)pe.line, (int)pe.offset);
+        exit(EXIT_FAILURE);
+    }
+
 
     for (i = 0; i < OLY_TAG_CHECK_STRING; i++)
     {
@@ -137,6 +149,25 @@ OlyStatus infer_simple_tag( OChar *scalar, OlyTagType *type_out )
         {
             HANDLE_STATUS_AND_RETURN(status);
         }
+    }
+    return status;
+}
+
+OlyStatus convert_tag( OChar *scalar, OlyTagType *tag_type, OlyNodeValue *value)
+{
+    OlyStatus status = OLY_OKAY;
+    
+    if (tag_type == NULL)
+    {
+        status = infer_simple_tag(scalar, tag_type);
+    }
+    if (status == OLY_OKAY)
+    {
+        status = basic_tag[*tag_type].import(scalar, value);
+    }
+    else
+    {
+        HANDLE_STATUS_AND_RETURN( status );
     }
     return status;
 }
@@ -231,6 +262,7 @@ check_tag_int(OChar *input)
     {
         status = OLY_OKAY;
     }
+
     if (U_FAILURE(u_status)) 
     {
         printf("ICU error, check tag int after match, Status: %s.\n", u_errorName(u_status));
@@ -248,7 +280,7 @@ check_tag_uint(OChar *input)
     
     if (U_FAILURE(u_status)) 
     {
-        printf("ICU error, check tag uint hex, Status: %s.\n", u_errorName(u_status));
+        printf("ICU error, check tag uint oct, Status: %s.\n", u_errorName(u_status));
         exit(EXIT_FAILURE);
     }
 
@@ -264,10 +296,22 @@ check_tag_uint(OChar *input)
     }
     
     uregex_setText( simple_regexp[OLY_TAG_CHECK_UINT_HEX], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag uint hex, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
 
     if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_UINT_HEX], -1,  &u_status ) == FALSE )
     {
         status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag uint hex, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
     }
     return status;
 }
@@ -299,26 +343,52 @@ check_tag_float(OChar *input)
 }
 
 static OlyStatus
-check_tag_infinity(OChar *input)
+check_tag_plus_inf(OChar *input)
 {
     OlyStatus status = OLY_OKAY;
     UErrorCode  u_status = U_ZERO_ERROR;
-    uregex_setText( simple_regexp[OLY_TAG_CHECK_INFINITY], input, -1, &u_status );
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_PLUS_INFINITY], input, -1, &u_status );
     
     if (U_FAILURE(u_status)) 
     {
-        printf("ICU error, check tag float, Status: %s.\n", u_errorName(u_status));
+        printf("ICU error, check plus inf, Status: %s.\n", u_errorName(u_status));
         exit(EXIT_FAILURE);
     }
 
-    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_INFINITY], -1,  &u_status ) == FALSE )
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_PLUS_INFINITY], -1,  &u_status ) == FALSE )
     {
         status = OLY_WARN_TAG_NOT_MATCH;
     }
     
     if (U_FAILURE(u_status)) 
     {
-        printf("ICU error, check tag float, Status: %s.\n", u_errorName(u_status));
+        printf("ICU error, check plus inf, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    return status;
+}
+
+static OlyStatus
+check_tag_minus_inf(OChar *input)
+{
+    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_MINUS_INFINITY], input, -1, &u_status );
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check minus inf, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_MINUS_INFINITY], -1,  &u_status ) == FALSE )
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check minus inf, Status: %s.\n", u_errorName(u_status));
         exit(EXIT_FAILURE);
     }
     return status;
@@ -333,7 +403,7 @@ check_tag_nan(OChar *input)
     
     if (U_FAILURE(u_status)) 
     {
-        printf("ICU error, check tag float, Status: %s.\n", u_errorName(u_status));
+        printf("ICU error, check tag nan, Status: %s.\n", u_errorName(u_status));
         exit(EXIT_FAILURE);
     }
 
@@ -392,7 +462,7 @@ import_tag_bool(OChar *input, OlyNodeValue *output)
     {
         output->value.bool_value = true;
     }
-    else
+    else if ( output->value.bool_value != false )
     {
         status = OLY_WARN_TAG_NOT_MATCH;
     }
@@ -413,13 +483,62 @@ static OlyStatus
 import_tag_int(OChar *input, OlyNodeValue *output)
 {
     OlyStatus status = OLY_OKAY;
+    int32_t pos = 0;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    output->value.int_value = (long)unum_parse(num_import, input, -1, &pos, &u_status);
+    if (U_FAILURE(u_status))
+    {
+        printf("ICU error, import tag int, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    
+    if (input[pos] != (OChar)0)
+    {
+        output->value.string_value = NULL;
+        output->type = OLY_TAG_TYPE_UNSET;
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    else
+    {
+        output->type = OLY_TAG_SCALAR_INT;
+    }
+
     return status;
 }
 
-static OlyStatus
-import_tag_uint(OChar *input, OlyNodeValue *output)
+static OlyStatus import_tag_uint(OChar *input, OlyNodeValue *output)
 {
     OlyStatus status = OLY_OKAY;
+    long intlong = 0;
+    if ((*(input + 1) == 'x') || (*(input + 1) == 'X'))
+    {
+        u_sscanf(input, "%x", &intlong);
+    }
+    /* code for octal.  Didn't work right. */
+    /*
+    else if ((*(input + 1) == 'o') || (*(input + 1) == 'O'))
+    {
+        u_fprintf(u_stderr, "converting ");
+        u_fprintf_u(u_stderr, input);
+        u_sscanf(input, "%o", &intlong);
+        u_fprintf(u_stderr, " to %u\n",intlong);
+    }
+    */
+    else
+    {
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    if (status == OLY_OKAY)
+    {
+        output->value.uint_value = (unsigned long)intlong;
+        output->type = OLY_TAG_SCALAR_UINT;
+    }
+    else 
+    {
+        output->value.string_value = NULL;
+        output->type = OLY_TAG_TYPE_UNSET;
+    }
+
     return status;
 }
 
@@ -427,27 +546,125 @@ static OlyStatus
 import_tag_float(OChar *input, OlyNodeValue *output)
 {
     OlyStatus status = OLY_OKAY;
+    int32_t pos = 0;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    output->value.float_value = unum_parseDouble(num_import, input, -1, &pos, &u_status);
+    if (U_FAILURE(u_status))
+    {
+        printf("ICU error, import tag float, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    
+    if (input[pos] != (OChar)0)
+    {
+        output->value.string_value = NULL;
+        output->type = OLY_TAG_TYPE_UNSET;
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    else
+    {
+        output->type = OLY_TAG_SCALAR_FLOAT;
+    }
+
     return status;
 }
 
 static OlyStatus
-import_tag_infinity(OChar *input, OlyNodeValue *output)
+import_tag_plus_inf(OChar *input, OlyNodeValue *output)
 {
-    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    OlyStatus   status = OLY_OKAY;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_PLUS_INFINITY], input, -1, &u_status );
+    if (U_FAILURE(u_status))
+    {
+        printf("ICU error, check tag infinity, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_PLUS_INFINITY], -1,  &u_status ) == TRUE )
+    {
+        output->value.string_value = NULL;
+        output->type = OLY_TAG_SCALAR_PLUS_INFINITY;
+    }
+    else 
+    {
+        output->type = OLY_TAG_TYPE_UNSET;
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag infinity, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    return status;
+}
+
+static OlyStatus
+import_tag_minus_inf(OChar *input, OlyNodeValue *output)
+{
+    UErrorCode  u_status = U_ZERO_ERROR;
+    OlyStatus   status = OLY_OKAY;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_MINUS_INFINITY], input, -1, &u_status );
+    if (U_FAILURE(u_status))
+    {
+        printf("ICU error, check tag infinity, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_MINUS_INFINITY], -1,  &u_status ) == TRUE )
+    {
+        output->value.string_value = NULL;
+        output->type = OLY_TAG_SCALAR_MINUS_INFINITY;
+    }
+    else 
+    {
+        output->type = OLY_TAG_TYPE_UNSET;
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, check tag infinity, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
     return status;
 }
 
 static OlyStatus
 import_tag_nan(OChar *input, OlyNodeValue *output)
 {
-    OlyStatus status = OLY_OKAY;
+    UErrorCode  u_status = U_ZERO_ERROR;
+    OlyStatus   status = OLY_OKAY;
+    uregex_setText( simple_regexp[OLY_TAG_CHECK_NOT_A_NUMBER], input, -1, &u_status );
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, import tag NaN, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
+    if ( uregex_matches( simple_regexp[OLY_TAG_CHECK_NOT_A_NUMBER], -1,  &u_status ) == TRUE )
+    {
+        output->value.string_value = NULL;
+        output->type = OLY_TAG_SCALAR_NOT_A_NUMBER;
+    }
+    else 
+    {
+        output->type = OLY_TAG_TYPE_UNSET;
+        status = OLY_WARN_TAG_NOT_MATCH;
+    }
+    if (U_FAILURE(u_status)) 
+    {
+        printf("ICU error, import tag NaN, Status: %s.\n", u_errorName(u_status));
+        exit(EXIT_FAILURE);
+    }
     return status;
 }
 
+/* sets the value.string_value pointer to the value of input.  Does not copy the string. */
 static OlyStatus
 import_tag_string(OChar *input, OlyNodeValue *output)
 {
     OlyStatus status = OLY_OKAY;
+    output->value.string_value = input;
+    output->type = OLY_TAG_SCALAR_STRING;
     return status;
 }
 

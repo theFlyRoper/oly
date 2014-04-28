@@ -45,7 +45,8 @@ typedef enum oly_tag_type_enum {
     OLY_TAG_SCALAR_INT,
     OLY_TAG_SCALAR_UINT,
     OLY_TAG_SCALAR_FLOAT,
-    OLY_TAG_SCALAR_INFINITY,
+    OLY_TAG_SCALAR_PLUS_INFINITY,
+    OLY_TAG_SCALAR_MINUS_INFINITY,
     OLY_TAG_SCALAR_NOT_A_NUMBER,
     OLY_TAG_SCALAR_STRING,
     OLY_TAG_ALIAS,
@@ -64,7 +65,6 @@ typedef enum oly_tag_type_enum {
 
 struct oly_node_value_struct
 {
-
     union oly_node_value_union 
     {
         OlyNode             **collection_value;
@@ -87,7 +87,7 @@ typedef struct oly_tag_struct
 } OlyTag;
 
 OlyStatus infer_simple_tag( OChar *scalar, OlyTagType *type_out );
-OlyStatus convert_tag( OChar *scalar, OlyTagType *type_out );
+OlyStatus convert_tag( OChar *scalar, OlyTagType *tag_type, OlyNodeValue *value);
 END_C_DECLS
 
 #endif /* OLY_TAG_H */

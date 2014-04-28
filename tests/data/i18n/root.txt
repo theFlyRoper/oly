@@ -40,9 +40,10 @@ root:table {
       {"0o[0-7]+"} // Integer base 8. converted to unsigned int.
       {"0x[0-9a-fA-F]+"} // Integer base 16, converted to unsigned int.
       {"[-+]?(\\\.[0-9]+|[0-9]+(\\\.[0-9]*)?)([eE][-+]?[0-9]+)?"} // floating point
-      {"[-+]?(\.inf|\.Inf|\.INF)"} // infinity
+      {"[+]?(\.inf|\.Inf|\.INF)"} // positive infinity
+      {"[-](\.inf|\.Inf|\.INF)"} // negative infinity
       {"(\.nan|\.NaN|\.NAN)"}  // not a number 
-      {"*"} // string (default)
+      {"*"} // string (default, not used)
     }
     OlyConfig:table {
         OlyMain:array {
