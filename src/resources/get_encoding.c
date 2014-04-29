@@ -1,4 +1,4 @@
-/* read_sizehash_from_hex.c - Read hex ascii and make a sizehash. License GPL2+ {{{
+/* get_encoding.c - retrieve encoding string from resource. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,34 +16,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
-#ifdef HAVE_CONFIG_H
-#  include "olyconf.h"
-#endif
 
 #include "oly/common.h"
+#include "pvt_resources.h"
 
-#include "oly/core.h"
-#include "oly/hash.h"
-
-OlyStatus 
-read_sizehash_from_hex  (const char *s, sizehash c, OlyState *state)
-{
-  int   i = 0;
-  if (strlen(s) < ((OLY_HASH_BITS/(CHAR_BIT/2))))
-  {
-      return OLY_ERR_READHEX;      
-  };
-  for (i = 0; (i<(SIZE_HASH)); 
-      s+=(SIZE_HASH*2), i++) {
-#if SIZEOF_SIZE_T == 8
-      if (sscanf(s, "%016zx", &c[i]) != 1) {
-#else 
-      if (sscanf(s, "%08zx", &c[i]) != 1) {
-#endif
-      c = memset(c, 0x00, (size_t)(OLY_HASH_BITS/CHAR_BIT));
-      return OLY_ERR_READHEX;      
-    }
-  }
-  return OLY_OKAY;
+OChar *
+get_encoding(OlyResource *res)
+{ 
+    return res->encoding;
 }
 

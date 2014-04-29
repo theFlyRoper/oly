@@ -4,8 +4,8 @@
 <h1>Oly Input Functions</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 5f64404ac8,
-2013-07-28
+version 4671fd6a8b,
+2014-04-09
 </p>
 <hr>
 <h2><a name="_oly_input_c_files"></a>1. Oly Input C files</h2>
@@ -92,7 +92,7 @@ oly_analyze_file
 <dd>
 <p>
 Figure out the character set for the input using
-  the ICU charset figgerin' api.
+  the ICU encoding figgerin' api.
 </p>
 </dd>
 <dt>

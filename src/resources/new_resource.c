@@ -25,14 +25,14 @@
 
 
 OlyResource *
-new_resource(const char *locale, const char *charset)
+new_resource(const char *locale, const char *encoding)
 {
     OlyResource *res = (OlyResource *)omalloc(sizeof(OlyResource));
     OChar       *n = OCALLOC(OChar, (strlen(locale)+1));
 #ifdef HAVE_UNICODE_URES_H
     res->locale  = u_uastrcpy(n, locale);
-    n = OCALLOC(OChar, (strlen(charset)+1));
-    res->charset = u_uastrcpy(n, charset);
+    n = OCALLOC(OChar, (strlen(encoding)+1));
+    res->encoding = u_uastrcpy(n, encoding);
 #endif /* HAVE_UNICODE_URES_H */
     return res; 
 }

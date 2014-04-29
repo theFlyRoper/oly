@@ -79,7 +79,7 @@ length_at_start(OlyStringBuffer *strbuf, size_t *space_at_start)
 
 /* fills in length and changes the state for write if needed. */
 OlyStatus 
-space_available(OlyStringBuffer *strbuf, size_t *space_available)
+space_available(OlyStringBuffer *strbuf, size_t *space)
 {
     OlyStatus status = OLY_OKAY;
     size_t space_at_end = 0, space_at_start = 0;
@@ -94,17 +94,17 @@ space_available(OlyStringBuffer *strbuf, size_t *space_available)
         length_at_end(strbuf, &space_at_end);
         if ( space_at_end >= space_at_start ) 
         {
-            *space_available = space_at_end;
+            *space = space_at_end;
         }
         else if (strbuf->state == WRITE_A_READ_A)
         {
             strbuf->state = WRITE_B_READ_A;
-            *space_available = space_at_start;
+            *space = space_at_start;
         }
         else
         {
             strbuf->state = WRITE_A_READ_B;
-            *space_available = space_at_start;
+            *space = space_at_start;
         }
 #ifdef DEBUG_STRING_BUFFER
         report_values(strbuf, __func__);
@@ -112,7 +112,7 @@ space_available(OlyStringBuffer *strbuf, size_t *space_available)
     }
     else
     {
-        length_at_start(strbuf, space_available);
+        length_at_start(strbuf, space);
     }
     return status;
 }
@@ -332,7 +332,8 @@ open_string_buffer(OlyStringBuffer **strbuf)
 #ifdef TEST_STRBUF
     max_len = 1024;
 #else
-    max_len = get_main_string_buffer_max() ;
+    status = get_main_config_int(OLY_CONFIG_MAIN_NODE_QUEUE_MAX, (int64_t *)&max_len);
+    HANDLE_STATUS_AND_RETURN(status);
 #endif
     new_buffer->buffer_start = (omalloc( max_len * sizeof(OChar))); 
     if (new_buffer->buffer_start == NULL)

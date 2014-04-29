@@ -21,34 +21,34 @@
 #define SRC_OLY_CONFIG_H 1
 
 #include "oly/common.h"
-#include "oly/state.h"
-#include "oly/resources.h"
+#include "oly/node.h"
 
 BEGIN_C_DECLS
-
-typedef enum oly_config_items_enum {
-    OLY_CONFIG_BOUNDARY_BUFFER_MAX,
+/* OLY_CONFIG_MAIN_UNSET must stay last. we use its value to determine the end of the config list. */
+typedef enum oly_config_main_items_enum 
+{
+    OLY_CONFIG_MAIN_BOUNDARY_BUFFER_MAX,
     OLY_CONFIG_MAIN_STRING_BUFFER_MAX,
-    OLY_CONFIG_NODE_QUEUE_MAX,
-    OLY_CONFIG_NODE_LIST_MAX
-} OlyConfigItem;
+    OLY_CONFIG_MAIN_NODE_QUEUE_MAX,
+    OLY_CONFIG_MAIN_UNSET
+} OlyConfigMainItem;
 
-typedef struct OlyConfig_struct OlyConfig;
+/* build a config value table out of this */
+typedef struct oly_config_struct  
+{
+    OlyNodeValue value;
+    long int min; /* min is used by int, float, uint */
+    OlyTagType type;
+} OlyConfig;
 
-extern OlyConfig * load_config( OlyStatus *status );
 
-size_t get_boundary_buffer_max(void);
-size_t get_main_string_buffer_max(void);
-size_t get_node_queue_max(void);
-size_t get_node_list_max(void);
-/* void *get_config_item(OlyConfigItem record);
-*/
-struct OlyConfig_struct {
-    OChar *key;
-    OChar *value;
-    /* points to a subnode, such as an array or block. */
-    OlyConfig *subnode;
-};
+OlyStatus new_config_item ( OlyConfig **config );
+void close_config_item( OlyConfig **config );
+OlyStatus load_main_config( OlyConfig **config );
+OlyStatus get_main_config_int(OlyConfigMainItem item, int64_t *output );
+void free_main_config(void);
+OlyStatus get_config_tag_type( OlyConfigMainItem item, OlyTagType *type );
+OlyStatus set_config_item( char *value, OlyConfig *config_item, OlyConfigMainItem item);
 
 END_C_DECLS
 

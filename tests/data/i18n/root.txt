@@ -31,6 +31,42 @@ root:table {
         Display:string{"Show current version information for Oly."}
       }
     }
+// regular expressions for the yaml/json core schema. http://www.yaml.org/spec/1.2/spec.html#schema/core/
+    SimpleTagRegExp:array{
+      {"(null|Null|NULL|~)"} // Null (spot 0)
+      {"(true|True|TRUE)"} // Boolean true
+      {"(false|False|FALSE)"} // Boolean false
+      {"[-+]?[0-9]+"} // Integer base 10
+      {"0o[0-7]+"} // Integer base 8. converted to unsigned int.
+      {"0x[0-9a-fA-F]+"} // Integer base 16, converted to unsigned int.
+      {"[-+]?(\\\.[0-9]+|[0-9]+(\\\.[0-9]*)?)([eE][-+]?[0-9]+)?"} // floating point
+      {"[+]?(\.inf|\.Inf|\.INF)"} // positive infinity
+      {"[-](\.inf|\.Inf|\.INF)"} // negative infinity
+      {"(\.nan|\.NaN|\.NAN)"}  // not a number 
+      {"*"} // string (default, not used)
+    }
+    OlyConfig:table {
+        OlyMain:array {
+            {"MAIN_CONFIG_UNKNOWN"}
+            {"MAIN_MAX_STRING_BUFFER_SIZE"}
+            {"MAIN_MAX_BOUNDARY_BUFFER_SIZE"}
+            {"MAIN_MAX_NODE_LIST_SIZE"}
+            {"MAIN_MAX_HASH_TABLE_SIZE"}
+        }
+        OlyDataSource:array {
+            {"DATA_SOURCE_CONFIG_UNKNOWN"}
+            {"DATA_SOURCE_NAME"}
+            {"DATA_SOURCE_DIRECTION"}
+            {"DATA_SOURCE_MODULE"}
+            {"DATA_SOURCE_FILE_NAME"}
+            {"DATA_SOURCE_IP_ADDRESS"}
+            {"DATA_SOURCE_PORT"}
+            {"DATA_SOURCE_USER_NAME"}
+            {"DATA_SOURCE_CONNECTION"}
+            {"DATA_SOURCE_SCHEMA_NAME"}
+            {"DATA_SOURCE_TABLE_NAME"}
+        }
+    }
     libltdlErrors:array {
         {"LT_ERROR_UNKNOWN"}
         {"LT_ERROR_DLOPEN_NOT_SUPPORTED"}
@@ -54,6 +90,7 @@ root:table {
         {"LT_ERROR_CONFLICTING_FLAGS"}
     }
     OlyErrors:array {
+        {"OLY_WARN_TAG_NOT_MATCH"}
         {"OLY_WARN_NODE_CONSUMED"}
         {"OLY_WARN_NODE_PRODUCED"}
         {"OLY_WARN_BOUNDARY_RESET"}
@@ -99,13 +136,15 @@ root:table {
         {"OLY_ERR_NO_KEY_BUFFER"}
         {"OLY_ERR_NODE_MUST_HAVE_VALUE"}
         {"OLY_ERR_NODE_MUST_NOT_HAVE_VALUE"}
-        {"OLY_ERR_ILLEGAL_NODE_TYPE"}
+        {"OLY_ERR_ILLEGAL_TAG"}
         {"OLY_ERR_NO_OBJECT"}
         {"OLY_ERR_NO_RESERVATION"}
         {"OLY_ERR_STRING_BUFFER_STATE"}
         {"OLY_ERR_NODE_QUEUE_FULL"}
         {"OLY_ERR_NODE_QUEUE_EMPTY"}
         {"OLY_ERR_DS_EOF"}
+        {"OLY_ERR_CONFIG_ITEM_NOT_FOUND"}
+        {"OLY_ERR_CONFIG_UNKNOWN"}
     }
     ConfigOptions:table{
         ErrorBufferSize {"error_buffer_size"}

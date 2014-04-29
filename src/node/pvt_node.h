@@ -26,25 +26,19 @@
 
 BEGIN_C_DECLS
 
-union oly_node_value_union {
-    OChar               *string_value;
-    FILE                *large_binary_file;
-    OFILE               *large_text_file;
-    long                 int_value;
-    double               float_value;
-};
-
-struct oly_data_source_node_struct 
+/* OlyNodeValue can be found in src/node/tag.c */
+struct oly_node_struct 
 {
-    unsigned short       depth;
-    bool                 has_key;
-    bool                 collection_end;
-    OlyNodeValueType     vt;
-    int64_t              tuple;
+    int64_t              node_id;
     OlyNodeValue         value;
     OlyNode             *parent_node;
     OChar               *key;
     OChar               *anchor;
+    bool                 collection_end;
+    bool                 has_key;
+    int                  key_length;
+    int                  value_length;
+    unsigned short       depth;
 };
 
 struct oly_node_queue_struct 

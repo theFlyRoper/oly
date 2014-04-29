@@ -22,7 +22,7 @@
 #include "data_source/pvt_boundary.h"
 
 OlyStatus
-open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
+open_oly_boundary(char *encoding, size_t buffer_max_size, OlyBoundary **bind)
 {
     OlyStatus    status = OLY_OKAY;
     UErrorCode   u_status = U_ZERO_ERROR;
@@ -43,14 +43,14 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
      * Consertative and wastes a bit of the end of the buffer.
      * Better that then overflows. */
     
-    oly_bound->converter   = ucnv_open( charset, &u_status );
+    oly_bound->converter   = ucnv_open( encoding, &u_status );
     min_char_size = ucnv_getMinCharSize(oly_bound->converter) ;
     max_characters  = (buffer_max_size / ( min_char_size + sizeof(OChar)));
     o_size          = (( max_characters * sizeof(OChar) ) - sizeof(OChar));
     c_size          = (( max_characters * min_char_size ) - min_char_size);
 
     /* normally the ICU converter API only uses 6 pointers, 
-     * 3 for the outside charset (c_) and 3 for the ICU internal
+     * 3 for the outside encoding (c_) and 3 for the ICU internal
      * UChar structures (o_).  The flush_break pointers are 
      * there to hold the spot for higher nodes. 
      * because the char buffers are actually pointing to different 
@@ -97,7 +97,7 @@ open_oly_boundary(char *charset, size_t buffer_max_size, OlyBoundary **bind)
     (*bind) = oly_bound;
 
     return status;
-};
+}
 
 void
 close_oly_boundary(OlyBoundary *bind)
@@ -229,47 +229,6 @@ get_ochar_out( OlyBoundary *boundary, OChar **next, size_t *next_len )
         status = OLY_WARN_BOUNDARY_RESET;
         *next_len = 0;
         (*next) = NULL;
-    }
-    return status;
-}
-
-OlyStatus
-finish_inbound( OlyBoundary *boundary )
-{
-    OlyStatus status = OLY_OKAY;
-    UErrorCode   u_status = U_ZERO_ERROR;
-    OChar       *o_start_ptr =  boundary->o_start;
-    const char  *c_end_ptr   = (boundary->c_now + strlen( boundary->c_now )),
-                *c_start_ptr =  boundary->c_start;
-
-    ucnv_toUnicode( boundary->converter,
-        &o_start_ptr, boundary->o_end, &c_start_ptr, c_end_ptr, NULL,
-        TRUE, &u_status );
-
-    if (U_FAILURE(u_status))
-    {
-        fprintf(stderr, "ICU Error: %s.\n",
-                u_errorName(u_status));
-        status = OLY_ERR_LIB;
-    }
-    return status;
-}
-
-OlyStatus
-finish_outbound( OlyBoundary *boundary )
-{
-    OlyStatus status = OLY_OKAY;
-    UErrorCode   u_status = U_ZERO_ERROR;
-    const OChar       *o_start_ptr = boundary->o_start,
-                *o_end_ptr   = (boundary->o_now + strlen( boundary->c_now ));
-    char        *c_start_ptr = boundary->c_start;
-    
-    ucnv_fromUnicode ( boundary->converter, &c_start_ptr, boundary->c_end, 
-            &o_start_ptr, o_end_ptr, NULL, TRUE, &u_status );
-    if (U_FAILURE(u_status))
-    {
-        fprintf(stderr, "ICU Error: %s.\n", u_errorName(u_status));
-        status = OLY_ERR_LIB;
     }
     return status;
 }

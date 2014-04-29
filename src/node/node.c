@@ -23,7 +23,7 @@
 #include "node/pvt_node.h"
 
 static void
-print_node_value(OlyNodeValue nv, OlyNodeValueType type);
+print_node_value(OlyNodeValue nv, OlyTagType type);
 
 OlyStatus 
 new_oly_node( OlyNode **new_node )
@@ -37,15 +37,15 @@ new_oly_node( OlyNode **new_node )
         status = OLY_ERR_NOMEM;
         HANDLE_STATUS_AND_RETURN(status);
     }
-    new_node_local->depth             = 0;
-    new_node_local->vt                = OLY_NODE_VALUE_TYPE_UNSET;
-    new_node_local->tuple             = 0;
-    new_node_local->key               = NULL;
-    new_node_local->parent_node       = NULL;
-    new_node_local->has_key           = false;
-    new_node_local->collection_end    = false;
+    new_node_local->depth           = 0;
+    new_node_local->value.type      = OLY_TAG_TYPE_UNSET;
+    new_node_local->node_id         = 0;
+    new_node_local->key             = NULL;
+    new_node_local->parent_node     = NULL;
+    new_node_local->collection_end  = false;
+    new_node_local->has_key         = false;
     
-    (new_node_local->value).string_value = NULL;
+    new_node_local->value.value.string_value = NULL;
     (*new_node) = new_node_local;
     return status;
 }
@@ -61,31 +61,31 @@ print_node( OlyNode *n )
     }
     if (n->parent_node != NULL)
     {
-        u_fprintf(u_stdout, "Parent %lli, ", n->parent_node->tuple);
+        u_fprintf(u_stdout, "Parent %lli, ", n->parent_node->node_id);
     }
 
-    u_fprintf(u_stdout, "Tuple: %lli, Depth: %u, ", n->tuple, n->depth);
-    print_node_value(n->value, n->vt);
+    u_fprintf(u_stdout, "Tuple: %lli, Depth: %u, ", n->node_id, n->depth);
+    print_node_value(n->value, n->value.type);
 }
 
 static void
-print_node_value(OlyNodeValue nv, OlyNodeValueType type)
+print_node_value(OlyNodeValue nv, OlyTagType type)
 {
     switch ( type )
     {
-        case OLY_NODE_VALUE_SCALAR_STRING:
-            u_fprintf(u_stdout, "STRING: \"%.40S\"\n", nv.string_value);
+        case OLY_TAG_SCALAR_STRING:
+            u_fprintf(u_stdout, "STRING: \"%.40S\"\n", nv.value.string_value);
             break;
-        case OLY_NODE_VALUE_SCALAR_FLOAT:
-            printf("FLOAT: (%f)\n", nv.float_value);
+        case OLY_TAG_SCALAR_FLOAT:
+            printf("FLOAT: (%f)\n", nv.value.float_value);
             break;
-        case OLY_NODE_VALUE_SCALAR_INT:
-            printf("INT: (%li)\n", nv.int_value);
+        case OLY_TAG_SCALAR_INT:
+            printf("INT: (%li)\n", nv.value.int_value);
             break;
-        case OLY_NODE_VALUE_TYPE_MAP:
+        case OLY_TAG_COMPLEX_MAP:
             printf("MAP\n");
             break;
-        case OLY_NODE_VALUE_TYPE_SEQUENCE:
+        case OLY_TAG_COMPLEX_SEQUENCE:
             printf("SEQUENCE\n");
             break;
         default:
@@ -97,11 +97,11 @@ print_node_value(OlyNodeValue nv, OlyNodeValueType type)
 
 
 OlyStatus
-new_node_value( OlyNodeValue **new_node_value)
+new_node_value( OlyNodeValue **new_node)
 {
     OlyStatus status = OLY_OKAY;
-    (*new_node_value) = (OlyNodeValue *)ocalloc(1,sizeof(OlyNodeValue));
-    if ((*new_node_value) == NULL)
+    (*new_node) = (OlyNodeValue *)ocalloc(1,sizeof(OlyNodeValue));
+    if ((*new_node) == NULL)
     {
         status = OLY_ERR_NOMEM;
     }
@@ -111,12 +111,11 @@ new_node_value( OlyNodeValue **new_node_value)
 OlyStatus
 reset_node( OlyNode *node )
 {
-    node->vt                = OLY_NODE_VALUE_TYPE_UNSET;
-    node->tuple             = 0;
+    node->value.type                = OLY_TAG_TYPE_UNSET;
+    node->node_id             = 0;
     node->key               = NULL;
     node->parent_node       = NULL;
-    (node->value).string_value = NULL;
-    node->has_key           = false;
+    node->value.value.string_value = NULL;
     node->collection_end    = false;
     return OLY_OKAY;
 }
@@ -150,7 +149,7 @@ OlyStatus
 get_node_string_value(OlyNode *node, OChar **value_out)
 {
     OlyStatus status = OLY_OKAY;
-    (*value_out) = (node->value).string_value ;
+    (*value_out) = node->value.value.string_value ;
     return status;
 }
 
@@ -167,16 +166,17 @@ get_node_key(OlyNode *node, OChar **key_out)
         (*key_out) = node->key;
     }
     return status;
-};
+}
 
 /* string values must point to a buffer, so they are set separately. */
 OlyStatus 
 set_node_string_value(OlyNode *output, const OChar *value)
 {
     OlyStatus status = OLY_OKAY;
-    (output->value).string_value = (OChar *)value;
+    output->value.value.string_value = (OChar *)value;
     return status;
 }
+
 /* sets the key value*/
 OlyStatus 
 set_node_key(OlyNode *output, const OChar *key_in)
@@ -188,27 +188,27 @@ set_node_key(OlyNode *output, const OChar *key_in)
 
 /* sets the value if node type is float or int and checks for errors. */
 OlyStatus 
-set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
+set_node_value(OlyNode *node, void *value, OlyTagType type)
 {
     OlyStatus status = OLY_OKAY;
     OlyNodeValue *output = &(node->value);
 
-    if ((type <= OLY_NODE_VALUE_MIN) || (type > OLY_NODE_VALUE_MAX))
+    if ((type < 0) || (type > OLY_TAG_MAX))
     {
-        status = OLY_ERR_ILLEGAL_NODE_TYPE ;
+        status = OLY_ERR_ILLEGAL_TAG ;
     }
-    node->vt = type;
+    node->value.type = type;
     if ( value != NULL )
     {
         switch ( type )
         {
-            case OLY_NODE_VALUE_SCALAR_STRING:
+            case OLY_TAG_SCALAR_STRING:
                 break;
-            case OLY_NODE_VALUE_SCALAR_FLOAT:
-                (*output).float_value = *((double *)value);
+            case OLY_TAG_SCALAR_FLOAT:
+                (*output).value.float_value = *((double *)value);
                 break;
-            case OLY_NODE_VALUE_SCALAR_INT:
-                (*output).int_value = *((long *)value);
+            case OLY_TAG_SCALAR_INT:
+                (*output).value.int_value = *((long *)value);
                 break;
             default:
                 status = OLY_ERR_NODE_MUST_NOT_HAVE_VALUE;
@@ -219,8 +219,8 @@ set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
     {
         switch ( type )
         {
-            case OLY_NODE_VALUE_TYPE_MAP:
-            case OLY_NODE_VALUE_TYPE_SEQUENCE:
+            case OLY_TAG_COMPLEX_MAP:
+            case OLY_TAG_COMPLEX_SEQUENCE:
                 break;
             default:
                 status = OLY_ERR_NODE_MUST_HAVE_VALUE;
@@ -231,33 +231,33 @@ set_node_value(OlyNode *node, void *value, OlyNodeValueType type)
 }
 
 OlyStatus 
-set_node_tuple(OlyNode *node, int64_t tuple)
+set_node_node_id(OlyNode *node, int64_t node_id)
 {
-    node->tuple = tuple;
+    node->node_id = node_id;
     return OLY_OKAY;
-};
+}
 
 OlyStatus
-get_node_tuple(OlyNode *node, int64_t *tuple_out )
+get_node_node_id(OlyNode *node, int64_t *node_id_out )
 {
     OlyStatus status = OLY_OKAY;
-    (*tuple_out) = node->tuple ;
+    (*node_id_out) = node->node_id ;
     return status;
-};
+}
 
 OlyStatus 
 set_node_has_key(OlyNode *node)
 {
     node->has_key = true;
     return OLY_OKAY;
-};
+}
 
 OlyStatus 
 unset_node_has_key(OlyNode *node)
 {
     node->has_key = false;
     return OLY_OKAY;
-};
+}
 
 OlyStatus
 node_has_key(OlyNode *node)
@@ -268,7 +268,7 @@ node_has_key(OlyNode *node)
         status = OLY_WARN_NODE_HAS_NO_KEY ;
     }
     return status;
-};
+}
 
 OlyStatus
 get_node_parent( const OlyNode *node, OlyNode **parent)
@@ -287,8 +287,7 @@ OlyStatus
 copy_node(const OlyNode *source, OlyNode *dest)
 {
     dest->depth             = source->depth;
-    dest->vt                = source->vt;
-    dest->tuple             = source->tuple;
+    dest->node_id           = source->node_id;
     dest->key               = source->key;
     dest->parent_node       = source->parent_node;
     dest->value             = source->value;

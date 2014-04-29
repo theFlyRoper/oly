@@ -34,7 +34,7 @@ struct data_source_struct {
     unsigned int          required_settings;
     unsigned int          unused_settings;
     char                 *locale;
-    char                 *charset;
+    char                 *encoding;
     char                 *filename;
     char                 *options[(DSOPT_MAX+1)];
     size_t                max_buffer_size;

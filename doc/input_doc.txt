@@ -29,7 +29,7 @@ functions to implement
 oly_initialize_input:: returns a pointer to an input structure.
 oly_close_input:: shuts down input stream.
 oly_analyze_file:: Figure out the character set for the input using 
-  the ICU charset figgerin' api.
+  the ICU encoding figgerin' api.
 oly_input_type:: Get the type of input I hope this eventually
   encompasses csvs, xml, json and databases.
 csv_smartparse:: try to figure out how a csv file ought to look.

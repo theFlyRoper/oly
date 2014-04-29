@@ -36,18 +36,44 @@ int
 main( int argc, char **argv )
 {
     OlyStatus        status  = OLY_OKAY;
-    char            *locale = NULL, *charset = NULL, *locdir = PKGDATADIR;
+    OlyTagType       tag_type = OLY_TAG_TYPE_UNSET;
+    char            *locale = NULL, *encoding = NULL, *locdir = PKGDATADIR; 
+    const char      *test_tags[] = { "NULL", "Null", "null", "~", NULL },
+                    *tag_type_list[] = {
+                        "OLY_TAG_SCALAR_NULL",
+                        "OLY_TAG_SCALAR_BOOL",
+                        "OLY_TAG_SCALAR_INT",
+                        "OLY_TAG_SCALAR_UINT",
+                        "OLY_TAG_SCALAR_FLOAT",
+                        "OLY_TAG_SCALAR_INFINITY",
+                        "OLY_TAG_SCALAR_NOT_A_NUMBER",
+                        "OLY_TAG_SCALAR_STRING"
+                    };
+    OChar            test_buffer[BUFSIZ];
+    int              i = 0;
+    UErrorCode u_status = U_ZERO_ERROR;
 #ifdef OLYDEV
     res_disp_flag   flag;
 #endif /* OLYDEV */
 
-    status = init_oly(argv[0], locdir, charset, locale, &oly );
-    printf("hi there!\n");
+    status = init_oly(argv[0], locdir, encoding, locale);
+    for ( i = 0; (test_tags[i] != NULL); i++ )
+    {
+        u_strFromUTF8( test_buffer, BUFSIZ, NULL, test_tags[i], -1, &u_status );
+        if (U_FAILURE(u_status))
+        {
+            printf("Error test_buffer %s.\n",
+                    u_errorName(u_status));
+            exit(EXIT_FAILURE);
+        }
+        status = infer_simple_tag(test_buffer, &tag_type);
+        printf("Record: %s, tag type: %s\n", test_tags[i], tag_type_list[tag_type]);
+    }
 
 #ifdef OLYDEV
     init_res_disp_flag(&flag);
     list_package_locales(OLY_RESOURCE);
-    list_table_resources(get_resource_data(oly->data), &flag, 0);
+/*    list_table_resources(get_resource_data(oly->data), &flag, 0); */
 #endif /* OLYDEV */
   
     HANDLE_STATUS_AND_DIE(status);

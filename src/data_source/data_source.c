@@ -126,7 +126,7 @@ set_max_buffer_size(OlyDataSource *ds, size_t mbuff)
     return ds->status;
 }
 
-/* to simplify maintenance of the data source options besides locale, charset and direction, we call set_data_option */
+/* to simplify maintenance of the data source options besides locale, encoding and direction, we call set_data_option */
 
 OlyStatus 
 set_data_option( OlyDataSource *ds, const DataSourceOptions option, const char *value )
@@ -185,7 +185,7 @@ new_data_source( DataSourceType ds_type, OlyStatus *status )
     retval->unused_settings = 0x0;
     retval->required_settings = 0x0;
     retval->locale = NULL;
-    retval->charset = NULL;
+    retval->encoding = NULL;
     retval->key_staging = ocalloc((max_key_size), sizeof(char));
     retval->key_stage_max_length = (max_key_size-1);
     retval->max_buffer_size = DEFAULT_BUFFER_SIZE;
@@ -209,7 +209,7 @@ set_data_direction( OlyDataSource *ds, OlyDSDirection ds_io)
     return OLY_OKAY;
 }
 
-/* for the sake of a consistent interface, charset and locale return as OlyStatus 
+/* for the sake of a consistent interface, encoding and locale return as OlyStatus 
  * Options for later:
  *  Check them against ICU?
  *  Check them against the datasource? */
@@ -221,9 +221,9 @@ set_data_locale( OlyDataSource *ds, const char *locale )
 }
 
 OlyStatus 
-set_data_charset( OlyDataSource *ds, const char *charset )
+set_data_encoding( OlyDataSource *ds, const char *encoding )
 {
-    ds->charset = (char *)charset;
+    ds->encoding = (char *)encoding;
     return OLY_OKAY;
 }
 
@@ -234,9 +234,9 @@ get_data_locale( OlyDataSource *ds )
 }
 
 char *
-get_data_charset( OlyDataSource *ds )
+get_data_encoding( OlyDataSource *ds )
 {
-    return ds->charset;
+    return ds->encoding;
 }
 
 OlyStatus set_data_source_direction (OlyDataSource *ds, OlyDSDirection direction)
@@ -274,9 +274,9 @@ close_data_source( OlyDataSource *ds )
         free_me = (void *)ds->locale;
         OFREE(free_me);
     }
-    if ( ds->charset != NULL )
+    if ( ds->encoding != NULL )
     {
-        free_me = (void *)ds->charset;
+        free_me = (void *)ds->encoding;
         OFREE(free_me);
     }
     if ( ds->boundary != NULL )
@@ -321,7 +321,7 @@ stage_node_key( OlyDataSource *ds, const char *key, size_t key_len )
 
 /* enqueue_ds_node resets the key along with adding the node to the queue */
 OlyStatus 
-enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
+enqueue_ds_node( OlyDataSource *ds, void *value, OlyTagType type)
 {
     size_t           buffer_needed_value = 0, buffer_needed_key = 0, length = 0;
     OlyNode         *new_node = NULL; /* *curr_node = get_current_node(ds); */
@@ -331,7 +331,7 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
     /* depth = get_ */
     new_node = ds->node;
     reset_node(new_node);
-    ds->status = set_node_tuple( new_node, (ds->sequence++) );
+    ds->status = set_node_node_id( new_node, (ds->sequence++) );
     HANDLE_STATUS_AND_RETURN(ds->status);
     
     /* if key *value != \0, append it to the converter buffer and set *key to \0. */
@@ -346,14 +346,14 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
 
     switch (type)
     {
-        case OLY_NODE_VALUE_SCALAR_STRING:
+        case OLY_TAG_SCALAR_STRING:
             /* if value is str, check length. */
             buffer_needed_value += (strlen( (char *)value ) + 1);
             ds->status = put_char_in( ds->boundary , (const char *)value ,
                     buffer_needed_value );
             break;
-        case OLY_NODE_VALUE_TYPE_MAP:
-        case OLY_NODE_VALUE_TYPE_SEQUENCE:
+        case OLY_TAG_COMPLEX_MAP:
+        case OLY_TAG_COMPLEX_SEQUENCE:
             ds->status = descend_one_level(ds->node);
         default:
             break;
@@ -383,7 +383,7 @@ enqueue_ds_node( OlyDataSource *ds, void *value, OlyNodeValueType type)
         set_node_key(ds->node, NULL);
     }
 
-    if (OLY_NODE_VALUE_SCALAR_STRING == type)
+    if (OLY_TAG_SCALAR_STRING == type)
     {
         ds->status = get_ochar_out( ds->boundary, &(ds->internal_scalar), &length);
         if (ds->status != OLY_WARN_BOUNDARY_RESET)
@@ -442,7 +442,7 @@ OlyStatus dequeue_ds_node( OlyDataSource *ds, OlyNode **node )
 
 OlyStatus open_ds_boundary( OlyDataSource *ds )
 {
-    ds->status = open_oly_boundary(ds->charset, ds->max_buffer_size,
+    ds->status = open_oly_boundary(ds->encoding, ds->max_buffer_size,
             &(ds->boundary));
     return ds->status;
 }

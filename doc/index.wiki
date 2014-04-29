@@ -4,8 +4,8 @@
 <h1>Oly</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version c8ea317ad2,
-2014-02-25
+version 73407c1dc1,
+2014-04-09
 </p>
 <hr>
 <h2><a name="_current_features"></a>Current Features</h2>
@@ -47,31 +47,54 @@ Polyglot (that is, translatable) error handling
 </li>
 </ul>
 <hr>
-<h2><a name="_wanted_features"></a>Wanted Features</h2>
+<h2><a name="_goals"></a>Goals</h2>
 <ol type="1">
 <li>
 <p>
-Internal YAML loading.  YAML will be a data source but built in to Oly.  Will load configuration.
+Finish Oly 1.0
+</p>
+</li>
+</ol>
+<hr>
+<h2><a name="_projects"></a>Projects</h2>
+<ol type="1">
+<li>
+<p>
+Commit to core API design and code it.
 </p>
 </li>
 <li>
 <p>
-Configuration file loading and storage
+Clean up existing work
 </p>
 </li>
 <li>
 <p>
-External node interface with char pointers
+Write tests for all facets of core API.
 </p>
 </li>
 <li>
 <p>
-Alias and anchor handling
+Establish what "finish" means.
+</p>
+</li>
+</ol>
+<hr>
+<h2><a name="_tasks"></a>Tasks</h2>
+<ol type="1">
+<li>
+<p>
+Commit to and code core API
+</p>
+<ol type="a">
+<li>
+<p>
+Top level configuration file loading and storage (due Friday, 4-18-14)
 </p>
 </li>
 <li>
 <p>
-Use hashing for something; configuration index, maybe?
+OlyString.  Will be a dictionary.  Where will it be used and how?  Tags, Anchors, Aliases, etc.
 </p>
 </li>
 <li>
@@ -79,18 +102,26 @@ Use hashing for something; configuration index, maybe?
 Table data source input objects.  Columns, rows, tables, etc.
 </p>
 </li>
-</ol>
-<hr>
-<h2><a name="_problems"></a>Problems</h2>
-<ol type="1">
 <li>
 <p>
-Remove unneeded data source and node functions.  Define clearer boundaries between these objects.
+Flesh out data source dequeue and extract functions.
+</p>
+</li>
+</ol>
+</li>
+<li>
+<p>
+Clean up existing work
+</p>
+<ol type="a">
+<li>
+<p>
+Better buffering on external interfaces (SQLite is very slow with no buffer).
 </p>
 </li>
 <li>
 <p>
-String buffer has some problems.  Runs too many times.  Could use debugging.
+Remove unneeded data source and node functions.  Define clearer boundaries between these objects.
 </p>
 </li>
 <li>
@@ -100,7 +131,7 @@ Bring doc and lib Makefile.am into main directory.
 </li>
 <li>
 <p>
-Flesh out data source dequeue and extract functions.
+String buffer has some problems.  Runs too many times.  Could use debugging.
 </p>
 </li>
 <li>
@@ -110,7 +141,12 @@ Remove unused errors.
 </li>
 <li>
 <p>
-Do something with state.  Begin Oly scripting language work, perhaps?
+Clean up core library.  All tests link to core, core is huge.  Lighten it.
+</p>
+</li>
+<li>
+<p>
+error handling for library interfaces.  Should use translatable strings stored in the i18n folder.
 </p>
 </li>
 <li>
@@ -120,13 +156,27 @@ Organize functions in files better.
 </li>
 <li>
 <p>
-Clean up core library.  All tests link to core, core is huge.  Lighten it.
+Verify destructor functions free all memory, and that they are called when they should be.
+</p>
+</li>
+</ol>
+</li>
+<li>
+<p>
+Establish what "finish" means
+</p>
+<ol type="a">
+<li>
+<p>
+Set release date.
 </p>
 </li>
 <li>
 <p>
-Verify destructor functions free all memory, and that they are called when they should be.
+Commit to features for release date.
 </p>
+</li>
+</ol>
 </li>
 </ol>
 </div>

@@ -22,29 +22,13 @@
 #define OLY_NODE_H 1
 
 #include "oly/common.h"
+#include "oly/tag.h"
 #include <stdbool.h>
 #include <math.h>
 
 BEGIN_C_DECLS
 
-union oly_node_value_union;
-typedef union oly_node_value_union OlyNodeValue;
-
-typedef enum oly_node_value_type_enum {
-    OLY_NODE_VALUE_TYPE_UNSET = 0,
-    OLY_NODE_VALUE_MIN = 0,
-    OLY_NODE_VALUE_TYPE_MAP = 1,
-    OLY_NODE_VALUE_TYPE_SEQUENCE = 2,
-    OLY_NODE_VALUE_SCALAR_STRING = 3,
-    OLY_NODE_VALUE_SCALAR_FLOAT = 4,
-    OLY_NODE_VALUE_SCALAR_INT = 5,
-    OLY_NODE_VALUE_ALIAS = 6,
-    OLY_NODE_VALUE_MAX = 6
-} OlyNodeValueType;
-
-struct oly_data_source_node_struct;
-typedef struct oly_data_source_node_struct OlyNode;
-
+/* OlyNode definition is in tag.h */
 struct oly_node_queue_struct;
 typedef struct oly_node_queue_struct OlyNodeQueue;
 
@@ -54,16 +38,16 @@ void close_node_queue(OlyNodeQueue *free_me);
 OlyStatus enqueue_to_node_queue( OlyNodeQueue *q, OlyNode *n );
 OlyStatus dequeue_from_node_queue(OlyNodeQueue *q, OlyNode **node_out);
 
-OlyStatus set_node_tuple(OlyNode *node, int64_t tuple);
+OlyStatus set_node_node_id(OlyNode *node, int64_t node_id);
 OlyStatus copy_node(const OlyNode *source, OlyNode *dest);
 OlyStatus reset_node( OlyNode *node );
 
 /* node value functions */
-OlyStatus set_node_value(OlyNode *node, void *value, OlyNodeValueType type);
+OlyStatus set_node_value(OlyNode *node, void *value, OlyTagType type);
 OlyStatus set_node_string_value(OlyNode *output, const OChar *value);
 OlyStatus set_node_key(OlyNode *output, const OChar *key_in);
 
-OlyStatus new_node_value( OlyNodeValue **new_node_value);
+OlyStatus new_node_value( OlyNodeValue **new_node );
 OlyStatus new_oly_node( OlyNode **new_node );
 void close_oly_ds_node(OlyNode *node);
 void print_node( OlyNode *n );
@@ -75,7 +59,7 @@ OlyStatus unset_node_has_key(OlyNode *node);
 OlyStatus get_node_parent( const OlyNode *node, OlyNode **parent);
 OlyStatus get_node_string_value(OlyNode *node, OChar **value_out);
 OlyStatus get_node_key(OlyNode *node, OChar **key_out);
-OlyStatus get_node_tuple(OlyNode *node, int64_t *tuple_out );
+OlyStatus get_node_node_id(OlyNode *node, int64_t *node_id_out );
 OlyStatus push_node(OlyNode **stack, OlyNode *node );
 OlyStatus pop_node( OlyNode **stack, OlyNode **node_out );
 OlyStatus descend_one_level( OlyNode *node );

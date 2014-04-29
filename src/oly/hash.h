@@ -18,10 +18,14 @@
 #ifndef OLY_OLY_HASH_H
 #define OLY_OLY_HASH_H 1
 
+#include "oly/common.h"
+
 #include <string.h>
 #include <limits.h>
+#include <math.h>
 
 #include <lib/sha_three/KeccakNISTInterface.h>
+#include "oly/olytypes.h"
 #include "oly/state.h"
 
 /* the NIST interface for SHA 3 defines a few simple data types, 
@@ -31,38 +35,31 @@
  *    data_length (from NIST DataLength)
  *    hash_return (from NIST HashReturn)
  *    hash_state
- * Oly uses 256 bit hashing.  It transforms the output from 64 chars to an array of
- * 256/(sizeof(size_t)*CHAR_BIT).  I think this is a flexible solution.
+ * Oly uses 224 bit hashing.  It uses an array of 32 chars, using one char per hash table expansion, minus one bit per char.
  *
  */
-#define OLY_HASH_BITS 256 
+
+#define OLY_HASH_BITS 224
+#define CHAR_HASH ((OLY_HASH_BITS/CHAR_BIT) + (32/CHAR_BIT))
 #define SIZE_HASH (OLY_HASH_BITS/(SIZEOF_SIZE_T*CHAR_BIT))
-#define CHAR_HASH (OLY_HASH_BITS/CHAR_BIT)
+#define OLY_MASK 0x128
 
-/* little endian = low byte leftmost. big endian = low byte rightmost. */
-
-typedef size_t        sizehash[SIZE_HASH];
-typedef unsigned char charhash[CHAR_HASH];
+typedef unsigned char hash[CHAR_HASH];
 
 typedef HashReturn hash_return;
 typedef BitSequence bit_sequence;
 typedef DataLength data_length;
+struct oly_hash_table_struct;
+typedef struct oly_hash_table_struct OlyHashTable;
 
 OlyStatus get_hashbits( const bit_sequence *data, data_length len, bit_sequence *hash ) ;
 OlyStatus get_str_hashlen(const unsigned char *c, data_length *result);
 
 /* print_<x> is a wrapper around write_<x> and can be found
  * in the write_<x> files. */
-OlyStatus print_hex_from_sizehash (const sizehash c, OlyState *state);
-OlyStatus print_hex_from_charhash (const charhash c, OlyState *state);
-
-OlyStatus write_hex_from_sizehash (FILE *f, const sizehash c, OlyState *state);
-OlyStatus write_hex_from_charhash (FILE *f, const charhash c, OlyState *state);
-OlyStatus read_sizehash_from_hex  (const char *s, sizehash c, OlyState *state);
-OlyStatus read_charhash_from_hex  (const char *s, charhash c, OlyState *state);
-
-OlyStatus char_to_size(const unsigned char *c, size_t *res);
-OlyStatus hash_char_to_hash_size(const unsigned char *c, size_t result[]);
+OlyStatus print_hex_from_hash (const hash c, OlyState *state);
+OlyStatus write_hex_from_hash (FILE *f, const hash c, OlyState *state);
+OlyStatus read_hash_from_hex  (const char *s, hash c, OlyState *state);
 
 #endif /* OLY_OLY_HASH_H */
 

@@ -42,12 +42,12 @@ main( int argc, char **argv )
             "/data/orig_breaks.txt", "/data/spawner_output.txt",
             "/data/zh_romance_of_three_kingdoms.txt", ""},
             *source_dir = getenv("SOURCE");
-    char    buffer[BUFSIZ], tinybuffer[b], *locale = "root", *charset = "UTF-8";
+    char    buffer[BUFSIZ], tinybuffer[b], *locale = "root", *encoding = "UTF-8";
     OChar   obuffer[BUFSIZ], otinybuffer[b];
     struct  stat sts;
     time_t  now;
     FILE    *f;
-    init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
+    init_oly(argv[0], TEST_PKGDATADIR, encoding, locale);
     if (source_dir == NULL)
     {
         fprintf(stderr, "requires SOURCE environment variable, supplied by runtest. Exiting...\n");
@@ -72,17 +72,17 @@ main( int argc, char **argv )
         fclose(f);
     }
     
-    diag("----- Testing get_default_locale and get_default_charset function. -----");
+    diag("----- Testing get_default_locale and get_default_encoding function. -----");
     is_unicode_string( u"root", 
             get_default_locale(), "For this test, default locale should be root.");
     is_unicode_string( u"UTF-8", 
-            get_default_charset(), "For this test, default charset should be UTF-8.");
+            get_default_encoding(), "For this test, default encoding should be UTF-8.");
     
-    diag("----- Testing char_default_locale and char_default_charset function. -----");
+    diag("----- Testing char_default_locale and char_default_encoding function. -----");
     is_string( "root", 
             char_default_locale(), "For this test, default locale should be root.");
     is_string( "UTF-8", 
-            char_default_charset(), "For this test, default charset should be UTF-8.");
+            char_default_encoding(), "For this test, default encoding should be UTF-8.");
     
     diag("----- ostr_to_cstr and cstr_to_ostr -----");
     is_unicode_string( u"Lorum ipsum etc...", 

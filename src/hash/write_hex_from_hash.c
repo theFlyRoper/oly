@@ -1,4 +1,4 @@
-/* get_charset.c - retrieve charset string from resource. License GPL2+ {{{
+/* write_hex_from_hash.c - Write out char hex bits. Assumes ascii. License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,13 +16,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301, USA.
  * }}} */
+#ifdef HAVE_CONFIG_H
+#  include "olyconf.h"
+#endif
 
 #include "oly/common.h"
-#include "pvt_resources.h"
 
-OChar *
-get_charset(OlyResource *res)
-{ 
-    return res->charset;
+#include "oly/core.h"
+#include "oly/hash.h"
+
+/* only writes the hash itself.  Does not follow with anything else. */
+OlyStatus
+write_hex_from_hash (FILE *f, const hash c, OlyState *state)
+{
+    int  i=0;
+    for ( i = 0; (i<(OLY_HASH_BITS/CHAR_BIT)); i += sizeof(char) )
+    {
+        if ( fprintf(f, "%02x", c[i]) <= 0 )
+        {
+            return OLY_ERR_FILEIO;
+        };
+    }
+    return OLY_OKAY;
+}
+
+OlyStatus
+print_hex_from_hash (const hash c, OlyState *state)
+{
+    OlyStatus status = write_hex_from_hash(stdout, c, state);
+    fprintf(stdout, "\n");
+    return status;
 }
 

@@ -53,9 +53,10 @@ main( int argc, char **argv )
         "/data/UTF-8-demo.txt", "/data/realistic_data.txt", ""
     },
             *source_dir = getenv("SOURCE");
-    char     *locale = "root", *charset = "UTF-8";
+    char     *locale = "root", *encoding = "UTF-8";
     OChar   *obuff, *result;
     size_t  enqueue_count = 0, dequeue_count = 0, dequeue_out = 0, iterations = 0;
+    int64_t main_str_buf_max = 0;
     OFILE    *f;
     OlyStringBuffer *strbuf;
     /* hard coded rows added and dequeued for each iteration.  
@@ -81,7 +82,7 @@ main( int argc, char **argv )
         fprintf(stderr, "requires SOURCE environment variable, supplied by runtest. Exiting...\n");
         exit(EXIT_FAILURE);
     }
-    status = init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
+    status = init_oly(argv[0], TEST_PKGDATADIR, encoding, locale);
     prepare_file(source_dir, count_bytes_files[0], &f);
     
     plan( rows_read + 90 );
@@ -124,7 +125,8 @@ main( int argc, char **argv )
     status = enqueue_to_string_buffer(strbuf, empty, &result, &size_read);
     is_int(status, OLY_OKAY, "Enqueue to string buffer status for empty string.");
     is_int(0, size_read, "Empty string.");
-    status = reserve_string_buffer( strbuf, (get_main_string_buffer_max()*2) );
+    status = get_main_config_int(OLY_CONFIG_MAIN_NODE_QUEUE_MAX, &main_str_buf_max);
+    status = reserve_string_buffer( strbuf, (size_t)main_str_buf_max );
     is_int(OLY_ERR_BUFFER_OVERFLOW, status, "Try to reserve more than is possible.");
     status = dequeue_from_string_buffer(strbuf, &obuff, outbuf_size, &len_out);
     is_int(OLY_WARN_BUFFER_EMPTY, status, "confirm dequeue returns empty.");
@@ -219,7 +221,7 @@ prepare_file(const char *source_dir, const char this_file[], OFILE **f)
     OChar in_buffer[buffer_length], *obuff;
     strcpy(filebuffer, source_dir);
     strcat(filebuffer, this_file);
-    *f = u_fopen(filebuffer, "rb", char_default_locale(), char_default_charset());
+    *f = u_fopen(filebuffer, "rb", char_default_locale(), char_default_encoding());
     if( *f == NULL )
     {
         sysbail("test file %s not found!", filebuffer);

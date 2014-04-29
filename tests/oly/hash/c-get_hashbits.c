@@ -44,7 +44,7 @@ HashReturn Hash(int hashbitlen, const BitSequence *data, DataLength databitlen, 
 int
 main( int argc, char **argv ){
     char                *hash_me = argv[1];
-    charhash            corned_beef;
+    hash            corned_beef;
     data_length         hash_length = 0;
   
     if (argc != 2) 
@@ -64,7 +64,7 @@ main( int argc, char **argv ){
         exit(EXIT_FAILURE);
     }
 
-    if ( OLY_OKAY == print_hex_from_charhash(corned_beef, NULL)) 
+    if ( OLY_OKAY == print_hex_from_hash(corned_beef, NULL)) 
     {
         exit(EXIT_SUCCESS);
     }

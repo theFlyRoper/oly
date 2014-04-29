@@ -86,12 +86,9 @@ EXTRA_DIST	+= $(MAIN_I18N_INDEX_TXT) $(TEST_I18N_INDEX_TXT) \
 
 dist_check_DATA	= tests/TESTS tests/data/olyrc \
 			tests/oly/core/c-get_errmsg.output \
-			tests/oly/hash/c-char_to_size.output \
 			tests/oly/hash/sh-get_hashbits.output \
-			tests/oly/hash/sh-read_charhash_from_hex.output \
-			tests/oly/hash/sh-read_sizehash_from_hex.output \
-			tests/oly/hash/c-get_str_hashlen.output \
-			tests/oly/hash/sh-hash_char_to_hash_size.output 
+			tests/oly/hash/sh-read_hash_from_hex.output \
+			tests/oly/hash/c-get_str_hashlen.output 
 
 
 dist_check_SCRIPTS	= tests/tap/libtap.sh tests/oly/core.t \
@@ -119,7 +116,7 @@ oly_CPPFLAGS 		= $(AM_CPPFLAGS) @DEV_DEF@ \
 
 oly_SOURCES			= src/main.c 
 oly_LDADD 			= liboly_dev.a libcore.a libhash.a \
-					  @ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ 
+					  @ICUIO_LIBS@ @ICU_LIBS@ @DEV_LIB@ @YAML_LIBS@
 resex_CFLAGS		= $(DEV_CFLAGS)
 resex_SOURCES		= tests/prototypes/resex.c 
 resex_LDADD 		= liboly_dev.a libcore.a @ICUIO_LIBS@ \
@@ -149,11 +146,8 @@ yaml_to_sqlite_CPPFLAGS		= -D_FORTIFY_SOURCE=2 \
 noinst_LIBRARIES	=	liboly_dev.a libcore.a libhash.a libtestcore.a
 
 
-libhash_a_SOURCES	=	src/hash/char_to_size.c \
-						src/hash/write_hex_from_charhash.c \
-						src/hash/write_hex_from_sizehash.c \
-						src/hash/read_charhash_from_hex.c \
-						src/hash/read_sizehash_from_hex.c \
+libhash_a_SOURCES	= 	src/hash/write_hex_from_hash.c \
+						src/hash/read_hash_from_hex.c \
 						src/hash/get_str_hashlen.c \
 						src/hash/get_hashbits.c \
 						lib/sha_three/genKAT.c \
@@ -182,17 +176,19 @@ liboly_dev_a_SOURCES	=	src/debug/list_icu_countries.c \
 liboly_dev_a_CPPFLAGS	= $(AM_CPPFLAGS)	
 liboly_dev_a_CFLAGS		= $(DEV_CFLAGS)
 
+##						src/core/config.c \
 libcore_a_SOURCES	=	src/resources/get_resource_data.c \
 						src/resources/open_resource.c \
 						src/resources/close_resource.c \
 						src/resources/new_resource.c \
-						src/resources/get_charset.c \
+						src/resources/get_encoding.c \
 						src/resources/get_locale.c \
+						src/node/node_queue.c \
+						src/node/node.c \
+						src/node/tag.c \
 						src/core/basic_functions.c \
 						src/core/dispatch.c \
 						src/core/config.c \
-						src/node/node_queue.c \
-						src/node/node.c \
 						src/core/string_buffer.c \
 						src/core/get_errmsg.c \
 						src/core/init_oly.c \
@@ -209,7 +205,7 @@ libcore_a_CFLAGS			= $(DEV_CFLAGS)
 CHECK_DEFS	= @DEFS@ @DEV_DEF@ \
 			-DTESTING=1 -DTEST_PKGDATADIR=\"$(I18N_TESTBUILDDIR)\" \
 			-DTESTDATADIR=\"$(abs_top_srcdir)/tests/\" \
-			-I$(top_srcdir)/src/ $(SYSCONFDIR_DEF)
+			-I$(top_srcdir)/src/ $(SYSCONFDIR_DEF) 
 
 libtestcore_a_SOURCES		= $(libcore_a_SOURCES)
 libtestcore_a_CPPFLAGS		= $(CHECK_DEFS) 
@@ -218,13 +214,10 @@ check_PROGRAMS 	= 	tests/runtests \
 					tests/oly/core/c-get_errmsg \
 					tests/oly/core/c-basic_functions \
 					tests/oly/core/c-string_buffer \
-					tests/oly/data_source/c-oly_yaml \
-					tests/oly/hash/c-read_sizehash_from_hex \
+					tests/oly/node/c-infer_simple_tag \
 					tests/oly/hash/c-get_hashbits \
  					tests/oly/hash/c-get_str_hashlen \
- 					tests/oly/hash/c-char_to_size \
- 					tests/oly/hash/c-hash_char_to_hash_size \
- 					tests/oly/hash/c-read_charhash_from_hex 
+ 					tests/oly/hash/c-read_hash_from_hex 
 
 tests_runtests_CPPFLAGS 		= $(CHECK_DEFS) 
 check_LIBRARIES 				=	tests/tap/libtap.a
@@ -239,45 +232,31 @@ tests_oly_hash_c_get_hashbits_SOURCES 	= tests/oly/hash/c-get_hashbits.c
 tests_oly_hash_c_get_hashbits_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_get_hashbits_LDADD = tests/tap/libtap.a \
 									libtestcore.a libhash.a \
-									@YAML_LIBS@ @LIBLTDL@
-tests_oly_hash_c_read_charhash_from_hex_SOURCES  = tests/oly/hash/c-read_charhash_from_hex.c 
-tests_oly_hash_c_read_charhash_from_hex_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_read_charhash_from_hex_LDADD 	= tests/tap/libtap.a \
-						libtestcore.a libhash.a @ICUIO_LIBS@
-tests_oly_hash_c_read_sizehash_from_hex_SOURCES = tests/oly/hash/c-read_sizehash_from_hex.c 
-tests_oly_hash_c_read_sizehash_from_hex_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_read_sizehash_from_hex_LDADD = tests/tap/libtap.a \
-								libtestcore.a libhash.a @ICUIO_LIBS@
-tests_oly_hash_c_hash_char_to_hash_size_SOURCES = tests/oly/hash/c-hash_char_to_hash_size.c 
-tests_oly_hash_c_hash_char_to_hash_size_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_hash_char_to_hash_size_LDADD 	= tests/tap/libtap.a libtestcore.a \
-												  libhash.a @ICUIO_LIBS@
+									@YAML_LIBS@ 
+tests_oly_hash_c_read_hash_from_hex_SOURCES  = tests/oly/hash/c-read_hash_from_hex.c 
+tests_oly_hash_c_read_hash_from_hex_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_hash_c_read_hash_from_hex_LDADD 	= tests/tap/libtap.a \
+						libtestcore.a libhash.a @ICUIO_LIBS@ @YAML_LIBS@ 
 tests_oly_hash_c_get_str_hashlen_SOURCES = tests/oly/hash/c-get_str_hashlen.c 
 tests_oly_hash_c_get_str_hashlen_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_hash_c_get_str_hashlen_LDADD 	= tests/tap/libtap.a libtestcore.a \
-										  libhash.a @ICUIO_LIBS@ 
-tests_oly_hash_c_char_to_size_SOURCES 	= tests/oly/hash/c-char_to_size.c 
-tests_oly_hash_c_char_to_size_CPPFLAGS 	= $(AM_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_hash_c_char_to_size_LDADD 	= 	tests/tap/libtap.a \
-											libtestcore.a libhash.a @ICUIO_LIBS@
+										  libhash.a @ICUIO_LIBS@ @YAML_LIBS@ 
 tests_oly_core_c_get_errmsg_SOURCES 	= tests/oly/core/c-get_errmsg.c 
 tests_oly_core_c_get_errmsg_CPPFLAGS 	= $(AM_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_core_c_get_errmsg_LDADD 		= tests/tap/libtap.a \
-									  	  libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ 
+tests_oly_core_c_get_errmsg_LDADD 		= tests/tap/libtap.a libtestcore.a \
+									  	  @YAML_LIBS@ @ICUIO_LIBS@ @ICU_LIBS@ 
 
-tests_oly_data_source_c_oly_yaml_SOURCES = tests/oly/data_source/c-oly_yaml.c \
-									  src/core/oly_mem_string.c \
-									  src/debug/bash_printing.c 
-tests_oly_data_source_c_oly_yaml_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
-tests_oly_data_source_c_oly_yaml_LDADD 	= libtestcore.a @ICUIO_LIBS@ @ICU_LIBS@ \
-									  tests/tap/libtap.a @YAML_LIBS@ 
+tests_oly_node_c_infer_simple_tag_SOURCES  = tests/oly/node/c-infer_simple_tag.c 
+tests_oly_node_c_infer_simple_tag_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
+tests_oly_node_c_infer_simple_tag_LDADD 	= tests/tap/libtap.a \
+											libtestcore.a @ICUIO_LIBS@ @YAML_LIBS@ 
 
 tests_oly_core_c_basic_functions_SOURCES = tests/oly/core/c-basic_functions.c 
 tests_oly_core_c_basic_functions_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS)
 tests_oly_core_c_basic_functions_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
 										  -ansi -std=gnu99 -Werror=format-security
 tests_oly_core_c_basic_functions_LDADD 	= libtestcore.a tests/tap/libtap.a \
-										  @ICUIO_LIBS@ @ICU_LIBS@ 
+										  @ICUIO_LIBS@ @ICU_LIBS@ @YAML_LIBS@ 
 tests_oly_core_c_basic_functions_LDFLAGS = -lm
 
 
@@ -291,7 +270,7 @@ tests_oly_core_c_string_buffer_CPPFLAGS = $(AM_CPPFLAGS) $(CHECK_DEFS) -DTEST_ST
 tests_oly_core_c_string_buffer_CFLAGS = $(CFLAGS) -Wall -Werror -pedantic \
 										  -ansi -std=gnu99 -Werror=format-security 
 tests_oly_core_c_string_buffer_LDADD 	= tests/tap/libtap.a libtestcore.a \
-										  @ICUIO_LIBS@ @ICU_LIBS@ 
+										  @ICUIO_LIBS@ @ICU_LIBS@ @YAML_LIBS@ 
 
 check-local: check-i18n $(check_PROGRAMS) 
 	cd tests && ./runtests -s '$(abs_top_srcdir)/tests' \

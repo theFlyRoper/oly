@@ -44,7 +44,6 @@ OChar *get_errmsg( OlyStatus status )
     if ((status < OLY_STATUS_MIN) 
             || (status > OLY_STATUS_MAX))
     {
-        u_status = U_ZERO_ERROR;
         result = (OChar *)ures_getStringByIndex( message_data, 
             (OLY_ERR_UNKNOWN + OLY_STATUS_OFFSET),
             &len, &u_status );
@@ -74,12 +73,12 @@ OChar *get_errmsg( OlyStatus status )
     return result; 
 }
 
-OlyStatus init_errmsg(Oly *oly)
+OlyStatus init_errmsg(Oly *oly_errmsg)
 {
     OlyStatus status = OLY_OKAY;
     if (message_data == NULL) 
     {
-        message_data = init_messages(oly);
+        message_data = init_messages(oly_errmsg);
     }
     else
     {
@@ -88,12 +87,12 @@ OlyStatus init_errmsg(Oly *oly)
     return status;
 }
 
-static const ResourceData * const init_messages(Oly *oly)
+static const ResourceData * const init_messages(Oly *oly_init_messages)
 {
 #ifdef HAVE_UNICODE_URES_H
     UErrorCode u_status = U_ZERO_ERROR;
     ResourceData *retval = (ResourceData *)ures_getByKey(
-            (UResourceBundle *)get_oly_resource(oly), 
+            (UResourceBundle *)get_oly_resource(oly_init_messages), 
             "OlyErrors", NULL, &u_status);
     if (U_FAILURE(u_status)) 
     {

@@ -1,4 +1,4 @@
-/* boundary.h -- boundary abstract type definitions. License GPL2+ {{{
+/* pvt_oly_string.h -- private OlyString definitions License GPL2+ {{{
  * Copyright (C) 2014 Oly Project
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,17 +18,15 @@
  *
  * }}} */
 
-#include "oly/common.h"
-#include "oly/core.h"
-#include "oly/data_source.h"
-
-#ifndef OLY_BOUNDARY_H
-#define OLY_BOUNDARY_H 1
-BEGIN_C_DECLS
+#ifndef DATA_SOURCE_PVT_NODE_H
+#define DATA_SOURCE_PVT_NODE_H 1
 
 
-
-END_C_DECLS
-#endif /* OLY_BOUNDARY_H */
-
-
+struct oly_string_struct {
+  size_t length;
+  union oly_string_union
+  {
+      OChar   *o_str;
+      char    *c_str;
+  } string;
+}

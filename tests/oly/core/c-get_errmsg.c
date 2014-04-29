@@ -34,7 +34,7 @@ main( int argc, char **argv ){
     int              i = 0,
                      unknown_num = (OLY_ERR_UNKNOWN+OLY_STATUS_OFFSET);
     OChar          **results = (OChar **) ocalloc ( num_tests, sizeof(OChar *) );
-    char            *locale = "root",  *charset = NULL;
+    char            *locale = (char *)"root",  *encoding = NULL;
     const char      *results_char[] = {
                         "OLY_WARN_NODE_CONSUMED",
                         "OLY_WARN_NODE_PRODUCED",
@@ -81,20 +81,25 @@ main( int argc, char **argv ){
                         "OLY_ERR_NO_KEY_BUFFER",
                         "OLY_ERR_NODE_MUST_HAVE_VALUE",
                         "OLY_ERR_NODE_MUST_NOT_HAVE_VALUE",
-                        "OLY_ERR_ILLEGAL_NODE_TYPE",
+                        "OLY_ERR_ILLEGAL_TAG",
                         "OLY_ERR_NO_OBJECT",
                         "OLY_ERR_NO_RESERVATION",
                         "OLY_ERR_STRING_BUFFER_STATE",
                         "OLY_ERR_NODE_QUEUE_FULL",
                         "OLY_ERR_NODE_QUEUE_EMPTY",
                         "OLY_ERR_DS_EOF",
+                        "OLY_ERR_CONFIG_ITEM_NOT_FOUND",
+                        "OLY_ERR_CONFIG_UNKNOWN",
                         "OLY_ERR_UNKNOWN"
                         };
     UErrorCode       u_status  = U_ZERO_ERROR;
     OlyStatus        status;
     
-    status = init_oly(argv[0], TEST_PKGDATADIR, charset, locale, &oly);
-    
+    status = init_oly(argv[0], TEST_PKGDATADIR, encoding, locale);
+    if (status != OLY_OKAY)
+    {
+      printf("STATUS IS NOT OK.\n");
+    }
     for ( i = 0; (i<=num_tests); i++)
     {
         results[i] = char_to_utf8(results_char[i]);
@@ -108,7 +113,7 @@ main( int argc, char **argv ){
     {
         is_unicode_string(results[i], get_errmsg(i-OLY_STATUS_OFFSET), 
                 "Item: %i, err: %S", 
-                (i-OLY_STATUS_OFFSET), results[i]);
+                (i-OLY_STATUS_OFFSET), (wchar_t *)results[i]);
     }
     
     diag("One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.");
