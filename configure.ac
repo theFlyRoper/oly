@@ -44,7 +44,7 @@ AC_CONFIG_TESTDIR([tests])
 AC_CONFIG_LIBOBJ_DIR([lib])
 
 AM_INIT_AUTOMAKE([1.8 subdir-objects \
-                  dist-bzip2 no-dist-gzip readme-alpha -Wno-portability])
+                  dist-bzip2 no-dist-gzip readme-alpha -Wno-portability foreign])
 
 AC_CONFIG_HEADERS([src/olyconf.h:src/olyconf-h.in])
 dnl questions address
