@@ -1,15 +1,32 @@
-TESTING:
-It would be nice to test the oly_timestamp function better.  Right now it only confirms that it returns a value and that it agrees (roughly) with the time() function.  The test can be found at tests/oly/core/c-basic_functions.
+Oly
+===
+:author:        Jonathan Towne
+:description:   Oly data mover
+:keywords:      Oly
+:title:         Oly
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:icons:
+:toc2:
+endif::is_standalone[]
 
-PORTING:
-Oly tries to use sensible types as much as possible, but does not always succeed.  Here are some key points:
-times are recorded as double, and measure the milliseconds since unix epoch (Jan 1, 1970, midnight GMT).  On x86_64, double is 8 bytes (at least on mine).  If available, it uses clock_gettime(CLOCK_REALTIME_COARSE)
+Introduction
+------------
+Oly is a program designed to help move data between different storage media.  Ultimately, it will bridge relational/non-relational databases, spreadsheets, markup files and text files.  Oly is not intended as a storage medium itself, but rather as a way to move data around easily.
 
-* Why not uint64_t?  Would be more precise but a pain to move around.  But then again, that applies to double too.
-* What about CLOCK_MONOTONIC?  Well, to use that, you have to figure out where it started counting from.  Not impossible but I want this timestamp to be crazy fast.
+Project State
+-------------
+This repository has been around for a long time, and its creator, Jonathan Towne, learned a lot about structuring programs over time.  It has changed structure repeatedly and is not very readable as of 1-15-2016.  In short, do forgive the ugliness of this repo in its current state.  I hope to fix it up over the next few months.
 
+Documentation links
+-------------------
 
-TODO: need to add type checking to hash conversions.
+* link:doc/index.txt[Goals]
+* link:doc/standards.txt[Some notes on Code Standards]
+* link:doc/glossary.txt[Glossary]
+* link:doc/data_source_interface.txt[Data Source Interface]
+* link:doc/data_source_interface.txt[]
 
-
-
+// vim: set syntax=asciidoc:

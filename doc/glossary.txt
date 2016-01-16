@@ -61,8 +61,4 @@ anchor:glossary_data_source_key[]Key (data source):: A text identifier for a  <<
 anchor:glossary_data_source_node_id[]Tuple (data source):: An ordered, integer identifier for a  <<glossary_data_source_value,value>>.  Compare to <<glossary_data_source_key,keys>>.  See the wikipedia page on https://en.wikipedia.org/wiki/Tuple[node_ids] for details.  We use the term this way in Oly to avoid using terms like "index" for these items; an index in a relational database is not the same thing as an array index.  Tuples
 anchor:glossary_data_source_value[]Value (data source):: Data that corresponds to a <<glossary_data_source_key,key>> or an <<glossary_data_source_node_id,node_id>>.  Can have a <<glossary_data_source_types,type>>.  Will be either a scalar value or another <<glossary_data_source_collection,collection>>.
 
-
-
-
-
 // vim: set syntax=asciidoc:
