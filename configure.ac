@@ -236,7 +236,6 @@ AS_ECHO([=================================])
 AS_IF([test "x$enable_debug" != xyes],
       [],
       [AC_MSG_NOTICE([Developer debug mode enabled.  Not for final builds.])])
-AC_MSG_NOTICE([size_t is $ac_cv_sizeof_size_t bytes wide.])
 AS_ECHO([=================================])
 
 dnl AS_BOX(["AS_ESCAPE([$PKGCONFIG = ])AS_ESCAPE([$PKGCONFIG],[""])"])
