@@ -7,7 +7,6 @@
 version 9acd583da1,
 2014-04-09
 </p>
-<hr>
 <h2><a name="_state_error_handling"></a>State/Error Handling</h2>
 <p>Oly has a struct called OlyState which contains a pointer to a function called handler.
 When you start a function, call <em>set_state_handler(&lt;state struct&gt;, &lt;handler function address&gt;)</em> and that sets the state handler.</p>
@@ -15,7 +14,6 @@ When you start a function, call <em>set_state_handler(&lt;state struct&gt;, &lt;
 <p>There is a function in the core part of the program called oly_fatal, which kills the program and displays very basic information.  This function is for emergencies, initialization errors and suchlike.
 It is not for general use.  Use the OlyState struct and its supporting
 functions for internal errors.  If you are writing a function that must have a handler before the general handling functions are available, add your function to the list of functions that call it in the code for oly_fatal.  It can be found at <em>src/core/oly_fatal.c</em>.</p>
-<hr>
 <h2><a name="_language_and_i18n_initialization"></a>Language and i18n initialization</h2>
 <p>I have done even more research as of 3-14-14, and here are some more fun facts:</p>
 <ul>
@@ -73,7 +71,6 @@ Last, the LANG variable.
 considered.</p>
 <p>It has distinct behaviors for several OSes and factors in which posix IDs are most consistent.  In POSIX, It uses setlocale() with either of these categories: LC_MESSAGES, LC_CTYPE first.  Then, if they don&#8217;t return anything, it looks at getenv("LC_ALL").</p>
 <p>After this research I have decided I will fish up the "LANGUAGE" environment variable if available, then use ICU&#8217;s default if it is not.</p>
-<hr>
 <h2><a name="_names"></a>Names</h2>
 <ol type="1">
 <li>
@@ -117,7 +114,6 @@ Also look at naming rules for <a href="#_names_2">functions</a> and <a href="#_n
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_c_language_files_code_and_headers"></a>C language files (code and headers)</h2>
 <p>All files should be named after what they contain.  Headers should group functions by purpose such as <code>wrapper.h</code> (holds wrapper functions around system interfaces).  Only exceptions are <code>olyconf.h</code> (autoconf header) and <code>common.h</code> (cross-compatibility header).</p>
 <h3><a name="_code"></a>Code</h3>
@@ -167,7 +163,6 @@ For struct definitions and extern objects (such as <code>ostdout</code>, the oly
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_functions"></a>Functions</h2>
 <p>If something could be confused with a system object on another system, add the prefix "oly_".  Hence, the IO header is not called just "<code>io.h</code>", but rather "oly_io.h".</p>
 <p>Functions should use lower case exclusively.</p>
@@ -243,12 +238,10 @@ See function <code>set_err</code>, <code>append_err_arg</code>, <code>log_err</c
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_types"></a>Types</h2>
 <p>For designing structures, go read Eric S. Raymond&#8217;s essay on <a href="http://www.catb.org/esr/structure-packing/">C structure packing</a>.  Oly must have very efficient structures.</p>
 <h3><a name="_names_3"></a>Names</h3>
 <p>Typedefs shall be CamelCased, with leading capitals.</p>
-<hr>
 <h2><a name="_error_handling_2"></a>Error handling</h2>
 <p>For core and internal functions, Oly uses asserts to ensure the function always gets correct inputs, or it checks them before the function runs.</p>
 <p>Do not use strerror or perror.  Use strerror_r only.</p>

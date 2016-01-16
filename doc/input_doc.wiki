@@ -4,10 +4,9 @@
 <h1>Oly Input Functions</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 4671fd6a8b,
-2014-04-09
+version 253601e36e,
+2014-04-28
 </p>
-<hr>
 <h2><a name="_oly_input_c_files"></a>1. Oly Input C files</h2>
 <ol type="1">
 <li>
@@ -36,7 +35,6 @@ src/input/oly_opts.c
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_structures_to_implement"></a>2. structures to implement</h2>
 <dl>
 <dt>
@@ -67,7 +65,6 @@ typedefpointer to UChar, also runtimeinput that
 </p>
 </dd>
 </dl>
-<hr>
 <h2><a name="_functions_to_implement"></a>3. functions to implement</h2>
 <dl>
 <dt>

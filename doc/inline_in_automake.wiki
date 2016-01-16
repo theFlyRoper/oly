@@ -7,7 +7,6 @@
 version 98f19e3f57,
 2014-03-13
 </p>
-<hr>
 <h2><a name="_the_problem"></a>1. The Problem</h2>
 <p>I want to compile an inline static function with a
 forward declaration, but keep the function itself in
@@ -19,10 +18,9 @@ even in GNU Hello they take up a lot of space.  I don&#8217;t
 want to comb through main every time I add a new feature to
 paste a new line into the help.  Good luck finding instructions
 for building static functions in separate files, though.</p>
-<hr>
 <h2><a name="_a_solution"></a>2. A Solution</h2>
 <p><b>The Directory Tree</b></p>
-<table border="0" bgcolor="#e8e8e8" width="100%" cellpadding="10"><tr><td>
+<table border="0" bgcolor="#e8e8e8" width="100%" cellpadding="4"><tr><td>
 <pre><code>./main.c
 ./print_help.c
 ./print_version.c
@@ -31,36 +29,7 @@ for building static functions in separate files, though.</p>
 </td></tr></table>
 <div class="listingblock">
 <div class="title">Automake File</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #009900">olycppflags     =</span>       -I<span style="color: #009900">$(top_srcdir)</span> -I<span style="color: #009900">$(top_builddir)</span>
-
-<span style="color: #009900">olycflags               =</span> -O<span style="color: #993399">3</span> -mtune<span style="color: #990000">=</span>native -march<span style="color: #990000">=</span>native -Wall
-
-<span style="color: #009900">olylibdir               =</span> <span style="color: #009900">$(top_builddir)</span>/oly<span style="color: #990000">/</span>
-
-<span style="color: #009900">DEFS                                                                    =</span> -DPKGDATADIR<span style="color: #990000">=</span>\"<span style="color: #009900">$(localedir)</span>\" <span style="color: #990000">\</span>
-                                                                                                <span style="font-weight: bold"><span style="color: #000080">@DEFS@ @DEV_DEF@</span></span>
-
-<span style="color: #009900">AM_CPPFLAGS                                             =</span> <span style="color: #009900">$(olycppflags)</span>
-
-<span style="color: #009900">AM_CFLAGS                                               =</span> -fstack-protector-all
-
-<span style="color: #009900">bin_PROGRAMS                                    =</span>       oly
-
-<span style="color: #009900">oly_SOURCES                                             =</span> print_version.c <span style="color: #990000">\</span>
-                                                                                                print_help.c
-
-<span style="color: #990000">main.o:</span> main.c
-        <span style="color: #009900">$(CC)</span> <span style="color: #009900">$(CFLAGS)</span> -w <span style="color: #009900">$(olycppflags)</span> <span style="color: #009900">$(DEFS)</span> -c -o <span style="color: #009900">$@</span> <span style="color: #009900">$&lt;</span>
-
-
-<span style="color: #009900">noinst_HEADERS                          =</span> oly_main.h
-
-
-<span style="color: #009900">oly_LDADD                                               =</span>       main.o</tt></pre></div></div>
+<div class="content"></div></div>
 <p>Print_help.c and print_version.c contain static
 function.  They are not <em>defined</em> as static, because they
 would then not be visible after linking.  Go try it:

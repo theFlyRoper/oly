@@ -50,7 +50,7 @@ TEST_I18N_CLEAN					= $(addprefix $(TEST_OUTDIR),$(TEST_I18N_RES)) \
 PKGDATAOPTS		=	--name $(OLY_I18N_NAME) --mode $(I18N_MODE) \
 				-e $(OLY_I18N_NAME) -v -d . --tempdir $(I18N_DEPSDIR) -s . $(LIST_NAME)
 
-GENRBOPT		= --bundle-name $(OLY_I18N_NAME) -d .
+GENRBOPT		= -d .
 
 MAIN_GENRBOPT						= -s $(MAIN_SRCDIR) $(GENRBOPT) 
 TEST_GENRBOPT						= -s $(TEST_SRCDIR) $(GENRBOPT) 

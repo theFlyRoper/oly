@@ -7,7 +7,6 @@
 version 5f64404ac8,
 2013-07-28
 </p>
-<hr>
 <h2><a name="_style"></a>Style</h2>
 <ul>
 <li>

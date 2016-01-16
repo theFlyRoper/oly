@@ -4,10 +4,9 @@
 <h1>Oly</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 73407c1dc1,
-2014-04-09
+version 253601e36e,
+2014-04-28
 </p>
-<hr>
 <h2><a name="_current_features"></a>Current Features</h2>
 <ul>
 <li>
@@ -46,7 +45,6 @@ Polyglot (that is, translatable) error handling
 </p>
 </li>
 </ul>
-<hr>
 <h2><a name="_goals"></a>Goals</h2>
 <ol type="1">
 <li>
@@ -55,7 +53,6 @@ Finish Oly 1.0
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_projects"></a>Projects</h2>
 <ol type="1">
 <li>
@@ -79,7 +76,6 @@ Establish what "finish" means.
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_tasks"></a>Tasks</h2>
 <ol type="1">
 <li>

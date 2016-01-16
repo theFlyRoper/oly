@@ -4,60 +4,20 @@
 <h1>Oly Data Source Interface</h1>
 <p>
 <tt>&lt;<a href="mailto:maintainer@fakesite.com">maintainer@fakesite.com</a>&gt;</tt><br>
-version 3083a49856,
-2014-04-13
+version 253601e36e,
+2014-04-28
 </p>
-<hr>
 <h2><a name="_structures"></a>Structures</h2>
 <h3><a name="_boundary_buffer"></a>Boundary (buffer)</h3>
 <p>Called boundary because it should translate from the source encoding to the Oly internal encoding.</p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_boundary_struct</span><span style="color: #990000">;</span>
-<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_boundary_struct</span> OlyBoundary<span style="color: #990000">;</span>
-
-<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_boundary_struct</span>
-<span style="color: #FF0000">{</span>
-    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_now<span style="color: #990000">;</span>
-    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_end<span style="color: #990000">;</span>
-    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_start<span style="color: #990000">;</span>
-    <span style="color: #008080">OChar</span>           <span style="color: #990000">*</span>o_flush_break<span style="color: #990000">;</span>
-    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_now<span style="color: #990000">;</span>
-    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_end<span style="color: #990000">;</span>
-    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_start<span style="color: #990000">;</span>
-    <span style="color: #009900">char</span>            <span style="color: #990000">*</span>c_flush_break<span style="color: #990000">;</span>
-    size_t          nodes
-    <span style="color: #008080">UConverter</span>      <span style="color: #990000">*</span>converter<span style="color: #990000">;</span>
-<span style="color: #FF0000">}</span><span style="color: #990000">;</span></tt></pre></div></div>
+<div class="content"></div></div>
 <h3><a name="_node"></a>Node</h3>
 <p>Node must know about buffers.  Node type determines how many character strings the node will look for.  This also means we must keep nodes handy.</p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_node_struct</span><span style="color: #990000">;</span>
-<span style="font-weight: bold"><span style="color: #0000FF">typedef</span></span> <span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_node_struct</span> OlyNode<span style="color: #990000">;</span>
-
-<span style="font-weight: bold"><span style="color: #0000FF">struct</span></span> <span style="color: #008080">oly_node_struct</span>
-<span style="color: #FF0000">{</span>
-    <span style="color: #009900">unsigned</span> <span style="color: #009900">short</span>       current_level<span style="color: #990000">;</span>
-    <span style="color: #008080">OlyTagType</span>     vt<span style="color: #990000">;</span>
-    <span style="color: #008080">OChar</span>               <span style="color: #990000">*</span>key<span style="color: #990000">;</span>
-    <span style="font-style: italic"><span style="color: #9A1900">/* for debugging.  Remove later. */</span></span>
-    <span style="color: #009900">char</span>                <span style="color: #990000">*</span>char_key<span style="color: #990000">;</span>
-    <span style="color: #008080">OlyDSValue</span>          <span style="color: #990000">*</span>value<span style="color: #990000">;</span>
-    <span style="color: #008080">OlyNode</span>             <span style="color: #990000">*</span>parent_node<span style="color: #990000">;</span>
-    <span style="color: #009900">unsigned</span> <span style="color: #009900">long</span> <span style="color: #009900">long</span>   node_id<span style="color: #990000">;</span>
-    <span style="color: #008080">OlyDataSource</span>       <span style="color: #990000">*</span>ds<span style="color: #990000">;</span>
-    <span style="color: #008080">OFILE</span>               <span style="color: #990000">*</span>large_object_file<span style="color: #990000">;</span>
-<span style="color: #FF0000">}</span></tt></pre></div></div>
-<hr>
+<div class="content"></div></div>
 <h2><a name="_functions"></a>Functions</h2>
 <h3><a name="_required_functions"></a>Required functions</h3>
 <p><b>Must be defined</b></p><dl>
@@ -70,11 +30,7 @@ Try to connect to the data source.  If successful, open the stream from the data
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyStatus</span> <span style="font-weight: bold"><span style="color: #000000">open_oly_ds_stream</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 <dt>
 close_oly_ds_stream
@@ -85,11 +41,7 @@ Flush the current stream buffers in the stream direction, stop any queries again
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyStatus</span> <span style="font-weight: bold"><span style="color: #000000">close_oly_ds_stream</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 <dt>
 get_oly_ds_error_message
@@ -111,11 +63,7 @@ Return a pointer to exactly one row in a table data structure.  Should be buffer
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyDSRow</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_row</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 <dt>
 get_oly_ds_column
@@ -126,11 +74,7 @@ Return a pointer to exactly one column in a table data structure.  Should be buf
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyDSColumn</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_column</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 </dl>
 <h3><a name="_required_collection_data_functions"></a>Required Collection Data Functions</h3>
@@ -144,11 +88,7 @@ Return a pointer to the next node in the collection.  The Node data structure in
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyNode</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_next_node</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 </dl>
 <h3><a name="_optional_functions"></a>Optional Functions</h3>
@@ -162,11 +102,7 @@ Retrieve metadata at granularity specified.  Will go into greater detail once th
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #008080">OlyDSMetadata</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_metadata</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 <dt>
 get_oly_ds_locale
@@ -177,11 +113,7 @@ Retrieve data source locale information.  Intent here is to use the native data 
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #009900">char</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_locale</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 <dt>
 get_oly_ds_encoding
@@ -192,11 +124,7 @@ Retrieve data source encoding information. Intent here is to use the native data
 </p>
 <div class="listingblock">
 <div class="title">definition</div>
-<div class="content"><!-- Generator: GNU source-highlight 3.1.6
-by Lorenzo Bettini
-http://www.lorenzobettini.it
-http://www.gnu.org/software/src-highlite -->
-<pre><tt><span style="color: #009900">char</span> <span style="color: #990000">*</span><span style="font-weight: bold"><span style="color: #000000">get_oly_ds_encoding</span></span><span style="color: #990000">(</span><span style="color: #008080">OlyDataSource</span> <span style="color: #990000">*</span>ds<span style="color: #990000">,</span> <span style="color: #008080">OlyStatus</span> <span style="color: #990000">*</span>status<span style="color: #990000">);</span></tt></pre></div></div>
+<div class="content"></div></div>
 </dd>
 </dl>
 <h3><a name="_open_questions"></a>Open Questions</h3>
@@ -212,7 +140,6 @@ However, there will be data source errors that Oly cannot predict.  Thus, "get_o
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_data_stream"></a>Data Stream</h2>
 <ol type="1">
 <li>
@@ -241,7 +168,6 @@ Oly will recover to last checkpoint in the event of a sudden stop.
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_structures_2"></a>Structures</h2>
 <h3><a name="_collection_centered_data"></a>Collection-centered data</h3>
 <p>As of 3-19-2013, Oly&#8217;s collection-centered data processing is not concerned about type.  This may change in the future.</p>
@@ -288,7 +214,6 @@ Connection information?
 </p>
 </li>
 </ol>
-<hr>
 <h2><a name="_data_source_to_structure_maps"></a>Data Source to Structure Maps</h2>
 <h3><a name="_icu_resource_bundle"></a>ICU Resource Bundle</h3>
 <ul>
