@@ -1,0 +1,64 @@
+Glossary
+========
+:description: Oly term definitions
+:keywords:    Oly, standards, definitions, glossary, node_id, terms
+:title:       Glossary
+:icons:
+ifdef::is_standalone[]
+:iconsdir:  icons
+:imagesdir: images
+:icons:
+:toc2:
+endif::is_standalone[]
+ifdef::is_fossil[]
+:iconsdir:  /doc/tip/doc/icons
+:imagesdir: /doc/tip/doc/images
+:icons:
+link:/doc/tip/doc/node_id.wiki[Back to Home.]
+endif::is_fossil[]
+
+[glossary]
+Glossary
+--------
+anchor:glossary_collection_centered[]Collection-centered system:: Many https://en.wikipedia.org/wiki/Non-relational_database[non-relational] databases store their data in individual collections, which are https://en.wikipedia.org/wiki/Markup_language[marked up] with appropriate information about the data itself.  These collections can then be parsed to extract this data in an organized way.
+anchor:glossary_level[]Level:: In a <<glossary_collection_centered,collection-centered>> system, _level_ refers to how far we have recursively stepped. 
++
+.In YAML
+[source,python]
+----
+# we start at level zero (0)
+record_id: 777
+user: Amy Examplerecord
+contact_information:
+    # each type of contact information has a sublevel with details about it
+    # information type is on level one (1), information data is on level two (2)
+    address:
+        # address has several parts, so we represent it as a 
+        # sublevel.  We are now at level two (2).
+        Street: "345 Three Four Five way"
+        City: "Sampletown"
+        State: "Kenswick"
+        Zipcode: "00112"
+    email:
+        - amy.examplerecord@freeexampleemail.com
+        - the_real_amy_examplerecord@truefact.com
+    phone:
+        - "01-(000) 000-0000"
+# since contact information ends there, we return to level 0.
+logins:
+    - 01-15-2009 11:14:57
+    - 04-19-2009 12:19:29
+    - 01-20-2010 22:47:25
+    - 01-12-2011 21:33:25
+----
++
+anchor:glossary_table_centered[]Table-centered system:: Traditional relational databases store their data in tables, which encapsulate a single _type of thing_ and are then connected to other types of things with relationships.
+anchor:glossary_data_source_table[]Table (data source):: A type of data source object.  In a data source, "table" refers to something like a relational database table, with <<glossary_data_source_rows,rows>> and <<glossary_data_source_columns,columns>>.  
+anchor:glossary_data_source_rows[]Row (data source):: A data source row refers to a single <<glossary_data_source_table,table>> row, that is, a set of <<glossary_data_source_columns,column>> data corresponding to a single record in a table, however that is identified.  A CSV or other flat file data source is usually defined by newlines, for example.  Relational database systems define query output by row.
+anchor:glossary_data_source_columns[]Column (data source):: A data source column refers to a single <<glossary_data_source_table,table>> column.  Every row should have a marker deliniating every column in a <<glossary_data_source_table,table>>, although those column records may be empty for any given row.  Ideally, the data source can also provide <<glossary_data_source_types,type>> information for the columns.
+anchor:glossary_data_source_collection[]Collection (data source):: Collections store data like an outline.  A type of data source object.  Each collection will have either <<glossary_data_source_key,keys>> or <<glossary_data_source_node_id,node_ids>>, and each of those should have a <<glossary_data_source_value,value>>.
+anchor:glossary_data_source_key[]Key (data source):: A text identifier for a  <<glossary_data_source_value,value>>.  In oly, all keys will be unique within a collection, but many data sources do not require keys to be unique.  Compare to <<glossary_data_source_node_id,node_ids>>.
+anchor:glossary_data_source_node_id[]Tuple (data source):: An ordered, integer identifier for a  <<glossary_data_source_value,value>>.  Compare to <<glossary_data_source_key,keys>>.  See the wikipedia page on https://en.wikipedia.org/wiki/Tuple[node_ids] for details.  We use the term this way in Oly to avoid using terms like "index" for these items; an index in a relational database is not the same thing as an array index.  Tuples
+anchor:glossary_data_source_value[]Value (data source):: Data that corresponds to a <<glossary_data_source_key,key>> or an <<glossary_data_source_node_id,node_id>>.  Can have a <<glossary_data_source_types,type>>.  Will be either a scalar value or another <<glossary_data_source_collection,collection>>.
+
+// vim: set syntax=asciidoc:

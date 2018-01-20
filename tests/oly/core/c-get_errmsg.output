@@ -1,0 +1,66 @@
+1..60
+# From the smallest to one bigger than biggest error number.
+ok 1 - Item: -16, err: OLY_WARN_NODE_CONSUMED
+ok 2 - Item: -15, err: OLY_WARN_NODE_PRODUCED
+ok 3 - Item: -14, err: OLY_WARN_BOUNDARY_RESET
+ok 4 - Item: -13, err: OLY_WARN_LONG_STRING
+ok 5 - Item: -12, err: OLY_WARN_BUFFER_WRITE_LOCK
+ok 6 - Item: -11, err: OLY_WARN_BUFFER_EMPTY
+ok 7 - Item: -10, err: OLY_WARN_TOP_LEVEL_NODE
+ok 8 - Item: -9, err: OLY_WARN_NODE_HAS_NO_KEY
+ok 9 - Item: -8, err: OLY_WARN_END_OF_ARGS
+ok 10 - Item: -7, err: OLY_WARN_DS_BUFFER_DEFAULT
+ok 11 - Item: -6, err: OLY_WARN_SHOW_VERSION
+ok 12 - Item: -5, err: OLY_WARN_SHOW_HELP
+ok 13 - Item: -4, err: OLY_WARN_DSOPT_NOT_USED
+ok 14 - Item: -3, err: OLY_WARN_REINIT
+ok 15 - Item: -2, err: OLY_WARN_LIB
+ok 16 - Item: -1, err: OLY_WARN_EXIT
+ok 17 - Item: 0, err: OLY_OKAY
+ok 18 - Item: 1, err: OLY_ERR_UNKNOWN
+ok 19 - Item: 2, err: OLY_ERR_SYS
+ok 20 - Item: 3, err: OLY_ERR_LIB
+ok 21 - Item: 4, err: OLY_ERR_INIT
+ok 22 - Item: 5, err: OLY_ERR_NOMEM
+ok 23 - Item: 6, err: OLY_ERR_NOPWD
+ok 24 - Item: 7, err: OLY_ERR_NOUSER
+ok 25 - Item: 8, err: OLY_ERR_FILEIO
+ok 26 - Item: 9, err: OLY_ERR_READHEX
+ok 27 - Item: 10, err: OLY_ERR_HASH
+ok 28 - Item: 11, err: OLY_ERR_BADARG
+ok 29 - Item: 12, err: OLY_ERR_BUFFER_OVERFLOW
+ok 30 - Item: 13, err: OLY_ERR_FILE_NOT_FOUND
+ok 31 - Item: 14, err: OLY_ERR_CONFIG_FILE_NOT_FOUND
+ok 32 - Item: 15, err: OLY_ERR_LIBYAML_INIT
+ok 33 - Item: 16, err: OLY_ERR_NODES_TOO_DEEP
+ok 34 - Item: 17, err: OLY_ERR_NODES_TOO_SHALLOW
+ok 35 - Item: 18, err: OLY_ERR_UNKNOWN_FUNCTION_TYPE
+ok 36 - Item: 19, err: OLY_ERR_DS_OPTION_CONFLICT
+ok 37 - Item: 20, err: OLY_ERR_LTDL_UNKNOWN
+ok 38 - Item: 21, err: OLY_ERR_LTDL_ERR
+ok 39 - Item: 22, err: OLY_ERR_YAML_PARSE
+ok 40 - Item: 23, err: OLY_ERR_SQLITE_INIT
+ok 41 - Item: 24, err: OLY_ERR_SQLITE
+ok 42 - Item: 25, err: OLY_ERR_KEY_STR_TOO_LONG
+ok 43 - Item: 26, err: OLY_ERR_NO_KEY_BUFFER
+ok 44 - Item: 27, err: OLY_ERR_NODE_MUST_HAVE_VALUE
+ok 45 - Item: 28, err: OLY_ERR_NODE_MUST_NOT_HAVE_VALUE
+ok 46 - Item: 29, err: OLY_ERR_ILLEGAL_TAG
+ok 47 - Item: 30, err: OLY_ERR_NO_OBJECT
+ok 48 - Item: 31, err: OLY_ERR_NO_RESERVATION
+ok 49 - Item: 32, err: OLY_ERR_STRING_BUFFER_STATE
+ok 50 - Item: 33, err: OLY_ERR_NODE_QUEUE_FULL
+ok 51 - Item: 34, err: OLY_ERR_NODE_QUEUE_EMPTY
+ok 52 - Item: 35, err: OLY_ERR_DS_EOF
+ok 53 - Item: 36, err: OLY_ERR_UNKNOWN
+# One smaller than the smallest number.  Everything past here should be OLY_ERR_UNKNOWN.
+ok 54 - Number: -17
+# A few wildly outlandish numbers.  Powers of -17!
+ok 55 - Number: 289
+ok 56 - Number: -4,913
+ok 57 - Number: 83,521
+ok 58 - Number: -1,419,857
+# Hex digits, mwaha
+ok 59 - Number: 43,690, submitted: �
+ok 60 - AND ONE SWEDISH DANCING QUEEN (hex: ABBA)
+# All 60 tests successful or skipped

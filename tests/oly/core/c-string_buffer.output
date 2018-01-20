@@ -1,0 +1,309 @@
+1..302
+# ---- tests for OlyStringBuffer data structure. ----
+# OlyStringBuffer tests require a buffer size of 1024, minus 2, 1 for buffer end, and 1 more because space_available always counts one less than actual available.  It should return 1024 for these tests, because these tests were designed at that number.
+ok 1 - confirm open_string_buffer returns OLY_OKAY
+# File test: UTF-8-demo.txt (thx, Markus Kuhn! <3 <3)
+ok 2 - Row: 0
+ok 3 - Rows added, iteration 0.
+ok 4 - Rows dequeued, iteration 0.
+ok 5 - Row: 1
+ok 6 - Row: 2
+ok 7 - Rows added, iteration 1.
+ok 8 - Rows dequeued, iteration 1.
+ok 9 - Row: 3
+ok 10 - Row: 4
+ok 11 - Row: 5
+ok 12 - Rows added, iteration 2.
+ok 13 - Rows dequeued, iteration 2.
+ok 14 - Row: 6
+ok 15 - Row: 7
+ok 16 - Row: 8
+ok 17 - Row: 9
+ok 18 - Rows added, iteration 3.
+ok 19 - Rows dequeued, iteration 3.
+ok 20 - Row: 10
+ok 21 - Row: 11
+ok 22 - Row: 12
+ok 23 - Row: 13
+ok 24 - Row: 14
+ok 25 - Rows added, iteration 4.
+ok 26 - Rows dequeued, iteration 4.
+ok 27 - Row: 15
+ok 28 - Row: 16
+ok 29 - Row: 17
+ok 30 - Row: 18
+ok 31 - Row: 19
+ok 32 - Row: 20
+ok 33 - Rows added, iteration 5.
+ok 34 - Rows dequeued, iteration 5.
+ok 35 - Row: 21
+ok 36 - Row: 22
+ok 37 - Row: 23
+ok 38 - Row: 24
+ok 39 - Row: 25
+ok 40 - Row: 26
+ok 41 - Row: 27
+ok 42 - Rows added, iteration 6.
+ok 43 - Rows dequeued, iteration 6.
+ok 44 - Row: 28
+ok 45 - Row: 29
+ok 46 - Row: 30
+ok 47 - Row: 31
+ok 48 - Row: 32
+ok 49 - Row: 33
+ok 50 - Row: 34
+ok 51 - Row: 35
+ok 52 - Rows added, iteration 7.
+ok 53 - Rows dequeued, iteration 7.
+ok 54 - Row: 36
+ok 55 - Row: 37
+ok 56 - Row: 38
+ok 57 - Row: 39
+ok 58 - Row: 40
+ok 59 - Row: 41
+ok 60 - Row: 42
+ok 61 - Row: 43
+ok 62 - Row: 44
+ok 63 - Rows added, iteration 8.
+ok 64 - Rows dequeued, iteration 8.
+ok 65 - Row: 45
+ok 66 - Row: 46
+ok 67 - Row: 47
+ok 68 - Row: 48
+ok 69 - Row: 49
+ok 70 - Row: 50
+ok 71 - Row: 51
+ok 72 - Row: 52
+ok 73 - Row: 53
+ok 74 - Row: 54
+ok 75 - Rows added, iteration 9.
+ok 76 - Rows dequeued, iteration 9.
+ok 77 - Row: 55
+ok 78 - Row: 56
+ok 79 - Row: 57
+ok 80 - Row: 58
+ok 81 - Row: 59
+ok 82 - Row: 60
+ok 83 - Row: 61
+ok 84 - Row: 62
+ok 85 - Row: 63
+ok 86 - Row: 64
+ok 87 - Row: 65
+ok 88 - Rows added, iteration 10.
+ok 89 - Rows dequeued, iteration 10.
+ok 90 - Row: 66
+ok 91 - Row: 67
+ok 92 - Row: 68
+ok 93 - Row: 69
+ok 94 - Row: 70
+ok 95 - Row: 71
+ok 96 - Row: 72
+ok 97 - Row: 73
+ok 98 - Rows added, iteration 11.
+ok 99 - Rows dequeued, iteration 11.
+ok 100 - Row: 74
+ok 101 - Row: 75
+ok 102 - Row: 76
+ok 103 - Row: 77
+ok 104 - Row: 78
+ok 105 - Row: 79
+ok 106 - Row: 80
+ok 107 - Rows added, iteration 12.
+ok 108 - Rows dequeued, iteration 12.
+ok 109 - Row: 81
+ok 110 - Row: 82
+ok 111 - Row: 83
+ok 112 - Row: 84
+ok 113 - Row: 85
+ok 114 - Row: 86
+ok 115 - Rows added, iteration 13.
+ok 116 - Rows dequeued, iteration 13.
+ok 117 - Row: 87
+ok 118 - Row: 88
+ok 119 - Row: 89
+ok 120 - Row: 90
+ok 121 - Row: 91
+ok 122 - Rows added, iteration 14.
+ok 123 - Rows dequeued, iteration 14.
+ok 124 - Row: 92
+ok 125 - Row: 93
+ok 126 - Row: 94
+ok 127 - Row: 95
+ok 128 - Rows added, iteration 15.
+ok 129 - Rows dequeued, iteration 15.
+ok 130 - Row: 96
+ok 131 - Row: 97
+ok 132 - Row: 98
+ok 133 - Rows added, iteration 16.
+ok 134 - Rows dequeued, iteration 16.
+ok 135 - Row: 99
+ok 136 - Row: 100
+ok 137 - Rows added, iteration 17.
+ok 138 - Rows dequeued, iteration 17.
+ok 139 - Row: 101
+ok 140 - Rows added, iteration 18.
+ok 141 - Rows dequeued, iteration 18.
+ok 142 - Rows added, iteration 19.
+ok 143 - Rows dequeued, iteration 19.
+ok 144 - Row: 102
+ok 145 - Rows added, iteration 20.
+ok 146 - Rows dequeued, iteration 20.
+ok 147 - Row: 103
+ok 148 - Row: 104
+ok 149 - Rows added, iteration 21.
+ok 150 - Rows dequeued, iteration 21.
+ok 151 - Row: 105
+ok 152 - Row: 106
+ok 153 - Row: 107
+ok 154 - Rows added, iteration 22.
+ok 155 - Rows dequeued, iteration 22.
+ok 156 - Row: 108
+ok 157 - Row: 109
+ok 158 - Row: 110
+ok 159 - Row: 111
+ok 160 - Rows added, iteration 23.
+ok 161 - Rows dequeued, iteration 23.
+ok 162 - Row: 112
+ok 163 - Row: 113
+ok 164 - Row: 114
+ok 165 - Row: 115
+ok 166 - Row: 116
+ok 167 - Rows added, iteration 24.
+ok 168 - Rows dequeued, iteration 24.
+ok 169 - Row: 117
+ok 170 - Row: 118
+ok 171 - Row: 119
+ok 172 - Row: 120
+ok 173 - Row: 121
+ok 174 - Row: 122
+ok 175 - Rows added, iteration 25.
+ok 176 - Rows dequeued, iteration 25.
+ok 177 - Row: 123
+ok 178 - Row: 124
+ok 179 - Row: 125
+ok 180 - Row: 126
+ok 181 - Row: 127
+ok 182 - Row: 128
+ok 183 - Row: 129
+ok 184 - Rows added, iteration 26.
+ok 185 - Rows dequeued, iteration 26.
+ok 186 - Row: 130
+ok 187 - Row: 131
+ok 188 - Row: 132
+ok 189 - Row: 133
+ok 190 - Row: 134
+ok 191 - Row: 135
+ok 192 - Row: 136
+ok 193 - Row: 137
+ok 194 - Rows added, iteration 27.
+ok 195 - Rows dequeued, iteration 27.
+ok 196 - Row: 138
+ok 197 - Row: 139
+ok 198 - Row: 140
+ok 199 - Row: 141
+ok 200 - Row: 142
+ok 201 - Row: 143
+ok 202 - Row: 144
+ok 203 - Row: 145
+ok 204 - Row: 146
+ok 205 - Rows added, iteration 28.
+ok 206 - Rows dequeued, iteration 28.
+ok 207 - Row: 147
+ok 208 - Row: 148
+ok 209 - Row: 149
+ok 210 - Row: 150
+ok 211 - Row: 151
+ok 212 - Row: 152
+ok 213 - Row: 153
+ok 214 - Row: 154
+ok 215 - Row: 155
+ok 216 - Row: 156
+ok 217 - Rows added, iteration 29.
+ok 218 - Rows dequeued, iteration 29.
+ok 219 - Row: 157
+ok 220 - Row: 158
+ok 221 - Row: 159
+ok 222 - Row: 160
+ok 223 - Row: 161
+ok 224 - Row: 162
+ok 225 - Row: 163
+ok 226 - Row: 164
+ok 227 - Row: 165
+ok 228 - Row: 166
+ok 229 - Row: 167
+ok 230 - Rows added, iteration 30.
+ok 231 - Rows dequeued, iteration 30.
+ok 232 - Row: 168
+ok 233 - Row: 169
+ok 234 - Row: 170
+ok 235 - Row: 171
+ok 236 - Row: 172
+ok 237 - Row: 173
+ok 238 - Row: 174
+ok 239 - Row: 175
+ok 240 - Row: 176
+ok 241 - Row: 177
+ok 242 - Row: 178
+ok 243 - Row: 179
+ok 244 - Rows added, iteration 31.
+ok 245 - Rows dequeued, iteration 31.
+ok 246 - Row: 180
+ok 247 - Row: 181
+ok 248 - Row: 182
+ok 249 - Row: 183
+ok 250 - Row: 184
+ok 251 - Row: 185
+ok 252 - Row: 186
+ok 253 - Row: 187
+ok 254 - Row: 188
+ok 255 - Row: 189
+ok 256 - Rows added, iteration 32.
+ok 257 - Rows dequeued, iteration 32.
+ok 258 - Row: 190
+ok 259 - Row: 191
+ok 260 - Row: 192
+ok 261 - Row: 193
+ok 262 - Row: 194
+ok 263 - Row: 195
+ok 264 - Rows added, iteration 33.
+ok 265 - Rows dequeued, iteration 33.
+ok 266 - Row: 196
+ok 267 - Row: 197
+ok 268 - Row: 198
+ok 269 - Row: 199
+ok 270 - Row: 200
+ok 271 - Rows added, iteration 34.
+ok 272 - Rows dequeued, iteration 34.
+ok 273 - Row: 201
+ok 274 - Row: 202
+ok 275 - Row: 203
+ok 276 - Row: 204
+ok 277 - Rows added, iteration 35.
+ok 278 - Rows dequeued, iteration 35.
+ok 279 - Row: 205
+ok 280 - Row: 206
+ok 281 - Row: 207
+ok 282 - Rows added, iteration 36.
+ok 283 - Rows dequeued, iteration 36.
+ok 284 - Row: 208
+ok 285 - Row: 209
+ok 286 - Rows added, iteration 37.
+ok 287 - Rows dequeued, iteration 37.
+ok 288 - Row: 210
+ok 289 - Rows added, iteration 38.
+ok 290 - Rows dequeued, iteration 38.
+ok 291 - Rows added, iteration 39.
+ok 292 - Rows dequeued, iteration 39.
+ok 293 - Row: 211
+# Status and boundary tests, reserve and enqueue.
+ok 294 - Check results for reserve.
+ok 295 - Gives OLY_WARN_BUFFER_WRITE_LOCK if enqueue has not been called after reserve.
+ok 296 - Enqueue to string buffer status for empty string.
+ok 297 - Empty string.
+ok 298 - Try to reserve more than is possible.
+ok 299 - confirm dequeue returns empty.
+ok 300 - dequeue returns OLY_ERR_BUFFER_OVERFLOW for a too-small output buffer.
+ok 301 - dequeue also plants a null at the start of the output buffer.
+ok 302 - total read: 7833
+
+# All 302 tests successful or skipped

@@ -1,0 +1,67 @@
+# comes from here: http://sujitpal.blogspot.com/2008/05/tokenizing-text-with-icu4js.html
+
+!!chain;
+$VoiceMarks = [\uff9e\uff9f];
+$Format = [\p{Word_Break = Format}];
+$Katakana = [\p{Word_Break = Katakana}-$VoiceMarks];
+$ALetter = [\p{Word_Break = ALetter}];
+$MidLetter = [\p{Word_Break = MidLetter}];
+$MidNum = [\p{Word_Break = MidNum}];
+$Numeric = [\p{Word_Break = Numeric}];
+$ExtendNumLet = [\p{Word_Break = ExtendNumLet}];
+$CR = \u000d;
+$LF = \u000a;
+$Extend = [\p{Grapheme_Cluster_Break = Extend}$VoiceMarks];
+$Control = [\p{Grapheme_Cluster_Break = Control}];
+$dictionary = [:LineBreak = Complex_Context:];
+$ALetterPlus = [$ALetter [$dictionary-$Extend-$Control]];
+$KatakanaEx = $Katakana     ($Extend |  $Format)*;
+$ALetterEx = $ALetterPlus  ($Extend |  $Format)*;
+$MidLetterEx = $MidLetter    ($Extend |  $Format)*;
+$MidNumEx = $MidNum       ($Extend |  $Format)*;
+$NumericEx = $Numeric      ($Extend |  $Format)*;
+$ExtendNumLetEx = $ExtendNumLet ($Extend |  $Format)*;
+$Hiragana = [:Hiragana:];
+$Ideographic = [:IDEOGRAPHIC:];
+$HiraganaEx = $Hiragana ($Extend |  $Format)*;
+$IdeographicEx = $Ideographic  ($Extend |  $Format)*;
+# ============= Custom Rules ================
+# QuotedString: Start at a quote, end at another quote in front of a comma.
+$QuotedString = \"[^\"]+\"[:space:]*\,;
+# CommaSeparated: Start at a not comma, go to the next comma.
+$CommaSeparated = [^\,]+\,;
+# CommaSeparatedEndLine: Start at a not comma, go to the end.
+$CommaSeparatedEndLine = [^\,]+;
+
+!!forward;
+$CR $LF  ($Extend | $Format)* {1};
+$QuotedString {500};
+$CommaSeparated {520};
+$CommaSeparatedEndLine {530};
+$dictionary {600};
+.? ($Extend |  $Format)+ {1000};
+
+!!reverse;
+$CR $LF  ($Extend | $Format)* {1};
+$QuotedString {500};
+$CommaSeparated {520};
+$CommaSeparatedEndLine {530};
+$dictionary {600};
+.? ($Extend |  $Format)+ {1000};
+
+!!safe_reverse;
+$CR $LF  ($Extend | $Format)* {1};
+$dictionary {100}
+$QuotedString {500};
+$CommaSeparated {520};
+$CommaSeparatedEndLine {530};
+.? ($Extend |  $Format)+;
+
+!!safe_forward;
+$CR $LF  ($Extend | $Format)* {1};
+$dictionary {100}
+$QuotedString {500};
+$CommaSeparatedEndLine {520};
+$CommaSeparated {530};
+.? ($Extend |  $Format)+;
+

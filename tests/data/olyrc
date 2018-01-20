@@ -1,0 +1,24 @@
+MAIN_MAX_STRING_BUFFER_SIZE: 8092
+MAIN_MAX_BOUNDARY_BUFFER_SIZE: 8092
+MAIN_MAX_NODE_LIST_SIZE: 8092
+MAIN_MAX_HASH_TABLE_SIZE: 8092
+# these are actual high number unicode codepoints, I am testing 
+# how accurate ICU + libyaml is.
+wants_locale        : en_US
+wants_encoding       : UTF-8
+musical_symbols:
+    alto_clef                   : 𝄡
+    treble_clef                 : 𝄞
+mahjong_tiles :
+    mahjong_tile_spring         : 🀦
+    mahjong_tile_east_wind      : 🀀
+    mahjong_tile_red_dragon     : 🀄
+angry_face                  : 😠
+playing_card_eight_of_clubs : 🃘
+square_fm                   : ㎙
+square_km                   : ㎞
+square_rad                  : ㎭
+square_era_name_taisyou     : ㍽
+coptic_symbol_khi_ro        : ⳩
+coptic_symbol_stauros       : ⳧
+

@@ -1,0 +1,6 @@
+1..4
+ok 1 - Zero args.
+ok 2 - 3 args.
+ok 3 - Try number 1
+ok 4 - Try number 2
+# All 4 tests successful or skipped

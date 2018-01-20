@@ -1,0 +1,54 @@
+REVERSE(1)
+==========
+:doctype:     manpage
+:man source:  Reverse
+:man version: {revnumber}
+:man manual:  Reverse
+
+NAME
+----
+reverse - an ICU based version of the classic K and R program
+homework problem.
+
+SYNOPSIS
+--------
+*reverse* ['OPTIONS']
+
+DESCRIPTION
+-----------
+Please describe what you are doing.
+
+OPTIONS
+-------
+*-h, --help*::
+    Access help functions.
+*-v, --version*::
+    Version Information.
+*-i, --input*=['INPUT FILE']::
+    Name of input file.
+
+EXIT STATUS
+-----------
+*0*::
+  Success
+
+*1*::
+  Faulure
+
+BUGS
+----
+See the distributed BUGS file.
+
+AUTHOR
+------
+Author Name here
+
+RESOURCES
+---------
+GNU Portability Library: <http://www.gnu.org/software/gnulib/>
+Free Software Foundation: <http://www.fsf.org/>
+
+COPYING
+-------
+Free use of this software is granted
+under the terms of the GNU General Public License version 3 (GPLv3)

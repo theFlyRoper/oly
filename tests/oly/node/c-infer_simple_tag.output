@@ -1,0 +1,140 @@
+1..138
+ok 1 - test 0, tag name: OLY_TAG_SCALAR_NULL
+ok 2 - test 0, check null
+ok 3 - test 0, type null
+ok 4 - test 1, tag name: OLY_TAG_SCALAR_NULL
+ok 5 - test 1, check null
+ok 6 - test 1, type null
+ok 7 - test 2, tag name: OLY_TAG_SCALAR_NULL
+ok 8 - test 2, check null
+ok 9 - test 2, type null
+ok 10 - test 3, tag name: OLY_TAG_SCALAR_NULL
+ok 11 - test 3, check null
+ok 12 - test 3, type null
+ok 13 - test 4, tag name: OLY_TAG_SCALAR_NULL
+ok 14 - test 4, check null
+ok 15 - test 4, type null
+ok 16 - test 5, tag name: OLY_TAG_SCALAR_STRING
+ok 17 - test 5, check string
+ok 18 - test 5, type string
+ok 19 - test 6, tag name: OLY_TAG_SCALAR_BOOL
+ok 20 - bool 6, check bool
+ok 21 - bool 6, tag name
+ok 22 - test 7, tag name: OLY_TAG_SCALAR_BOOL
+ok 23 - bool 7, check bool
+ok 24 - bool 7, tag name
+ok 25 - test 8, tag name: OLY_TAG_SCALAR_BOOL
+ok 26 - bool 8, check bool
+ok 27 - bool 8, tag name
+ok 28 - test 9, tag name: OLY_TAG_SCALAR_BOOL
+ok 29 - bool 9, check bool
+ok 30 - bool 9, tag name
+ok 31 - test 10, tag name: OLY_TAG_SCALAR_BOOL
+ok 32 - bool 10, check bool
+ok 33 - bool 10, tag name
+ok 34 - test 11, tag name: OLY_TAG_SCALAR_BOOL
+ok 35 - bool 11, check bool
+ok 36 - bool 11, tag name
+ok 37 - test 12, tag name: OLY_TAG_SCALAR_STRING
+ok 38 - test 12, check string
+ok 39 - test 12, type string
+ok 40 - test 13, tag name: OLY_TAG_SCALAR_STRING
+ok 41 - test 13, check string
+ok 42 - test 13, type string
+ok 43 - test 14, tag name: OLY_TAG_SCALAR_STRING
+ok 44 - test 14, check string
+ok 45 - test 14, type string
+ok 46 - test 15, tag name: OLY_TAG_SCALAR_STRING
+ok 47 - test 15, check string
+ok 48 - test 15, type string
+ok 49 - test 16, tag name: OLY_TAG_SCALAR_INT
+ok 50 - int 16, check int
+ok 51 - int 16, tag name
+ok 52 - test 17, tag name: OLY_TAG_SCALAR_INT
+ok 53 - int 17, check int
+ok 54 - int 17, tag name
+ok 55 - test 18, tag name: OLY_TAG_SCALAR_INT
+ok 56 - int 18, check int
+ok 57 - int 18, tag name
+ok 58 - test 19, tag name: OLY_TAG_SCALAR_INT
+ok 59 - int 19, check int
+ok 60 - int 19, tag name
+ok 61 - test 20, tag name: OLY_TAG_SCALAR_INT
+ok 62 - int 20, check int
+ok 63 - int 20, tag name
+ok 64 - test 21, tag name: OLY_TAG_SCALAR_STRING
+ok 65 - test 21, check string
+ok 66 - test 21, type string
+ok 67 - test 22, tag name: OLY_TAG_SCALAR_STRING
+ok 68 - test 22, check string
+ok 69 - test 22, type string
+ok 70 - test 23, tag name: OLY_TAG_SCALAR_UINT
+ok 71 - uint 23, check uint
+ok 72 - uint 23, tag name
+ok 73 - test 24, tag name: OLY_TAG_SCALAR_UINT
+ok 74 - uint 24, check uint
+ok 75 - uint 24, tag name
+ok 76 - test 25, tag name: OLY_TAG_SCALAR_FLOAT
+ok 77 - float 25, check value
+ok 78 - float 25, tag name
+ok 79 - test 26, tag name: OLY_TAG_SCALAR_FLOAT
+ok 80 - float 26, check value
+ok 81 - float 26, tag name
+ok 82 - test 27, tag name: OLY_TAG_SCALAR_FLOAT
+ok 83 - float 27, check value
+ok 84 - float 27, tag name
+ok 85 - test 28, tag name: OLY_TAG_SCALAR_FLOAT
+ok 86 - float 28, check value
+ok 87 - float 28, tag name
+ok 88 - test 29, tag name: OLY_TAG_SCALAR_FLOAT
+ok 89 - float 29, check value
+ok 90 - float 29, tag name
+ok 91 - test 30, tag name: OLY_TAG_SCALAR_STRING
+ok 92 - test 30, check string
+ok 93 - test 30, type string
+ok 94 - test 31, tag name: OLY_TAG_SCALAR_STRING
+ok 95 - test 31, check string
+ok 96 - test 31, type string
+ok 97 - test 32, tag name: OLY_TAG_SCALAR_PLUS_INFINITY
+ok 98 - test 32, check plus infinity
+ok 99 - test 32, type plus infinity
+ok 100 - test 33, tag name: OLY_TAG_SCALAR_PLUS_INFINITY
+ok 101 - test 33, check plus infinity
+ok 102 - test 33, type plus infinity
+ok 103 - test 34, tag name: OLY_TAG_SCALAR_PLUS_INFINITY
+ok 104 - test 34, check plus infinity
+ok 105 - test 34, type plus infinity
+ok 106 - test 35, tag name: OLY_TAG_SCALAR_STRING
+ok 107 - test 35, check string
+ok 108 - test 35, type string
+ok 109 - test 36, tag name: OLY_TAG_SCALAR_STRING
+ok 110 - test 36, check string
+ok 111 - test 36, type string
+ok 112 - test 37, tag name: OLY_TAG_SCALAR_NOT_A_NUMBER
+ok 113 - test 37, check not_a_number
+ok 114 - test 37, type not_a_number
+ok 115 - test 38, tag name: OLY_TAG_SCALAR_NOT_A_NUMBER
+ok 116 - test 38, check not_a_number
+ok 117 - test 38, type not_a_number
+ok 118 - test 39, tag name: OLY_TAG_SCALAR_NOT_A_NUMBER
+ok 119 - test 39, check not_a_number
+ok 120 - test 39, type not_a_number
+ok 121 - test 40, tag name: OLY_TAG_SCALAR_STRING
+ok 122 - test 40, check string
+ok 123 - test 40, type string
+ok 124 - test 41, tag name: OLY_TAG_SCALAR_STRING
+ok 125 - test 41, check string
+ok 126 - test 41, type string
+ok 127 - test 42, tag name: OLY_TAG_SCALAR_STRING
+ok 128 - test 42, check string
+ok 129 - test 42, type string
+ok 130 - test 43, tag name: OLY_TAG_SCALAR_STRING
+ok 131 - test 43, check string
+ok 132 - test 43, type string
+ok 133 - test 44, tag name: OLY_TAG_SCALAR_STRING
+ok 134 - test 44, check string
+ok 135 - test 44, type string
+ok 136 - test 45, tag name: OLY_TAG_SCALAR_STRING
+ok 137 - test 45, check string
+ok 138 - test 45, type string
+# All 138 tests successful or skipped

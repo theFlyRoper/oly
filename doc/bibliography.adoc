@@ -1,0 +1,6 @@
+Bibliography
+============
+
+Style
+-----
+* http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml?showone=Conditionals#Conditionals[Google Code: Conditionals]
