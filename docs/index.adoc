@@ -11,8 +11,8 @@ ifdef::is_standalone[]
 :toc2:
 endif::is_standalone[]
 ifdef::is_fossil[]
-:iconsdir:  /doc/tip/doc/icons
-:imagesdir: /doc/tip/doc/images
+:iconsdir:  /docs/tip/docs/icons
+:imagesdir: /docs/tip/docs/images
 :icons:
 endif::is_fossil[]
 
