@@ -79,8 +79,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = lib
-DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am strsignal.c \
-	basename.c gettimeofday.c waitpid.c strtok_r.c \
+DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am strtok_r.c \
+	waitpid.c basename.c gettimeofday.c strsignal.c \
 	$(top_srcdir)/ac-aux/depcomp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/ac-aux/m4/argz.m4 \
