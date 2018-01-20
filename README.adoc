@@ -23,9 +23,9 @@ This repository has been around for a long time, and its creator, Jonathan Towne
 Documentation links
 -------------------
 
-* link:doc/goals.adoc[Goals]
-* link:doc/standards.adoc[Some notes on Code Standards]
-* link:doc/glossary.adoc[Glossary]
-* link:doc/data_source_interface.adoc[Data Source Interface]
+* link:/doc/goals.adoc[Goals]
+* link:/doc/standards.adoc[Some notes on Code Standards]
+* link:/doc/glossary.adoc[Glossary]
+* link:/doc/data_source_interface.adoc[Data Source Interface]
 
 // vim: set syntax=asciidoc:
