@@ -1,0 +1,8 @@
+title: Oly
+description: Oly, A data moving program.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
