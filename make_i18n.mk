@@ -42,9 +42,9 @@ TEST_I18N_RESLIST				= $(addprefix $(TEST_OUTDIR),$(LIST_NAME))
 MAIN_I18N_BUILT					= $(MAIN_I18N_INDEX_TXT) $(MAIN_I18N_INDEX) $(MAIN_I18N_RESLIST)
 TEST_I18N_BUILT					= $(TEST_I18N_INDEX_TXT) $(TEST_I18N_INDEX) $(TEST_I18N_RESLIST)
 MAIN_I18N_CLEAN		= $(addprefix $(MAIN_OUTDIR),$(MAIN_I18N_RES)) \
-			$(MAIN_I18N_BUILT)
+			$(MAIN_I18N_BUILT) $(MAIN_I18N_OUTPUT)
 TEST_I18N_CLEAN					= $(addprefix $(TEST_OUTDIR),$(TEST_I18N_RES)) \
-			$(TEST_I18N_BUILT) 
+			$(TEST_I18N_BUILT) $(TEST_I18N_OUTPUT)
 
 # pkgdata version.
 PKGDATAOPTS		=	--name $(OLY_I18N_NAME) --mode $(I18N_MODE) \
@@ -57,10 +57,10 @@ TEST_GENRBOPT						= -s $(TEST_SRCDIR) $(GENRBOPT)
 INDEX_GENRBOPT						= -s . $(GENRBOPT) 
 
 i18n-main-built-clean:
-	$(RMV) -rf $(MAIN_I18N_BUILT) $(I18N_DEPSDIR)
+	$(RMV) -rf $(MAIN_I18N_BUILT) $(MAIN_I18N_OUTPUT) $(I18N_DEPSDIR)
 
 i18n-test-built-clean:
-	$(RMV) -rf $(TEST_I18N_BUILT) $(TEST_I18N_DEPSDIR) 
+	$(RMV) -rf $(TEST_I18N_BUILT) $(TEST_I18N_OUTPUT) $(TEST_I18N_DEPSDIR) 
 
 ## if the build_index breaks again this is useful for looking at the vars.
 

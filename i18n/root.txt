@@ -1,3 +1,4 @@
+
 // Copyright (c) 2014 Oly Project
 // See LICENSE file for details
 root:table {
@@ -31,27 +32,131 @@ root:table {
         Display:string{"Show current version information for Oly."}
       }
     }
+        OlyDataSource:array {
+            {"DATA_SOURCE_CONFIG_UNKNOWN"}
+            {"DATA_SOURCE_NAME"}
+            {"DATA_SOURCE_DIRECTION"}
+            {"DATA_SOURCE_MODULE"}
+            {"DATA_SOURCE_FILE_NAME"}
+            {"DATA_SOURCE_IP_ADDRESS"}
+            {"DATA_SOURCE_PORT"}
+            {"DATA_SOURCE_USER_NAME"}
+            {"DATA_SOURCE_CONNECTION"}
+            {"DATA_SOURCE_SCHEMA_NAME"}
+            {"DATA_SOURCE_TABLE_NAME"}
+        }
+    }
+    libltdlErrors:array {
+        {"LT_ERROR_UNKNOWN"}
+        {"LT_ERROR_DLOPEN_NOT_SUPPORTED"}
+        {"LT_ERROR_INVALID_LOADER"}
+        {"LT_ERROR_INIT_LOADER"}
+        {"LT_ERROR_REMOVE_LOADER"}
+        {"LT_ERROR_FILE_NOT_FOUND"}
+        {"LT_ERROR_DEPLIB_NOT_FOUND"}
+        {"LT_ERROR_NO_SYMBOLS"}
+        {"LT_ERROR_CANNOT_OPEN"}
+        {"LT_ERROR_CANNOT_CLOSE"}
+        {"LT_ERROR_SYMBOL_NOT_FOUND"}
+        {"LT_ERROR_NO_MEMORY"}
+        {"LT_ERROR_INVALID_HANDLE"}
+        {"LT_ERROR_BUFFER_OVERFLOW"}
+        {"LT_ERROR_INVALID_ERRORCODE"}
+        {"LT_ERROR_SHUTDOWN"}
+        {"LT_ERROR_CLOSE_RESIDENT_MODULE"}
+        {"LT_ERROR_INVALID_MUTEX_ARGS"}
+        {"LT_ERROR_INVALID_POSITION"}
+        {"LT_ERROR_CONFLICTING_FLAGS"}
+    }
     OlyErrors:array {
-        {"OLY_WARN_REINIT"},
-        {"OLY_WARN_LIB"},
-        {"OLY_WARN_EXIT"},
-        {"OLY_OKAY"},
-        {"OLY_ERR_UNKNOWN"},
-        {"OLY_ERR_SYS"},
-        {"OLY_ERR_LIB"},
-        {"OLY_ERR_INIT"},
-        {"OLY_ERR_NOMEM"},
-        {"OLY_ERR_NOPWD"},
-        {"OLY_ERR_NOUSER"},
-        {"OLY_ERR_FILEIO"},
-        {"OLY_ERR_READHEX"},
-        {"OLY_ERR_BADARG"},
+        {"OLY_WARN_TAG_NOT_MATCH"}
+        {"OLY_WARN_NODE_CONSUMED"}
+        {"OLY_WARN_NODE_PRODUCED"}
+        {"OLY_WARN_BOUNDARY_RESET"}
+        {"OLY_WARN_LONG_STRING"}
+        {"OLY_WARN_BUFFER_WRITE_LOCK"}
+        {"OLY_WARN_BUFFER_EMPTY"}
+        {"OLY_WARN_TOP_LEVEL_NODE"}
+        {"OLY_WARN_NODE_HAS_NO_KEY"}
+        {"OLY_WARN_END_OF_ARGS"}
+        {"OLY_WARN_DS_BUFFER_DEFAULT"}
+        {"OLY_WARN_SHOW_VERSION"}
+        {"OLY_WARN_SHOW_HELP"}
+        {"OLY_WARN_DSOPT_NOT_USED"}
+        {"OLY_WARN_REINIT"}
+        {"OLY_WARN_LIB"}
+        {"OLY_WARN_EXIT"}
+        {"OLY_OKAY"}
+        {"OLY_ERR_UNKNOWN"}
+        {"OLY_ERR_SYS"}
+        {"OLY_ERR_LIB"}
+        {"OLY_ERR_INIT"}
+        {"OLY_ERR_NOMEM"}
+        {"OLY_ERR_NOPWD"}
+        {"OLY_ERR_NOUSER"}
+        {"OLY_ERR_FILEIO"}
+        {"OLY_ERR_READHEX"}
+        {"OLY_ERR_HASH"}
+        {"OLY_ERR_BADARG"}
+        {"OLY_ERR_BUFFER_OVERFLOW"}
+        {"OLY_ERR_FILE_NOT_FOUND"}
+        {"OLY_ERR_CONFIG_FILE_NOT_FOUND"}
+        {"OLY_ERR_LIBYAML_INIT"}
+        {"OLY_ERR_NODES_TOO_DEEP"}
+        {"OLY_ERR_NODES_TOO_SHALLOW"}
+        {"OLY_ERR_UNKNOWN_FUNCTION_TYPE"}
+        {"OLY_ERR_DS_OPTION_CONFLICT"}
+        {"OLY_ERR_LTDL_UNKNOWN"}
+        {"OLY_ERR_LTDL_ERR"}
+        {"OLY_ERR_YAML_PARSE"}
+        {"OLY_ERR_SQLITE_INIT"}
+        {"OLY_ERR_SQLITE"}
+        {"OLY_ERR_KEY_STR_TOO_LONG"}
+        {"OLY_ERR_NO_KEY_BUFFER"}
+        {"OLY_ERR_NODE_MUST_HAVE_VALUE"}
+        {"OLY_ERR_NODE_MUST_NOT_HAVE_VALUE"}
+        {"OLY_ERR_ILLEGAL_TAG"}
+        {"OLY_ERR_NO_OBJECT"}
+        {"OLY_ERR_NO_RESERVATION"}
+        {"OLY_ERR_STRING_BUFFER_STATE"}
+        {"OLY_ERR_NODE_QUEUE_FULL"}
+        {"OLY_ERR_NODE_QUEUE_EMPTY"}
+        {"OLY_ERR_DS_EOF"}
+        {"OLY_ERR_CONFIG_ITEM_NOT_FOUND"}
+        {"OLY_ERR_CONFIG_UNKNOWN"}
     }
     OlyHelpTopics:table {
         configuration     { "ROOT configuration help topic" }
     }
     OlyHelpKeywords:table {
         configuration     { "configuration" }
+    }
+    OlyConfig:table {
+        OlyMain:array {
+            {"MAIN_CONFIG_UNKNOWN"}
+            {"MAIN_MAX_STRING_BUFFER_SIZE"}
+            {"MAIN_MAX_BOUNDARY_BUFFER_SIZE"}
+            {"MAIN_MAX_NODE_LIST_SIZE"}
+            {"MAIN_MAX_HASH_TABLE_SIZE"}
+        }
+    ConfigOptions:table{
+        ErrorBufferSize {"error_buffer_size"}
+        WorkingBufferSize {"working_buffer_size"}
+        OutputBufferSize {"output_buffer_size"}
+    }
+// regular expressions for the yaml/json core schema. http://www.yaml.org/spec/1.2/spec.html#schema/core/
+    SimpleTagRegExp:array{
+      {"(null|Null|NULL|~)"} // Null (spot 0)
+      {"(true|True|TRUE)"} // Boolean true
+      {"(false|False|FALSE)"} // Boolean false
+      {"[-+]?[0-9]+"} // Integer base 10
+      {"0o[0-7]+"} // Integer base 8. converted to unsigned int.
+      {"0x[0-9a-fA-F]+"} // Integer base 16, converted to unsigned int.
+      {"[-+]?(\\\.[0-9]+|[0-9]+(\\\.[0-9]*)?)([eE][-+]?[0-9]+)?"} // floating point
+      {"[+]?(\.inf|\.Inf|\.INF)"} // positive infinity
+      {"[-](\.inf|\.Inf|\.INF)"} // negative infinity
+      {"(\.nan|\.NaN|\.NAN)"}  // not a number 
+      {"*"} // string (default, not used)
     }
 }
       

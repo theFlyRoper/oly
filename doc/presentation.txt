@@ -1,0 +1,69 @@
+Oly Overview
+============
+
+Introduction
+------------
+. data moving program.
+. data analysis program.
+. not a storage medium, intended to move from one device to another.
+. It's not finished.
+
+Why make this program?
+----------------------
+. Moving data is a headache.  Switching formats is painful.
+    * Error handling - bad CSV rows
+    * Continuity - picking up where you left off
+    * Efficiency - handle streams gracefully, make no assumption about data size.
+. i18n - Many systems handle international data poorly.
+. Oly would not configure the medium itself, but it would move the data for you.
+
+Structure
+---------
+. Init
+    * Secure initialization, isolates Oly from most env variables.
+. Strings
+    * OChar, a wrapper around ICU UChar, a unicode character type.
+    * For handling i18n data.
+. Node list
+    * Pushes all data through node list.
+    * Each node is hashed and analyzed, per a regexp.
+    * All parsed nodes start as OChar strings.
+. Tagging
+    * Deduce type of incoming data, store as tag on node.
+    * Use regexp to deduce type.
+    * Regexp is stored as OChar.
+. Resources
+    * ICU resource files.
+    * Holds program messages, translations, regexp data.
+. Main buffer
+    * Dynamically allocated bipartite buffer.
+    * All parsed data is passed into this buffer for analysis, even if node is a number.
+    * Database data, from number columns, is passed directly to nodes as numbers.
+. API/Plugins
+    * Not finished.
+    * Provide API for developing plugins for many data sources.
+    * Errors must be passed from here.
+    * Must be configurable.
+. Error handling
+    * Currently an enumerated list.
+    * Integrated with i18n for easy translation.
+    * Would not be sufficient for effective error handling.
+    * Needs severity and presentation.
+
+Next Steps
+----------
+. Hashing
+    * Hash system exists now.
+    * Want hash table for all node values passed through system.
+    * Configurable size.
+. Configuration
+    * Set values of various settings.
+    * Configure data sources.
+    * Save repeated data transfers.
+    * Build on YAML
+. Data sources
+    * Add more.
+    * Configure analysis.
+        . Handling metadata, such as database INFORMATION_SCHEMA
+        . Transfer structure. Node list makes sense for some things, not all things.
+
