@@ -125,7 +125,7 @@ OLY_CHECK_ICU([4.8],[],[])
 dnl time checks.
 AC_SEARCH_LIBS([clock_gettime], [rt posix4])
 
-PKG_CHECK_MODULES([YAML], [yaml-0.1 > 0.1.4])
+PKG_CHECK_MODULES([YAML], [yaml-0.1 > 0.1.3])
 
 AX_LIB_SQLITE3([3.7.0])
 
