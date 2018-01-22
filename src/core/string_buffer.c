@@ -79,7 +79,7 @@ length_at_start(OlyStringBuffer *strbuf, size_t *space_at_start)
 
 /* fills in length and changes the state for write if needed. */
 OlyStatus 
-space_available(OlyStringBuffer *strbuf, size_t *space)
+space_available(OlyStringBuffer *strbuf, size_t *space_available)
 {
     OlyStatus status = OLY_OKAY;
     size_t space_at_end = 0, space_at_start = 0;
@@ -94,17 +94,17 @@ space_available(OlyStringBuffer *strbuf, size_t *space)
         length_at_end(strbuf, &space_at_end);
         if ( space_at_end >= space_at_start ) 
         {
-            *space = space_at_end;
+            *space_available = space_at_end;
         }
         else if (strbuf->state == WRITE_A_READ_A)
         {
             strbuf->state = WRITE_B_READ_A;
-            *space = space_at_start;
+            *space_available = space_at_start;
         }
         else
         {
             strbuf->state = WRITE_A_READ_B;
-            *space = space_at_start;
+            *space_available = space_at_start;
         }
 #ifdef DEBUG_STRING_BUFFER
         report_values(strbuf, __func__);
@@ -112,7 +112,7 @@ space_available(OlyStringBuffer *strbuf, size_t *space)
     }
     else
     {
-        length_at_start(strbuf, space);
+        length_at_start(strbuf, space_available);
     }
     return status;
 }
@@ -143,10 +143,10 @@ reserve_string_buffer( OlyStringBuffer *strbuf, const size_t length )
 {
     OlyStatus status = OLY_OKAY;
     size_t available = 0;
-    assert((strbuf->buffer_start <= strbuf->write_a) 
-                && (strbuf->write_a < strbuf->buffer_end));
-    assert((strbuf->buffer_start <= strbuf->write_b) 
-                && (strbuf->write_b < strbuf->buffer_end));
+    assert(strbuf->write_a < strbuf->buffer_end);
+    assert(strbuf->write_b < strbuf->buffer_end);
+    assert(strbuf->buffer_start <= strbuf->write_a);
+    assert(strbuf->buffer_start <= strbuf->write_b);
     if (strbuf->reserve_start != NULL)
     {
         status = OLY_WARN_BUFFER_WRITE_LOCK;
